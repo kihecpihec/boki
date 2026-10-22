@@ -103,6 +103,40 @@ namespace Boki.Tests
         }
 
         [Test]
+        public void CityAdvanceRequiresSelectionAndLifeAndPreservesTheRunThroughFeri()
+        {
+            var run = new RunState(default, 5);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            run.TryAdvance(RouteLevel.Forest);
+            Assert.That(run.TryAdvance(RouteLevel.City), Is.False);
+            run.TrySelect(RouteLevel.City, RouteChoice.B);
+            run.Health.TakeDamage(27);
+            run.Battery = 23; run.XP = 4; run.KillCount = 2; run.Upgrades.Add("test");
+            Assert.That(run.TryAdvance(RouteLevel.City));
+            Assert.That(run.TryAdvance(RouteLevel.City), Is.False);
+            Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Feri));
+            Assert.That(run.Health.Current, Is.EqualTo(73));
+            Assert.That(run.Battery, Is.EqualTo(23));
+            Assert.That(run.XP, Is.EqualTo(4));
+            Assert.That(run.KillCount, Is.EqualTo(2));
+            Assert.That(run.Upgrades, Is.EquivalentTo(new[] { "test" }));
+            Assert.That(run.StartedAt, Is.EqualTo(5));
+            Assert.That(run.Choice(RouteLevel.Forest), Is.EqualTo(RouteChoice.A));
+            Assert.That(run.Choice(RouteLevel.City), Is.EqualTo(RouteChoice.B));
+            Assert.That(run.TrySelect(RouteLevel.Feri, RouteChoice.B));
+            Assert.That(run.TryAdvance(RouteLevel.Feri), Is.False);
+            run.NewRun(default, 10);
+            Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Forest));
+            Assert.That(run.Choice(RouteLevel.Feri), Is.EqualTo(RouteChoice.None));
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            run.TryAdvance(RouteLevel.Forest);
+            run.TrySelect(RouteLevel.City, RouteChoice.A);
+            run.Health.TakeDamage(100);
+            Assert.That(run.TryAdvance(RouteLevel.City), Is.False);
+            Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.City));
+        }
+
+        [Test]
         public void UnlocksChangeOnlyOnNewRunAndAllFieldsReset()
         {
             var source = new UnlockSnapshot();

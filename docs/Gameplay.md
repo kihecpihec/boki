@@ -167,6 +167,8 @@ Each fork has these states:
 
 **Physics / UX:** `ROUTE_LOCK` and `PERSISTENT_LOCK` require an enabled blocking collider, a disabled selection trigger, and the correct message when crossing is attempted. `AVAILABLE` requires a passable entrance and an active trigger. Once the player chooses, immediately close the alternatives and prevent a second choice.
 
+**Branch isolation:** unchosen branches must be sealed at both their entrance and their exit into the shared ending. Rear seals are opaque and physically block reentry, so the player cannot inspect or enter another branch from the merge. Keep rear seals closed until their branch is selected; open only the selected branch's rear seal. Route-local enemies activate only after that branch is chosen. Unchosen branch enemies remain inactive: they cannot move, attack, or become laser targets. Short grayboxes can activate preplaced enemy groups instead of adding a runtime spawning system.
+
 Choosing `A/B/C` requires no extra menu confirmation: entering an allowed **fork trigger** selects it. Forbidden gates need physical colliders, not just closed visuals, so their behavior is consistent and readable.
 
 ### RouteManager Pseudocode
@@ -309,6 +311,7 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 - [ ] `ROUTE_LOCK`: gates forbidden by the previous choice show `SEALED BY YOUR PREVIOUS PATH`, have a blocking collider, and do not fire the selection trigger.
 - [ ] If both locks apply, display `ROUTE_LOCK`.
 - [ ] Entering an allowed fork trigger saves the route **immediately**, closes the alternatives, and prevents another choice in the same level.
+- [ ] Unchosen branches are sealed at entrance and exit; rear barriers hide their interiors and block reentry from the merge. Only the selected branch activates enemies and laser targets. Retry restores all encounters to their initial inactive state.
 - [ ] Completing the forest for the first time and then dying opens Forest C in the **next** run.
 - [ ] Completing the city makes City C globally available only at the next run start.
 - [ ] `F_C` allows `C_B` or unlocked `C_C`, never `C_A`.

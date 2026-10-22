@@ -51,7 +51,7 @@ boki/
 └── CLAUDE.md
 ```
 
-The layout includes both implemented and proposed content. `SampleScene.unity` is the template scene; `Gameplay_Test.unity` contains M1 movement, and `Combat_Test.unity` contains the M2 combat prototype. Main menu and level scenes remain proposed. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
+The layout includes both implemented and proposed content. `SampleScene.unity` is the template scene; `Gameplay_Test.unity` contains M1 movement, and `Combat_Test.unity` contains the M2 combat prototype. M4 adds `Level1_Pohorje.unity`, `Level2_Maribor.unity`, and `Level3_FERI.unity` as short grayboxes; the main menu remains proposed. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
 
 **Exclude from version control:** `Game/Library/`, `Game/Temp/`, `Game/Logs/`, `Game/Obj/`, local builds, and caches. **Include:** `Game/Assets/` with `.meta` files, `Game/Packages/`, `Game/ProjectSettings/`, `docs/`, and agent configuration. These inclusion rules do not authorize an agent to commit or push.
 
@@ -79,7 +79,7 @@ The layout includes both implemented and proposed content. `SampleScene.unity` i
 
 Names are **proposals** and can change if all project references stay consistent. During the jam, combine systems when a shorter implementation is clearer; each system does not need its own script.
 
-M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. M3 adds `RunSession`, deterministic run/route rules, gate adapters, and two isolated route test scenes. `PlayerHealth` and `CombatSession` optionally bind to the session while retaining standalone M2 behavior. HP and choices carry from the Forest test scene to City; Retry starts a fresh Forest run. Persistent unlock saving, rewards, and production level scenes remain future work. See [M2 handoff](plans/M2-verification.md) and [M3 handoff](plans/M3-verification.md) for setup and validation limits.
+M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. M3 adds `RunSession`, deterministic run/route rules, gate adapters, and two isolated route test scenes. `PlayerHealth` and `CombatSession` optionally bind to the session while retaining standalone M2 behavior. HP and choices carry from the Forest test scene to City; Retry starts a fresh Forest run. M4 adds three owned graybox level scenes, configured session destinations, City-to-FERI loading, and a shared classroom arrival marker. M4 Retry returns to Pohorje; the original M3 test flow retains its defaults. Persistent unlock saving, rewards, and boss combat remain future work. See [M2 handoff](plans/M2-verification.md), [M3 handoff](plans/M3-verification.md), and [M4 handoff](plans/M4-verification.md) for setup and validation limits.
 
 ## 4. Runtime State
 
@@ -116,7 +116,7 @@ Keep **one active instance** across `MainMenu` and the three gameplay scenes, us
 
 Implement availability and lock precedence from [Gameplay.md §2–4](Gameplay.md#2-branching-route-graph). Do not maintain a second route matrix here.
 
-`RouteManager` calculates each gate's state. `RouteGate` applies its blocking collider, selection trigger, and HUD message. On crossing an `AVAILABLE` gate, immediately store the choice and close the alternatives. Once chosen, the saved `chosenRoute` determines gate state; do not reopen unchosen gates by recalculating their earlier availability.
+`RouteManager` calculates each gate's state. `RouteGate` applies its blocking collider, selection trigger, and HUD message. On crossing an `AVAILABLE` gate, immediately store the choice and close the alternatives. M4 gates also control an opaque rear seal and an initially inactive branch encounter root. Only selection opens that branch's rear seal and activates its enemies; alternatives remain sealed at both ends, following [Gameplay §4](Gameplay.md#4-game-state-and-saving-rules). Once chosen, the saved `chosenRoute` determines gate state; do not reopen unchosen gates by recalculating their earlier availability.
 
 ### 4.4 Unlock Milestone Integration
 
