@@ -4,10 +4,19 @@ using UnityEngine.SceneManagement;
 
 namespace Boki.Core
 {
+    [DefaultExecutionOrder(-1000)]
     public sealed class RunSession : MonoBehaviour
     {
         public const string ForestScene = "Assets/Scenes/Routes_Forest_Test.unity";
         public const string CityScene = "Assets/Scenes/Routes_City_Test.unity";
+        public const string PohorjeScene = "Assets/Scenes/Level1_Pohorje.unity";
+        public const string MariborScene = "Assets/Scenes/Level2_Maribor.unity";
+        public const string FeriScene = "Assets/Scenes/Level3_FERI.unity";
+
+        [SerializeField] private string forestDestination = ForestScene;
+        [SerializeField] private string cityDestination = CityScene;
+        [SerializeField] private string feriDestination = "";
+        public string EntryScene => forestDestination;
         public static RunSession Instance { get; private set; }
         public RunState State { get; private set; }
         public bool IsLoading { get; private set; }
@@ -39,11 +48,13 @@ namespace Boki.Core
             if (Instance == this) Instance = null;
         }
 
-        public bool Retry() => Load(ForestScene, true, RouteLevel.Forest);
+        public bool Retry() => Load(forestDestination, true, RouteLevel.Forest);
         public bool Advance(RouteLevel level)
         {
-            if (level != RouteLevel.Forest || !State.CanAdvance(level)) return false;
-            return Load(CityScene, false, level);
+            if (!State.CanAdvance(level)) return false;
+            string destination = level == RouteLevel.Forest ? cityDestination : feriDestination;
+            if (string.IsNullOrWhiteSpace(destination)) return false;
+            return Load(destination, false, level);
         }
 
         private bool Load(string path, bool newRun, RouteLevel from)

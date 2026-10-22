@@ -35,7 +35,7 @@ namespace Boki.Routes
             if (status != null)
                 status.text = session.State.ActiveLevel != level
                     ? "Start at Forest first. Use Start New Run."
-                    : $"{level} | Forest: {session.State.Choice(RouteLevel.Forest)} | City: {session.State.Choice(RouteLevel.City)}";
+                    : $"{level} | Forest: {session.State.Choice(RouteLevel.Forest)} | City: {session.State.Choice(RouteLevel.City)} | FERI: {session.State.Choice(RouteLevel.Feri)}\n{(level == RouteLevel.Feri ? "Reach the classroom" : "Reach the shared exit")}";
             Changed?.Invoke();
         }
         public bool Select(RouteChoice choice) => IsReady && session.State.TrySelect(level, choice);
