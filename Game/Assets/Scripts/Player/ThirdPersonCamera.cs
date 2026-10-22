@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 namespace Boki.Player
@@ -25,6 +28,7 @@ namespace Boki.Player
         private bool enabledLookAction;
         private bool hasFocus;
         private bool skipLookFrame;
+        private readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
 
         private void OnEnable()
         {
@@ -76,8 +80,23 @@ namespace Boki.Player
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
                 SetCursorCaptured(false);
             else if (Cursor.lockState != CursorLockMode.Locked && Mouse.current != null
-                     && Mouse.current.leftButton.wasPressedThisFrame)
+                     && Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
                 SetCursorCaptured(true);
+        }
+
+        private bool IsPointerOverUI()
+        {
+            if (EventSystem.current == null || Mouse.current == null) return false;
+            // Query this click's position directly: EventSystem may update after the camera.
+            var pointer = new PointerEventData(EventSystem.current)
+            {
+                position = Mouse.current.position.ReadValue()
+            };
+            pointerHits.Clear();
+            EventSystem.current.RaycastAll(pointer, pointerHits);
+            foreach (var hit in pointerHits)
+                if (hit.module is GraphicRaycaster) return true;
+            return false;
         }
 
         private void LateUpdate()

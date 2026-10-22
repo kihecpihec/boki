@@ -1,0 +1,4 @@
+{
+  "name": "Boki.Run.Rules",
+  "references": ["Boki.Combat.Rules"]
+}

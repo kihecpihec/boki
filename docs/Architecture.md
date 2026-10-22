@@ -79,7 +79,7 @@ The layout includes both implemented and proposed content. `SampleScene.unity` i
 
 Names are **proposals** and can change if all project references stay consistent. During the jam, combine systems when a shorter implementation is clearer; each system does not need its own script.
 
-M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. `RunSession`, rewards, and cross-scene state remain future work; the M2 components do not yet have those dependencies. See [M2 handoff](plans/M2-verification.md) for the delivered setup and validation limits.
+M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. M3 adds `RunSession`, deterministic run/route rules, gate adapters, and two isolated route test scenes. `PlayerHealth` and `CombatSession` optionally bind to the session while retaining standalone M2 behavior. HP and choices carry from the Forest test scene to City; Retry starts a fresh Forest run. Persistent unlock saving, rewards, and production level scenes remain future work. See [M2 handoff](plans/M2-verification.md) and [M3 handoff](plans/M3-verification.md) for setup and validation limits.
 
 ## 4. Runtime State
 
