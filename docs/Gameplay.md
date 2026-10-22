@@ -1,6 +1,6 @@
 # BOKI: LATE TO FERI — Gameplay
 
-This document specifies the decision system and gameplay loop. See [Story.md](Story.md) for scenes, dialogue, and atmosphere, and [Architecture.md](Architecture.md) for Unity architecture and implementation.
+This document specifies the decision system and gameplay loop. See [Story.md](Story.md) for scenes, dialogue, and atmosphere, [Architecture.md](Architecture.md) for Unity architecture and implementation, and [Movement.md](Movement.md) for how scooter movement works.
 
 ## 0. Gameplay Pillars and Controls
 
