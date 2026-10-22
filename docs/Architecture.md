@@ -28,6 +28,7 @@ boki/
 │   ├── Assets/
 │   │   ├── Scenes/                # Existing directory; add new scenes here
 │   │   │   ├── Gameplay_Test.unity
+│   │   │   ├── Combat_Test.unity
 │   │   │   ├── MainMenu.unity
 │   │   │   ├── Level1_Pohorje.unity
 │   │   │   ├── Level2_Maribor.unity
@@ -50,7 +51,7 @@ boki/
 └── CLAUDE.md
 ```
 
-The listed `.unity` scenes and `Scripts/` subdirectories are **proposed future files**, not existing content. `Game/Assets/Scenes/SampleScene.unity` is the starting Unity scene. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
+The layout includes both implemented and proposed content. `SampleScene.unity` is the template scene; `Gameplay_Test.unity` contains M1 movement, and `Combat_Test.unity` contains the M2 combat prototype. Main menu and level scenes remain proposed. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
 
 **Exclude from version control:** `Game/Library/`, `Game/Temp/`, `Game/Logs/`, `Game/Obj/`, local builds, and caches. **Include:** `Game/Assets/` with `.meta` files, `Game/Packages/`, `Game/ProjectSettings/`, `docs/`, and agent configuration. These inclusion rules do not authorize an agent to commit or push.
 
@@ -77,6 +78,8 @@ The listed `.unity` scenes and `Scripts/` subdirectories are **proposed future f
 | `HUDController` | HP, battery, XP, objective, route status | RunSession | World/UI dev |
 
 Names are **proposals** and can change if all project references stay consistent. During the jam, combine systems when a shorter implementation is clearer; each system does not need its own script.
+
+M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. `RunSession`, rewards, and cross-scene state remain future work; the M2 components do not yet have those dependencies. See [M2 handoff](plans/M2-verification.md) for the delivered setup and validation limits.
 
 ## 4. Runtime State
 
