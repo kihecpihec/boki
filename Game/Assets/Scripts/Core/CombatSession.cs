@@ -7,9 +7,10 @@ using UnityEngine.SceneManagement;
 
 namespace Boki.Core
 {
-    // Scene-local M2 flow. RunSession will own new-run state in M3.
+    // Scene-local shutdown/UI; M3 optionally delegates new-run initialization to RunSession.
     public sealed class CombatSession : MonoBehaviour
     {
+        [SerializeField] private bool useRunSession;
         [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private ScooterController movement;
         [SerializeField] private ThirdPersonCamera cameraController;
@@ -66,6 +67,12 @@ namespace Boki.Core
         public void Retry()
         {
             if (!dead || retrying) return;
+            if (useRunSession)
+            {
+                retrying = true;
+                if (!RunSession.Ensure().Retry()) retrying = false;
+                return;
+            }
             string path = gameObject.scene.path;
 #if UNITY_EDITOR
             retrying = true;
