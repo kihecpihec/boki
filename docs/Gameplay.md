@@ -20,6 +20,14 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 
 **Status:** values and designs here are an initial specification, not evidence that these systems already exist in the Unity project.
 
+### M1 Movement Baseline
+
+WASD movement is relative to the camera's horizontal facing. Boki turns toward the movement direction; diagonal input is clamped to the normal speed limit. The initial Inspector tuning is 6 m/s movement, 540°/s turning, a 1.2 m jump, and full directional control in the air. Releasing movement stops horizontal travel; realistic scooter momentum is outside M1.
+
+Pressing Left Shift activates a 1.75× boost for 0.35 s, followed by a 1 s cooldown after the boost ends. Activation requires ground contact. An active boost can continue through a jump, with full air steering; holding Shift does not activate another boost. These values are the approved prototype baseline and can be tuned through playtesting.
+
+In the M1 test arena, Escape releases the cursor and a left click recaptures it. Movement and look input are suppressed while the cursor is released or the application is unfocused; release held movement, jump, and boost controls before resuming input. This testing behavior does not implement the later pause menu.
+
 ## 1. Main Gameplay Flowchart
 
 ```mermaid
