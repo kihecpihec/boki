@@ -28,6 +28,14 @@ Pressing Left Shift activates a 1.75× boost for 0.35 s, followed by a 1 s coold
 
 In the M1 test arena, Escape releases the cursor and a left click recaptures it. Movement and look input are suppressed while the cursor is released or the application is unfocused; release held movement, jump, and boost controls before resuming input. This testing behavior does not implement the later pause menu.
 
+### M2 Combat Baseline
+
+The automatic laser fires instantaneous pulses at the nearest visible living regular enemy within 10 m of the beam origin. Each pulse deals 20 damage, with a 0.4 s interval. Environment geometry blocks the beam; an occluded nearest enemy is skipped in favor of the nearest visible enemy. A brief beam visual shows each shot; there is no projectile travel or fire button.
+
+The initial melee prototype has 60 HP and moves at 3 m/s. Contact attacks deal 10 damage with a 0.75 s interval per enemy; damage is not applied every rendered frame. The initial contact distance is 0.9 m between controller centers, measured in 3D so jumping can avoid contact. Walls block contact damage. These Inspector values are a prototype baseline for playtesting.
+
+M2 starts Boki at the canonical 100 HP. At zero HP, combat and player controls stop, `ABSENT` appears, and `Retry` restarts the combat test scene with fresh health and enemies. This scene-local retry is temporary until M3 introduces `RunSession`; it does not implement routes, persistence, XP, or battery rewards.
+
 ## 1. Main Gameplay Flowchart
 
 ```mermaid
