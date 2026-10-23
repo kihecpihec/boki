@@ -1,0 +1,5 @@
+{
+  "name": "Boki.Player.Rules",
+  "rootNamespace": "Boki.Player",
+  "noEngineReferences": true
+}
