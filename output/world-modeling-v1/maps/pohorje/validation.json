@@ -2,8 +2,8 @@
   "scene": "Pohorje_Large",
   "unity_import": "pending",
   "windows_5600g_performance": "unmeasured",
-  "render_triangles_all_routes": 138686,
-  "render_mesh_objects": 639,
+  "render_triangles_all_routes": 348670,
+  "render_mesh_objects": 653,
   "collections": [
     {
       "collection": "PL_Shared_Bellevue",
@@ -19,15 +19,15 @@
     },
     {
       "collection": "PL_Route_A",
-      "triangles": 2660
+      "triangles": 6188
     },
     {
       "collection": "PL_Route_B",
-      "triangles": 3363
+      "triangles": 8987
     },
     {
       "collection": "PL_Route_C",
-      "triangles": 3072
+      "triangles": 4656
     },
     {
       "collection": "PL_Terrain_Chunks",
@@ -35,7 +35,7 @@
     },
     {
       "collection": "PL_Forest_Chunks",
-      "triangles": 119714
+      "triangles": 318962
     },
     {
       "collection": "PL_C_Removable_Roofs",
@@ -46,21 +46,21 @@
   "modules": [
     {
       "name": "PL_ENV_F_Spruce_0",
-      "triangles": 64,
+      "triangles": 176,
       "nonmanifold_edges": 0,
       "zero_area_faces": 0,
       "unit_scale": true
     },
     {
       "name": "PL_ENV_F_Spruce_1",
-      "triangles": 64,
+      "triangles": 176,
       "nonmanifold_edges": 0,
       "zero_area_faces": 0,
       "unit_scale": true
     },
     {
       "name": "PL_ENV_F_Spruce_2",
-      "triangles": 64,
+      "triangles": 176,
       "nonmanifold_edges": 0,
       "zero_area_faces": 0,
       "unit_scale": true
@@ -145,17 +145,17 @@
     },
     {
       "file": "PL_Route_A.fbx",
-      "mesh_count": 59,
+      "mesh_count": 64,
       "warnings": []
     },
     {
       "file": "PL_Route_B.fbx",
-      "mesh_count": 92,
+      "mesh_count": 97,
       "warnings": []
     },
     {
       "file": "PL_Route_C.fbx",
-      "mesh_count": 101,
+      "mesh_count": 105,
       "warnings": []
     },
     {

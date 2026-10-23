@@ -4,7 +4,7 @@ from pathlib import Path
 from collections import defaultdict
 from mathutils import Vector, Matrix
 
-OUT=Path('/home/ismarm/GAMEJAM/boki/output/world-modeling-v1/maps/pohorje')
+OUT=Path(__file__).resolve().parent
 for folder in ('Source','Export','Textures','Previews'):(OUT/folder).mkdir(parents=True,exist_ok=True)
 if bpy.data.scenes.get('Pohorje_Large'):
     raise RuntimeError('Pohorje_Large already exists; refusing to replace edits.')

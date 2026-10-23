@@ -1,8 +1,36 @@
 # Pohorje — large environment build
 
-Open [Source/Pohorje_Large.blend](Source/Pohorje_Large.blend), scene **Pohorje_Large**. Earlier modeling scenes remain available for comparison. The existing Unity scenes and prefabs are untouched.
+Open [Source/Pohorje_Large.blend](Source/Pohorje_Large.blend), scene **Pohorje_Large**. Superseded Pohorje_FirstPass, Pohorje_Restrained and Pohorje_World scenes have been removed from this delivered source. The existing Unity scenes and prefabs are untouched.
 
 This build expands the approved uncanny low-poly direction into the complete Pohorje route layout. The original SVGs govern topology and beats; the larger dimensions below are construction proposals responding to the request for fast movement and roomy fighting. Canonical combat, gate and persistence rules remain unchanged.
+
+## Reference style update
+
+The latest screenshot guides cold blue-gray lighting, dark sparse spruce silhouettes, rough pixel stone and earth, and subdued warm lamps. [Reference-style riding view](Previews/12-reference-forest.png). This is an environment source update; the screenshot player, enemies and HUD are not baked into the map.
+
+`style-validation.json` confirms identical hashes for all 771 protected travel, collision and semantic marker objects before and after refinement. The 384 × 576 m terrain footprint, lane widths, combat pockets, route topology and all marker positions are preserved.
+
+## Arena approach dressing
+
+Each route now has four distinct scenic landmarks before its arena:
+
+- A: trail lanterns, exposed roots and rock outcrops, an overhead fallen trunk, then logging remains.
+- B: maintenance gantries, hazard-painted edge posts, a repair bay and cable supports, then an arrival frame.
+- C: graphic rave-poster bays, overhead utility conduits along the walls, grate-side details and purple arrival accents.
+
+These are environment meshes with shared existing materials. Twelve meshes batch the new landmarks by route and location. `approach-validation.json` confirms all 1,406 pre-existing mesh/marker objects retain identical geometry, transforms and properties. New scenery is outside the full lane envelope or at least 5.8 m overhead; arenas, travel surfaces, route connections, existing obstacles and charges are unchanged. This pass adds visual variety; the existing jump tests and encounters still require controller playtesting.
+
+The fixtures already include visible emissive faces. In Unity, assign the materials to URP and add a small number of local lights, final distance fog, tunnel flicker and spatial audio. Blender presentation lights are not exported by the mesh-export step. No new Light components, audio events, dynamic effects, gameplay triggers or colliders are wired by these scenic meshes. Keep the new route scenery under its selected-route visibility root.
+
+- [Forest canopy approach](Previews/13-forest-canopy.png)
+- [Maintenance approach](Previews/14-maintenance-approach.png)
+- [Tunnel approach](Previews/15-tunnel-approach.png)
+
+## Polish and Blender exploration
+
+Rigid fixtures now retain square corners instead of shearing with the ground slope. Maintenance uprights meet level crossbars, branch joints are aligned, snapped trunks support the overhead fallen tree, and the log pile has supports. Original path and arena geometry is preserved.
+
+Open the source to start at eye level at Bellevue. Hover over the viewport, press **F3**, search **Walk Navigation**, then use the mouse and **W/A/S/D**. See the [walkthrough guide](WALKTHROUGH.md) for speed, gravity, shading and recovery controls. The source also includes a `START_HERE_WALKTHROUGH` text block. Run `setup_walkthrough.py` after regenerating previews to restore this starting viewport.
 
 ## Map and views
 
@@ -28,9 +56,9 @@ A emphasizes spruce slalom, logs, and the largest fighting floor. B has broad sw
 
 ## Low-poly and performance choices
 
-The build has **138,686 render triangles across all three routes**, excluding collision guides, the unused module library, and any gameplay characters/effects. There are **2,014 source forest placements**, baked into **206 spatial chunks** rather than thousands of separate tree objects. Terrain uses 64 m chunks; forest uses 32 m cells. There are 639 render mesh objects before Unity batching/culling.
+The build has **348,670 render triangles across all three routes**, excluding collision guides, the unused module library, and any gameplay characters/effects. There are **2,014 source forest placements**, baked into **206 spatial chunks** rather than thousands of separate tree objects. Terrain uses 64 m chunks; forest uses 32 m cells. There are 653 render mesh objects before Unity batching/culling.
 
-Spruces use 64 triangles each; rocks 26; dead trees 24; poles/cabins 36; carts 48. Foliage is opaque. Six original 128² textures repeat across shared materials. Tunnel wall and roof shells have thickness so they render from inside and outside with ordinary backface culling. There is no volumetric fog, transparent grass field, operating gondola, unique texture per prop, or distant full city. Blender presentation uses one sun plus seven local lights; Unity should activate only the lights needed near the selected route.
+Spruces use 176 triangles each; rocks 26; dead trees 24; poles/cabins 36; carts 48. Foliage is opaque. Shared 128² textures repeat across materials, including five nearest-sampled forest textures with irregular stone and earth patches. Tunnel wall and roof shells have thickness so they render from inside and outside with ordinary backface culling. A presentation-only atmospheric volume supplies blue-gray distance haze in Blender; do not export it. Use inexpensive URP distance fog in Unity. Sparse opaque undergrowth stays outside the travel lanes. The gondola remains static. Blender presentation uses one sun plus seven local lights; Unity should activate only the lights needed near the selected route.
 
 These are geometry budgets, **not measured target-hardware performance**. Apply sensible view distances, chunk culling, selected-branch visibility, and shadow limits in Unity. Measure a Windows 1280 × 720 Low player build on the Ryzen 5600G. Blender renders do not establish that result.
 
@@ -51,7 +79,7 @@ Travel-surface guides follow the actual graded ribbon geometry. Curved downhill 
 - **1,683 lane samples:** no unsupported travel surfaces, height mismatches over the checked tolerance, or terrain intrusions. Wide polygons were split at grade transitions to remove a landing seam.
 - **428 static collision stations:** no point at which all three sampled lane tracks were obstructed, using a 0.35 m capsule margin. Dynamic gate blockers were intentionally excluded. See `collision-sampling.json`.
 - No zero-area render faces or FBX material warnings. Source modules have unit scale and closed manifold components.
-- Blender FBX reimports of A, C, and the shared fork preserve their respective 59, 101, and 11 mesh objects with no empty material slots. See `roundtrip-validation.json`.
+- Blender FBX reimports of A, C, and the shared fork preserve their respective 64, 105, and 11 mesh objects with no empty material slots. See `roundtrip-validation.json`.
 - Overview, riding-height, fighting-space and tunnel renders were inspected.
 
 These samples do not prove complete collision, route isolation, camera comfort, enemy navigation, jump feasibility, or balance. The broken-board art retains a continuous safety surface until jump testing defines a proper gap and landing. The scenic shell is not a certified play boundary. Bellevue/overlook edges, gate bypasses and narrow bank joins still need explicit controller tests. No death pits, swimming, checkpoint, puzzle, new AI species or kill-locked pocket was added.
@@ -66,6 +94,6 @@ Windows performance, Unity material import, full controller traversal, interacti
 
 ## Rebuild
 
-Run `build_pohorje.py` in Blender; it creates a separate scene and refuses to replace an existing `Pohorje_Large`. It calls `grade_surfaces.py` to preserve graded seams. Run `finish_pohorje.py` to validate, export, render and save the current source; `verify_collision.py` samples the static guides. Run `python3 draw_map.py` outside Blender to regenerate the meter-scaled SVG from the manifests. Later user edits should be preserved before any rebuild.
+Run `build_pohorje.py` in Blender; it creates a separate scene and refuses to replace an existing `Pohorje_Large`. It calls `grade_surfaces.py` to preserve graded seams. For a fresh base, run `style_pohorje.py`, then `refine_reference.py` and `optimize_spruces.py`. Do not apply the one-time style script to the delivered source again. Run `dress_approaches.py` once to add the route scenery. Run `finish_pohorje.py` to validate, export, render and save the current source; `verify_collision.py` samples the static guides. Run `python3 draw_map.py` outside Blender to regenerate the meter-scaled SVG from the manifests. Later user edits should be preserved before any rebuild.
 
 References: [original topology](../../floorplans/forest-topology.svg), [Pohorje sheet](../../figma/02-pohorje-layout.svg), [module sheet](../../figma/03-pohorje-modules.svg), [combat overlay](../../../gameplay-mocks-v2/HANDOFF.md), [canonical gameplay](../../../../docs/Gameplay.md), [story](../../../../docs/Story.md).

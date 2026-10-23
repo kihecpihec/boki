@@ -1,15 +1,15 @@
 [
   {
     "export": "PL_Route_A",
-    "source_meshes": 59,
-    "reimported_meshes": 59,
+    "source_meshes": 64,
+    "reimported_meshes": 64,
     "mesh_count_passed": true,
     "empty_material_slots": 0
   },
   {
     "export": "PL_Route_C",
-    "source_meshes": 101,
-    "reimported_meshes": 101,
+    "source_meshes": 105,
+    "reimported_meshes": 105,
     "mesh_count_passed": true,
     "empty_material_slots": 0
   },

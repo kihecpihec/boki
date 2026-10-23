@@ -4,7 +4,7 @@ from pathlib import Path
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 
-OUT=Path('/home/ismarm/GAMEJAM/boki/output/world-modeling-v1/maps/pohorje')
+OUT=Path(__file__).resolve().parent
 scene=bpy.data.scenes['Pohorje_Large'];bpy.context.window.scene=scene
 layout=json.loads((OUT/'layout.json').read_text());paths=layout['paths'];widths=layout['widths'];pockets=layout['pockets']
 def z(y):
@@ -93,7 +93,10 @@ report['exports']=export_results
 
 # Establish delivery views from the actual scene, with human-height views on each route.
 cam=scene.camera;cd=cam.data
+fog=scene.objects.get('PSX_PresentationFog')
+scene.eevee.taa_render_samples=32
 def shot(name,pos,target,ortho=None):
+    if fog: fog.hide_render=bool(ortho)
     cam.location=pos;cam.rotation_euler=(Vector(target)-cam.location).to_track_quat('-Z','Y').to_euler()
     cd.type='ORTHO' if ortho else 'PERSP'
     if ortho:cd.ortho_scale=ortho
@@ -101,7 +104,7 @@ def shot(name,pos,target,ortho=None):
     scene.render.filepath=str(OUT/'Previews'/(name+'.png'));bpy.ops.render.render(write_still=True)
 shot('01-whole-pohorje',(480,-340,500),(0,250,12),690)
 shot('02-bellevue',(0,-5,37.7),(0,45,36.8))
-shot('03-forest-traversal',(-82,150,z(150)+1.8),(-108,177,z(177)+1.6))
+shot('03-forest-traversal',(-70,132,z(132)+2.1),(-96,163,z(163)+2.4))
 shot('04-forest-combat',(-100,303,9.8),(-100,343,9.5))
 shot('05-gondola',(0,125,z(125)+1.8),(20,148,z(148)+3))
 shot('06-service-combat',(0,305,9.8),(0,342,9.5))
@@ -111,7 +114,12 @@ shot('09-city-overlook',(0,502,1.8),(0,650,-4))
 roof=collection('C_Removable_Roofs');roof.hide_render=True
 shot('10-cutaway-map',(480,-340,500),(0,250,12),690);roof.hide_render=False
 shot('11-top-down',(0,250,900),(0,250,0),650)
-cam.location=(480,-340,500);cam.rotation_euler=(Vector((0,250,12))-cam.location).to_track_quat('-Z','Y').to_euler();cd.type='ORTHO';cd.ortho_scale=690
+shot('12-reference-forest',(-70,132,z(132)+2.1),(-96,163,z(163)+2.4))
+shot('13-forest-canopy',(-100,205,z(205)+2.1),(-114,224,z(224)+3.0))
+shot('14-maintenance-approach',(8,130,z(130)+2.1),(27,144,z(144)+3.1))
+shot('15-tunnel-approach',(100,225,z(225)+2.1),(100,250,z(250)+2.5))
+if fog: fog.hide_render=False
 bpy.ops.object.select_all(action='DESELECT')
+bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'Source/Pohorje_Large.blend'))
 print(json.dumps({'render_triangles':total,'render_objects':renderobjects,'sample_count':surface_samples,'surface_issues':len(issues),'terrain_occlusions':len(terrain_occlusion),'export_warnings':sum(len(r['warnings']) for r in export_results)},indent=2))

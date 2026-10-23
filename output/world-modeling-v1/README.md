@@ -6,7 +6,7 @@ Open the [visual gallery](index.html). Keep the folder intact so its reference i
 
 **Gameplay update:** use the [local gameplay mock gallery](../gameplay-mocks-v2/index.html) and [assembly handoff](../gameplay-mocks-v2/HANDOFF.md) with this pack. Its nine proposed combat pockets, charge/spawn/Guilt markers, rear seals, boss recovery plan, and UI states supplement the original concept art. The original PNGs are mood/shape references; the new editable diagrams supply the missing gameplay planning. Canonical rules remain in the game documents.
 
-This pack covers **Bellevue → Pohorje → Maribor → FERI → the professor's classroom**, including all nine A/B/C variants, shared scene starts/endings, modular environment families, route gates and secret passages. The original sheets are modeling and scene-planning references for Blender and Unity. The later Pohorje map adds `.blend` and FBX assets under `maps/pohorje/`; no built Unity scene or environment prefab is delivered.
+This pack covers **Bellevue → Pohorje → Maribor → FERI → the professor's classroom**, including all nine A/B/C variants, shared scene starts/endings, modular environment families, route gates and secret passages. It is a modeling and scene-planning reference for Blender and Unity. The [latest Pohorje map](maps/pohorje/README.md) now includes editable Blender source, separate FBX exports and rendered previews. Maribor and FERI remain reference-only; no built Unity scene or environment prefab is delivered.
 
 The Figma Starter MCP allowance is still exhausted. The existing [Figma atlas](https://www.figma.com/design/VkUNlXhesVqCd2H8T9cOWZ) has **not** received this world pack.
 
@@ -74,4 +74,6 @@ The level timing targets remain approximately 2–3 min Pohorje, 3–4 min Marib
 
 ## Verification status
 
-Reference art, XML/SVG structure, local links, ZIP integrity, module IDs and the generated route snapshot were checked during original packaging. No Unity scene/prefab or existing character-pack file was changed. The later Pohorje map has built meshes, inspected renders, sampled lane/collision-guide checks and Blender FBX reimport checks; see its own validation reports. Figma SVG import, actual Unity collision/trigger behavior, run pacing, scene integration and target-hardware performance remain pending. Existing reference-pack ZIPs do not include the later map unless explicitly repackaged.
+Reference art, XML/SVG structure, local links, ZIP integrity, module IDs and the generated route snapshot are checked during packaging. No Unity scene/prefab or existing character-pack file was changed. Pohorje mesh/export checks and static lane sampling are documented in its map handoff. Figma SVG import, Unity collision/trigger behavior, run pacing, scene integration and target-hardware performance remain unverified.
+
+The updated `world-modeling-v1.zip` includes the latest Pohorje source, exports, previews and walkthrough guide.
