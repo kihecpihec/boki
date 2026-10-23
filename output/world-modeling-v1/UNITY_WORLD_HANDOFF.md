@@ -1,6 +1,6 @@
 # Blender → Unity entire-world handoff
 
-Target Editor: **6000.6.7f1**, URP. The scene names, module/prefab names, snap markers and integration bindings below are proposals. This pack is documentation and reference art, not imported environment assets.
+Target Editor: **6000.6.7f1**, URP. The scene names, module/prefab names, snap markers and integration bindings below are proposals. The [Pohorje map delivery](maps/pohorje/README.md) includes Blender source and FBX environment assets outside Game/Assets, pending Unity import. The remaining scenes are documentation and reference art.
 
 ## 1. Inspected project and ownership boundary
 
