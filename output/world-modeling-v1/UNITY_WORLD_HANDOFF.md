@@ -12,6 +12,8 @@ The earlier [character handoff](../character-modeling-v2/UNITY_HANDOFF.md) cover
 
 ## 2. World structure
 
+Use the [gameplay overlay handoff](../gameplay-mocks-v2/HANDOFF.md) and [updated plan gallery](../gameplay-mocks-v2/index.html) alongside the topology below. Each branch now has a proposed widened combat pocket after its approach, stationary rechargeable charges, candidate replenishment/Guilt anchors, and an exit with no kill quota. The original fixed encounter groups alone do not satisfy the updated combat loop. The classroom needs two equivalent charges inside its closed entrance seal.
+
 Build **three scenes**, using shared concrete and prop families:
 
 ```text
@@ -99,7 +101,7 @@ LevelRoot
 │  ├─ Gate_B
 │  └─ Gate_C
 ├─ Branches
-│  ├─ Route_A                      # geometry, spawn and pickup markers
+│  ├─ Route_A                      # approach + combat pocket + rear seal
 │  ├─ Route_B
 │  └─ Route_C
 ├─ SharedEnd
@@ -122,6 +124,8 @@ Runtime component classes are described in Architecture.md and may not exist yet
 | POWER OFF panel | Interaction point, range/layer policy, E action and E_C boss-modifier record |
 | Trap marker | Same visible footprint as the damage area; two on E_C |
 | Guilt anchor | Offscreen candidate with sufficient route/camera clearance |
+
+Each branch additionally needs a combat-space occupancy volume, replenishment candidates, fixed charge objects with available/depleted presentation, a rear seal, and a visibility root. Assign the selected-route owner to all of them. See the companion JSON for proposed coordinates and the handoff for timer/activation rules. Lent's fourth charge is a recorded authoring proposal, pending playtest approval.
 
 Do not add a duplicate DontDestroyOnLoad player/session while testing scene transitions. Do not assume importing a model assigns gameplay references automatically.
 
@@ -151,6 +155,8 @@ Evaluate route connection first, then persistent availability. If both fail, sho
 Never reuse a trigger as the physical blocker: a trigger is passable. [Unity's trigger-collider documentation](https://docs.unity3d.com/6000.6/Documentation/Manual/collider-interactions-create-trigger.html) covers Is Trigger and physics-body requirements for ordinary collider pairs. CharacterController interaction is specialized: verify enter detection with the actual controller in a disposable test scene before finalizing the route-gate prefab. Do not add a competing Rigidbody to Boki as an untested workaround. Keep triggers separated so one movement frame cannot accidentally select two routes.
 
 Place gates at a readable fork with enough turning room, and blockers tall/wide enough to prevent jump or side bypass. Once one route is selected, all alternative entries require physical closure.
+
+Unchosen branches also require opaque physical rear seals at their merge into the shared ending. Open only the selected branch's rear seal; suppress unchosen interior rendering while retaining blockers and visible seals. Keep unchosen enemies and charges inactive. Arena entry closes a solid entrance seal, suppresses approach rendering, deactivates approach encounters and replenishment, and ends Guilt pursuit. Both boss charges stay inside. New Run restores scene visibility through reload.
 
 ## 7. Scene set pieces
 
@@ -199,6 +205,12 @@ Reuse assets and limit visible distance. Use one main directional light and only
 Pacing targets stay 2–3 min forest, 3–4 min city, 1–2 min FERI approach and 1–2 min boss, plus skippable prologue. Start with a compact graybox and tune encounter spacing and route travel length. Whole-level image proportions and bay counts do not validate total run time. First-run forced continuations are intentional and must not be disguised as extra open choices.
 
 ## 10. Manual acceptance checks for the later assembly
+
+- [ ] Every selected route reaches a usable combat pocket; leaving needs no kill quota, while City C's side-door event remains required.
+- [ ] Replenishment obeys desired counts, level caps, cadence, offscreen distance, occupancy, and pause rules from Gameplay §5.
+- [ ] Three charges per regular pocket (Lent B4 recorded as a proposal), two equivalent boss charges; full/empty/pause/reentry behavior works.
+- [ ] Lingering escalates Guilt by time; authored events suspend ambient pursuit, and boss entry ends it.
+- [ ] Unchosen interiors are hidden with front/rear blockers retained; arena seals and approach deactivation work.
 
 - [ ] Correct Editor; one-meter calibration and unit-scale modules.
 - [ ] Seamless floor/ramp joins; no unintended raised lip or visible mesh/collision mismatch.

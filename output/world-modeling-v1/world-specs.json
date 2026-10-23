@@ -164,7 +164,9 @@
         "Fork: F_A / F_B / F_C, snapshot gate availability.",
         "Crossing an available gate records choice immediately and closes alternatives.",
         "ExitForest saves Forest C globally for NEXT RUN, then changes scene once.",
-        "Regular enemy cap 8. Guilt uses a few offscreen reposition anchors."
+        "Regular enemy cap 8. Guilt uses a few offscreen reposition anchors.",
+        "Each selected route reaches a widened combat pocket with replenishment, stationary rechargeable charges and offscreen Guilt anchors; see gameplay overlay.",
+        "Retain opaque rear seals and blockers on unchosen branches; hide interiors and deactivate enemies/charges."
       ],
       "note": "Editable floorplan controls route topology. View lengths and vertical exaggeration in concept art are not measured gameplay distances.",
       "palette": [
@@ -306,7 +308,9 @@
         "Filter City gates from saved Forest choice and run-start unlock snapshot.",
         "ExitCity saves City C for NEXT RUN and transitions once.",
         "Watch changes toward 07:59 at the end of the city.",
-        "Regular enemy cap 12; instantiate small groups rather than all routes at once."
+        "Regular enemy cap 12; instantiate small groups rather than all routes at once.",
+        "Each selected route reaches a widened combat pocket with replenishment, stationary rechargeable charges and offscreen Guilt anchors; see gameplay overlay.",
+        "Retain opaque rear seals and blockers on unchosen branches; hide interiors and deactivate enemies/charges."
       ],
       "note": "The setting evokes Maribor; these routes are not a geographical reconstruction. Timings require later playtesting.",
       "palette": [
@@ -448,7 +452,9 @@
         "Filter FERI gates from City choice and run-start unlock snapshot.",
         "Arena entry saves FERI C for NEXT RUN; boss starts only once.",
         "A standard; B adds two melee at 50% boss HP; C panel use starts boss at 85% HP.",
-        "Regular enemy cap 8 plus boss. Disable Guilt chase AI during boss."
+        "Regular enemy cap 8 plus boss. Disable Guilt chase AI during boss.",
+        "Each selected route reaches a widened combat pocket with replenishment, stationary rechargeable charges and offscreen Guilt anchors; see gameplay overlay.",
+        "Retain opaque rear seals and blockers on unchosen branches; hide interiors and deactivate enemies/charges."
       ],
       "note": "Classroom belongs to the FERI scene. The three entrances change a modifier, not the number of arenas.",
       "palette": [
@@ -589,7 +595,9 @@
         "ArenaEntry persists FERI C, locks repeated start and disables chase logic.",
         "Exam Barrage releases 3 slow sheets; Deadline Slam warns for 0.8 s.",
         "At 50% HP attacks become a little faster; B adds two melee once.",
-        "POWER OFF modifier applies only when activated on E_C."
+        "POWER OFF modifier applies only when activated on E_C.",
+        "Two equivalent rechargeable charges remain inside the solid arena entrance seal; see boss-recovery-plan.",
+        "Boss entry suppresses approach rendering, deactivates approach encounters/replenishment and ends Guilt pursuit."
       ],
       "note": "Room dimensions and clear-floor footprint are a first graybox proposal; tune them with actual movement and boss timing.",
       "palette": [
@@ -685,5 +693,11 @@
         ]
       ]
     }
-  ]
+  ],
+  "gameplayOverlay": {
+    "gallery": "../gameplay-mocks-v2/index.html",
+    "layoutSnapshot": "../gameplay-mocks-v2/combat-space-plans.json",
+    "handoff": "../gameplay-mocks-v2/HANDOFF.md",
+    "status": "spatial proposals supplement original art; canonical game documents govern rules"
+  }
 }
