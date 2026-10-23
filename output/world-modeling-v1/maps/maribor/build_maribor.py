@@ -1,7 +1,8 @@
 """Build the Maribor environment (second pass: lit diorama in the Pohorje pixel style).
 
-Run with Blender 4.4.3:  blender --background --factory-startup --python build_maribor.py
-Never opens or edits Pohorje or Unity scenes. Refuses to overwrite an artist's source.
+Run with Blender 4.4.3 or newer:  blender --background --factory-startup --python build_maribor.py
+Never opens or edits Pohorje or Unity scenes. Refuses to overwrite an artist's source unless MB_FORCE=1.
+Third pass: overlap-free placement (props and facades test the collision guides) and a horror grade.
 MB_DEV=1 builds to /tmp, skips exports and renders (fast iteration). MB_PREVIEWS=1,3 renders only those cameras.
 """
 import bpy
@@ -20,8 +21,8 @@ import mb_kit as K  # noqa: E402
 OUT = K.OUT
 DEV = os.environ.get('MB_DEV') == '1'
 SOURCE = Path('/tmp/maribor_dev.blend') if DEV else OUT / 'Source/Maribor.blend'
-if SOURCE.exists() and not DEV:
-    raise RuntimeError('Maribor.blend exists. Preserve artist edits before rebuilding in a fresh folder.')
+if SOURCE.exists() and not DEV and os.environ.get('MB_FORCE') != '1':
+    raise RuntimeError('Maribor.blend exists. Preserve artist edits (or set MB_FORCE=1 to replace it from the builder).')
 for directory in ('Source', 'Export', 'Textures', 'Previews'):
     (OUT / directory).mkdir(exist_ok=True)
 bpy.ops.object.select_all(action='SELECT')
@@ -34,6 +35,7 @@ scene.name = 'Maribor'
 scene.unit_settings.system = 'METRIC'
 scene.unit_settings.scale_length = 1
 rng = random.Random(759)
+hrng = random.Random(1313)   # horror dressing decisions; kept apart from `rng` so layout stays stable
 
 WZ = -4.0           # Drava water level
 GZ = -0.08          # ground top around the paved routes
@@ -56,6 +58,7 @@ guides = collection('Collision_Guides')
 markers = collection('Gameplay_Markers')
 presentation = collection('Presentation')
 kit = K.Kit(scene, guides, markers)
+kit.library_c = library
 box, mesh, guide, mark = kit.box, kit.mesh, kit.guide, kit.mark
 
 # ---------------------------------------------------------------------------------------------
@@ -67,23 +70,31 @@ for name, img in T.items():
     M[name] = K.material(name, img)
 M['Stucco'] = [M['Stucco_%d' % i] for i in range(4)]
 M['Iron'] = K.material('Iron', color=(.07, .08, .1), rough=.6)
-M['Ivory'] = K.material('Ivory', color=(.82, .75, .58))
+M['Ivory'] = K.material('Ivory', color=(.5, .45, .35))
 M['Glass'] = K.material('DarkGlass', color=(.05, .08, .11), rough=.25)
-M['WindowLit'] = K.material('WindowLit', T['WarmWindow'], emit=3.2, emit_from_image=True)
-M['LampGlow'] = K.material('Lamp', color=(1, .55, .2), emit=7, emit_color=(1, .55, .2))
+M['WindowLit'] = K.material('WindowLit', T['WarmWindow'], emit=2.0, emit_from_image=True)
+M['LampGlow'] = K.material('Lamp', color=(1, .5, .18), emit=6, emit_color=(1, .45, .15))
+M['LampDead'] = K.material('LampDead', color=(.1, .1, .11), rough=.4)
+M['Blood'] = K.material('DriedBlood', color=(.16, .025, .02), rough=.35)
+M['Poster'] = K.material('Poster', T['Poster'])
+M['Plank'] = K.material('Plank', T['Wood'])
+M['Leafpile'] = K.material('LeafPile', color=(.2, .12, .06))
+M['Bag'] = K.material('TrashBag', color=(.03, .035, .04), rough=.35)
+M['Crow'] = K.material('Crow', color=(.015, .015, .02), rough=.5)
 M['Secret'] = K.material('Secret', T['SecretLattice'], emit=2.4, emit_from_image=True)
 M['SecretGlow'] = K.material('SecretGlow', color=(.55, .2, .9), emit=4, emit_color=(.6, .25, .95))
 M['Charge'] = K.material('Charge', color=(.48, .85, .18), emit=3, emit_color=(.55, .95, .2))
 M['Fluoro'] = K.material('Fluorescent', color=(.8, .9, 1), emit=6, emit_color=(.8, .9, 1))
-M['Ember'] = K.material('EmberGlow', color=(1, .35, .1), emit=5, emit_color=(1, .4, .12))
+M['Ember'] = K.material('EmberGlow', color=(1, .2, .06), emit=4, emit_color=(1, .2, .06))
 M['Red'] = K.material('RedLight', color=(.9, .1, .05), emit=6, emit_color=(1, .1, .05))
 M['Sign'] = K.material('SignWhite', color=(.9, .88, .78), emit=.6, emit_color=(.9, .85, .7))
 M['Hedge'] = K.material('Hedge', T['Leaf'])
-M['Shutter'] = K.material('Shutter', color=(.18, .33, .27))
+M['Ivy'] = K.material('Ivy', T['Leaf'])
+M['Shutter'] = K.material('Shutter', color=(.1, .17, .14))
 M['Door'] = K.material('DoorWood', T['Wood'])
 M['Trunk'] = K.material('Trunk', T['Bark'])
 M['Bin'] = K.material('BinGreen', color=(.12, .27, .2))
-M['Water'] = K.material('DravaWater', T['Drava'], emit=.9, emit_from_image=True, rough=.4)
+M['Water'] = K.material('DravaWater', T['Drava'], emit=.45, emit_from_image=True, rough=.4)
 kit.iron = M['Iron']
 
 
@@ -139,9 +150,12 @@ def local_yaw(d):
 # ---------------------------------------------------------------------------------------------
 # Module library (linked instances share mesh data)
 # ---------------------------------------------------------------------------------------------
-def window(parts, x, z, w, h, mat, sill=False, shutters=False):
+def window(parts, x, z, w, h, mat, sill=False, shutters=False, boards=0):
     parts.append(box('Trim', (x, -.09, z), (w + .28, .14, h + .28), M['Ivory'], library))
     parts.append(box('Glass', (x, -.14, z), (w, .06, h), mat, library))
+    for k in range(boards):  # nailed-up planks across a dead window
+        pz = z - h / 2 + (k + .6) * h / (boards + .2)
+        parts.append(box('Plank', (x + (k % 2 - .5) * .12, -.24 - k * .01, pz), (w + .5, .05, .17), M['Plank'], library))
     if sill:
         parts.append(box('Sill', (x, -.2, z - h / 2 - .14), (w + .5, .32, .12), M['Ashlar'], library))
     if shutters:
@@ -155,7 +169,11 @@ def make_facade(i, stucco, lit_seed, garage=False, shutters=False):
     parts = [box('Wall', (0, D / 2, 3.3), (4, D, 6.6), M['Stucco'][stucco], library),
              box('Plinth', (0, -.04, .42), (4.06, .3, .84), M['Ashlar'], library),
              box('Cornice', (0, -.16, 6.5), (4.06, .5, .24), M['Ivory'], library)]
-    glass = lambda: M['WindowLit'] if r.random() < .5 else M['Glass']
+    glass = lambda: M['WindowLit'] if r.random() < .2 else M['Glass']
+
+    def pane():
+        g = glass()
+        return g, (r.choice((2, 3)) if g is M['Glass'] and r.random() < .5 else 0)
     if garage:
         parts.append(box('Garage', (0, -.08, 1.35), (3.0, .12, 2.5), M['Door'], library))
         parts.append(box('GarageFrame', (0, -.06, 1.45), (3.3, .1, 2.7), M['Ivory'], library))
@@ -163,9 +181,19 @@ def make_facade(i, stucco, lit_seed, garage=False, shutters=False):
         parts.append(box('Door', (0, -.08, 1.2), (1.0, .14, 2.4), M['Door'], library))
         parts.append(box('DoorStep', (0, -.35, .12), (1.5, .55, .24), M['Ashlar'], library))
         for x in (-1.3, 1.3):
-            window(parts, x, 2.4, .8, 1.15, glass(), sill=True, shutters=shutters)
+            g, nb = pane()
+            window(parts, x, 2.4, .8, 1.15, g, sill=True, shutters=shutters, boards=nb)
     for x in (-1.3, 0, 1.3):
-        window(parts, x, 5.0, .7, 1.1, glass(), shutters=shutters and x != 0)
+        g, nb = pane()
+        window(parts, x, 5.0, .7, 1.1, g, shutters=shutters and x != 0, boards=nb)
+    # Dressing only goes where no trim, sill or frame exists: corner strips and the band between window rows.
+    for sx in (-1, 1):
+        if r.random() < .55:
+            parts.append(box('Ivy', (sx * 1.93, -.04, 2.9 + r.uniform(0, .6)), (.14, .08, r.uniform(3.4, 4.4)), M['Ivy'], library))
+    if r.random() < .5:
+        parts.append(box('Ivy', (r.uniform(-1, 1), -.04, 3.75), (r.uniform(1., 2.), .06, .6), M['Ivy'], library))
+    elif r.random() < .8:
+        parts.append(box('Poster', (r.choice((-1.3, 1.3)), -.05, 3.75), (.5, .03, .7), M['Poster'], library))
     parts.append(kit.gable('Roof', (0, D / 2, 6.6), (4, D, 0), (0, .5), 2.6, M['Terracotta'], library))
     parts.append(box('Chimney', (1.2 if i % 2 else -1.2, 5.6, 8.6), (.55, .55, 1.4), M['Ashlar'], library))
     parts.append(box('ChimneyCap', (1.2 if i % 2 else -1.2, 5.6, 9.36), (.7, .7, .12), M['Iron'], library))
@@ -200,6 +228,19 @@ lamp_proto = kit.join([box('Foot', (0, 0, .35), (.55, .55, .7), M['Ashlar'], lib
                        box('Arm', (.2, 0, 3.45), (.5, .08, .08), M['Iron'], library),
                        box('Lantern', (0, 0, 3.75), (.44, .44, .6), M['LampGlow'], library),
                        kit.cone('Cap', (0, 0, 4.05), .4, .38, M['Iron'], library, verts=4)], 'ENV_C_Streetlamp')
+lamp_dead_proto = kit.join([box('Foot', (0, 0, .35), (.55, .55, .7), M['Ashlar'], library),
+                            kit.cylinder('Post', (0, 0, 2.1), .08, 2.8, M['Iron'], library, verts=8),
+                            box('Arm', (.2, 0, 3.45), (.5, .08, .08), M['Iron'], library),
+                            box('Lantern', (0, 0, 3.75), (.44, .44, .6), M['LampDead'], library),
+                            kit.cone('Cap', (0, 0, 4.05), .4, .38, M['Iron'], library, verts=4)], 'ENV_C_Streetlamp_Dead')
+crow_proto = kit.join([box('Body', (0, 0, .16), (.15, .32, .15), M['Crow'], library),
+                       box('Head', (0, -.2, .27), (.1, .11, .1), M['Crow'], library),
+                       box('Beak', (0, -.28, .26), (.035, .08, .035), M['Iron'], library),
+                       box('Tail', (0, .22, .15), (.12, .16, .03), M['Crow'], library),
+                       box('WingL', (-.09, .02, .18), (.03, .28, .1), M['Crow'], library),
+                       box('WingR', (.09, .02, .18), (.03, .28, .1), M['Crow'], library),
+                       box('LegL', (-.03, 0, .04), (.015, .015, .08), M['Iron'], library),
+                       box('LegR', (.03, 0, .04), (.015, .015, .08), M['Iron'], library)], 'ENV_C_Crow')
 rail_parts = [box('PostL', (-2, 0, .6), (.28, .32, 1.2), M['Ashlar'], library),
               box('PostR', (2, 0, .6), (.28, .32, 1.2), M['Ashlar'], library)]
 for z in (.45, 1.0):
@@ -249,6 +290,12 @@ def make_trees():
         parts.append(kit.cylinder('Branch', (math.cos(ang) * .7, math.sin(ang) * .7, 3.7 + k * .35), .06, ln, M['Trunk'], library, verts=5,
                                   rot=(math.sin(ang) * tilt, -math.cos(ang) * tilt, 0), top_radius=.02))
     t['dead'] = kit.join(parts, 'ENV_C_TreeDead')
+    # A second, taller dead tree: forked trunk and long reaching limbs.
+    parts = [kit.cylinder('Trunk', (0, 0, 2.6), .26, 5.2, M['Trunk'], library, verts=6, top_radius=.12)]
+    for k, (ang, tilt, ln, z) in enumerate([(.4, .9, 3.0, 4.2), (2.1, 1.05, 2.6, 4.6), (3.7, .8, 3.2, 3.8), (5.2, 1.0, 2.2, 5.0), (1.2, .55, 1.8, 5.4)]):
+        parts.append(kit.cylinder('Limb', (math.cos(ang) * ln * .35, math.sin(ang) * ln * .35, z + ln * .3), .07, ln, M['Trunk'], library, verts=5,
+                                  rot=(math.sin(ang) * tilt, -math.cos(ang) * tilt, 0), top_radius=.015))
+    t['dead2'] = kit.join(parts, 'ENV_C_TreeDeadTall')
     t['bush'] = blob('ENV_C_Bush', (0, 0, .5), .9, M['Leaf'], library, .75, 4)
     return t
 
@@ -278,17 +325,67 @@ for k in range(3):
 # Placement helpers
 # ---------------------------------------------------------------------------------------------
 lamp_spots = []
+tree_spots = []
+skipped = []
+GUIDE_SKIP = ('TerraceWall',)   # the terrace slab is modelled as a full-height wall, but props stand on its top
+
+
+def clear(x, y, r, z=0., names=None):
+    """True when a r-metre circle at (x, y) touches no solid collision guide taller than the prop's footing."""
+    for g in kit.collision:
+        if g['dynamic'] or g['name'].startswith('COL_Floor_'):
+            continue
+        base = g['name'][4:].split('.')[0]
+        if base in GUIDE_SKIP or (names and base not in names):
+            continue
+        cx, cy, cz = g['center']
+        w, d, h = g['size']
+        if cz + h / 2 < z + .3:
+            continue
+        rot = g.get('rotation_z', 0)
+        dx, dy = x - cx, y - cy
+        lx = dx * math.cos(rot) + dy * math.sin(rot)
+        ly = -dx * math.sin(rot) + dy * math.cos(rot)
+        qx, qy = max(abs(lx) - w / 2, 0), max(abs(ly) - d / 2, 0)
+        if qx * qx + qy * qy < r * r:
+            return False
+    return True
+
+
+CROWN = {'round': 2.2, 'poplar': 1.5, 'dead': 2.0, 'dead2': 2.6}
 
 
 def lamp_at(x, y, c, z=0., light=False):
-    instance(lamp_proto, 'Streetlamp', (x, y, z), c)
+    for dx, dy in ((0, 0), (-.9, 0), (.9, 0), (0, -.9), (0, .9)):   # a lamp that lands on a rail or wall steps aside
+        if clear(x + dx, y + dy, .45, z) and not any(math.hypot(x + dx - tx, y + dy - ty) < cr * .7 for tx, ty, cr in tree_spots):
+            x, y = x + dx, y + dy
+            break
+    else:
+        skipped.append(('Lamp', round(x, 1), round(y, 1)))
+        return
+    dead = not light and hrng.random() < .45
+    instance(lamp_dead_proto if dead else lamp_proto, 'Streetlamp_Dead' if dead else 'Streetlamp', (x, y, z), c)
+    if dead and hrng.random() < .4:
+        instance(crow_proto, 'Crow', (x + .38, y, z + 3.49), c, hrng.random() * 6.28)
     guide('Lamp', (x, y, z + 1.4), (.6, .6, 2.8), c.name)
     if light:
         lamp_spots.append((x, y, z + 3.7))
 
 
 def tree_at(kind, x, y, c, z=0., scale=1., solid=True):
-    o = instance(trees[kind], 'Tree', (x, y, z), c, rng.random() * 6.28, scale)
+    angle = rng.random() * 6.28
+    if kind != 'dead' and hrng.random() < (.6 if kind == 'round' else .5):
+        kind = hrng.choice(('dead', 'dead2'))
+    crown = CROWN[kind] * scale
+    # Trunk must clear every solid; the crown must also clear walls, containers and lamps.
+    if not clear(x, y, .5 * scale, z) or not clear(x, y, crown, z, names=('FacadeBay', 'ParkHouse', 'Container', 'Lamp')) \
+            or any(math.hypot(x - tx, y - ty) < .9 for tx, ty, _ in tree_spots):
+        skipped.append(('Tree', round(x, 1), round(y, 1)))
+        if z > 0 and clear(x, y, .9 * scale, z):   # a planter keeps a low scrub bush instead of an empty bed
+            return instance(trees['bush'], 'Bush', (x, y, z), c, angle, scale)
+        return None
+    tree_spots.append((x, y, crown))
+    o = instance(trees[kind], 'Tree', (x, y, z), c, angle, scale)
     if solid:
         guide('TreeTrunk', (x, y, z + 1.5), (.7, .7, 3.), c.name)
     return o
@@ -319,8 +416,38 @@ def rail_path(path, lateral, c, i0=0, i1=None, step=4, **kw):
         rail_seg(a, b, c, **kw)
 
 
+def _rect_overlap(a, b):
+    """Penetration depth (m) of two rotated rectangles (cx, cy, w, d, rot) by the separating-axis test; 0 when apart."""
+    def corners(r):
+        cx, cy, w, d, rot = r
+        c, s_ = math.cos(rot), math.sin(rot)
+        return [(cx + px * c - py * s_, cy + px * s_ + py * c) for px, py in ((-w / 2, -d / 2), (w / 2, -d / 2), (w / 2, d / 2), (-w / 2, d / 2))]
+    ca, cb = corners(a), corners(b)
+    depth = 1e9
+    for rot in (a[4], b[4]):
+        for ax in ((math.cos(rot), math.sin(rot)), (-math.sin(rot), math.cos(rot))):
+            pa = [p[0] * ax[0] + p[1] * ax[1] for p in ca]
+            pb = [p[0] * ax[0] + p[1] * ax[1] for p in cb]
+            o = min(max(pa), max(pb)) - max(min(pa), min(pb))
+            if o <= 0:
+                return 0.
+            depth = min(depth, o)
+    return depth
+
+
+def building_fits(ctr, ang, tol=.2):
+    """A 4 x 8 m bay may not sink more than `tol` metres into another building."""
+    me = (ctr.x, ctr.y, 4.05, 8., ang)
+    for g in kit.collision:
+        if g['name'][4:].split('.')[0] in ('FacadeBay', 'ParkHouse'):
+            other = (g['center'][0], g['center'][1], g['size'][0], g['size'][1], g.get('rotation_z', 0))
+            if _rect_overlap(me, other) > tol:
+                return False
+    return True
+
+
 def bays_along(path, side, off, i_ranges, c, rows_seed):
-    """Row of 4 m facade bays facing the path; side +1 = left of travel."""
+    """Row of 4 m facade bays facing the path; side +1 = left of travel. A bay that would sink into a neighbour slides on."""
     r = random.Random(rows_seed)
     placed = 0
     for i0, i1 in i_ranges:
@@ -330,8 +457,11 @@ def bays_along(path, side, off, i_ranges, c, rows_seed):
             base = p + n * side * off
             f = -n * side
             ang = yaw_facing(f)
-            instance(r.choice(facades), 'FacadeBay', (base.x, base.y, 0), c, ang)
             ctr = base - f * 4
+            if not building_fits(ctr, ang):
+                i += 1
+                continue
+            instance(r.choice(facades), 'FacadeBay', (base.x, base.y, 0), c, ang)
             guide('FacadeBay', (ctr.x, ctr.y, 3.9), (4.05, 8., 7.8), c.name, rot=ang)
             placed += 1
             i += 4
@@ -344,8 +474,12 @@ def facade_straight(x, y0, y1, f, c, seed):
     ang = yaw_facing(f)
     for y in range(int(y0), int(y1), 4):
         base = Vector((x, y + 2, 0))
-        instance(r.choice(facades), 'FacadeBay', base, c, ang)
         ctr = base - f * 4
+        proto = r.choice(facades)
+        if not building_fits(ctr, ang):
+            skipped.append(('FacadeBay', round(base.x, 1), round(base.y, 1)))
+            continue
+        instance(proto, 'FacadeBay', base, c, ang)
         guide('FacadeBay', (ctr.x, ctr.y, 3.9), (4.05, 8., 7.8), c.name, rot=ang)
 
 
@@ -394,7 +528,7 @@ def plinth():
     skirt((BX0, BY0), (BX1, BY0), (0, 1), quay, scenic, jag=0, seed=10)
     # River plane, wide enough to reach every bank.
     box('Water', (8, 40, WZ - .5), (900, 900, 1), M['Water'], scenic, tile=10.)
-    for name, (lx0, ly0, lx1, ly1) in dict(Park=(-27, 26, -7.5, 118), NorthW=(-66, -12, -18, 11), NorthE=(18, -12, 62, 11), SouthW=(-66, 128, -9, 154), SouthE=(50, 128, 86, 154)).items():
+    for name, (lx0, ly0, lx1, ly1) in dict(Park=(-27, 26, -7.5, 118), NorthW=(-66, -12, -18, 11), NorthE=(18, -12, 62, 11), SouthW=(-66, 128, -9, 153.97), SouthE=(50, 128, 85.97, 153.97)).items():
         box('Lawn_' + name, ((lx0 + lx1) / 2, (ly0 + ly1) / 2, GZ + .005), (lx1 - lx0, ly1 - ly0, .06), M['Grass'], scenic, tile=5.)
     box('BasinBed', (28, 70, -15), (34, 100, .5), M['Rock'], scenic)
 
@@ -440,7 +574,18 @@ hall = [box('HallWing', (0, -39, TZ + 5.5), (52, 14, 11), M['Stucco'][1], sh),
         kit.gable('WingRoof', (0, -39, TZ + 11), (52, 14, 0), (.6, .9), 3.4, M['Terracotta'], sh),
         box('Tower', (0, -37, TZ + 18), (5.2, 5.2, 10), M['Stucco'][2], sh),
         kit.gable('TowerRoof', (0, -37, TZ + 23), (5.2, 5.2, 0), (.3, .3), 3., M['Terracotta'], sh, rot=0),
-        box('ClockFace', (0, -34.5, TZ + 19.5), (2.6, .2, 2.6), M['Sign'], sh)]
+        box('ClockFace', (0, -34.3, TZ + 19.5), (2.6, .2, 2.6), M['Sign'], sh)]
+def clock_hand(name, deg, length, width, mat):
+    """Flat hand on the tower clock; deg is clockwise from 12 as seen from the plaza (+Y side)."""
+    a = math.radians(deg)
+    u, v = math.sin(a), math.cos(a)
+    pts = [(-v * width, u * width), (v * width, -u * width), (v * width + u * length, -u * width + v * length), (-v * width + u * length, u * width + v * length)]
+    # (u, v) are viewer right/up; viewer right is world -X.
+    return mesh(name, [(-px, -34.18, TZ + 19.5 + py) for px, py in pts], [(0, 1, 2, 3)], mat, sh)
+
+
+clock_hand('ClockHour', 239, .75, .07, M['Iron'])      # the watch never moved past 07:58
+clock_hand('ClockMinute', 348, 1.1, .05, M['Iron'])
 box('PortalGlow', (0, -25.92, TZ + 2.6), (3.2, .1, 4.4), M['WindowLit'], sh)
 box('PortalFrame', (0, -25.9, TZ + 2.7), (4.2, .16, 5.2), M['Ivory'], sh)
 for x in (-6.5, -2.4, 2.4, 6.5):
@@ -494,7 +639,7 @@ for a, b in wall_gaps:
 # A / Tabor: curving street, facade rows, slalom, court
 # ---------------------------------------------------------------------------------------------
 a = routes['A']
-pathA = K.Path([(-42, 24), (-42, 32), (-40.5, 42), (-44, 53), (-42, 62), (-42, 78), (-42, 94), (-40, 104), (-43, 113), (-42, 123)])
+pathA = K.Path([(-42, 24), (-42, 34), (-40.8, 46), (-41.6, 56), (-42, 63), (-42, 78), (-42, 93), (-42.4, 104), (-41.4, 114), (-42, 123)])
 K.ribbon(kit, 'Floor_A_Street', pathA, 8, M['Asphalt'], a)
 kit.floors.append(bpy.data.objects['Floor_A_Street'])
 kit.floor_box('A_Court', -42, 78, 24, 28, M['Asphalt'], a, z=.004)
@@ -505,7 +650,8 @@ for side in (1, -1):
     kit.floors.append(o)
     o = K.ribbon(kit, 'Floor_A_Sidewalk', pathA, 2.2, M['Cobble'], a, z=.003, lateral=side * 5.1, start=ci1 * pathA.ds)
     kit.floors.append(o)
-rows_ranges = [(2, ci0 - 2), (ci1 + 2, len(pathA.pts) - 5)]
+end_idx = next(i for i, p in enumerate(pathA.pts) if p.y >= 113.2)   # bays stop short of the merge-promenade rail at y 115.4
+rows_ranges = [(2, ci0 - 2), (ci1 + 2, end_idx)]
 nA = sum(bays_along(pathA, s, 6.45, rows_ranges, a, 70 + k) for k, s in enumerate((1, -1)))
 facade_straight(-54.6, 64, 92, (1, 0), a, 81)
 facade_straight(-29.4, 64, 92, (-1, 0), a, 82)
@@ -586,8 +732,8 @@ pathB = K.Path([(0, 24), (0, 36), (2.5, 48), (2, 58), (0, 66), (0, 76), (0, 86),
 o = K.ribbon(kit, 'Floor_B_Lanes', pathB, 11, M['Slab'], b)
 kit.floors.append(o)
 kit.floor_box('B_Quay', 0, 76, 22, 24, M['Cobble'], b, z=.003)
-box('QuayInlay', (0, 76, .007), (12, 12, .01), M['Slab'], b, tile=3.)
-box('QuayInlayRing', (0, 76, .006), (16, 16, .01), M['Ashlar'], b, tile=3.)
+box('QuayInlay', (0, 76, .0115), (12, 12, .01), M['Slab'], b, tile=3.)       # tops sit 7 mm apart: floor .003, ring .010, inlay .017
+box('QuayInlayRing', (0, 76, .005), (16, 16, .01), M['Ashlar'], b, tile=3.)
 q0 = next(i for i, p in enumerate(pathB.pts) if p.y >= 64)
 q1 = next(i for i, p in enumerate(pathB.pts) if p.y >= 88)
 planter_ranges = [(next(i for i, p in enumerate(pathB.pts) if p.y >= 34), q0 - 2), (q1 + 2, next(i for i, p in enumerate(pathB.pts) if p.y >= 110))]
@@ -623,7 +769,9 @@ for x, y in [(-8, 34), (8.5, 52), (-7.5, 66), (7.5, 86), (-8, 108)]:
 ledge = K.Path([(0, 26), (2.5, 48), (2, 58), (0, 66), (0, 86), (-2, 96), (-2.5, 106), (0, 116)])
 for y in range(30, 112, 10):
     p, t, n = pathB.at(y - 24)
-    q = p - n * 8.6
+    if 62 <= y <= 90:
+        continue   # the quay is a combat space; charges and spawns need that floor open
+    q = p - n * 7.6   # centre of the ledge strip, clear of the basin-edge rail at x 11.5
     lamp_at(q.x, q.y, b, light=(y in (50, 90)))
 for y in range(34, 112, 14):
     p, t, n = pathB.at(y - 24)
@@ -652,8 +800,8 @@ for y in range(24, 96, 4):
     if not 60 <= y < 64:
         box('TunnelEast', (55.3, y + 2, 2.2), (.6, 4, 4.4), cc, c, solid=True)
     box('RoofBay', (52, y + 2, 4.6), (7, 4, .4), cc, roofs)
-    if y % 8 == 0:
-        box('CeilingStrip', (52, y + 2, 4.34), (1.2, .3, .08), M['Fluoro'], c)
+    if y % 8 == 0:   # every third tube is alive; the rest hang dark
+        box('CeilingStrip', (52, y + 2, 4.34), (1.2, .3, .08), M['Fluoro'] if y % 24 == 0 else M['LampDead'], c)
     if y % 12 == 0:
         box('Pipe', (49.2, y + 2, 3.8), (.14, 4, .14), M['Iron'], c)
         box('Pipe', (49.2, y + 2, 3.45), (.1, 4, .1), M['Red'] if y % 24 == 0 else M['Iron'], c)
@@ -695,12 +843,12 @@ for k, (x, y) in enumerate([(59.9, 91), (76.1, 89), (60.4, 95.5)]):
 for y in (98, 110):
     box('SecretStripe', (71.0, y, 1.6), (.08, 1.4, .3), M['SecretGlow'], c)
 # exterior: purple-lit entrance frame, deck dressing, vents
-for x in (48.2, 55.8):
+for x in (47.85, 56.15):   # beside the gallery walls (faces at x 48.4 / 55.6), not inside them
     box('GatePillar', (x, 23.8, 2.7), (1.1, 1.1, 5.4), M['Ashlar'], c, solid=True)
-box('GateLintel', (52, 23.8, 5.4), (8.6, 1.3, .8), M['Ashlar'], c)
+box('GateLintel', (52, 23.8, 5.4), (9.6, 1.3, .8), M['Ashlar'], c)
 box('NeonStripe', (52, 23.2, 4.9), (6.4, .1, .2), M['SecretGlow'], c)
 for k in range(3):
-    box('Vent', (50 + k * 2.4, 44 + k * 14, 5.1), (1.4, 1.4, .8), M['Iron'], roofs)
+    box('Vent', (49.8 + k * 2.2, 44 + k * 14, 5.1), (1.4, 1.4, .8), M['Iron'], roofs)
 box('RoofHazard', (52, 98, 4.9), (7, .3, .2), M['Hazard'], roofs)
 # exterior face of the block, lit by a few sodium lamps.
 lamp_at(46.2, 30, c, light=True)
@@ -713,7 +861,7 @@ text('C_Banner', 'PODZEMNI PREHOD', (52, 23.1, 4.2), .34, M['SecretGlow'], c)
 # Service yard east of the underpass block: containers, crates and parked cars keep the east plinth from reading as empty.
 M['ContainerRed'] = K.material('ContainerRed', T['CarRed'])
 M['ContainerTeal'] = K.material('ContainerTeal', color=(.12, .32, .36))
-for k, (y, mat) in enumerate([(30, 'ContainerRed'), (35, 'ContainerTeal'), (52, 'ContainerTeal'), (57.5, 'ContainerRed'), (101, 'ContainerRed')]):
+for k, (y, mat) in enumerate([(30, 'ContainerRed'), (36, 'ContainerTeal'), (52, 'ContainerTeal'), (58, 'ContainerRed'), (101, 'ContainerRed')]):
     box('Container', (82.3, y, 1.3), (2.5, 5.6, 2.6), M[mat], c, solid=True)
     box('ContainerRidge', (82.3, y, 2.65), (2.3, 5.4, .12), M['Iron'], c)
     if k % 2 == 0:
@@ -739,7 +887,7 @@ def gate(route, x, y, w, rear=False):
     mark(name, (x, y, 0), 'RearSeal' if rear else 'EntryGate', route, default_closed=True)
     if not rear:
         mark('Select_' + route, (x, y + 2, 0), 'SelectionTrigger', route)
-        for s in (-1, 1):
+        for s in ((-1, 1) if route != 'C' else ()):   # C's gallery walls and pillars already frame its gate
             box('GatePost', (x + s * (w / 2 + .5), y, 2.4), (1, 1, 4.8), M['Ashlar'], cl, solid=True)
         box('SignBoard', (x, y - .45, 5.2), (w + 1, .3, 1.5), M['Iron'], cl)
         label = {'A': 'A / TABOR', 'B': 'B / LENT', 'C': 'C / PODZEMNI PREHOD'}[route]
@@ -795,7 +943,7 @@ rail_pts([(44, 115.4), (65, 115.4)], sh)
 rail_pts([(71, 115.4), (72, 115.4)], sh)
 rail_pts([(-56, 115.4), (-56, 126.8)], sh)
 rail_pts([(72, 115.4), (72, 126.8)], sh)
-for x in range(-52, 72, 11):
+for x in range(-47, 72, 11):   # offset so no lamp stands on a route end at x -42 / 0 / 68
     if not (-10 < x < 12):
         lamp_at(x, 118, sh, light=(x % 22 == 4))
 # causeway arches over the basin outlet
@@ -892,8 +1040,8 @@ box('ViaductDeck', (62, -80, 7.4), (150, 5.2, .6), M['Slab'], scenic)
 box('ViaductParapetN', (62, -82.5, 8.2), (150, .4, 1.0), M['Ashlar'], scenic)
 box('ViaductParapetS', (62, -77.5, 8.2), (150, .4, 1.0), M['Ashlar'], scenic)
 for k in range(0, 150, 10):
-    instance(lamp_proto, 'ViaductLamp', (-12 + k, -77.2, 7.7), scenic)
-M['Reflect'] = K.material('ReflectGlow', color=(1, .35, .12), emit=2.6, emit_color=(1, .33, .1))
+    instance(lamp_proto if k % 50 == 20 else lamp_dead_proto, 'ViaductLamp', (-12 + k, -77.2, 7.7), scenic)
+M['Reflect'] = K.material('ReflectGlow', color=(.9, .18, .08), emit=1.5, emit_color=(.9, .16, .07))
 for k in range(0, 150, 10):
     for j, (dy, ln) in enumerate([(2, 2.2), (5, 1.6), (8.5, 1.1), (12, .7)]):
         box('Reflection', (-12 + k + rng.uniform(-.3, .3), -75 + dy, WZ + .03), (.35, ln, .02), M['Reflect'], scenic)
@@ -913,6 +1061,72 @@ if spruces:
             continue
         proto = pr.choice(spruces)
         o = instance(proto, 'HillSpruce', (x, y, h - .3), scenic, pr.random() * 6.28, pr.uniform(1.4, 2.6))
+
+# ---------------------------------------------------------------------------------------------
+# Horror dressing: leaf drifts, trash, dried stains and drag marks (all flat or tiny; no collision)
+# ---------------------------------------------------------------------------------------------
+def stain(x, y, w, d, c, rot=0.):
+    box('Stain', (x, y, .012), (w, d, .006), M['Blood'], c, rot=rot, tile=1.)
+
+
+def drag(p0, p1, c, n=6, w0=.6, w1=.25):
+    """A dried smear leading away from a pool: boxes shrinking along p0 -> p1."""
+    d = Vector(p1) - Vector(p0)
+    ang = yaw_along(d.normalized())
+    for k in range(n):
+        q = Vector(p0) + d * (k / (n - 1))
+        stain(q.x + hrng.uniform(-.15, .15), q.y, w0 + (w1 - w0) * k / (n - 1), d.length / n * .85, c, rot=ang)
+
+
+def litter(path, c, seed, step=4, spread=5.4):
+    r = random.Random(seed)
+    for s_ in range(6, int(path.length) - 6, step):
+        p, t, n = path.at(s_)
+        q = p + n * r.uniform(-spread, spread)
+        roll = r.random()
+        if roll < .55 and clear(q.x, q.y, 1.0):
+            box('LeafPile', (q.x, q.y, .025), (r.uniform(.8, 2.2), r.uniform(.8, 2.2), .05), M['Leafpile'], c, rot=r.random() * 3, tile=1.)
+        elif roll < .8 and clear(q.x, q.y, .7):
+            for k in range(r.choice((2, 3))):
+                bx, by = q.x + r.uniform(-.4, .4), q.y + r.uniform(-.4, .4)
+                box('TrashBag', (bx, by, .22 + k * .02), (r.uniform(.4, .6), r.uniform(.4, .6), .44 - k * .06), M['Bag'], c, rot=r.random() * 3, tile=1.)
+
+
+litter(pathA, a, 91)
+litter(pathB, b, 92, spread=4.6)
+for x in range(-46, 60, 9):   # fork promenade
+    if clear(x, 19, .8):
+        box('LeafPile', (x + hrng.uniform(-1, 1), hrng.uniform(15, 22), .025), (hrng.uniform(1, 2.4), hrng.uniform(1, 2), .05), M['Leafpile'], sh, rot=hrng.random() * 3, tile=1.)
+for x, y in [(-9, 4), (7, -3), (-3, 9)]:
+    box('LeafPile', (x, y, .035), (2.2, 1.8, .05), M['Leafpile'], sh, rot=x, tile=1.)
+stain(-46.5, 72, 1.6, 2.2, a, .4)
+drag((-40, 66), (-44, 90), a, 7)
+stain(2.5, 70, 1.8, 1.4, b, .3)
+drag((5.5, 74), (1.5, 88), b, 6)
+stain(52, 48, 1.2, 2.4, c)
+drag((52, 66), (52, 90), c, 9, .8, .3)
+stain(52, 92.6, 2.8, 1.6, c)
+stain(3.2, -4.4, 1.4, 1.1, sh, .6)
+for cx, cy, ch, cs in [(-46.5, 72, 4, 3), (-41, 80, 3, 2), (2.5, 70, 3, 3), (4, 80, 2, 2), (52, 49, 3, 2), (3.2, -4.4, 3, 2)]:
+    cr_ = random.Random(cx * 7 + cy)
+    cr_pos = [(cx + cr_.uniform(-ch, ch), cy + cr_.uniform(-ch, ch)) for _ in range(cs)]
+    for qx, qy in cr_pos:
+        if clear(qx, qy, .5):
+            instance(crow_proto, 'Crow', (qx, qy, .01), c if cx > 40 else (a if cx < -20 else (b if cy > 20 else sh)), cr_.random() * 6.28)
+drag((-3, 6), (0, 15), sh, 4, .4, .2)
+
+# ---------------------------------------------------------------------------------------------
+# Overlap audit (printed; written to overlap-audit.json by the full build)
+# ---------------------------------------------------------------------------------------------
+zfight = K.coplanar_overlaps(kit.boxlog)
+print('MB_ZFIGHT', len(zfight))
+seen = set()
+for hit in zfight:
+    key = (hit[0], hit[1], hit[3])
+    if key not in seen:
+        seen.add(key)
+        print('  zfight', hit)
+print('MB_SKIPPED_PLACEMENTS', len(skipped), skipped[:40])
 
 # ---------------------------------------------------------------------------------------------
 # Manifests
@@ -1002,6 +1216,8 @@ scene.render.engine = 'CYCLES'
 scene.cycles.samples = 32
 scene.cycles.use_denoising = True
 scene.cycles.max_bounces = 6
+scene.cycles.volume_bounces = 1
+scene.cycles.volume_max_steps = 256
 scene.render.resolution_x = 1280
 scene.render.resolution_y = 800
 world = bpy.data.worlds.get('World') or bpy.data.worlds.new('World')
@@ -1014,60 +1230,81 @@ sep = nt.nodes.new('ShaderNodeSeparateXYZ')
 ramp = nt.nodes.new('ShaderNodeValToRGB')
 cr = ramp.color_ramp
 cr.elements[0].position = .0
-cr.elements[0].color = (.30, .09, .05, 1)
-stops = [(.40, (.80, .30, .10, 1)), (.52, (.78, .20, .10, 1)), (.68, (.36, .10, .16, 1)), (.85, (.13, .08, .22, 1))]
+cr.elements[0].color = (.18, .03, .03, 1)
+stops = [(.40, (.5, .08, .05, 1)), (.52, (.3, .05, .06, 1)), (.68, (.12, .03, .09, 1)), (.85, (.05, .02, .08, 1))]
 cr.elements[1].position = .30
-cr.elements[1].color = (.95, .45, .12, 1)
+cr.elements[1].color = (.65, .12, .06, 1)
 for pos, col in stops:
     e = cr.elements.new(pos)
     e.color = col
 last = cr.elements.new(1.0)
-last.color = (.06, .05, .16, 1)
+last.color = (.02, .015, .05, 1)
 mr = nt.nodes.new('ShaderNodeMapRange')
 mr.inputs[1].default_value = -.15
 mr.inputs[2].default_value = 1.0
 bg = nt.nodes.new('ShaderNodeBackground')
-bg.inputs[1].default_value = 1.6
+bg.inputs[1].default_value = 1.3
 outw = nt.nodes.new('ShaderNodeOutputWorld')
 nt.links.new(coord.outputs['Generated'], sep.inputs[0])
 nt.links.new(sep.outputs['Z'], mr.inputs[0])
 nt.links.new(mr.outputs[0], ramp.inputs[0])
 nt.links.new(ramp.outputs['Color'], bg.inputs[0])
 nt.links.new(bg.outputs[0], outw.inputs[0])
+scene.view_settings.exposure = float(os.environ.get('MB_EXPOSURE', '.4'))
 
 # Low warm sun from the south-east (behind the hero camera) for long shadows; sky supplies the fill.
 bpy.ops.object.light_add(type='SUN', location=(0, 0, 80))
 sun = relocate(bpy.context.object, presentation)
 sun.name = 'SunsetSun'
 sun.rotation_euler = Vector((-1.0, -.85, -.42)).to_track_quat('-Z', 'Y').to_euler()
-sun.data.energy = 4.2
+sun.data.energy = 3.2
 sun.data.angle = math.radians(3)
-sun.data.color = (1, .58, .3)
+sun.data.color = (1, .3, .15)
 
 lights = 0
 for (x, y, z) in lamp_spots[::max(1, len(lamp_spots) // 26)]:
     bpy.ops.object.light_add(type='POINT', location=(x, y, z))
     L = relocate(bpy.context.object, presentation)
     L.name = 'LampLight'
-    L.data.energy = 650
-    L.data.color = (1, .6, .28)
+    L.data.energy = 560
+    L.data.color = (1, .48, .2)
     L.data.shadow_soft_size = .2
     lights += 1
 for ly in (40, 72):
     bpy.ops.object.light_add(type='AREA', location=(52, ly, 4.15))
     fx = relocate(bpy.context.object, presentation)
     fx.name = 'UnderpassReviewLight'
-    fx.data.energy = 260
+    fx.data.energy = 120
     fx.data.shape = 'RECTANGLE'
     fx.data.size = 2.4
     fx.data.size_y = 4
     fx.data.color = (.75, .85, 1)
-for (x, y, z, e, col) in [(52, 93, 1.8, 120, (1, .45, .15)), (68, 96, 3, 160, (.7, .8, 1)), (52, 30, 3, 80, (.6, .3, 1))]:
+for (x, y, z, e, col) in [(52, 93, 1.8, 220, (1, .12, .05)), (68, 96, 3, 90, (.9, .15, .1)), (52, 30, 3, 80, (.6, .3, 1)), (52, 50, 3.9, 60, (1, .1, .05))]:
     bpy.ops.object.light_add(type='POINT', location=(x, y, z))
     L = relocate(bpy.context.object, presentation)
     L.name = 'UnderpassAccentLight'
     L.data.energy = e
     L.data.color = col
+
+
+# Ground fog for the previews: a bounded volume over the island (an unbounded world volume never lets sky rays exit and renders black).
+# Not exported. In Unity use exponential-squared fog with a dark red tint instead (see README).
+bpy.ops.mesh.primitive_cube_add(size=1, location=(10, 38, 3.5))
+fogbox = relocate(bpy.context.object, presentation)
+fogbox.name = 'GroundFog'
+fogbox.scale = (250, 290, 15)
+fogbox.display_type = 'WIRE'
+fogmat = bpy.data.materials.new('MB_GroundFog')
+fogmat.use_nodes = True
+fnt = fogmat.node_tree
+fnt.nodes.clear()
+scat = fnt.nodes.new('ShaderNodeVolumeScatter')
+scat.inputs['Color'].default_value = (.62, .3, .27, 1)
+scat.inputs['Density'].default_value = float(os.environ.get('MB_FOG', '.012'))
+scat.inputs['Anisotropy'].default_value = .4
+fout = fnt.nodes.new('ShaderNodeOutputMaterial')
+fnt.links.new(scat.outputs[0], fout.inputs['Volume'])
+fogbox.data.materials.append(fogmat)
 
 
 def camera(name, pos, target, lens=26, ortho=None):
