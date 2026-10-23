@@ -44,5 +44,6 @@
     "primitive_collider_guides": 673,
     "geometry_status": "Authoring build; Unity import/controller/hardware validation pending"
   },
-  "unity_import": "pending; source assets are outside Game/Assets"
+  "unity_import": "pending; source assets are outside Game/Assets",
+  "scope": "Historical pre-arena-revision pass; preservation hashes do not apply to the revised source."
 }

@@ -7,8 +7,28 @@ from mathutils.bvhtree import BVHTree
 OUT=Path(__file__).resolve().parent
 scene=bpy.data.scenes['Pohorje_Large'];bpy.context.window.scene=scene
 layout=json.loads((OUT/'layout.json').read_text());paths=layout['paths'];widths=layout['widths'];pockets=layout['pockets']
+def original_y(y):
+    knots=layout.get('coordinate_mapping',{}).get('y_knots')
+    if not knots:return y
+    for (a,c),(b,d) in zip(knots,knots[1:]):
+        if y<=d:return a+(y-c)*(b-a)/(d-c)
+    return 544+(y-338)*2
+
 def z(y):
+    if 'ground_height_m' in layout:return layout['ground_height_m']
+    y=original_y(y)
     return 36 if y<=90 else 36-(y-90)*28/210 if y<300 else 8 if y<=360 else 8-(y-360)*8/130 if y<490 else 0
+
+def old_z(y):
+    return 36 if y<=90 else 36-(y-90)*28/210 if y<300 else 8 if y<=360 else 8-(y-360)*8/130 if y<490 else 0
+
+def view_position(pos):
+    if not layout.get('coordinate_mapping'):return pos
+    x,y,h=pos
+    knots=layout['coordinate_mapping']['y_knots']
+    for (a,c),(b,d) in zip(knots,knots[1:]):
+        if y<=b:return (x*1.25,c+(y-a)*(d-c)/(b-a),h)
+    return (x*1.25,338+(y-544)*.5,h)
 def collection(key):return next(c for c in scene.collection.children if c.name.startswith('PL_'+key))
 
 # Real mesh checks, not estimates from source asset budgets.
@@ -94,30 +114,55 @@ report['exports']=export_results
 # Establish delivery views from the actual scene, with human-height views on each route.
 cam=scene.camera;cd=cam.data
 fog=scene.objects.get('PSX_PresentationFog')
-scene.eevee.taa_render_samples=32
+scene.eevee.taa_render_samples=16
+scene.render.resolution_x=1280
+scene.render.resolution_y=800
 def shot(name,pos,target,ortho=None):
     if fog: fog.hide_render=bool(ortho)
+    pos=view_position(pos);target=view_position(target)
     cam.location=pos;cam.rotation_euler=(Vector(target)-cam.location).to_track_quat('-Z','Y').to_euler()
     cd.type='ORTHO' if ortho else 'PERSP'
-    if ortho:cd.ortho_scale=ortho
+    if ortho:cd.ortho_scale=ortho if layout.get('revision')=='action_layout' else ortho*.78
     else:cd.lens=24
     scene.render.filepath=str(OUT/'Previews'/(name+'.png'));bpy.ops.render.render(write_still=True)
-shot('01-whole-pohorje',(480,-340,500),(0,250,12),690)
-shot('02-bellevue',(0,-5,37.7),(0,45,36.8))
-shot('03-forest-traversal',(-70,132,z(132)+2.1),(-96,163,z(163)+2.4))
-shot('04-forest-combat',(-100,303,9.8),(-100,343,9.5))
-shot('05-gondola',(0,125,z(125)+1.8),(20,148,z(148)+3))
-shot('06-service-combat',(0,305,9.8),(0,342,9.5))
-shot('07-rave-tunnel',(100,218,z(218)+1.8),(100,250,z(250)+1.6))
-shot('08-rave-combat',(100,304,9.8),(100,333,10.4))
-shot('09-city-overlook',(0,502,1.8),(0,650,-4))
-roof=collection('C_Removable_Roofs');roof.hide_render=True
-shot('10-cutaway-map',(480,-340,500),(0,250,12),690);roof.hide_render=False
-shot('11-top-down',(0,250,900),(0,250,0),650)
-shot('12-reference-forest',(-70,132,z(132)+2.1),(-96,163,z(163)+2.4))
-shot('13-forest-canopy',(-100,205,z(205)+2.1),(-114,224,z(224)+3.0))
-shot('14-maintenance-approach',(8,130,z(130)+2.1),(27,144,z(144)+3.1))
-shot('15-tunnel-approach',(100,225,z(225)+2.1),(100,250,z(250)+2.5))
+if layout.get('revision')=='action_layout':
+    shot('01-whole-pohorje',(190,-175,220),(0,48,6),270)
+    shot('02-bellevue',(0,-23,12),(0,15,10))
+    shot('03-forest-traversal',(-21,0,11),(-56,30,12))
+    shot('04-forest-combat',(-93,13,35),(-61,54,9))
+    shot('05-gondola',(25,5,12),(57,48,16))
+    shot('06-service-combat',(101,10,39),(61,53,12))
+    shot('07-rave-tunnel',(0,10,11),(0,42,10))
+    shot('08-rave-combat',(-18,36,16),(2,68,10))
+    shot('09-city-overlook',(0,103,11),(0,124,9))
+    roof=collection('C_Removable_Roofs');roof.hide_render=True
+    shot('10-cutaway-map',(185,-155,210),(0,48,7),260)
+    shot('11-top-down',(0,50,300),(0,50,0),245)
+    shot('16-forest-arena-layout',(-100,11,65),(-64,56,8),88)
+    shot('17-service-arena-layout',(105,12,72),(64,53,9),88)
+    shot('18-rave-arena-layout',(-43,3,70),(0,59,8),84)
+    roof.hide_render=False
+    shot('12-reference-forest',(-78,27,11),(-60,67,12))
+    shot('13-forest-canopy',(-84,44,12),(-58,74,15))
+    shot('14-maintenance-approach',(44,22,11),(59,54,17))
+    shot('15-tunnel-approach',(0,26,11),(0,63,10))
+else:
+    shot('01-whole-pohorje',(480,-340,500),(0,250,12),690)
+    shot('02-bellevue',(0,-5,37.7),(0,45,36.8))
+    shot('03-forest-traversal',(-70,132,old_z(132)+2.1),(-96,163,old_z(163)+2.4))
+    shot('04-forest-combat',(-126,302,15.5),(-94,338,9.5))
+    shot('05-gondola',(0,125,old_z(125)+1.8),(20,148,old_z(148)+3))
+    shot('06-service-combat',(-23,302,15),(4,336,9.5))
+    shot('07-rave-tunnel',(100,218,old_z(218)+1.8),(100,250,old_z(250)+1.6))
+    shot('08-rave-combat',(82,302,12.8),(103,330,9.5))
+    shot('09-city-overlook',(0,502,1.8),(0,650,-4))
+    roof=collection('C_Removable_Roofs');roof.hide_render=True
+    shot('10-cutaway-map',(480,-340,500),(0,250,12),690);roof.hide_render=False
+    shot('11-top-down',(0,250,900),(0,250,0),650)
+    shot('12-reference-forest',(-70,132,old_z(132)+2.1),(-96,163,old_z(163)+2.4))
+    shot('13-forest-canopy',(-100,205,old_z(205)+2.1),(-114,224,old_z(224)+3.0))
+    shot('14-maintenance-approach',(8,130,old_z(130)+2.1),(27,144,old_z(144)+3.1))
+    shot('15-tunnel-approach',(100,225,old_z(225)+2.1),(100,250,old_z(250)+2.5))
 if fog: fog.hide_render=False
 bpy.ops.object.select_all(action='DESELECT')
 bpy.context.preferences.filepaths.save_version=0
