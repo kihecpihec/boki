@@ -4,7 +4,7 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 
 ## 0. Gameplay Pillars and Controls
 
-**Core loop:** Boki rides an electric scooter through branching routes. An automatic rave laser kills enemies, whose drops recharge the light battery and grant XP. Choosing a route immediately locks the alternatives. Guilt pursues him periodically. After three levels, he fights the professor. Death resets temporary progress; permanent C-route unlocks remain.
+**Core loop:** Boki rides an electric scooter through branching routes. An automatic rave laser kills enemies, whose drops recharge the light battery and grant XP. Choosing a route immediately locks the alternatives. Each chosen path leads into a combat space where Boki can stay to kill enemies, collect XP, and gain upgrades. The longer he lingers, the more frequently Guilt appears and the faster and harder it attacks, pressuring him to move toward the exit. After three levels, he fights the professor. Death resets temporary progress; permanent C-route unlocks remain.
 
 | Control | Action |
 |---|---|
@@ -214,24 +214,30 @@ Forest C requires `run.availableUnlocks.forestC`; A and B are always open. At ea
 
 ## 5. Loop Within Each Route
 
+**Route structure:** choose a path, travel along it, then reach a combat space. The combat space gives Boki room to ride, dodge, fight regular enemies, and collect XP and battery drops. Route-specific obstacles, encounters, and rewards still distinguish A/B/C, and the existing route locks and shared endings remain in effect.
+
+**Stay or leave:** lingering provides further opportunities to kill enemies, earn XP, and choose upgrades, making Boki stronger before the next level and the professor. Encounters must support continued fighting while the player stays, rather than exhausting a single fixed group and leaving an empty farming area. Replenish enemies within the existing active-enemy caps; do not increase the cap to create pressure. Guilt makes that extra preparation increasingly dangerous and motivates the player to finish the level.
+
 ```mermaid
 flowchart TD
-    A[Enter chosen section] --> B[Ride and avoid obstacles]
-    B --> C[Encounter enemies]
-    C --> D[Auto laser shoots the nearest enemy]
-    D --> E[Kill: XP and light energy]
-    E --> F{Enough XP to level up?}
-    F -- Yes --> G[Pause and choose 1 of 3 upgrades]
-    G --> H[Play Guilt audio warning]
-    F -- No --> H
-    H --> I{Guilt nearby?}
-    I -- Yes --> J[Panic boost and chase with flickering light]
-    I -- No --> K[Normal riding]
-    J --> K
-    K --> L{End of section?}
-    L -- No --> B
-    L -- Yes --> M[Exit to next level]
+    A[Choose path and ride to combat space] --> B[Fight enemies and collect XP and light energy]
+    B --> C{Enough XP to level up?}
+    C -- Yes --> D[Pause and choose 1 of 3 upgrades]
+    C -- No --> E{Stay for more rewards or move onward?}
+    D --> E
+    E -- Stay --> F[More time lingering: Guilt appears more often and gains speed and damage]
+    F --> G[Warning and chase: dodge Guilt while fighting]
+    G --> B
+    E -- Move onward --> H[Continue chosen route to level exit]
 ```
+
+### Guilt Pressure While Lingering
+
+Guilt is an immortal pressure system. As Boki spends longer lingering in a combat space, Guilt's appearances become more frequent, its chase movement speed increases, and its damage increases. Boki gains strength through XP and upgrade choices; Guilt grows more dangerous with time spent lingering. Its escalation is time-driven, not triggered by selecting an upgrade.
+
+Keep warning cues and the existing panic-speed response so players can recognize a chase and attempt an escape. Guilt does not become a killable enemy or gain new attack types through this escalation. Its purpose is to make staying for another reward a risk, while moving toward the level exit remains the player's goal. Scripted appearances, including the Podzemni prehod turn-back, remain part of the route content.
+
+**Tuning decisions still open:** initial grace period, appearance intervals, speed/damage increases and caps, how lingering time is measured across combat-space boundaries, whether pressure carries into the next level, enemy replenishment cadence, and any combat requirement before an exit becomes available. Do not assume a kill quota, forced wave clear, pressure reset on leaving/reentering, or unlimited upgrade progression. The existing upgrade thresholds and run-duration target are starting points to recheck against this loop.
 
 **Keep Guilt AI simple:** use `Distant -> Warning -> Chase -> Reposition`. Spawn at one of 2–3 marked points behind the player while offscreen. If stuck on geometry or too far away, reposition invisibly to the next point. Disable Guilt AI during the boss and use only a decorative mesh.
 
@@ -247,7 +253,7 @@ flowchart TD
 
 - `MeleeChaser` follows Boki and deals contact damage nearby. Forest: dark shadow; city: `Izgubljeni meščan`; FERI: student shadow.
 - `RangedShooter` fires slow projectiles toward Boki on a cooldown. Forest/city: Watcher; FERI: floating exam papers using the same AI and projectile system.
-- `GuiltChaser` is immortal, uses separate logic, and stays mostly offscreen. Nearby, it grants +25% panic speed for 2 s with a 5 s cooldown and increases pressure.
+- `GuiltChaser` is immortal, uses separate logic, and stays mostly offscreen. Nearby, it grants +25% panic speed for 2 s with a 5 s cooldown. Appearance frequency, chase speed, and damage escalate with lingering as specified in §5.
 - `ProfessorBoss` uses Exam Barrage and Deadline Slam. Different entrances change only a small boss setting.
 
 ## 7. Branch Configurations
@@ -301,6 +307,11 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 - **Together at the halfway point:** complete the first run from Bellevue to at least a classroom prototype. Do not wait for finished models.
 
 ## 10. Acceptance Tests (Manual Checks)
+
+- [ ] A chosen path leads into a combat space with room to fight, dodge, and collect rewards before continuing toward the level exit.
+- [ ] Staying provides further XP and upgrade opportunities through enemy replenishment without exceeding the level's active-enemy cap.
+- [ ] Longer lingering makes Guilt appear more often, move faster, and deal more damage according to the agreed tuning; warnings remain readable and Guilt stays invulnerable.
+- [ ] Upgrade selection and pause do not advance combat or Guilt pressure time.
 
 - [ ] First run: Forest A and B open, Forest C locked.
 - [ ] Every reachable combination of previous route and permanent unlocks offers at least **one** allowed next exit, with no dead ends.

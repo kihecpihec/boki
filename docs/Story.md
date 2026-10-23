@@ -8,7 +8,7 @@
 
 ## 1. Core Idea and Tone
 
-The game is both funny and unsettling. Boki and his comments are absurd; the world around him is truly horrifying. The player must keep moving: Boki rides an electric scooter, his rave laser fires automatically, and the scooter light holds enemies back. The enormous, unkillable shadow Guilt follows in the background.
+The game is both funny and unsettling. Boki and his comments are absurd; the world around him is truly horrifying. The player must keep moving: Boki rides an electric scooter, his rave laser fires automatically, and the scooter light holds enemies back. The enormous, unkillable shadow Guilt follows in the background. Each chosen path leads to a combat space: Boki can linger to fight, collect XP, and gain upgrades, but Guilt appears more often, moves faster, and deals more damage the longer he stays. That pressure pushes him to continue toward FERI before the risk outweighs another upgrade. [Gameplay.md §5](Gameplay.md#5-loop-within-each-route) defines this loop and its open tuning decisions.
 
 **Core premise:** choosing a route on Pohorje limits the available routes in Maribor; choosing a route in Maribor limits the entrances to FERI. Hidden paths unlock permanently across attempts, but a previous choice can still block them during a particular run.
 
@@ -146,7 +146,7 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 - Auto-laser: nearest target within 12 m; fires every 0.5 s; base damage 10.
 - Light battery: 100; drain 1.5/s; regular kills restore +10, battery pickups +25. At 0 battery, enemies gain +30% speed, with no extra damage boost.
 - Melee: approximately 20–30 HP; ranged: 15–25 HP. Increase stats slightly by level, e.g. HP ×1.0 / ×1.25 / ×1.4, without new AI types.
-- Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. No instant death.
+- Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. Lingering increases its appearance frequency, chase speed, and damage under [Gameplay.md §5](Gameplay.md#5-loop-within-each-route); exact scaling values remain undecided. No instant-death mechanic.
 - Professor: approximately **400 HP** initially, two attack types; tune after testing for a 60–100 s fight.
 - Active regular enemy cap: Pohorje 8; Maribor 12; FERI 8 plus boss. Spawn from a few predefined points only.
 
@@ -156,11 +156,11 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 **Maribor:** greater overall pressure, ranged projectiles, more demanding battery management.  
 **FERI:** fewer regular enemies, different hazards, boss with red warnings.
 
-Difficulty **does not automatically increase** on subsequent runs. Routes, hidden shortcuts, different encounters, and upgrade choices provide replay value. A separate Hard mode option is optional if time remains; it is outside the MVP.
+Within a run, staying longer in a combat space escalates Guilt pressure. Difficulty **does not automatically increase** merely because the player starts a subsequent run. Routes, hidden shortcuts, different encounters, and upgrade choices provide replay value. A separate Hard mode option is optional if time remains; it is outside the MVP.
 
 ## 5. Upgrades and Replay Motivation
 
-Regular enemies drop XP. At 3, 7, and 12 collected XP packs (initial tuning), briefly pause and offer **three random options**, of which the player chooses one. Aim for approximately 2–3 upgrades per run.
+Regular enemies drop XP. At 3, 7, and 12 collected XP packs (initial tuning), briefly pause and offer **three random options**, of which the player chooses one. Aim for approximately 2–3 upgrades per run as an initial pacing target; recheck these thresholds against the stay-or-leave combat loop in [Gameplay.md §5](Gameplay.md#5-loop-within-each-route). Further thresholds or repeatable upgrade choices for extended stays are not yet specified.
 
 - **Rave Overdrive:** +30% laser damage.
 - **Turbo Skiro:** +20% movement speed.
