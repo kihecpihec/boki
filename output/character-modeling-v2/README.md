@@ -2,6 +2,8 @@
 
 Open [the visual reference pack](index.html). Download or copy the whole folder so the image links remain intact.
 
+**Player model now available:** [Boki low-poly Blender + FBX delivery](../player-model-v1/README.md) implements the player and scooter references. Unity import and gameplay wiring remain pending.
+
 **Gameplay presentation update:** the [local gameplay mocks](../gameplay-mocks-v2/index.html#ui) add charge states, Guilt warning/chase cues, MAX LEVEL, PANIC READY, and RECOVERY cards. Use the [companion handoff](../gameplay-mocks-v2/HANDOFF.md#guilt-and-authored-events) for time-driven Guilt escalation and authored-event separation. Character silhouettes and the shared AI families remain unchanged; all new behavior still requires gameplay integration.
 
 This pack expands the established Boki, enemy and professor appearances into seven production reference sheets. It is a design proposal for artists to build in Blender and integrate in Unity. No `.blend`, FBX, rig, animation clip, texture atlas or working Unity prefab is delivered here.
