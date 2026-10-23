@@ -1,0 +1,574 @@
+{
+  "version": 2,
+  "status": "proposed modeling handoff; no meshes or rigs delivered",
+  "unityEditor": "6000.6.7f1",
+  "coordinates": "Unity +X right, +Y up, +Z forward; meters",
+  "observedPlayerPrefab": {
+    "path": "Game/Assets/Prefabs/Player/Boki_Player.prefab",
+    "capsule": {
+      "height": 1.8,
+      "radius": 0.35,
+      "center": [
+        0,
+        0.9,
+        0
+      ]
+    },
+    "cameraPivot": [
+      0,
+      1.4,
+      0
+    ]
+  },
+  "notes": [
+    "Art dimensions, budgets and clip/socket names are proposals, not runtime settings.",
+    "Generated views may disagree; editable numeric guides govern construction.",
+    "Current enemy and boss integration is planned, not implemented by this pack."
+  ],
+  "assets": [
+    {
+      "key": "01-boki-orthographic",
+      "title": "BOKI / BODY + HEAD",
+      "asset": "CHR_Boki",
+      "scale": "1.72 m standing, shoes to crown",
+      "dimensions": [
+        [
+          "Height",
+          "1.72 m"
+        ],
+        [
+          "Head height",
+          "0.24 m"
+        ],
+        [
+          "Shoulder width",
+          "0.46 m"
+        ],
+        [
+          "Hip width",
+          "0.32 m"
+        ],
+        [
+          "Shoe length",
+          "0.27 m"
+        ]
+      ],
+      "triangles": "1,800–2,400 triangles / body + head + clothes",
+      "texture": "1 × 512² base-color atlas; optional emission mask",
+      "parts": [
+        "M_Boki_Body: jacket, trousers, shoes and hands in one skinned mesh.",
+        "M_Boki_Head: face + ears; hair can join the head mesh.",
+        "M_Watch: rigid left-wrist prop; digits are texture detail.",
+        "No body geometry beneath fully closed clothing."
+      ],
+      "topology": [
+        "Mirror the body before asymmetrical watch and texture wear.",
+        "Add bend rings at shoulder, elbow, wrist, hip, knee and ankle.",
+        "Keep jacket armpit open enough for the riding reach.",
+        "One shared palm + thumb is enough; no individual finger rig required.",
+        "Retain normals on broad planes; soften only deformation zones."
+      ],
+      "sockets": [
+        "Socket_HandGrip_L/R: riding contact targets (visual/authoring).",
+        "Socket_Watch_L: follows hand.L or lower_arm.L.",
+        "CameraPivot stays outside the animated skeleton."
+      ],
+      "clips": [
+        "Boki_RideIdle — looping, fixed feet and hand contacts.",
+        "Boki_Steer_L/R — optional lean poses, visual only.",
+        "Boki_Jump — in-place pose; controller supplies trajectory.",
+        "Boki_Boost — optional crouch; no root translation.",
+        "Boki_Hit / Boki_Death — planned presentation."
+      ],
+      "bones": "humanoid",
+      "palette": [
+        [
+          "Jacket",
+          "#754CA5"
+        ],
+        [
+          "Stripe",
+          "#CFEF75"
+        ],
+        [
+          "Cloth",
+          "#272C33"
+        ],
+        [
+          "Skin",
+          "#BEAA92"
+        ],
+        [
+          "Shoes",
+          "#D8D5C2"
+        ]
+      ]
+    },
+    {
+      "key": "02-player-riding-and-scooter",
+      "title": "BOKI / SCOOTER ASSEMBLY",
+      "asset": "PROP_Scooter",
+      "scale": "1.24 m overall length; 1.07 m grip height",
+      "dimensions": [
+        [
+          "Overall length",
+          "1.24 m"
+        ],
+        [
+          "Wheel diameter",
+          "0.20 m"
+        ],
+        [
+          "Deck top Y",
+          "0.16 m"
+        ],
+        [
+          "Deck width",
+          "0.18 m"
+        ],
+        [
+          "Grip span",
+          "0.48 m"
+        ]
+      ],
+      "triangles": "700–1,000 triangles / complete scooter",
+      "texture": "1 × 256² base-color atlas + small emission mask",
+      "parts": [
+        "M_Deck: rigid body; no suspension geometry.",
+        "M_Wheel_F / M_Wheel_R: separate meshes, axle-centered origins.",
+        "M_Steering: stem, fork and handlebar assembly.",
+        "M_Headlight / M_LaserBox: separate rigid pieces.",
+        "Grip, headlight and muzzle empties have no render geometry."
+      ],
+      "topology": [
+        "Use 8–12 radial sides per wheel as a starting proposal.",
+        "Wheel local axle must match the intended roll rotation.",
+        "Keep steering pivot independent of wheel axle.",
+        "Headlight glass is an opaque bright face; beam is a Unity effect.",
+        "Boki hands and feet are authored to shared contact coordinates."
+      ],
+      "sockets": [
+        "Wheel centers: (0, 0.10, ±0.52) m.",
+        "Grip L/R: (∓0.24, 1.07, 0.40) m.",
+        "Feet L/R: (∓0.06, 0.16, -0.28 / 0.08) m.",
+        "Socket_LaserMuzzle: (0, 0.90, 0.49) m.",
+        "Socket_Headlight: (0, 1.01, 0.49) m."
+      ],
+      "clips": [
+        "Scooter_WheelRoll — visual only, optional.",
+        "Scooter_Steer — optional; no physics steering constraint.",
+        "Player ride/boost/jump poses stay in the character clip set.",
+        "Do not animate the gameplay root or camera pivot."
+      ],
+      "bones": "scooter",
+      "palette": [
+        [
+          "Metal",
+          "#30363D"
+        ],
+        [
+          "Rubber",
+          "#11171D"
+        ],
+        [
+          "Purple",
+          "#754CA5"
+        ],
+        [
+          "Reflector",
+          "#CFEF75"
+        ],
+        [
+          "Lens",
+          "#E9E5CD"
+        ]
+      ]
+    },
+    {
+      "key": "03-melee-family",
+      "title": "ENEMIES / SHARED MELEE BODY",
+      "asset": "CHR_Melee_Base",
+      "scale": "1.85 m neutral height; same rig across all reskins",
+      "dimensions": [
+        [
+          "Height",
+          "1.85 m"
+        ],
+        [
+          "Shoulder width",
+          "0.40 m"
+        ],
+        [
+          "Hip width",
+          "0.30 m"
+        ],
+        [
+          "Hand length",
+          "0.20 m"
+        ],
+        [
+          "Backpack depth",
+          "0.16 m"
+        ]
+      ],
+      "triangles": "1,000–1,400 triangles / body; ≤200 extra per add-on",
+      "texture": "1 × 256² atlas per variant; share material structure",
+      "parts": [
+        "M_MeleeBody: one shared skinned mesh and skeleton.",
+        "Forest: body-only silhouette, blue-black texture.",
+        "Izgubljeni meščan: rusty jacket regions; optional shell.",
+        "Student: green-gray texture + rigid backpack to chest.",
+        "No weapon, separate combat AI or ragdoll is added."
+      ],
+      "topology": [
+        "Match bone names and rest pose across all variants.",
+        "Keep elbows and knees thick enough for pursuit poses.",
+        "Jacket hem can follow pelvis; avoid a cloth simulation.",
+        "Backpack is rigid and does not need extra deform bones.",
+        "Max four bone influences per vertex; keep most areas simpler."
+      ],
+      "sockets": [
+        "Socket_HitCenter at chest is a proposed effect marker.",
+        "Shared collider and movement root stay outside the model.",
+        "Backpack parent: chest; no duplicate skeleton."
+      ],
+      "clips": [
+        "Melee_Idle / Melee_Pursuit — in-place looping.",
+        "Melee_Contact — short visual hit, damage remains gameplay-owned.",
+        "Melee_Hit / Melee_Death — short one-shots.",
+        "One animation family reused by all three appearances."
+      ],
+      "bones": "humanoid",
+      "palette": [
+        [
+          "Forest",
+          "#17242C"
+        ],
+        [
+          "Rust",
+          "#82503B"
+        ],
+        [
+          "Student",
+          "#4C6455"
+        ],
+        [
+          "Backpack",
+          "#303A3E"
+        ],
+        [
+          "Rim",
+          "#617886"
+        ]
+      ]
+    },
+    {
+      "key": "04-watcher-and-papers",
+      "title": "ENEMIES / WATCHER + EXAM PAPER",
+      "asset": "CHR_Watcher / PROP_ExamPaper",
+      "scale": "Watcher 0.55 m wide; paper 0.21 × 0.30 m",
+      "dimensions": [
+        [
+          "Watcher width",
+          "0.55 m"
+        ],
+        [
+          "Watcher height",
+          "0.40 m"
+        ],
+        [
+          "Watcher depth",
+          "0.24 m"
+        ],
+        [
+          "Paper size",
+          "0.21 × 0.30 m"
+        ],
+        [
+          "Paper thickness",
+          "visual / shallow solid"
+        ]
+      ],
+      "triangles": "Watcher 120–240; paper 8–20 triangles each",
+      "texture": "Watcher 128² atlas; exam paper 128² front/back atlas",
+      "parts": [
+        "M_WatcherShell: rigid angular body.",
+        "M_WatcherEye: recessed red disc, separate material slot.",
+        "M_ExamPaper: shallow closed sheet or explicit front/back faces.",
+        "PROJ_Paper / PROJ_Watcher: separate spawned projectile props.",
+        "Ranged AI is shared; model shape is the reskin."
+      ],
+      "topology": [
+        "Use a few large facets; eye is visible from gameplay distance.",
+        "Put object origin at center; eye direction is Unity +Z.",
+        "Paper needs visible back faces without relying on double-sided shader.",
+        "One shallow paper bend; no cloth or physics simulation.",
+        "Keep emission on the eye face, not an additional real-time light."
+      ],
+      "sockets": [
+        "Socket_ProjectileOrigin at front eye center.",
+        "Paper projectile origin at sheet center.",
+        "Boss may reuse the paper prop for the three-shot barrage."
+      ],
+      "clips": [
+        "Watcher_Hover — optional transform-only motion.",
+        "Watcher_Fire — brief eye/pose cue.",
+        "Paper_Float / Paper_Fly — optional transform animation.",
+        "Projectile travel and hit timing remain code-owned."
+      ],
+      "bones": "watcher",
+      "palette": [
+        [
+          "Shell",
+          "#17222B"
+        ],
+        [
+          "Red eye",
+          "#EF624A"
+        ],
+        [
+          "City shell",
+          "#6D302C"
+        ],
+        [
+          "Paper",
+          "#D9D6C5"
+        ],
+        [
+          "Ink",
+          "#4C4A43"
+        ]
+      ]
+    },
+    {
+      "key": "05-guilt",
+      "title": "GUILT / ELONGATED PURSUER",
+      "asset": "CHR_Guilt",
+      "scale": "4.20 m proposed silhouette height; tune to corridors",
+      "dimensions": [
+        [
+          "Height",
+          "4.20 m"
+        ],
+        [
+          "Shoulder width",
+          "0.72 m"
+        ],
+        [
+          "Hip width",
+          "0.40 m"
+        ],
+        [
+          "Hand length",
+          "0.45 m"
+        ],
+        [
+          "Compared with Boki",
+          "~2.44 × height"
+        ]
+      ],
+      "triangles": "900–1,400 triangles / complete silhouette",
+      "texture": "1 × 128² dark atlas; no emission texture required",
+      "parts": [
+        "M_Guilt: one skinned dark mesh, featureless head.",
+        "Fused fingers + simple thumb; no teeth, eyes or facial rig.",
+        "Reuse a pose for the decorative boss shadow.",
+        "Wall shadow can use a separately authored flat opaque silhouette."
+      ],
+      "topology": [
+        "Preserve long arm silhouette before adding surface detail.",
+        "Use bend rings at shoulder, elbow, hip and knee.",
+        "Keep negative space between arms and torso in neutral pose.",
+        "Do not simulate cloth or add hair/fur systems.",
+        "Collider footprint needs route testing; silhouette height is not collision height."
+      ],
+      "sockets": [
+        "Optional Socket_Warning at chest for presentation only.",
+        "Guilt root movement remains separate from its skeletal pose.",
+        "Decorative boss-shadow object has no chase AI."
+      ],
+      "clips": [
+        "Guilt_Distant / Guilt_Warning — still or subtle loops.",
+        "Guilt_Chase — in-place long-stride animation.",
+        "Guilt_BossShadow — held decorative pose.",
+        "No death clip or kill reward: Guilt is invulnerable."
+      ],
+      "bones": "guilt",
+      "palette": [
+        [
+          "Near black",
+          "#10171E"
+        ],
+        [
+          "Blue planes",
+          "#1A2731"
+        ],
+        [
+          "Edge plane",
+          "#34444E"
+        ],
+        [
+          "Deep shadow",
+          "#090E14"
+        ]
+      ]
+    },
+    {
+      "key": "06-professor-orthographic",
+      "title": "THE PROFESSOR / BODY + FACE",
+      "asset": "CHR_Professor",
+      "scale": "1.78 m standing, shoes to crown",
+      "dimensions": [
+        [
+          "Height",
+          "1.78 m"
+        ],
+        [
+          "Head height",
+          "0.25 m"
+        ],
+        [
+          "Shoulder width",
+          "0.45 m"
+        ],
+        [
+          "Hip width",
+          "0.33 m"
+        ],
+        [
+          "Glasses width",
+          "0.14 m"
+        ]
+      ],
+      "triangles": "1,600–2,200 triangles including glasses",
+      "texture": "1 × 512² base-color atlas; textured jacket pattern",
+      "parts": [
+        "M_ProfessorBody: jacket, shirt, trousers and shoes.",
+        "M_ProfessorHead: face, ears and receding hair cap.",
+        "M_Glasses: opaque simple frames; skip transparent lenses.",
+        "Hands: palm, thumb and grouped fingers; optional index bone."
+      ],
+      "topology": [
+        "Reserve geometry for nose, glasses outline and hand gestures.",
+        "Use sleeve bend rings for the paper release and glasses adjustment.",
+        "Paint tweed/check texture; do not model fabric pattern.",
+        "No facial blendshape system required for the jam.",
+        "Keep lecturer silhouette ordinary; horror comes from pose and shadow."
+      ],
+      "sockets": [
+        "Socket_Glasses at nose bridge/head.",
+        "Socket_PaperCast near casting palm, proposed marker.",
+        "Lectern is a separate prop with a ground-centered origin."
+      ],
+      "clips": [
+        "Professor_Idle — restrained loop.",
+        "Professor_ExamBarrage — one-shot release pose.",
+        "Professor_DeadlineSlam — one-shot cue pose.",
+        "Professor_Defeat / Professor_AdjustGlasses — ending.",
+        "All clips in place; attack damage timing remains code-owned."
+      ],
+      "bones": "humanoid",
+      "palette": [
+        [
+          "Jacket",
+          "#657365"
+        ],
+        [
+          "Shirt",
+          "#BFC2AE"
+        ],
+        [
+          "Trousers",
+          "#303638"
+        ],
+        [
+          "Skin",
+          "#BBAE96"
+        ],
+        [
+          "Glasses",
+          "#252B2D"
+        ]
+      ]
+    },
+    {
+      "key": "07-professor-action-and-props",
+      "title": "THE DEADLINE / ACTIONS + PROPS",
+      "asset": "PROP_Lectern / FX_DeadlineRing",
+      "scale": "Lectern 1.10 m high; floor ring scales in gameplay",
+      "dimensions": [
+        [
+          "Lectern height",
+          "1.10 m"
+        ],
+        [
+          "Lectern width",
+          "0.75 m"
+        ],
+        [
+          "Lectern depth",
+          "0.50 m"
+        ],
+        [
+          "Paper size",
+          "0.21 × 0.30 m"
+        ],
+        [
+          "Ring radius",
+          "gameplay-owned"
+        ]
+      ],
+      "triangles": "Lectern 150–300; ring 32–64; reused paper prop",
+      "texture": "1 × 256² wood/prop atlas; ring uses simple material",
+      "parts": [
+        "M_Lectern: rigid base, stem and slanted reading top.",
+        "M_PaperStack: optional static low-poly stack.",
+        "FX_DeadlineRing: separate flat annulus, not boss geometry.",
+        "Three independently spawned paper projectiles per barrage.",
+        "Guilt wall shadow: decorative, separate from professor mesh."
+      ],
+      "topology": [
+        "Lectern root on floor center; avoid hidden internal faces.",
+        "Use a real annulus mesh or flat quad material for the telegraph.",
+        "Raise the ring a small tested offset to avoid z-fighting.",
+        "Keep the arena center free; desks and lectern must not trap the scooter.",
+        "Attack art does not define radius or damage values."
+      ],
+      "sockets": [
+        "Socket_LecternHands_L/R: optional authoring targets.",
+        "Socket_PaperCast uses professor hand orientation.",
+        "FX ring placement uses an arena floor transform."
+      ],
+      "clips": [
+        "Exam Barrage: visual release, exactly 3 slow papers.",
+        "Deadline Slam: 0.8 s warning then area hit (canonical).",
+        "At 50% HP: short glitch and slightly faster attacks.",
+        "FERI B: 2 melee adds once at half HP.",
+        "FERI C + POWER OFF: boss begins at 85% HP."
+      ],
+      "bones": "props",
+      "palette": [
+        [
+          "Wood",
+          "#6E5741"
+        ],
+        [
+          "Wood edge",
+          "#948067"
+        ],
+        [
+          "Ring",
+          "#EF624A"
+        ],
+        [
+          "Paper",
+          "#D9D6C5"
+        ],
+        [
+          "Shadow",
+          "#090E14"
+        ]
+      ]
+    }
+  ]
+}

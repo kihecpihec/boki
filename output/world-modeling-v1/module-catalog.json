@@ -1,0 +1,657 @@
+{
+  "status": "proposed authoring targets; not measured runtime budgets",
+  "units": "meters; sizeXYZm is Unity X/Y/Z extents",
+  "sharedMaterials": "256² tiling textures or 512² family atlases are proposed starting targets",
+  "modules": [
+    {
+      "id": "ENV_SH_Floor_4m",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        0.2,
+        4
+      ],
+      "pivot": "floor corner at finished Y=0",
+      "collision": "box",
+      "triangleTarget": "12–24",
+      "note": "Concrete floor; shared by underpass and FERI"
+    },
+    {
+      "id": "ENV_SH_Wall_4m",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        3.5,
+        0.2
+      ],
+      "pivot": "floor/base corner",
+      "collision": "box",
+      "triangleTarget": "12–40",
+      "note": "Plain wall; paint texture instead of deep surface cuts"
+    },
+    {
+      "id": "ENV_SH_Ceiling_4m",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        0.2,
+        4
+      ],
+      "pivot": "bay corner at ceiling underside",
+      "collision": "box only if required",
+      "triangleTarget": "12–24",
+      "note": "Separate from walls for cutaway/camera setup"
+    },
+    {
+      "id": "ENV_SH_Ramp_4m",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        0.5,
+        4
+      ],
+      "pivot": "lower floor corner",
+      "collision": "one ramp plane/primitive-compatible shape",
+      "triangleTarget": "12–30",
+      "note": "0.5m rise over 4m run; proposal"
+    },
+    {
+      "id": "ENV_SH_Corner_4m",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        3.5,
+        4
+      ],
+      "pivot": "floor bay corner",
+      "collision": "two wall boxes + floor",
+      "triangleTarget": "36–100",
+      "note": "90-degree corner; enlarge turning pocket where needed"
+    },
+    {
+      "id": "ENV_SH_DoorFrame",
+      "family": "shared",
+      "sizeXYZm": [
+        3,
+        3.5,
+        0.2
+      ],
+      "pivot": "floor hinge-side corner",
+      "collision": "frame boxes",
+      "triangleTarget": "48–100",
+      "note": "2.4m × 3m clear opening proposal"
+    },
+    {
+      "id": "ENV_SH_DoorLeaf",
+      "family": "shared",
+      "sizeXYZm": [
+        2.4,
+        3,
+        0.12
+      ],
+      "pivot": "hinge at floor",
+      "collision": "box",
+      "triangleTarget": "12–40",
+      "note": "Separate leaf, no player collider while passable"
+    },
+    {
+      "id": "ENV_SH_Tunnel_Straight_4m",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        4,
+        4
+      ],
+      "pivot": "finished-floor corner",
+      "collision": "floor/wall/ceiling boxes",
+      "triangleTarget": "60–140",
+      "note": "3m × 3.5m clear cross section proposal"
+    },
+    {
+      "id": "ENV_SH_GateFrame",
+      "family": "shared",
+      "sizeXYZm": [
+        4,
+        4,
+        0.3
+      ],
+      "pivot": "floor corner",
+      "collision": "post/header boxes",
+      "triangleTarget": "48–120",
+      "note": "3m × 3.5m clear gate opening proposal"
+    },
+    {
+      "id": "ENV_SH_GateLeaf",
+      "family": "shared",
+      "sizeXYZm": [
+        3,
+        3.5,
+        0.12
+      ],
+      "pivot": "hinge at floor",
+      "collision": "separate blocking box",
+      "triangleTarget": "40–120",
+      "note": "States own blocker and trigger independently of art"
+    },
+    {
+      "id": "ENV_SH_RouteSign",
+      "family": "shared",
+      "sizeXYZm": [
+        1.2,
+        2.5,
+        0.12
+      ],
+      "pivot": "post ground center",
+      "collision": "one box if blocking",
+      "triangleTarget": "30–80",
+      "note": "A/B/C sign plates and lock indication"
+    },
+    {
+      "id": "ENV_SH_PosterPlane",
+      "family": "shared",
+      "sizeXYZm": [
+        0.6,
+        0.9,
+        0.01
+      ],
+      "pivot": "lower-left wall attachment",
+      "collision": "none",
+      "triangleTarget": "2–4",
+      "note": "Low-res shared poster texture, no collision"
+    },
+    {
+      "id": "ENV_F_PathTile_4m",
+      "family": "forest",
+      "sizeXYZm": [
+        4,
+        0.3,
+        4
+      ],
+      "pivot": "finished-floor corner",
+      "collision": "simple ground surface",
+      "triangleTarget": "20–60",
+      "note": "Faceted dirt tile with continuous ride plane"
+    },
+    {
+      "id": "ENV_F_BankWedge",
+      "family": "forest",
+      "sizeXYZm": [
+        4,
+        2,
+        2
+      ],
+      "pivot": "lower terrain corner",
+      "collision": "box/ramp primitive",
+      "triangleTarget": "12–40",
+      "note": "Blocks branch shortcuts; not a kill pit"
+    },
+    {
+      "id": "ENV_F_Spruce",
+      "family": "forest",
+      "sizeXYZm": [
+        2.5,
+        6,
+        2.5
+      ],
+      "pivot": "trunk ground center",
+      "collision": "trunk capsule",
+      "triangleTarget": "80–180",
+      "note": "Three height variants via authoring scale; opaque clusters"
+    },
+    {
+      "id": "ENV_F_Rock",
+      "family": "forest",
+      "sizeXYZm": [
+        2,
+        1.5,
+        1.5
+      ],
+      "pivot": "ground base center",
+      "collision": "one or two boxes",
+      "triangleTarget": "20–60",
+      "note": "Three silhouette variants"
+    },
+    {
+      "id": "ENV_F_Log",
+      "family": "forest",
+      "sizeXYZm": [
+        3,
+        0.7,
+        0.7
+      ],
+      "pivot": "base center",
+      "collision": "capsule/box",
+      "triangleTarget": "24–64",
+      "note": "Slalom prop; test clearance before placement"
+    },
+    {
+      "id": "ENV_F_Fence_4m",
+      "family": "forest",
+      "sizeXYZm": [
+        4,
+        1.1,
+        0.2
+      ],
+      "pivot": "post floor corner",
+      "collision": "continuous box",
+      "triangleTarget": "40–100",
+      "note": "Avoid one collider per rail"
+    },
+    {
+      "id": "ENV_F_GondolaPole",
+      "family": "forest",
+      "sizeXYZm": [
+        3,
+        8,
+        1
+      ],
+      "pivot": "pole ground center",
+      "collision": "base box only if needed",
+      "triangleTarget": "80–180",
+      "note": "Static silhouette, no operating gondola"
+    },
+    {
+      "id": "ENV_F_GondolaCabin",
+      "family": "forest",
+      "sizeXYZm": [
+        1.5,
+        2,
+        1.5
+      ],
+      "pivot": "suspension attachment",
+      "collision": "none when unreachable",
+      "triangleTarget": "80–180",
+      "note": "Static prop, no animation system"
+    },
+    {
+      "id": "ENV_F_MaintenanceCart",
+      "family": "forest",
+      "sizeXYZm": [
+        1.4,
+        1.2,
+        2
+      ],
+      "pivot": "ground base center",
+      "collision": "2–3 boxes",
+      "triangleTarget": "100–240",
+      "note": "Upright/overturned placements reuse mesh"
+    },
+    {
+      "id": "ENV_F_BrokenPlanks",
+      "family": "forest",
+      "sizeXYZm": [
+        3,
+        0.2,
+        4
+      ],
+      "pivot": "near-edge floor corner",
+      "collision": "test-defined surfaces",
+      "triangleTarget": "40–120",
+      "note": "Gap width is a movement-test result, not fixed by artwork"
+    },
+    {
+      "id": "ENV_F_Grate",
+      "family": "forest",
+      "sizeXYZm": [
+        3,
+        3.5,
+        0.12
+      ],
+      "pivot": "frame floor corner",
+      "collision": "box blocker",
+      "triangleTarget": "40–100",
+      "note": "Guilt view is scenic set piece"
+    },
+    {
+      "id": "ENV_F_Bottle",
+      "family": "forest",
+      "sizeXYZm": [
+        0.08,
+        0.28,
+        0.08
+      ],
+      "pivot": "base center",
+      "collision": "none",
+      "triangleTarget": "24–48",
+      "note": "Bellevue prologue prop"
+    },
+    {
+      "id": "ENV_F_SkylineCard",
+      "family": "forest",
+      "sizeXYZm": [
+        24,
+        6,
+        0.02
+      ],
+      "pivot": "lower card center",
+      "collision": "none",
+      "triangleTarget": "2–10",
+      "note": "Distant city silhouette; no full city rendering"
+    },
+    {
+      "id": "ENV_C_FacadeBay_4m",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        8,
+        0.4
+      ],
+      "pivot": "street-level corner",
+      "collision": "coarse boundary box",
+      "triangleTarget": "80–240",
+      "note": "Three reusable facade texture/shape variants"
+    },
+    {
+      "id": "ENV_C_FacadeCorner",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        8,
+        4
+      ],
+      "pivot": "street corner",
+      "collision": "two boundary boxes",
+      "triangleTarget": "80–240",
+      "note": "No modeled inaccessible interiors"
+    },
+    {
+      "id": "ENV_C_RoofCap",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        2,
+        4
+      ],
+      "pivot": "facade top corner",
+      "collision": "none when inaccessible",
+      "triangleTarget": "20–80",
+      "note": "Roof silhouette only"
+    },
+    {
+      "id": "ENV_C_Road_4m",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        0.2,
+        4
+      ],
+      "pivot": "finished-road corner",
+      "collision": "box",
+      "triangleTarget": "12–24",
+      "note": "Repeat across 6–8m proposed clear street"
+    },
+    {
+      "id": "ENV_C_CurbRamp",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        0.15,
+        1
+      ],
+      "pivot": "low street-level corner",
+      "collision": "smooth wedge",
+      "triangleTarget": "12–30",
+      "note": "No raised lip across travel lane"
+    },
+    {
+      "id": "ENV_C_CompactCar",
+      "family": "city",
+      "sizeXYZm": [
+        1.7,
+        1.5,
+        3.8
+      ],
+      "pivot": "ground midpoint",
+      "collision": "2–3 boxes",
+      "triangleTarget": "180–360",
+      "note": "Same car reused overturned"
+    },
+    {
+      "id": "ENV_C_CarRamp",
+      "family": "city",
+      "sizeXYZm": [
+        2.5,
+        0.8,
+        4
+      ],
+      "pivot": "low landing corner",
+      "collision": "smooth ramp surface",
+      "triangleTarget": "20–50",
+      "note": "Separate ride surface from wreck art"
+    },
+    {
+      "id": "ENV_C_Streetlamp",
+      "family": "city",
+      "sizeXYZm": [
+        0.5,
+        4,
+        0.5
+      ],
+      "pivot": "ground center",
+      "collision": "pole primitive",
+      "triangleTarget": "40–100",
+      "note": "Emissive face; real-time light only where budget allows"
+    },
+    {
+      "id": "ENV_C_Bin",
+      "family": "city",
+      "sizeXYZm": [
+        0.7,
+        1,
+        0.7
+      ],
+      "pivot": "ground center",
+      "collision": "box",
+      "triangleTarget": "24–60",
+      "note": "Place outside required clear width"
+    },
+    {
+      "id": "ENV_C_Riverbank_4m",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        0.3,
+        3
+      ],
+      "pivot": "finished-walkway corner",
+      "collision": "floor + edge boxes",
+      "triangleTarget": "24–60",
+      "note": "Continuous boundary against water"
+    },
+    {
+      "id": "ENV_C_Railing_4m",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        1.2,
+        0.15
+      ],
+      "pivot": "end post floor corner",
+      "collision": "one continuous box",
+      "triangleTarget": "40–100",
+      "note": "Prevents unintended water access"
+    },
+    {
+      "id": "ENV_C_WaterPlane",
+      "family": "city",
+      "sizeXYZm": [
+        8,
+        0.01,
+        8
+      ],
+      "pivot": "tile corner",
+      "collision": "none; perimeter handles boundary",
+      "triangleTarget": "2–8",
+      "note": "Flat surface; no swimming/fall rule added"
+    },
+    {
+      "id": "ENV_C_BridgeSilhouette",
+      "family": "city",
+      "sizeXYZm": [
+        24,
+        8,
+        2
+      ],
+      "pivot": "base corner",
+      "collision": "none when scenic",
+      "triangleTarget": "80–200",
+      "note": "Background arch; not a fourth route"
+    },
+    {
+      "id": "ENV_C_Fence_4m",
+      "family": "city",
+      "sizeXYZm": [
+        4,
+        2,
+        0.15
+      ],
+      "pivot": "post floor corner",
+      "collision": "continuous box",
+      "triangleTarget": "40–100",
+      "note": "Shared gate connection"
+    },
+    {
+      "id": "ENV_E_CourtyardTile",
+      "family": "feri",
+      "sizeXYZm": [
+        4,
+        0.2,
+        4
+      ],
+      "pivot": "finished-floor corner",
+      "collision": "box",
+      "triangleTarget": "12–30",
+      "note": "Same structural grid as corridors"
+    },
+    {
+      "id": "ENV_E_Planter",
+      "family": "feri",
+      "sizeXYZm": [
+        2,
+        0.8,
+        1
+      ],
+      "pivot": "base corner",
+      "collision": "box",
+      "triangleTarget": "40–100",
+      "note": "Keep outside ride lane; simple overgrowth"
+    },
+    {
+      "id": "ENV_E_DeskChair",
+      "family": "feri",
+      "sizeXYZm": [
+        1.4,
+        1.1,
+        1.4
+      ],
+      "pivot": "desk floor center",
+      "collision": "2–3 boxes",
+      "triangleTarget": "100–220",
+      "note": "Push to arena perimeter"
+    },
+    {
+      "id": "ENV_E_Lectern",
+      "family": "feri",
+      "sizeXYZm": [
+        0.75,
+        1.1,
+        0.5
+      ],
+      "pivot": "floor center",
+      "collision": "box",
+      "triangleTarget": "150–300",
+      "note": "Matches character handoff prop proposal"
+    },
+    {
+      "id": "ENV_E_Blackboard",
+      "family": "feri",
+      "sizeXYZm": [
+        4,
+        1.5,
+        0.05
+      ],
+      "pivot": "lower-left wall attachment",
+      "collision": "none",
+      "triangleTarget": "12–24",
+      "note": "PRISOTNOST: 0/1 is preserved narrative content"
+    },
+    {
+      "id": "ENV_E_Fluorescent",
+      "family": "feri",
+      "sizeXYZm": [
+        1.2,
+        0.1,
+        0.2
+      ],
+      "pivot": "mounting center",
+      "collision": "none",
+      "triangleTarget": "12–40",
+      "note": "Emissive mesh, no light per instance requirement"
+    },
+    {
+      "id": "ENV_E_PipeRun",
+      "family": "feri",
+      "sizeXYZm": [
+        4,
+        0.25,
+        0.25
+      ],
+      "pivot": "wall/base attachment end",
+      "collision": "none if out of reach",
+      "triangleTarget": "40–100",
+      "note": "Keep off walkable floor and camera lane"
+    },
+    {
+      "id": "ENV_E_PowerOffPanel",
+      "family": "feri",
+      "sizeXYZm": [
+        0.6,
+        1,
+        0.15
+      ],
+      "pivot": "lower-left wall attachment",
+      "collision": "box if physically necessary",
+      "triangleTarget": "60–140",
+      "note": "Separate switch, interaction marker stays reachable"
+    },
+    {
+      "id": "ENV_E_FloorTrap",
+      "family": "feri",
+      "sizeXYZm": [
+        1.2,
+        0.03,
+        1.2
+      ],
+      "pivot": "floor center",
+      "collision": "separate gameplay trigger",
+      "triangleTarget": "12–40",
+      "note": "Instance twice on FERI C; match visual and hit footprints"
+    },
+    {
+      "id": "ENV_E_WallShadow",
+      "family": "feri",
+      "sizeXYZm": [
+        6,
+        6,
+        0.01
+      ],
+      "pivot": "bottom wall center",
+      "collision": "none",
+      "triangleTarget": "2–40",
+      "note": "Decorative Guilt only; no chase logic"
+    },
+    {
+      "id": "ENV_E_WarningRing",
+      "family": "feri",
+      "sizeXYZm": [
+        1,
+        0.01,
+        1
+      ],
+      "pivot": "floor center",
+      "collision": "none; combat handles area hit",
+      "triangleTarget": "32–64",
+      "note": "Scales to actual damage radius, not artist-selected radius"
+    }
+  ]
+}
