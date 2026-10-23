@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maribor environment pass</title>
+<style>
+body{margin:0;font:15px system-ui,sans-serif;color:var(--foreground,#ddd)}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}button{font:inherit;padding:7px 12px;border:1px solid var(--border,#555);border-radius:6px;background:var(--secondary,#30373d);color:inherit;cursor:pointer}button[aria-pressed=true]{background:#b4582f;color:white}figure{margin:0}img{width:100%;height:auto;display:block;border-radius:8px}figcaption{font-size:13px;color:var(--muted-foreground,#999);margin-top:8px}p{line-height:1.5}
+</style>
+<nav aria-label="Map views" id="nav"></nav>
+<figure><img id="view" alt=""><figcaption id="caption"></figcaption></figure>
+<script>
+const views=[
+['Overview','Previews/01-overview.png','Whole island at dusk: arrival hall, Tabor street, Lent basin, the Podzemni prehod block and the FERI pier, with the Drava, south-bank city and foothills.'],
+['Arrival','Previews/02-arrival.png','Shared arrival plaza: fountain, terrace and landmark hall with the three route gates behind the camera.'],
+['Tabor','Previews/03-tabor.png','A / Tabor: curving street, lit facades, car slalom and barriers.'],
+['Tabor court','Previews/04-taborcourt.png','A / Tabor: street court with the overturned car and optional ramp.'],
+['Lent','Previews/05-lent.png','B / Lent: planter-divided quay lanes above the basin.'],
+['Lent quay','Previews/06-lentquay.png','B / Lent: combat quay, basin, causeway and the concrete block behind the water.'],
+['Underpass','Previews/07-underpass.png','C / Podzemni prehod: roofed gallery with fluorescent strips and the warm Guilt reveal at the far end.'],
+['Cutaway','Previews/08-cutaway.png','Top-down with tunnel roofs removed: A street, B basin, C galleries.'],
+['FERI exit','Previews/09-feriexit.png','Shared FERI pier and sign at the end of every route.']];
+const nav=document.getElementById('nav'),img=document.getElementById('view'),cap=document.getElementById('caption');
+function show(i){img.src=views[i][1];img.alt=views[i][0];cap.textContent=views[i][2];[...nav.children].forEach((b,j)=>b.setAttribute('aria-pressed',j===i))}
+views.forEach((v,i)=>{const b=document.createElement('button');b.textContent=v[0];b.onclick=()=>show(i);nav.appendChild(b)});
+show(0);
+</script>
+</html>

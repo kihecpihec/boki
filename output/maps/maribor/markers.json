@@ -1,0 +1,623 @@
+[
+  {
+    "name": "CityArrival",
+    "position": [
+      0,
+      0,
+      0
+    ],
+    "kind": "PlayerStart",
+    "route": "Shared"
+  },
+  {
+    "name": "ExitCity",
+    "position": [
+      0,
+      144,
+      0
+    ],
+    "kind": "SceneTransition",
+    "route": "Shared",
+    "target": "FERI",
+    "persist_city_c": "next_run"
+  },
+  {
+    "name": "A_Ramp",
+    "position": [
+      -33.6,
+      69,
+      0
+    ],
+    "kind": "OptionalRamp",
+    "route": "A",
+    "rise_m": 1.4,
+    "run_m": 4.6
+  },
+  {
+    "name": "A_MeleeGroup_1",
+    "position": [
+      -42,
+      61,
+      0
+    ],
+    "kind": "AuthoredEncounter",
+    "route": "A"
+  },
+  {
+    "name": "A_MeleeGroup_2",
+    "position": [
+      -42,
+      88,
+      0
+    ],
+    "kind": "AuthoredEncounter",
+    "route": "A"
+  },
+  {
+    "name": "A_Guilt_Roof",
+    "position": [
+      -56,
+      80,
+      8
+    ],
+    "kind": "AuthoredGuiltReveal",
+    "route": "A"
+  },
+  {
+    "name": "B_Watcher_1",
+    "position": [
+      8,
+      69,
+      2
+    ],
+    "kind": "AuthoredWatcher",
+    "route": "B"
+  },
+  {
+    "name": "B_Watcher_2",
+    "position": [
+      -8,
+      83,
+      2
+    ],
+    "kind": "AuthoredWatcher",
+    "route": "B"
+  },
+  {
+    "name": "C_SideDoor",
+    "position": [
+      55.3,
+      62,
+      0
+    ],
+    "kind": "MandatorySideEscape",
+    "route": "C",
+    "clear_width_m": 4.0,
+    "clear_height_m": 3.45
+  },
+  {
+    "name": "C_Guilt_Reveal",
+    "position": [
+      52,
+      91,
+      0
+    ],
+    "kind": "AuthoredGuiltReveal",
+    "route": "C"
+  },
+  {
+    "name": "C_Retreat",
+    "position": [
+      52,
+      67,
+      0
+    ],
+    "kind": "RetreatWaypoint",
+    "route": "C"
+  },
+  {
+    "name": "EntryGate_A",
+    "position": [
+      -42,
+      25,
+      0
+    ],
+    "kind": "EntryGate",
+    "route": "A",
+    "default_closed": true
+  },
+  {
+    "name": "Select_A",
+    "position": [
+      -42,
+      27,
+      0
+    ],
+    "kind": "SelectionTrigger",
+    "route": "A"
+  },
+  {
+    "name": "EntryGate_B",
+    "position": [
+      0,
+      25,
+      0
+    ],
+    "kind": "EntryGate",
+    "route": "B",
+    "default_closed": true
+  },
+  {
+    "name": "Select_B",
+    "position": [
+      0,
+      27,
+      0
+    ],
+    "kind": "SelectionTrigger",
+    "route": "B"
+  },
+  {
+    "name": "EntryGate_C",
+    "position": [
+      52,
+      25,
+      0
+    ],
+    "kind": "EntryGate",
+    "route": "C",
+    "default_closed": true
+  },
+  {
+    "name": "Select_C",
+    "position": [
+      52,
+      27,
+      0
+    ],
+    "kind": "SelectionTrigger",
+    "route": "C"
+  },
+  {
+    "name": "RearSeal_A",
+    "position": [
+      -42,
+      113.5,
+      0
+    ],
+    "kind": "RearSeal",
+    "route": "A",
+    "default_closed": true
+  },
+  {
+    "name": "RearSeal_B",
+    "position": [
+      0,
+      113.5,
+      0
+    ],
+    "kind": "RearSeal",
+    "route": "B",
+    "default_closed": true
+  },
+  {
+    "name": "RearSeal_C",
+    "position": [
+      68,
+      113,
+      0
+    ],
+    "kind": "RearSeal",
+    "route": "C",
+    "default_closed": true
+  },
+  {
+    "name": "CombatSpace_A",
+    "position": [
+      -42,
+      78,
+      0
+    ],
+    "kind": "CombatSpace",
+    "route": "A",
+    "width_m": 24,
+    "depth_m": 28,
+    "exit_has_kill_quota": false
+  },
+  {
+    "name": "Charge_A_1",
+    "position": [
+      -48,
+      76,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "A"
+  },
+  {
+    "name": "Charge_A_2",
+    "position": [
+      -36,
+      87,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "A"
+  },
+  {
+    "name": "Charge_A_3",
+    "position": [
+      -42,
+      69,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "A"
+  },
+  {
+    "name": "Spawn_A_1",
+    "position": [
+      -51.6,
+      66.8,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Spawn_A_2",
+    "position": [
+      -32.4,
+      66.8,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Spawn_A_3",
+    "position": [
+      -51.6,
+      78,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Spawn_A_4",
+    "position": [
+      -32.4,
+      78,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Spawn_A_5",
+    "position": [
+      -51.6,
+      89.2,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Spawn_A_6",
+    "position": [
+      -32.4,
+      89.2,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Guilt_A_1",
+    "position": [
+      -42,
+      68.2,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Guilt_A_2",
+    "position": [
+      -42,
+      78,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "A"
+  },
+  {
+    "name": "Guilt_A_3",
+    "position": [
+      -42,
+      87.8,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "A"
+  },
+  {
+    "name": "CombatSpace_B",
+    "position": [
+      0,
+      76,
+      0
+    ],
+    "kind": "CombatSpace",
+    "route": "B",
+    "width_m": 22,
+    "depth_m": 24,
+    "exit_has_kill_quota": false
+  },
+  {
+    "name": "Charge_B_1",
+    "position": [
+      -7.04,
+      69.28,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "B"
+  },
+  {
+    "name": "Charge_B_2",
+    "position": [
+      7.04,
+      70.24,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "B"
+  },
+  {
+    "name": "Charge_B_3",
+    "position": [
+      0,
+      83.2,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "B"
+  },
+  {
+    "name": "Spawn_B_1",
+    "position": [
+      -8.8,
+      66.4,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Spawn_B_2",
+    "position": [
+      8.8,
+      66.4,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Spawn_B_3",
+    "position": [
+      -8.8,
+      76,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Spawn_B_4",
+    "position": [
+      8.8,
+      76,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Spawn_B_5",
+    "position": [
+      -8.8,
+      85.6,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Spawn_B_6",
+    "position": [
+      8.8,
+      85.6,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Guilt_B_1",
+    "position": [
+      0,
+      67.6,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Guilt_B_2",
+    "position": [
+      0,
+      76,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "B"
+  },
+  {
+    "name": "Guilt_B_3",
+    "position": [
+      0,
+      84.4,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "B"
+  },
+  {
+    "name": "CombatSpace_C",
+    "position": [
+      68,
+      90,
+      0
+    ],
+    "kind": "CombatSpace",
+    "route": "C",
+    "width_m": 18,
+    "depth_m": 20,
+    "exit_has_kill_quota": false
+  },
+  {
+    "name": "Charge_C_1",
+    "position": [
+      62.24,
+      84.4,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "C"
+  },
+  {
+    "name": "Charge_C_2",
+    "position": [
+      73.76,
+      85.2,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "C"
+  },
+  {
+    "name": "Charge_C_3",
+    "position": [
+      68,
+      96.0,
+      0
+    ],
+    "kind": "StationaryCharge",
+    "route": "C"
+  },
+  {
+    "name": "Spawn_C_1",
+    "position": [
+      60.8,
+      82.0,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Spawn_C_2",
+    "position": [
+      75.2,
+      82.0,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Spawn_C_3",
+    "position": [
+      60.8,
+      90,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Spawn_C_4",
+    "position": [
+      75.2,
+      90,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Spawn_C_5",
+    "position": [
+      60.8,
+      98.0,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Spawn_C_6",
+    "position": [
+      75.2,
+      98.0,
+      0
+    ],
+    "kind": "OffscreenSpawnCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Guilt_C_1",
+    "position": [
+      68,
+      83.0,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Guilt_C_2",
+    "position": [
+      68,
+      90,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "C"
+  },
+  {
+    "name": "Guilt_C_3",
+    "position": [
+      68,
+      97.0,
+      0
+    ],
+    "kind": "OffscreenGuiltCandidate",
+    "route": "C"
+  },
+  {
+    "name": "FERI_Pier_End",
+    "position": [
+      0,
+      149,
+      0
+    ],
+    "kind": "Cosmetic",
+    "route": "Shared"
+  }
+]
