@@ -1,0 +1,85 @@
+{
+  "CHR_Melee.fbx": {
+    "meshes": {
+      "M_Melee_Jacket": 198,
+      "M_Melee_Backpack": 84,
+      "M_MeleeBody": 1204
+    },
+    "triangles": 1486,
+    "clips": [
+      "Melee_Contact",
+      "Melee_Death",
+      "Melee_Hit",
+      "Melee_Idle",
+      "Melee_Pursuit"
+    ],
+    "height_m": [
+      -0.002,
+      1.886
+    ]
+  },
+  "CHR_Guilt.fbx": {
+    "meshes": {
+      "M_Guilt": 1368
+    },
+    "triangles": 1368,
+    "clips": [
+      "Guilt_BossShadow",
+      "Guilt_Chase",
+      "Guilt_Warning"
+    ],
+    "height_m": [
+      -0.011,
+      4.215
+    ]
+  },
+  "CHR_Professor.fbx": {
+    "meshes": {
+      "M_Glasses": 132,
+      "M_Professor": 1358
+    },
+    "triangles": 1490,
+    "clips": [
+      "Professor_Idle"
+    ],
+    "height_m": [
+      -0.001,
+      1.782
+    ]
+  },
+  "CHR_Watcher.fbx": {
+    "meshes": {
+      "M_WatcherEye": 28,
+      "M_WatcherShell": 332
+    },
+    "triangles": 360,
+    "width_m": 0.724,
+    "sockets": [
+      "Socket_ProjectileOrigin"
+    ]
+  },
+  "PROJ_WatcherOrb.fbx": {
+    "meshes": {
+      "PROJ_WatcherOrb": 20
+    },
+    "triangles": 20
+  },
+  "PROP_ExamPaper.fbx": {
+    "meshes": {
+      "PROP_ExamPaper": 20
+    },
+    "triangles": 20
+  },
+  "PROP_Lectern.fbx": {
+    "meshes": {
+      "PROP_Lectern": 48
+    },
+    "triangles": 48
+  },
+  "PROP_FloorRing.fbx": {
+    "meshes": {
+      "PROP_FloorRing": 128
+    },
+    "triangles": 128
+  }
+}

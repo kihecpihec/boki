@@ -1,0 +1,85 @@
+{
+  "melee": {
+    "M_MeleeBody": {
+      "vertices": 672,
+      "triangles": 1204
+    },
+    "M_Melee_Jacket": {
+      "vertices": 128,
+      "triangles": 198
+    },
+    "M_Melee_Backpack": {
+      "vertices": 56,
+      "triangles": 84
+    },
+    "bones": 22,
+    "actions": [
+      "Melee_Contact",
+      "Melee_Death",
+      "Melee_Hit",
+      "Melee_Idle",
+      "Melee_Pursuit"
+    ],
+    "standing_height_m": 1.85,
+    "max_influences": 2,
+    "unweighted_vertices": 0
+  },
+  "watcher": {
+    "shell": 332,
+    "eye": 28,
+    "total": 360,
+    "size_m": [
+      0.55,
+      0.24,
+      0.4
+    ],
+    "orb_triangles": 20,
+    "paper_triangles": 20,
+    "bounds_m": [
+      [
+        -0.3621436059474945,
+        0.3618868589401245
+      ],
+      [
+        -0.1470097303390503,
+        0.1723157912492752
+      ],
+      [
+        -0.3120211660861969,
+        0.3124580681324005
+      ]
+    ]
+  },
+  "guilt": {
+    "vertices": 792,
+    "triangles": 1368,
+    "bones": 22,
+    "actions": [
+      "Guilt_BossShadow",
+      "Guilt_Chase",
+      "Guilt_Warning"
+    ],
+    "standing_height_m": 4.2,
+    "max_influences": 2,
+    "unweighted_vertices": 0
+  },
+  "professor": {
+    "body_triangles": 1358,
+    "glasses_triangles": 132,
+    "total_triangles": 1490,
+    "bones": 22,
+    "actions": [
+      "Professor_Idle"
+    ],
+    "standing_height_m": 1.78,
+    "lectern_triangles": 48,
+    "floor_ring_triangles": 128,
+    "lectern_offset_m": [
+      0,
+      -0.45,
+      0
+    ],
+    "max_influences": 2,
+    "unweighted_vertices": 0
+  }
+}
