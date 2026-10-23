@@ -570,5 +570,6 @@
         ]
       ]
     }
-  ]
+  ],
+  "gameplayPresentationReference": "../gameplay-mocks-v2/HANDOFF.md"
 }

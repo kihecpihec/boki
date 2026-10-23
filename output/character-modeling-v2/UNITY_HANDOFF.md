@@ -2,6 +2,8 @@
 
 **Target project:** Unity `6000.6.7f1`, URP, Windows x86_64. All new hierarchy, rig, socket, parameter and clip names below are proposals to implement after modeling.
 
+**Gameplay presentation companion:** use the [local UI states](../gameplay-mocks-v2/ui-states.html) and [gameplay handoff](../gameplay-mocks-v2/HANDOFF.md) for battery availability/depletion/return cues, Guilt's warning and time-driven chase escalation, and the distinction between ordinary panic movement and the Panic Mode boost upgrade. Scale in-place chase playback with actual movement; do not add attacks, a death clip, or root-motion displacement for Guilt. Authored Guilt sequences suspend ambient pursuit; the boss shadow has no chase logic. No mesh redesign is required by these rule changes.
+
 ## 1. What exists now
 
 Read-only inspection found:

@@ -2,6 +2,8 @@
 
 Open the [visual gallery](index.html). Keep the folder intact so its reference images and sheet links work.
 
+**Gameplay update:** use the [local gameplay mock gallery](../gameplay-mocks-v2/index.html) and [assembly handoff](../gameplay-mocks-v2/HANDOFF.md) with this pack. Its nine proposed combat pockets, charge/spawn/Guilt markers, rear seals, boss recovery plan, and UI states supplement the original concept art. The original PNGs are mood/shape references; the new editable diagrams supply the missing gameplay planning. Canonical rules remain in the game documents.
+
 This pack covers **Bellevue → Pohorje → Maribor → FERI → the professor's classroom**, including all nine A/B/C variants, shared scene starts/endings, modular environment families, route gates and secret passages. It is a modeling and scene-planning reference for Blender and Unity. No `.blend`, FBX, built Unity scene or environment prefab is delivered.
 
 The Figma Starter MCP allowance is still exhausted. The existing [Figma atlas](https://www.figma.com/design/VkUNlXhesVqCd2H8T9cOWZ) has **not** received this world pack.
