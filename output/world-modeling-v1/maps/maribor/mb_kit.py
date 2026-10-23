@@ -59,26 +59,36 @@ def make_texture(name, size, painter, seed=1):
 def build_textures():
     T = {}
     P = {k: [rgb(h) for h in v] for k, v in dict(
-        cobble=['#6a6862', '#7a766c', '#8a8474', '#5a5955', '#958d78'],
-        paveblue=['#5b6068', '#656a72', '#51565e', '#70757c'],
-        slab=['#8a8579', '#9a9384', '#777469', '#a8a08c'],
-        asphalt=['#2f3b47', '#36424f', '#28323d', '#3b4753'],
-        roof=['#9b3f2a', '#b04a30', '#843322', '#c45a38', '#74291c'],
-        quay=['#6b6e6c', '#7d807b', '#5a5e5e', '#8a8c84', '#4f6258'],
-        concrete=['#5f6567', '#6e7476', '#545a5d', '#7b8183'],
-        rock=['#2d3038', '#3d424b', '#4a505a', '#262a31', '#575c63'],
-        grass=['#2c4a34', '#35573b', '#25402d', '#46603d', '#3a5a47'],
-        wood=['#5a3d2a', '#6b4a33', '#4b3222', '#7a5639'],
-        stucco0=['#c1704f', '#b4644a', '#cc7e58', '#a95a42'],
-        stucco1=['#d6c3a0', '#c9b692', '#dfcfae', '#bfae8c'],
-        stucco2=['#b8a27d', '#aa946f', '#c4af8a', '#9d8864'],
-        stucco3=['#9fb0a0', '#8ea093', '#adbdad', '#829689'],
-        water=['#1a3047', '#203a55', '#16293d', '#27435f'],
-        carred=['#8c2a22', '#9b3329', '#7a231d'],
-        carblue=['#6f8196', '#7d90a5', '#617388'],
-        bark=['#3e3026', '#4b3a2d', '#33271f'],
-        leaf=['#2f5a3f', '#3b6b4a', '#27493a', '#4a7650'],
-        ashlar=['#8d887a', '#9e9888', '#7d796d', '#a9a392']).items()}
+        cobble=['#4c4a48', '#585450', '#645e55', '#3f3e3d', '#6b6252'],
+        paveblue=['#3f444c', '#484d55', '#393d44', '#50545b'],
+        slab=['#625f58', '#6d6a60', '#54524b', '#797366'],
+        asphalt=['#1c2229', '#222931', '#171c22', '#262d35'],
+        roof=['#6e2d22', '#7d3526', '#5e271d', '#8b4130', '#4f2018'],
+        quay=['#4b4e4d', '#585b58', '#3f4242', '#62645e', '#34463c'],
+        concrete=['#464b4d', '#51575a', '#3d4244', '#5b6163'],
+        rock=['#1f2228', '#2a2d34', '#33373f', '#1a1d22', '#3e4249'],
+        grass=['#3a4630', '#444f33', '#2f3a29', '#555a38', '#48503a'],
+        wood=['#3f2c20', '#4b3526', '#34241a', '#58402d'],
+        stucco0=['#8a5240', '#7c483a', '#935d46', '#6f4034'],
+        stucco1=['#9b8d76', '#8d806b', '#a39680', '#83775f'],
+        stucco2=['#85765c', '#786a52', '#8d7e63', '#6d6049'],
+        stucco3=['#72806f', '#667362', '#7d8b79', '#5d6a5a'],
+        water=['#0d1822', '#101f2b', '#0a131b', '#14263a'],
+        carred=['#5e1c18', '#6b231e', '#521815'],
+        carblue=['#46535f', '#505d69', '#3d4953'],
+        bark=['#2c231c', '#352a22', '#241c16'],
+        leaf=['#2b3d27', '#324830', '#243420', '#3d4f2c'],
+        ashlar=['#625f55', '#6f6b5f', '#55524a', '#797466']).items()}
+
+    def grime(c, x, y, h2, size=64, streak=.7, damp=True):
+        """Rain streaks running down from the top of each tile and rising damp at the bottom."""
+        v = h2(x // 5, 1234)
+        if v > streak:
+            k = .62 + .38 * ((y % size) / size) ** .6
+            c = shade(c, k)
+        if damp and y % size > size * .86:
+            c = shade(c, .72)
+        return c
 
     def cobble(x, y, rng, cell, h2):
         row = y // 10
@@ -86,7 +96,8 @@ def build_textures():
         col = (x + off) // 12
         if y % 10 == 0 or (x + off) % 12 == 0:
             return shade(P['cobble'][3], .72)
-        return pick(P['cobble'], h2(row, col))
+        c = pick(P['cobble'], h2(row, col))
+        return (.14, .06, .05) if cell(x + 5, y + 21, 12) > .955 else c
 
     def slab(x, y, rng, cell, h2):
         if x % 32 == 0 or y % 32 == 0:
@@ -95,20 +106,30 @@ def build_textures():
 
     def asphalt(x, y, rng, cell, h2):
         c = pick(P['asphalt'], cell(x, y, 2))
-        return shade(c, 1.25) if rng.random() < .01 else c
+        if ((x * 3 + y * 5) % 53 < 2 or (x * 5 - y * 2) % 71 < 2) and cell(x, y, 16) > .62:
+            return (.05, .06, .07)             # cracks
+        if cell(x + 11, y + 40, 10) > .94:
+            return (.16, .06, .05)             # old stain
+        return shade(c, 1.25) if rng.random() < .008 else c
 
     def roof(x, y, rng, cell, h2):
         row = y // 8
         col = (x + (4 if row % 2 else 0)) // 8
         if y % 8 in (0, 1) or (x + (4 if row % 2 else 0)) % 8 == 0:
             return shade(P['roof'][4], .6)
-        return pick(P['roof'], h2(row, col))
+        c = pick(P['roof'], h2(row, col))
+        if cell(x, y, 16) > .86:
+            return shade((.17, .24, .15), .8 + h2(row, col) * .5)
+        return shade(c, .75) if h2(row + 9, col + 3) > .85 else c
 
     def stucco(i):
         def f(x, y, rng, cell, h2):
             c = pick(P['stucco%d' % i], cell(x, y, 8) * .5 + cell(x, y, 2) * .5)
-            if y % 64 > 56:
-                c = shade(c, .86)
+            c = grime(c, x, y, h2, 64, .66)
+            if cell(x + 17, y + 5, 16) > .9:       # peeled plaster showing brick
+                c = (.30, .16, .13) if cell(x, y, 2) > .35 else (.22, .12, .1)
+            elif cell(x + 3, y + 29, 12) > .93:    # mould bloom
+                c = shade((.2, .27, .18), .8 + cell(x, y, 2) * .4)
             return c
         return f
 
@@ -138,7 +159,9 @@ def build_textures():
 
     def grass(x, y, rng, cell, h2):
         c = pick(P['grass'], cell(x, y, 4))
-        return (.62, .56, .3) if rng.random() < .012 else c
+        if cell(x + 7, y + 3, 8) > .82:
+            return (.2, .15, .11)              # bare soil
+        return (.45, .4, .22) if rng.random() < .02 else c
 
     def wood(x, y, rng, cell, h2):
         if x % 16 == 0:
@@ -149,9 +172,9 @@ def build_textures():
         c = pick(P['water'], cell(x, y, 4) * .5 + .25 * math.sin(x * .35 + y * .15) + .25)
         streak = cell(x // 6 * 6, y // 14 * 14, 6)
         if streak > .93 and (y % 14) < 3:
-            return (.9, .38, .2)
+            return (.62, .14, .08)
         if streak > .86 and (y % 14) < 2:
-            return (.5, .22, .22)
+            return (.3, .09, .09)
         return c
 
     def pave(x, y, rng, cell, h2):
@@ -171,7 +194,17 @@ def build_textures():
         return (.62, .34, .96) if d else (.10, .05, .16)
 
     def lit(x, y, rng, cell, h2):
-        return (1, .66, .32) if (x // 8 + y // 8) % 2 else (.95, .55, .24)
+        return (.92, .5, .2) if (x // 8 + y // 8) % 2 else (.7, .32, .12)
+
+    def poster(x, y, rng, cell, h2):
+        # Faded rave flyer: paper, a purple sun, a headline bar, a torn corner.
+        if (x - 32) ** 2 + (y - 38) ** 2 < 140:
+            return (.5, .18, .5)
+        if 10 < y < 18 and 6 < x < 58:
+            return (.82, .78, .6)
+        if x + y > 112 or (y < 4 and x > 50):
+            return (.35, .3, .26)
+        return (.66, .6, .46) if cell(x, y, 4) > .3 else (.58, .52, .4)
 
     def rail(x, y, rng, cell, h2):
         return (.5, .22, .17) if x % 32 < 6 else (.18, .2, .24)
@@ -182,7 +215,7 @@ def build_textures():
             ('Concrete', 128, concrete), ('Rock', 128, rock), ('Grass', 128, grass), ('Wood', 128, wood),
             ('Drava', 128, water), ('Pave', 128, pave), ('CarRed', 64, solid('carred')), ('CarBlue', 64, solid('carblue')),
             ('Bark', 64, solid('bark')), ('Leaf', 64, solid('leaf')), ('SecretLattice', 64, lattice),
-            ('WarmWindow', 32, lit), ('Hazard', 64, rail)]
+            ('WarmWindow', 32, lit), ('Hazard', 64, rail), ('Poster', 64, poster)]
     for i, (name, size, painter) in enumerate(spec):
         T[name] = make_texture(name, size, painter, seed=759 + i)
     return T
@@ -222,6 +255,9 @@ class Kit:
         self.collision = []
         self.markers = []
         self.floors = []
+        self.boxlog = []
+        self.group = 0
+        self.library_c = None
         self.guides_c = guides_collection
         self.markers_c = marker_collection
         self.iron = None
@@ -250,6 +286,10 @@ class Kit:
 
     def box(self, name, pos, size, mat, c, rot=0., tile=4., solid=False):
         x, y, z = pos
+        if not name.startswith('COL_'):
+            # Library modules are modelled at the origin and joined one by one; each join closes a group.
+            owner = 'module_%d' % self.group if c is self.library_c else c.name
+            self.boxlog.append((name, owner, tuple(pos), tuple(size), rot, getattr(mat, 'name', 'multi')))
         a, b, d = [v / 2 for v in size]
         cs, sn = math.cos(rot), math.sin(rot)
         verts = []
@@ -345,6 +385,7 @@ class Kit:
         o = bpy.context.object
         o.name = name
         o.data.name = name
+        self.group += 1
         # Bake any object transform into the mesh, then keep origin at the requested meter origin.
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
         bpy.context.scene.cursor.location = origin
@@ -449,3 +490,37 @@ def arch_span(kit, name, cx, y0, y1, r, z_crown, z_top, mat, c):
         faces.append((m + j + 1, m + j + 3, m + j + 2, m + j))
         faces.append((j, m + j, m + j + 2, j + 2))
     return kit.mesh(name, verts, faces, mat, c)
+
+
+def coplanar_overlaps(boxlog, eps=.004, min_area=.0004):
+    """Axis-aligned box pairs whose faces share a plane, point the same way and overlap with different materials.
+
+    Those are the pairs a renderer shows as flickering z-fighting. Rotated boxes are ignored.
+    """
+    items = []
+    for name, col, pos, size, rot, mat in boxlog:
+        n = round(rot / (math.pi / 2))
+        if abs(rot - n * math.pi / 2) > 1e-3:
+            continue
+        w, d, h = size if n % 2 == 0 else (size[1], size[0], size[2])
+        lo = (pos[0] - w / 2, pos[1] - d / 2, pos[2] - h / 2)
+        hi = (pos[0] + w / 2, pos[1] + d / 2, pos[2] + h / 2)
+        items.append((lo, hi, name, col, mat))
+    items.sort(key=lambda t: t[0][0])
+    hits = []
+    for i, (la, ha, na, ca, ma) in enumerate(items):
+        for lb, hb, nb, cb, mb in items[i + 1:]:
+            if lb[0] > ha[0]:
+                break
+            if ca != cb or ma == mb:
+                continue
+            for k in range(3):
+                o, p_ = [j for j in range(3) if j != k]
+                ov = (min(ha[o], hb[o]) - max(la[o], lb[o])) * (min(ha[p_], hb[p_]) - max(la[p_], lb[p_]))
+                if min(ha[o], hb[o]) - max(la[o], lb[o]) <= 0 or min(ha[p_], hb[p_]) - max(la[p_], lb[p_]) <= 0 or ov < min_area:
+                    continue
+                # Coplanar downward faces (equal bottoms) sit on the ground or inside a base and are never seen.
+                if abs(ha[k] - hb[k]) < eps or (abs(la[k] - lb[k]) < eps and k != 2):
+                    hits.append((na, nb, ca, 'xyz'[k], round(ov, 3), [round((a + b) / 2, 1) for a, b in zip(la, ha)]))
+                    break
+    return hits

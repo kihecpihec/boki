@@ -1,4 +1,6 @@
-# Maribor — lit diorama pass
+# Maribor — lit diorama pass, horror and overlap revision
+
+**Third pass.** This revision removes overlapping geometry and gives the city the dread the Story asks for. See [Overlap fixes](#overlap-fixes) and [Horror pass](#horror-pass). The sections below describe the layout, which is unchanged except where noted.
 
 Open [Source/Maribor.blend](Source/Maribor.blend), scene **Maribor**. This replaces the first, flat box-and-ring pass. It follows the Figma Maribor mockup (red dusk, terracotta roofs, lit lamps, the Drava, a basin with a bridge behind it, a concrete underpass block, the FERI sign at the end) and the Pohorje delivery's construction style (2–4 px clump textures, flat-shaded low poly, a framing ridge of hills with Pohorje's own spruces, packed materials, separate route collections). Nothing in `Game/Assets`, Pohorje or any Unity scene was modified.
 
@@ -27,22 +29,45 @@ Each combat pocket has three fixed charge props, six regular spawn candidates an
 
 Entry and rear seal meshes are **opaque and closed by default** and remain separately named for gameplay binding. They carry no gate logic.
 
+## Overlap fixes
+
+The earlier pass let 8 m deep facade bays collide on the bend of Tabor street (1–4 m of penetration), sank the route C gate posts into the tunnel walls, put lamps on rails, stacked two containers into each other and left several coplanar faces that flicker (z-fight).
+
+- **Tabor street** is a gentler bend (radius about 45 m or more). `bays_along` tests each bay against its neighbours and slides on when it would sink in more than 0.2 m. The south bays stop short of the merge-promenade rail. The row on each side now has fewer bays (38 `FacadeBay` guides against 44).
+- **Props check the collision guides.** `lamp_at` and `tree_at` call `clear()`. A lamp steps aside up to 0.9 m or is dropped. A tree is dropped if its trunk touches a solid or its crown reaches a facade, container or lamp (a planter keeps a bush instead). The builder prints every skipped placement.
+- **Coplanar faces.** `mb_kit.coplanar_overlaps` runs at build time and reports axis-aligned box pairs with different materials that share a plane and overlap. It found the clock face flush with its tower, the quay inlay layers 1 mm apart, the gate posts flush with the gallery walls, vents flush with the roof edge and containers overlapping by 0.6 m. All are fixed; the build now reports 0.
+- **Route C gate.** The stone gate posts are gone; the pillars sit beside the gallery walls and the lintel is wider.
+- **Lamp layout.** The merge-row lamps moved so none stands on a route end, and ledge lamps skip the Lent quay combat floor.
+- `python3 -I audit_overlaps.py` re-checks `collision-guides.json` without Blender and writes [overlap-audit.json](overlap-audit.json): **0 building overlaps** and 0 other solid overlaps. Rails, same-material concrete joints and props on the terrace slab are treated as expected. It tests footprints only; it does not find mesh-level intersections inside a module.
+
+## Horror pass
+
+Palette and tone follow [Story §6](../../../../docs/Story.md): orange-red city, strong fog, short view distance. The city is now dim and decayed, not a warm dusk. Collision, routes and markers are unchanged.
+
+- **Textures** are colder and dirtier: rain streaks, rising damp, peeled plaster, moss on roofs, cracked asphalt with old stains, dead grass with bare soil and near-black water with rare red streaks. A faded rave flyer texture (`Poster.png`) is new; 23 textures are exported.
+- **Facades** have mostly dark windows (20% lit, down from 50%), nailed planks over about half of the dead ones, ivy on corners and between the window rows, and torn flyers. Planks, ivy and flyers sit clear of trims and frames.
+- **Lamps.** About 45% of the unlit-by-design lamps are dead (`ENV_C_Streetlamp_Dead`); the lamps with point lights stay lit. Crows (`ENV_C_Crow`) perch on some dead lamp arms and the road near the stains.
+- **Trees.** Most trees became dead ones, including a new tall `ENV_C_TreeDeadTall`.
+- **Street dressing.** Leaf drifts, trash bags, dried stains and drag marks (flat, no collision) on Tabor, Lent, the plaza and underpass. The tower clock is stuck at 07:58.
+- **Underpass.** Only every third ceiling tube is lit, the review light is dimmer and the Guilt end glows red.
+- **Lighting (previews only, not exported).** A dim red low sun, a darker blood-red sky and a bounded ground-fog volume. An unbounded world volume renders black in Cycles because sky rays never leave it. In Unity use exponential-squared fog with a dark red tint and a short distance instead.
+
 ## Files
 
-Open [the preview gallery](index.html) for nine views: overview, arrival, Tabor street and court, Lent lanes and quay, underpass, roofless cutaway and FERI exit.
+Open [the preview gallery](index.html) for nine views (**stale in part:** views 1–5 are re-rendered for this revision at 768 × 480; views 6–9, Lent quay, underpass, cutaway and FERI exit, are still the earlier lit-diorama renders and do not show the horror pass): overview, arrival, Tabor street and court, Lent lanes and quay, underpass, roofless cutaway and FERI exit.
 
 - [Annotated meter-scaled map](Maribor_Map.svg).
-- `Export/`: `MB_Shared_Arrival_FERI`, `MB_Route_A/B/C`, `MB_Scenery`, `MB_C_Removable_Roofs`, `MB_Gameplay_Markers`, `MB_Collision_Guides`, plus reusable modules (8 facades, 2 cars, streetlamp, 4 m rail, jersey barrier, bin, 3 trees and a bush).
-- `Textures/`: 22 opaque pixel textures (64–256 px), also packed in the Blender source and embedded in the FBXs. No downloaded or generated artwork is used as geometry texture.
+- `Export/`: `MB_Shared_Arrival_FERI`, `MB_Route_A/B/C`, `MB_Scenery`, `MB_C_Removable_Roofs`, `MB_Gameplay_Markers`, `MB_Collision_Guides`, plus reusable modules (8 facades, 2 cars, streetlamp and dead streetlamp, crow, 4 m rail, jersey barrier, bin, 4 trees and a bush).
+- `Textures/`: 23 opaque pixel textures (64–256 px), also packed in the Blender source and embedded in the FBXs. No downloaded or generated artwork is used as geometry texture.
 - `layout.json`, `markers.json`, `collision-guides.json`: Blender XYZ meters, Z up; FBX exports use Y up / -Z forward. Collision guides now carry a `rotation_z` in radians (curved streets use rotated boxes).
 - [validation.json](validation.json): measured triangles, zero-area faces, sampled floor and clearance results, charge placement checks and representative FBX reimports.
-- `mb_kit.py` (textures, materials, primitives, path ribbons) and `build_maribor.py` (scene).
+- `mb_kit.py` (textures, materials, primitives, path ribbons, coplanar-face audit), `build_maribor.py` (scene) and `audit_overlaps.py` (guide overlap audit).
 
 ## Verification
 
-The source has **151,378 render triangles across 532 mesh objects** (Pohorje is 123,177 across 307). Everything is static, opaque and combined by material set. All **1,609 path samples** passed floor, proposed blocker and four-direction standing-clearance checks against actual render geometry. All nine charge positions passed support and clearance. Representative A and C FBX reimports matched triangle counts and meter bounds within 0.00004 m. No zero-area faces remain. These checks exclude dynamic gate blockers and do not establish controller behavior.
+The source has **133,164 render triangles across 449 mesh objects** (Pohorje is 123,177 across 307). Everything is static, opaque and combined by material set. All **1,609 path samples** passed floor, proposed blocker and four-direction standing-clearance checks against actual render geometry, and all nine charge positions passed support and clearance (`validation.json`, status `passed`). Representative A and C FBX reimports matched triangle counts and meter bounds within 0.0002 m. No zero-area faces remain. The build reports 0 coplanar z-fighting pairs and `audit_overlaps.py` reports 0 building overlaps. These checks exclude dynamic gate blockers and do not establish controller behavior. Checks ran in Blender 5.2.0 (the builder was written for 4.4.3).
 
-**Not verified:** Unity import, controller feel, enemy navigation, camera clearance and any Windows or Ryzen 5600G performance. Blender triangle counts do not establish the runtime target. About 85k of the triangles are scenery (hills, bank houses, spruces) that could be reduced or replaced with a skybox/impostors if the Windows 1280 × 720 Low test needs the headroom.
+**Not verified:** preview renders 6–9 for this revision, Unity import, controller feel, enemy navigation, camera clearance and any Windows or Ryzen 5600G performance. Blender triangle counts do not establish the runtime target. About 65k of the triangles are scenery (hills, bank houses, spruces) that could be reduced or replaced with a skybox/impostors if the Windows 1280 × 720 Low test needs the headroom.
 
 ## Integration and remaining work
 
@@ -56,4 +81,4 @@ No `.meta` files exist and nothing is imported into Unity; import with the pinne
 
 ## Rebuild and edit
 
-Built with Blender **4.4.3**: `blender --background --factory-startup --threads 6 --python-exit-code 1 --python build_maribor.py`. The builder refuses to overwrite `Source/Maribor.blend`; preserve artist edits and use a fresh copy of the folder before deliberately rebuilding. `MB_DEV=1` builds to `/tmp` without exports; `MB_PREVIEWS=1,3` renders only those cameras; `MB_SAMPLES` and `MB_RES` set quality. Run `blender --background Source/Maribor.blend --python verify_maribor.py` for the checks and `python3 draw_map.py` for the annotated map. Edit the builder and manifests together; do not treat validation or previews as current after manual Blender edits. The Pohorje `.blend` was saved by a newer Blender than 4.4.3, so only its FBX exports are used.
+Built with Blender **4.4.3**, and this revision also with **5.2.0**: `blender --background --factory-startup --threads 6 --python-exit-code 1 --python build_maribor.py`. The builder refuses to overwrite `Source/Maribor.blend`; preserve artist edits and use a fresh copy of the folder before deliberately rebuilding, or set `MB_FORCE=1` to replace it. `MB_FOG` and `MB_EXPOSURE` tune the preview fog and exposure; `MB_PREVIEWS=0` skips all renders. `MB_DEV=1` builds to `/tmp` without exports; `MB_PREVIEWS=1,3` renders only those cameras; `MB_SAMPLES` and `MB_RES` set quality. Run `blender --background Source/Maribor.blend --python verify_maribor.py` (it saves the file, so work on a copy) for the checks and `python3 draw_map.py` for the annotated map. Edit the builder and manifests together; do not treat validation or previews as current after manual Blender edits. The Pohorje `.blend` was saved by a newer Blender than 4.4.3, so only its FBX exports are used.

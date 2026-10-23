@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "render_triangles_all_routes": 151378,
+  "render_triangles_all_routes": 133164,
   "collections": [
     {
       "collection": "Collection",
@@ -9,28 +9,28 @@
     },
     {
       "collection": "MB_Shared_Arrival_FERI",
-      "triangles": 24306,
-      "mesh_objects": 45
+      "triangles": 25072,
+      "mesh_objects": 61
     },
     {
       "collection": "MB_Route_A",
-      "triangles": 17530,
-      "mesh_objects": 62
+      "triangles": 19220,
+      "mesh_objects": 74
     },
     {
       "collection": "MB_Route_B",
-      "triangles": 14174,
-      "mesh_objects": 45
+      "triangles": 15188,
+      "mesh_objects": 61
     },
     {
       "collection": "MB_Route_C",
-      "triangles": 8004,
-      "mesh_objects": 58
+      "triangles": 8400,
+      "mesh_objects": 66
     },
     {
       "collection": "MB_Scenery",
-      "triangles": 87064,
-      "mesh_objects": 313
+      "triangles": 64984,
+      "mesh_objects": 178
     },
     {
       "collection": "MB_C_Removable_Roofs",
@@ -45,15 +45,15 @@
   "fbx_roundtrips": [
     {
       "file": "MB_Route_A.fbx",
-      "source_triangles": 17530,
-      "imported_triangles": 17530,
-      "bounds_error_m": 3.24249267578125e-05,
+      "source_triangles": 19220,
+      "imported_triangles": 19220,
+      "bounds_error_m": 0.00016498565673828125,
       "passed": true
     },
     {
       "file": "MB_Route_C.fbx",
-      "source_triangles": 8004,
-      "imported_triangles": 8004,
+      "source_triangles": 8400,
+      "imported_triangles": 8400,
       "bounds_error_m": 1.8894672393798828e-05,
       "passed": true
     }
