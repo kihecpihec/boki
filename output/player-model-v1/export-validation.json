@@ -1,0 +1,53 @@
+{
+  "CHR_Boki.fbx": {
+    "meshes": 1,
+    "triangles": 1273,
+    "rigs": 1,
+    "bones": 22,
+    "has_skin": true,
+    "action": "CHR_Boki|Boki_Lowpoly_Studio",
+    "world_bounds_m": {
+      "X": [
+        -0.4479265809059143,
+        0.4479265809059143
+      ],
+      "Y": [
+        -0.44655412435531616,
+        0.41766828298568726
+      ],
+      "Z": [
+        0.156645730137825,
+        1.6533079147338867
+      ]
+    },
+    "ride_bounds_match_source": true
+  },
+  "CHR_Boki_BindPose.fbx": {
+    "meshes": 1,
+    "triangles": 1273,
+    "rigs": 1,
+    "bones": 22,
+    "has_skin": true,
+    "action": null,
+    "world_bounds_m": {
+      "X": [
+        -0.5530802011489868,
+        0.5530802011489868
+      ],
+      "Y": [
+        -0.20099996030330658,
+        0.1300000697374344
+      ],
+      "Z": [
+        -4.7355246834968057e-08,
+        1.7199996709823608
+      ]
+    }
+  },
+  "PROP_Scooter.fbx": {
+    "meshes": 4,
+    "triangles": 628,
+    "rigs": 0,
+    "axle_pivots_verified": true
+  }
+}
