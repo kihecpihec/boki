@@ -25,6 +25,7 @@ Read only the sections relevant to the task. Keep game rules in their canonical 
 | Systems or scene wiring | [Architecture.md §3–6](docs/Architecture.md#3-proposed-modules-and-ownership) |
 | Linux/Windows behavior or performance | [Architecture.md §1 and §7](docs/Architecture.md#1-technical-goal-and-boundaries); [Gameplay.md §8](docs/Gameplay.md#8-performance-target-and-unity-settings) |
 | Editor setup and hardware | [README.md](README.md#development-setup) |
+| Writing, structuring, auditing, or verifying C#, asmdefs, tests, or Editor tools | Skill `boki-unity-architecture` ([SKILL.md](.agents/skills/boki-unity-architecture/SKILL.md)) |
 
 Do not invent missing design decisions. Check the relevant canonical document first.
 
