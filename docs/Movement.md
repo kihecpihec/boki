@@ -1,9 +1,11 @@
 # BOKI: LATE TO FERI — Movement
 
-> **Status:** design and implementation theory, not a description of existing code.
+> **Status:** the first momentum iteration is implemented; remaining proposals are identified below.
 > **Related:** [Gameplay.md §0](Gameplay.md#0-gameplay-pillars-and-controls) (controls), [Story.md §4](Story.md#4-enemy-design-and-escalation) (speed, boost, and Guilt values), [Architecture.md §3](Architecture.md#3-proposed-modules-and-ownership) and [§7](Architecture.md#7-project-settings-and-performance) (`ScooterController`, arcade `CharacterController`).
 
 This document explains **why** Boki's scooter movement behaves the way it does and **how** `ScooterController` should produce that behavior. Base values (speed, boost, Guilt bonus, upgrades) stay canonical in Story.md; this document only references them. Everything marked **proposal** or **initial tuning** is new and can change after playtesting. Section 11 lists open decisions.
+
+**Implemented scope:** the approved first iteration adds camera-relative acceleration, ground braking, gradual air steering, horizontal momentum across jumps, soft overspeed decay, 0.1 s jump buffering/coyote time, and 0.1 s landing friction grace for timed hops. `ScooterMotion` owns the engine-free state; `ScooterController` supplies input, ground probing and collision response. Existing serialized prototype values remain authoritative for this playtest: see [Gameplay §M1](Gameplay.md#m1-movement-baseline). The second iteration adds approved downhill acceleration and capped air-strafe speed gain. The owned `Player_Model_Test` scene also has wheel spin, turn lean, slope tilt, speed-based FOV and a boost cooldown HUD. Air boost, variable jump height, stronger falling gravity, extra camera follow lag and audio/screen effects remain outside the implemented scope. The shared controller uses this behavior in existing scenes without rewriting their assets; `Player_Model_Test` is the owned visual playtest arena.
 
 ## 1. Design Goals
 
@@ -29,7 +31,7 @@ Velocity is split into a **horizontal** part (on the ground plane) and a **verti
 
 Run in `Update` with `Time.deltaTime`. The `CharacterController` is not a Rigidbody, so `FixedUpdate` is unnecessary.
 
-1. Read input from the Input System actions `Move`, `Jump`, and `Sprint`. The template's existing `Sprint` action triggers the boost; only the action name differs.
+1. Read input from the Input System actions `Move`, `Jump`, and `Boost`. The template action has already been renamed to `Boost`.
 2. Probe the ground (§6.1): grounded flag, ground normal, distance.
 3. Update timers: coyote time, jump buffer, boost duration, boost cooldown.
 4. Compute the current speed cap (§3.2 and §8).
@@ -70,9 +72,11 @@ This is the central rule for momentum. When horizontal speed is **above the cap*
 
 ## 4. Boost
 
-Canonical values: **11 m/s for 0.6 s, 3 s cooldown** ([Story.md §4](Story.md#4-enemy-design-and-escalation)). Control: `Left Shift` ([Gameplay.md §0](Gameplay.md#0-gameplay-pillars-and-controls)).
+Design target: **11 m/s for 0.6 s, 3 s cooldown** ([Story.md §4](Story.md#4-enemy-design-and-escalation)). Control: `Left Shift` ([Gameplay.md §0](Gameplay.md#0-gameplay-pillars-and-controls)).
 
-How it works in the velocity model:
+The current playtest retains the approved [M1 boost values and ground-only activation](Gameplay.md#m1-movement-baseline); its cooldown starts after the active boost ends. The longer-term design below remains a proposal.
+
+How the design target works in the velocity model:
 
 1. On press, if the cooldown is ready: set the horizontal speed to `max(current speed, boostSpeed)` in the wish direction (or the current travel direction if there is no input). Start the 0.6 s duration and the 3 s cooldown.
 2. While the boost is active, the speed cap is `boostSpeed`. Boki holds 11 m/s and steers normally.
@@ -101,11 +105,17 @@ Use stronger gravity while falling than while rising (`fallGravityMultiplier ≈
 
 ### 5.4 Air Control
 
-In the air, use the same rules as the ground but with `airAcceleration` (about one third of ground acceleration) and no braking. The player can adjust a jump but cannot reverse it in midair. That keeps jumps over gaps a commitment, which the Gondolska servisna pot route relies on ([Story.md §3](Story.md#3-story-beats-and-script)).
+In the air, use the same rules as the ground but with `airAcceleration` (about one third of ground acceleration) and no braking. The player can adjust a jump but cannot instantly reverse direction in midair. That keeps jumps over gaps a commitment, which the Gondolska servisna pot route relies on ([Story.md §3](Story.md#3-story-beats-and-script)).
+
+### 5.4.1 Air-Strafe Speed Gain
+
+Approved for the second iteration. Camera-relative input steers the trajectory while retaining existing speed when steering forward/across it. An additional projected acceleration rewards a wish direction whose velocity projection is between zero and the ordinary riding speed. Turning across travel can therefore add speed; holding straight forward at riding speed or simply jumping cannot. Reverse input does not receive this gain.
+
+Initial tuning is 6 m/s² projected acceleration, with new gain limited to 2× base riding speed (12 m/s with the retained prototype). Normal air overspeed decay still applies. This is a cap on speed generated by air strafing, not a hard cap on faster downhill momentum. Active boosts do not also receive air-strafe acceleration. No new action/binding is required. This is an original tunable approximation of the requested movement feel, not a reproduction of another game's internal formula.
 
 ### 5.5 Landing
 
-Landing keeps horizontal velocity. Any overspeed then decays normally through §3.3. Landing should never snap speed down, because that punishes jumping, which the levels encourage (car ramp, broken planks).
+Landing keeps horizontal velocity. The implemented first iteration gives a 0.1 s friction grace period before ground braking/overspeed decay starts; steering or deliberately pressing backward can still shed speed. A buffered or timed jump uses airborne decay without a ground friction penalty. Any remaining overspeed then decays normally through §3.3. Landing should never snap speed down, because that punishes jumping, which the levels encourage (car ramp, broken planks).
 
 ## 6. Ground and Slopes
 
@@ -127,7 +137,7 @@ When Boki was grounded last frame, is not jumping, and ground is within `snapDis
 
 When grounded, project the horizontal velocity onto the ground plane before moving, so Boki follows the slope instead of pushing into it or flying off it.
 
-**Proposal — slope momentum:** add the downhill part of gravity to the velocity: `ProjectOnPlane(gravity, groundNormal) × slopeGain`. Downhill, this builds speed above the cap, which the soft cap then lets fade on flat ground. Uphill, it slows Boki slightly. **Why:** it makes terrain matter, rewards picking lines down Pohorje and the gondola slope, and creates speed without new buttons. `slopeGain = 0` turns it off completely; see §11.
+**Implemented — slope momentum:** add the horizontal part of `ProjectOnPlane(gravity, groundNormal) × slopeGain` while grounded. The initial gain is 0.5. Riding downhill suspends ground overspeed decay while slope acceleration adds speed; on flat ground the normal soft decay resumes. Uphill acceleration opposes travel. Releasing input still applies ground braking, which can hold this scooter on a walkable slope. Jumping immediately stops slope acceleration and carries the acquired speed into the air. `slopeGain = 0` disables the gain.
 
 Surfaces steeper than `slopeLimit` are walls: Boki slides down them and cannot jump from them.
 
@@ -165,8 +175,8 @@ All values are **initial tuning** except those marked canonical. Expose them in 
 
 | Parameter | Value | Source |
 |---|---|---|
-| Base speed | 7 m/s | Canonical, Story.md §4 |
-| Boost speed / duration / cooldown | 11 m/s / 0.6 s / 3 s | Canonical, Story.md §4 |
+| Base speed | 6 m/s playtest; 7 m/s design target | Gameplay.md M1 baseline / Story.md §4 |
+| Boost speed / duration / cooldown | 10.5 m/s / 0.35 s / 1 s playtest; 11 m/s / 0.6 s / 3 s design target | Gameplay.md M1 baseline / Story.md §4 |
 | Guilt speed bonus | +25% for 2 s, 5 s cooldown | Canonical, Story.md §4 |
 | Ground acceleration | 60 m/s² | Initial tuning |
 | Air acceleration | 20 m/s² | Initial tuning |
@@ -174,21 +184,24 @@ All values are **initial tuning** except those marked canonical. Expose them in 
 | Overspeed decay (ground / air) | 6 / 2 m/s² | Initial tuning |
 | Overspeed turn rate | 240 °/s | Initial tuning |
 | Jump height | 1.2 m | Initial tuning |
-| Gravity / fall multiplier | 20 m/s² / 1.6 | Initial tuning (stronger than real gravity for arcade feel) |
-| Coyote time / jump buffer | 0.1 s / 0.1 s | Initial tuning |
+| Gravity / fall multiplier | 25 m/s² / 1 currently; 20 / 1.6 proposal | Retained prototype gravity; stronger falling gravity deferred |
+| Coyote time / jump buffer / landing grace | 0.1 s / 0.1 s / 0.1 s | Implemented initial tuning |
 | Snap distance | 0.3 m | Initial tuning |
 | Slope limit | 45° | `CharacterController` default |
-| Slope gain | 0.5 (0 = off) | Proposal, see §11 |
+| Slope gain | 0.5 (0 = off) | Implemented initial tuning |
+| Air-strafe acceleration / gain speed limit | 6 m/s² / 2× base riding speed | Implemented initial tuning |
+| Visual lean / slope tilt limit | 12° / 25° | Implemented initial tuning; visual only |
+| Wheel radius | 0.1 m | Imported scooter geometry |
 | Field of view at rest / at boost speed | 70° / 80° | Initial tuning |
 
 ## 11. Open Decisions
 
 These are not settled by the other design documents and need a team decision before they are treated as rules:
 
-1. **Steering model:** camera-relative steering (proposed in §3.1) or tank steering, where `A`/`D` turn the scooter and `W`/`S` throttle. Tank steering feels more like a vehicle but is harder with an automatic camera.
-2. **Slope momentum (§6.3):** should downhill speed exceed the 7 m/s base speed? If not, set `slopeGain = 0`.
-3. **Overspeed from repeated jumps:** with the soft cap, quickly chaining jumps after a boost keeps some extra speed for longer. Decide whether that is intended skill or should be prevented with stronger air decay.
-4. **Boost in the air:** allowed (current proposal) or ground only.
+1. **Steering model:** camera-relative steering is approved and implemented for this iteration. Tank steering is outside the current scope.
+2. **Slope momentum (§6.3):** approved and implemented; downhill riding can exceed base speed.
+3. **Overspeed from repeated jumps:** approved for this iteration. Timed hops retain speed with the softer airborne decay; they never add speed by themselves. Air-strafe speed gain is approved and implemented with the tunable limit in §5.4.1.
+4. **Boost in the air:** deferred; activation remains ground only, and an active boost carries through a jump.
 5. **Variable jump height:** whether releasing `Space` early cuts the jump short.
 6. **Acceleration scaling:** whether the proposed momentum controller scales acceleration with riding-speed modifiers. Additive upgrade stacking, Turbo exclusion from boost speed, and Panic Mode are settled in Story §5.
 7. **Slide or crouch action:** not proposed. There is no control for it in Gameplay.md §0, and it would need a new binding.
@@ -198,3 +211,27 @@ These are not settled by the other design documents and need a team decision bef
 - **EditMode tests** for the movement math as pure functions: acceleration reaches the cap without exceeding it; overspeed decays to the cap and never below it; boost respects duration and cooldown; coyote time and jump buffer windows; modifier stacking; frame-rate independence (the same input over 1 s at 30 and 144 steps gives nearly the same result).
 - **Manual checks** in the M1 arena ([Architecture.md §9](Architecture.md#9-development-milestones)): ride over a crest and down a slope without hopping; boost out of a 0.8 s warning circle; jump a 1 m obstacle; brush along a wall without stopping; no Console errors.
 - **Performance:** confirm with the Profiler that the controller stays well below 0.1 ms per frame, and include movement in the Windows player-build test.
+
+
+### First iteration verification
+
+- Unity 6000.6.7f1 imported the new scripts, assemblies and their generated `.meta` files.
+- All 50 EditMode cases passed (18 movement cases plus 32 existing combat/route cases); results are written to `Game/Logs/movement-editmode.xml`. Re-run using **Boki → Player Model → Run EditMode Tests** outside Play Mode.
+- Existing M1 smoke checks passed: references, grounding, wall collision, camera obstruction and 120 Play Mode frames. The rigged player test scene opens and renders in Play Mode.
+- No new Inspector assignments are required. Existing input, camera, collider, speed and boost settings are retained. New movement tuning fields use the initial values above; runtime tuning changes require re-enabling the component to rebuild its rules state.
+- Manual feel validation remains: in `Player_Model_Test`, boost then jump and release WASD to check airborne carry; steer during flight; time another jump on landing; coast to a stop; ride the ramp and approach walls/overhangs. Check cursor release/recapture and focus changes for stuck input. Automated UI input could not reliably focus the Game view on this machine; the Play Mode smoke check does not establish these keyboard-driven scenarios.
+- Existing Editor deprecation warnings and the macOS FMOD audio-device warning remain. No Windows player or Ryzen 5600G performance validation was run.
+
+### Second iteration verification and remaining work
+
+Verification in Unity 6000.6.7f1: all **57 EditMode tests passed** (25 movement cases plus 32 existing cases); M1 integration smoke checks passed again. The presentation upgrade was run twice and leaves one HUD and one presentation component. The rigged scene renders in Play Mode with its boost status/bar and widened resting FOV, with no new code errors. All new assets have Editor-generated `.meta` files and the asset audit passes. Dynamic wheel/lean/FOV feel and the real keyboard-driven slope/strafe routes still require hands-on review; the existing macOS FMOD warning remains.
+
+The second pass implements both requested speed-gain mechanics and the basic movement presentation in the owned model test scene. `ScooterPresentation` reads the controller's state, rotates axle pivots from actual grounded travel, tilts only `Visuals`, and smooths camera FOV from 70° to 80°. `BoostView` reads existing boost timers; it owns no cooldown rules. **Boki → Player Model → Upgrade Test Presentation** wires or refreshes these references without rebuilding the arena, duplicating its HUD, or changing the shared player prefab. Play Mode and dirty scenes are refused. Re-run the menu after creating an older setup.
+
+Remaining work for this movement feature:
+
+1. Hands-on tuning: air-strafe angle/acceleration and limit, downhill gain, landing timing, ramps, repeated hops, wheel direction, lean/FOV comfort and focus recovery. Rule tests are not evidence of the final feel.
+2. Production integration: presentation is wired only in `Player_Model_Test`. The shared controller already supplies mechanics to its existing consumers; visual/HUD integration into developer-owned production scenes/prefabs still needs their ownership authorization. Guilt/Turbo/Panic state integration is separate game-system work, not implemented by this movement pass.
+3. Target validation: Windows x86_64 player and Ryzen 5600G profiling, including garbage allocation and controller CPU cost.
+
+Optional follow-ups are camera follow lag, boost audio/speed-line effects and additional riding/jump animation. Air boost, variable jump height, stronger falling gravity, and a separate slide/crouch action are optional design changes rather than requirements of the approved movement pass.
