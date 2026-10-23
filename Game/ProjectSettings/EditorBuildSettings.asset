@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Level1_Pohorje.unity
+    guid: f1504adbf249249b39a8230b94a5aa6b
+  - enabled: 1
+    path: Assets/Scenes/Level2_Maribor.unity
+    guid: 7074541598e8edcbca03342251710aab
+  - enabled: 1
+    path: Assets/Scenes/Level3_FERI.unity
+    guid: d162b5adcdd65858bad95d1263d2c3d1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:

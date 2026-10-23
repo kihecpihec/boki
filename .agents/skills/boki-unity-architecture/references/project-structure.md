@@ -18,7 +18,7 @@ Rules assemblies can never see Assembly-CSharp, so rules-never-depend-on-adapter
 ### Rules for assemblies
 
 - Name `Boki.<Domain>.Rules`, folder `Assets/Scripts/<Domain>/Rules/`, namespace `Boki.<Domain>` unless the domain already uses another (`Boki.Run.Rules` holds namespace `Boki.Routes`; keep, do not rename incidentally).
-- Add `"noEngineReferences": true` to every Rules asmdef. The two existing ones lack it, so the compiler does not currently stop a `UnityEngine` leak; `audit.sh` warns. Adding the flag is a one-line `.asmdef` edit that does not change the GUID, but it is a shared-file change: propose it.
+- Every Rules asmdef sets `"noEngineReferences": true`, so the compiler rejects any `UnityEngine` use. Copy that line into each new one; `audit.sh` warns when it is missing.
 - Each Rules assembly gets `Boki.<Domain>.Tests` under `Assets/Tests/EditMode/<Domain>/`, referencing the Rules assembly, `includePlatforms: ["Editor"]`, matching the existing test asmdefs.
 - Create a new Rules assembly when the logic is cohesive, route-agnostic, and has its own tests (battery, Guilt pressure, XP/upgrades, pause reasons). Add to an existing one when the data is inseparable from it (route gate state belongs with `RunState`).
 - `RunState` composes rule objects and is the only place that resets them on New Run. Adapters never reset a rule object themselves.
@@ -31,13 +31,13 @@ PlayMode tests and Editor code that wants assembly isolation need a runtime asmd
 
 | Area | Current | Target / rule |
 |---|---|---|
-| Rules code | `Combat/Rules`, `Routes/Rules` (engine-free in practice) | Same, plus `noEngineReferences`, plus new Rules for battery, pressure, progression, pause |
+| Rules code | `Combat/Rules`, `Routes/Rules`, both `noEngineReferences` | Add Rules for battery, pressure, progression, pause as those systems land |
 | Run-wide state | `RunState` with public setters `Battery`, `XP`, `KillCount`, `List<string> Upgrades` | Replace raw setters with intention-revealing methods (`TryDrain`, `AddCharge`, `AddXp`, `TryApplyUpgrade`) when the revised loop lands; typed upgrade identifiers, not strings; fractional battery per Architecture §6 |
 | Runtime assemblies | Predefined (Assembly-CSharp) | `Boki.Runtime` when needed (above) |
 | Scene path constants | `const string` on `RunSession` | One place. Do not add path strings in other classes. Consider a small `SceneIds` static in Core when a third consumer appears |
 | Editor tools | Per-milestone builders/checks/builds; `M2`–`M5PlayerBuild.cs` are identical apart from names | One shared helper; no new per-milestone clones |
 | Assets by milestone | `Art/M2/`, `Input/M1/` | New assets go by type/domain per Architecture §2 (`Art/Materials`, `Prefabs/Enemies`, ...). Do not relocate old ones without Unity and an owner |
-| Build settings | `EditorBuildSettings.asset` lists only `SampleScene`; milestone builds pass explicit scene lists | Architecture §10: every gameplay scene listed before a release build. Shared file: propose, then edit through the Editor so GUIDs stay correct |
+| Build settings | Lists `Level1_Pohorje`, `Level2_Maribor`, `Level3_FERI` (in that order; `SampleScene` disabled). Test scenes are intentionally absent | Add `MainMenu` first when it exists. Edit through the Editor or copy GUIDs from the scene's `.meta`; never invent one |
 | Version control mode | `Visible Meta Files`, `Force Text` | Keep. `audit.sh` fails if Force Text changes |
 
 ## Planned systems and their homes (proposals; Architecture §3 says names can change)

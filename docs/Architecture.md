@@ -53,6 +53,8 @@ boki/
 
 The layout includes both implemented and proposed content. `SampleScene.unity` is the template scene; `Gameplay_Test.unity` contains M1 movement, and `Combat_Test.unity` contains the M2 combat prototype. M4 adds `Level1_Pohorje.unity`, `Level2_Maribor.unity`, and `Level3_FERI.unity` as short grayboxes; the main menu remains proposed. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
 
+**Code layering:** deterministic gameplay rules live in engine-free `Boki.<Domain>.Rules` assemblies (`Scripts/<Domain>/Rules/`, `noEngineReferences`) with matching EditMode test assemblies under `Assets/Tests/EditMode/`. MonoBehaviour adapters, UI, and Editor tools sit above them and never the reverse. Scenes load only through `RunSession`, and `ProjectSettings/EditorBuildSettings.asset` lists the three production scenes. The engineering rules, templates, and audit script are in the `boki-unity-architecture` skill (`.agents/skills/boki-unity-architecture/`).
+
 **Exclude from version control:** `Game/Library/`, `Game/Temp/`, `Game/Logs/`, `Game/Obj/`, local builds, and caches. **Include:** `Game/Assets/` with `.meta` files, `Game/Packages/`, `Game/ProjectSettings/`, `docs/`, and agent configuration. These inclusion rules do not authorize an agent to commit or push.
 
 ## 3. Proposed Modules and Ownership

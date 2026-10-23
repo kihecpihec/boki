@@ -16,14 +16,16 @@ State exactly which checks passed, which could not run, and which Editor steps r
 
 Use the pinned Editor from `Game/ProjectSettings/ProjectVersion.txt` (`6000.6.7f1`). Do not run a different version against the project (it would rewrite settings and `.meta` files).
 
-If the `unity` CLI is installed (`unity --version`):
+The Editor call below is the reliable path. The `unity` CLI (`unity test Game --mode EditMode --output <xml>`, `unity recompile`) is optional: on a fresh checkout it exited with "Test run did not complete" and no cause, while the direct call succeeded. If the CLI fails, use the direct call and read the `-logFile` output.
+
+If you still want the CLI (`unity --version`):
 
 ```bash
 unity test Game --mode EditMode --output /tmp/boki-editmode.xml
 unity recompile            # compile errors from a running Editor
 ```
 
-Otherwise call the Editor directly (path varies per machine; Hub default shown):
+Direct call (path varies per machine; Hub default shown):
 
 ```bash
 # macOS
@@ -35,6 +37,8 @@ Otherwise call the Editor directly (path varies per machine; Hub default shown):
 
 Rules:
 - Close any Editor instance already holding the project; a locked project fails.
+- A fresh checkout has no `Library/`, so the first run imports everything. Give it several minutes; later runs take seconds. Baseline on the pinned Editor: compiles, 32 EditMode tests pass.
+- Unity's IDE package writes `Game/.vscode/`; it is gitignored, do not stage it.
 - Run tests from a clean checkout state when possible; a first run also imports new scripts and generates their `.meta` files. Review those new `.meta` files and include them with the change (without committing unless asked).
 - Read the results XML. A test run that exits 0 but skipped or never discovered a test assembly is not a pass.
 - Do not edit `Library/`, `Temp/`, or the results of a previous run.
