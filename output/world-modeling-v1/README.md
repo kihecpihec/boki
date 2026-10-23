@@ -2,6 +2,8 @@
 
 Open the [visual gallery](index.html). Keep the folder intact so its reference images and sheet links work.
 
+**Built Pohorje map:** [open the large Blender environment and handoff](maps/pohorje/README.md), [meter-scaled map](maps/pohorje/Pohorje_Large_Map.svg), or [rendered overview](maps/pohorje/Previews/01-whole-pohorje.png). This later addition contains Blender source, FBX exports, textures, collision guides and gameplay markers. Its enlarged lanes/pockets are construction proposals; Unity import, metadata generation, controller playtests and target-hardware performance remain pending.
+
 **Gameplay update:** use the [local gameplay mock gallery](../gameplay-mocks-v2/index.html) and [assembly handoff](../gameplay-mocks-v2/HANDOFF.md) with this pack. Its nine proposed combat pockets, charge/spawn/Guilt markers, rear seals, boss recovery plan, and UI states supplement the original concept art. The original PNGs are mood/shape references; the new editable diagrams supply the missing gameplay planning. Canonical rules remain in the game documents.
 
 This pack covers **Bellevue → Pohorje → Maribor → FERI → the professor's classroom**, including all nine A/B/C variants, shared scene starts/endings, modular environment families, route gates and secret passages. It is a modeling and scene-planning reference for Blender and Unity. The [latest Pohorje map](maps/pohorje/README.md) now includes editable Blender source, separate FBX exports and rendered previews. Maribor and FERI remain reference-only; no built Unity scene or environment prefab is delivered.
@@ -10,6 +12,7 @@ The Figma Starter MCP allowance is still exhausted. The existing [Figma atlas](h
 
 ## Deliverables
 
+- `maps/pohorje/`: large Pohorje Blender environment, separate FBX assemblies/modules, textures, meter-scaled map, previews, collision/marker manifests and validation reports. Read its handoff for the larger dimensions and remaining Unity checks.
 - `references/*.png`: nine generated environment and modular-kit reference images.
 - `figma/*.svg`: a complete world-route sheet, nine illustrated construction sheets and a modular-grid/collision reference. Raster artwork is embedded; notes and diagrams are editable vectors.
 - `floorplans/*.svg`: independent editable topology plans for each of the three gameplay scenes and a dimensioned classroom proposal.
@@ -43,7 +46,7 @@ The game rules remain in [Gameplay.md](../../docs/Gameplay.md), narrative in [St
 
 **Observed integration context:** the current player capsule is 1.8 m high with radius 0.35 m, slope limit 45°, step offset 0.25 m. These are inspected prefab values, not promises that every proposed module is comfortable. Test them using the real player/camera.
 
-The scene floorplans are **topology schematics**, not geographic maps or meter-scaled route lengths. Only the explicitly dimensioned module/arena drawings are to scale. Concept art may exaggerate terrain, draw imperfect arrows or omit a doorway connection. The editable route plans and game documents govern connectivity. Reconcile image details with the module dimensions before modeling.
+The original scene floorplans are **topology schematics**, not geographic maps or meter-scaled route lengths. Their explicitly dimensioned module/arena drawings are to scale; the later `maps/pohorje/Pohorje_Large_Map.svg` is also meter-scaled from the built layout. Concept art may exaggerate terrain, draw imperfect arrows or omit a doorway connection. The editable route plans and game documents govern connectivity. Reconcile image details with the module dimensions before modeling.
 
 ## Scope that must survive art production
 
@@ -72,3 +75,5 @@ The level timing targets remain approximately 2–3 min Pohorje, 3–4 min Marib
 ## Verification status
 
 Reference art, XML/SVG structure, local links, ZIP integrity, module IDs and the generated route snapshot are checked during packaging. No Unity scene/prefab or existing character-pack file was changed. Pohorje mesh/export checks and static lane sampling are documented in its map handoff. Figma SVG import, Unity collision/trigger behavior, run pacing, scene integration and target-hardware performance remain unverified.
+
+The updated `world-modeling-v1.zip` includes the latest Pohorje source, exports, previews and walkthrough guide.

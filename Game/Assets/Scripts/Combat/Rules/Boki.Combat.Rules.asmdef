@@ -1,4 +1,5 @@
 {
   "name": "Boki.Combat.Rules",
-  "rootNamespace": "Boki.Combat"
+  "rootNamespace": "Boki.Combat",
+  "noEngineReferences": true
 }

@@ -1,0 +1,60 @@
+{
+  "blender": "5.2.3 LTS",
+  "units": "meters",
+  "authoring_forward": "-Y",
+  "authoring_up": "+Z",
+  "character": {
+    "vertices": 724,
+    "triangles": 1273,
+    "materials": 1
+  },
+  "scooter": {
+    "M_Scooter_Frame": {
+      "vertices": 80,
+      "triangles": 120,
+      "materials": 1
+    },
+    "M_Wheel_R": {
+      "vertices": 72,
+      "triangles": 140,
+      "materials": 1
+    },
+    "M_Steering": {
+      "vertices": 152,
+      "triangles": 228,
+      "materials": 1
+    },
+    "M_Wheel_F": {
+      "vertices": 72,
+      "triangles": 140,
+      "materials": 1
+    }
+  },
+  "bones": 22,
+  "atlas": [
+    512,
+    512
+  ],
+  "actions": [
+    "Boki_RideIdle"
+  ],
+  "standing_height_m": 1.72,
+  "max_influences": 2,
+  "unweighted_vertices": 0,
+  "non_normalized_vertices": 0,
+  "ride_bounds_m": {
+    "X": [
+      -0.4479263424873352,
+      0.4479263424873352
+    ],
+    "Y": [
+      -0.44655346870422363,
+      0.41766801476478577
+    ],
+    "Z": [
+      0.15664567053318024,
+      1.6533081531524658
+    ]
+  },
+  "unity_import_verified": false
+}

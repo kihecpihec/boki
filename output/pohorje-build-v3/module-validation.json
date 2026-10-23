@@ -1,0 +1,58 @@
+[
+  {
+    "module": "Spruce",
+    "triangles": 64,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "Rock",
+    "triangles": 26,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "Log",
+    "triangles": 28,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "PathTile_4m",
+    "triangles": 12,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "GondolaPole",
+    "triangles": 36,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "GondolaCabin",
+    "triangles": 36,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "MaintenanceCart",
+    "triangles": 48,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  },
+  {
+    "module": "BrokenPlanks",
+    "triangles": 108,
+    "unit_scale": true,
+    "zero_area_faces": 0,
+    "nonmanifold_edges": 0
+  }
+]
