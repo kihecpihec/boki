@@ -4,7 +4,7 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 
 ## 0. Gameplay Pillars and Controls
 
-**Core loop:** Boki rides an electric scooter through branching routes. An automatic rave laser kills enemies, whose drops recharge the light battery and grant XP. Choosing a route immediately locks the alternatives. Each chosen path leads into a combat space where Boki can stay to kill enemies, collect XP, and gain upgrades. The longer he lingers, the more frequently Guilt appears and the faster and harder it attacks, pressuring him to move toward the exit. After three levels, he fights the professor. Death resets temporary progress; permanent C-route unlocks remain.
+**Core loop:** Boki rides an electric scooter through branching routes. An automatic rave laser kills enemies, whose drops grant XP; battery charges placed around combat spaces recharge the light. Choosing a route immediately locks the alternatives. Each chosen path leads into a combat space where Boki can stay to kill enemies, collect XP, and gain upgrades. The longer he lingers, the more frequently Guilt appears and the faster and harder it attacks, pressuring him to move toward the exit. After three levels, he fights the professor. Death resets temporary progress; permanent C-route unlocks remain.
 
 | Control | Action |
 |---|---|
@@ -14,7 +14,7 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 | `Left Shift` | Short **boost** (the consistent term; do not call it “dash”) |
 | `E` | Interact with the `POWER OFF` panel and other interactive objects |
 | `Esc` | Pause / back |
-| Automatic | Laser targets the nearest enemy in range; contact collects XP and battery drops |
+| Automatic | Laser targets the nearest enemy in range; contact collects XP and arena battery charges |
 
 **Visual target:** low-poly PS1/VHS horror, with obstacles and attacks readable even on Low settings. **Successful run duration:** approximately 7–12 minutes, including the boss.
 
@@ -147,6 +147,9 @@ cityChoice:   null | A | B | C
 feriChoice:   null | A | B | C
 health:       100
 battery:      100
+batteryCapacity: 100
+combatSpaceTime: 0 (accumulated within the current level)
+upgradeSelections: 0
 xp:           0
 upgrades:     []
 killCount:    0
@@ -167,7 +170,9 @@ Each fork has these states:
 
 **Physics / UX:** `ROUTE_LOCK` and `PERSISTENT_LOCK` require an enabled blocking collider, a disabled selection trigger, and the correct message when crossing is attempted. `AVAILABLE` requires a passable entrance and an active trigger. Once the player chooses, immediately close the alternatives and prevent a second choice.
 
-**Branch isolation:** unchosen branches must be sealed at both their entrance and their exit into the shared ending. Rear seals are opaque and physically block reentry, so the player cannot inspect or enter another branch from the merge. Keep rear seals closed until their branch is selected; open only the selected branch's rear seal. Route-local enemies activate only after that branch is chosen. Unchosen branch enemies remain inactive: they cannot move, attack, or become laser targets. Short grayboxes can activate preplaced enemy groups instead of adding a runtime spawning system.
+**Branch isolation:** unchosen branches must be sealed at both their entrance and their exit into the shared ending. Rear seals are opaque and physically block reentry, so the player cannot inspect or enter another branch from the merge. Keep rear seals closed until their branch is selected; open only the selected branch's rear seal. Route-local enemies activate only after that branch is chosen. Unchosen branch enemies remain inactive: they cannot move, attack, or become laser targets. Preplaced groups remain useful for authored encounters, but do not satisfy the replenishing combat-space loop in §5 on their own.
+
+After selection, suppress rendering of unchosen branch interiors while retaining their physical blockers and visible entrance/rear seals. Entering the boss arena suppresses all approach-route rendering, deactivates approach encounters, and closes a solid arena entrance seal. Rendering changes never open a route or remove its collision. New Run reloads the original scene visibility. Complete the City C side-door escape before leaving Podzemni prehod.
 
 Choosing `A/B/C` requires no extra menu confirmation: entering an allowed **fork trigger** selects it. Forbidden gates need physical colliders, not just closed visuals, so their behavior is consistent and readable.
 
@@ -214,13 +219,13 @@ Forest C requires `run.availableUnlocks.forestC`; A and B are always open. At ea
 
 ## 5. Loop Within Each Route
 
-**Route structure:** choose a path, travel along it, then reach a combat space. The combat space gives Boki room to ride, dodge, fight regular enemies, and collect XP and battery drops. Route-specific obstacles, encounters, and rewards still distinguish A/B/C, and the existing route locks and shared endings remain in effect.
+**Route structure:** choose a path, travel along it, then reach a combat space. The combat space gives Boki room to ride, dodge, fight regular enemies, and collect XP and arena battery charges. Route-specific obstacles, encounters, and rewards still distinguish A/B/C, and the existing route locks and shared endings remain in effect.
 
 **Stay or leave:** lingering provides further opportunities to kill enemies, earn XP, and choose upgrades, making Boki stronger before the next level and the professor. Encounters must support continued fighting while the player stays, rather than exhausting a single fixed group and leaving an empty farming area. Replenish enemies within the existing active-enemy caps; do not increase the cap to create pressure. Guilt makes that extra preparation increasingly dangerous and motivates the player to finish the level.
 
 ```mermaid
 flowchart TD
-    A[Choose path and ride to combat space] --> B[Fight enemies and collect XP and light energy]
+    A[Choose path and ride to combat space] --> B[Fight enemies, collect XP and seek arena charges]
     B --> C{Enough XP to level up?}
     C -- Yes --> D[Pause and choose 1 of 3 upgrades]
     C -- No --> E{Stay for more rewards or move onward?}
@@ -237,7 +242,47 @@ Guilt is an immortal pressure system. As Boki spends longer lingering in a comba
 
 Keep warning cues and the existing panic-speed response so players can recognize a chase and attempt an escape. Guilt does not become a killable enemy or gain new attack types through this escalation. Its purpose is to make staying for another reward a risk, while moving toward the level exit remains the player's goal. Scripted appearances, including the Podzemni prehod turn-back, remain part of the route content.
 
-**Tuning decisions still open:** initial grace period, appearance intervals, speed/damage increases and caps, how lingering time is measured across combat-space boundaries, whether pressure carries into the next level, enemy replenishment cadence, and any combat requirement before an exit becomes available. Do not assume a kill quota, forced wave clear, pressure reset on leaving/reentering, or unlimited upgrade progression. The existing upgrade thresholds and run-duration target are starting points to recheck against this loop.
+### Initial Playtest Rules: Pressure and Timing
+
+These are approved implementation starting values, subject to recorded playtest tuning. Count only active gameplay time inside combat spaces. Pause, upgrade selection, loading, and scripted sequences suspend the pressure clock and ambient phase timers. Accumulate combat-space time across spaces within the same level; leaving and reentering never resets it. Outside combat spaces, suspend ambient pursuit and retain its clock/phase progress for reentry. Reset pressure and ambient phase state on entering the next level or starting a new run. Scripted Guilt sequences run separately and suspend ambient pressure/pursuit so they cannot overlap; boss entry ends pursuit entirely.
+
+The first 20 accumulated combat-space seconds in each level are an ambient grace period. Then give a 1.5-second warning and a 6-second chase. After each chase, wait the rest interval below before the next warning. Select the rest interval from accumulated time when rest begins; snapshot chase speed and damage when warning begins, keeping them unchanged through that chase. Apply the existing ×1.3 empty-battery speed multiplier afterward. Contact damage has a one-second cooldown. Preserve the existing +25% movement advantage for 2 seconds with a 5-second cooldown.
+
+| Accumulated combat-space time | Rest after chase | Chase speed before battery modifier | Contact damage |
+|---|---:|---:|---:|
+| Less than 30 s | 18 s | 4.5 m/s | 10 |
+| 30–59.999 s | 15 s | 5.0 m/s | 12 |
+| 60–89.999 s | 12 s | 5.5 m/s | 14 |
+| 90–119.999 s | 9 s | 6.0 m/s | 16 |
+| 120 s and above | 6 s | 6.5 m/s | 18 |
+
+Frequency, base speed, and damage stop escalating at the last row. Upgrade selection never causes escalation. Scripted appearances retain their authored timing rather than using this ambient table.
+
+### Enemy Replenishment and Exits
+
+Use predefined spawn points on the selected route. Replenish only during active gameplay while Boki occupies its combat space, below the desired count, and never above the total level cap (including authored groups and boss reinforcements).
+
+| Level | Desired active regular enemies | Maximum active regular enemies | Replenishment cadence |
+|---|---:|---:|---|
+| Pohorje | 4 | 8 | One every 4 s |
+| Maribor | 6 | 12 | One every 3 s |
+| FERI | 4 | 8 | One every 4 s |
+
+Authored ambushes may exceed the desired count, never the cap. Spawn outside the camera view, at least 8 m from Boki, on valid collision-free ground within the chosen space. If no valid point exists, wait; never accumulate a burst of missed spawns. Death does not trigger an immediate replacement. Stop replenishment on leaving the space, scene transition, arena entry, or terminal outcome. Pause and upgrade selection freeze spawn timers. Preserve route-specific melee/ranged compositions and rewards.
+
+Exits have no kill quota or forced wave clear. Leaving early sacrifices potential upgrades. Preserve authored traversal requirements, including City C's side-door escape. Boss entry remains a commitment with the existing physical entrance seal.
+
+### Battery Charges and Action Feedback
+
+Regular kills grant XP and increment the kill count, but **never recharge battery or drop battery charges**. After maximum level they still count as kills, without XP or battery rewards. Battery starts at 100, drains at 1.5/s during active gameplay (including the boss), and retains the existing zero-charge speed penalty. Current charge and upgraded capacity carry between scenes.
+
+Place contact-collected +25 charges at predefined, visible locations around each combat space so Boki must ride to recover light. Scatter locations across usable riding lanes, away from spawn hazards and inaccessible geometry; do not place every charge beside the entrance or let them follow the player. Forest C retains its guaranteed pickup and Lent has more recovery opportunities. Collection clamps to upgraded capacity and happens once per available charge; leave a charge available when already full.
+
+**Initial arena pickup tuning:** three charge locations per combat space, initially charged, each recharging 20 active seconds after collection. Use a clear depleted indicator and return cue. Recharge timers run only while that space is occupied during active gameplay; preserve remaining timers across leaving/reentry so this cannot refill charges instantly. Unchosen spaces stay inactive. Provide two equivalent charge locations inside the boss arena because the approach becomes inaccessible. These pickup counts/timers are initial tuning, to validate with encounter density and battery upgrades; route-specific variations must be recorded. Recovery rewards from upgrade selection remain an explicit exception to arena-only recharge, not a kill reward.
+
+Keep combat fast and continuously readable: frequent brief laser, impact, hit, XP-collection and battery-collection effects/sounds; distinct cues for charge availability, boost and enemy attacks. Avoid long effects or camera interruptions on ordinary kills. Bound simultaneous effects and repeated audio voices, vary repeated sounds subtly, and prioritize Guilt warnings, projectile/ground-hazard telegraphs and low-battery cues over background impacts. Pause freezes gameplay effects/timers; offer restrained, switchable screen effects and preserve Low-settings readability. Do not introduce extra enemy types or attacks to create activity.
+
+XP thresholds, upgrade eligibility, stacking, and Panic Mode are canonical in [Story §5](Story.md#5-upgrades-and-replay-motivation). Recheck roughly three selections in ordinary runs and five or six only with risky extended stays against the 7–12 minute target.
 
 **Keep Guilt AI simple:** use `Distant -> Warning -> Chase -> Reposition`. Spawn at one of 2–3 marked points behind the player while offscreen. If stuck on geometry or too far away, reposition invisibly to the next point. Disable Guilt AI during the boss and use only a decorative mesh.
 
@@ -311,7 +356,11 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 - [ ] A chosen path leads into a combat space with room to fight, dodge, and collect rewards before continuing toward the level exit.
 - [ ] Staying provides further XP and upgrade opportunities through enemy replenishment without exceeding the level's active-enemy cap.
 - [ ] Longer lingering makes Guilt appear more often, move faster, and deal more damage according to the agreed tuning; warnings remain readable and Guilt stays invulnerable.
-- [ ] Upgrade selection and pause do not advance combat or Guilt pressure time.
+- [ ] Upgrade selection and pause freeze combat, pressure, spawn timers, battery drain, and charge recharge timers.
+- [ ] Verify grace, tier boundaries/caps, warning-time snapshots, same-level pressure retention, next-level reset, and no scripted/ambient overlap.
+- [ ] Exits need no kills; City C escape remains required. Spawn counts/cadence and offscreen distance constraints hold.
+- [ ] Kills never restore battery. Charges collect once, preserve charge percentage after capacity upgrades, recharge only on their active timers, and remain reachable at zero battery, including during the boss.
+- [ ] All six XP thresholds offer three distinct eligible choices, apply exactly one reward, carry between scenes, and reset on New Run. MAX LEVEL stops XP drops; stacking caps and Panic Mode snapshots hold.
 
 - [ ] First run: Forest A and B open, Forest C locked.
 - [ ] Every reachable combination of previous route and permanent unlocks offers at least **one** allowed next exit, with no dead ends.
@@ -332,7 +381,7 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 - [ ] Death resets HP, XP, upgrades, and route choices, but keeps permanent C unlocks.
 - [ ] Every allowed FERI route reaches the same classroom; the professor fight remains completable.
 - [ ] `E_B` adds 2 melee enemies at half boss HP; `E_C` with `POWER OFF` lowers starting boss HP.
-- [ ] The laser automatically shoots the nearest target; killed enemies restore light energy.
+- [ ] The laser automatically shoots the nearest target; regular kills grant XP but no battery; arena charges restore light energy.
 - [ ] At 0 battery, enemies move faster and recovery remains possible.
 - [ ] The Windows build remains playable during the Maribor horde and boss arena on the target Ryzen 5600G / Radeon / 16 GB machine.
 

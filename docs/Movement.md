@@ -145,9 +145,9 @@ Level colliders should be primitives (boxes and capsules), per the project rules
 
 Several systems change speed: **Turbo Skiro** (+20% movement speed), Guilt's **+25% for 2 s** bonus, and **Panic Mode** (stronger boost while Guilt is nearby) ([Story.md §4–5](Story.md#5-upgrades-and-replay-motivation)).
 
-**Proposal:** add the percentage bonuses together into one multiplier, `1 + Σ bonuses`, and apply it to the base speed cap and to acceleration. Turbo Skiro plus the Guilt bonus gives ×1.45, not ×1.5. Additive stacking is easier to predict and balance. Scaling acceleration too keeps time-to-full-speed constant, so a faster Boki still feels as responsive. Whether the multiplier also scales `boostSpeed` is open (§11). Panic Mode modifies boost values only.
+**Approved upgrade integration:** [Story §5](Story.md#5-upgrades-and-replay-motivation) owns exact effects and selection caps. Add Turbo Skiro and Guilt's temporary riding-speed advantage as percentages of original base movement speed (+45% with one Turbo and panic). These do not increase boost speed. Panic Mode alone modifies an eligible newly activated boost: +25% speed and +50% duration while Guilt is chasing within 10 m, eligibility snapshotted at activation, normal cooldown. Use the approved M1 base values until a separate movement overhaul is authorized. Scaling acceleration with riding speed remains a movement proposal, not an approved upgrade requirement.
 
-Modifiers live in run state (upgrades) or come from other systems (Guilt). The controller reads a single multiplier and does not know where bonuses come from. That keeps gameplay rules separate from the controller.
+Modifiers live in run state (upgrades) or come from other systems (Guilt). Keep those gameplay rules separate from controller and UI wiring.
 
 ## 9. Feedback
 
@@ -190,7 +190,7 @@ These are not settled by the other design documents and need a team decision bef
 3. **Overspeed from repeated jumps:** with the soft cap, quickly chaining jumps after a boost keeps some extra speed for longer. Decide whether that is intended skill or should be prevented with stronger air decay.
 4. **Boost in the air:** allowed (current proposal) or ground only.
 5. **Variable jump height:** whether releasing `Space` early cuts the jump short.
-6. **Modifier stacking:** additive (proposed in §8) or multiplicative, and whether Turbo Skiro also raises boost speed.
+6. **Acceleration scaling:** whether the proposed momentum controller scales acceleration with riding-speed modifiers. Additive upgrade stacking, Turbo exclusion from boost speed, and Panic Mode are settled in Story §5.
 7. **Slide or crouch action:** not proposed. There is no control for it in Gameplay.md §0, and it would need a new binding.
 
 ## 12. Validation
