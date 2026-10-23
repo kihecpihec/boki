@@ -1,0 +1,689 @@
+{
+  "version": 1,
+  "status": "environment modeling proposal; no meshes or Unity scenes delivered",
+  "unityEditor": "6000.6.7f1",
+  "canonicalSources": [
+    "docs/Story.md",
+    "docs/Gameplay.md",
+    "docs/Architecture.md"
+  ],
+  "mapConvention": "Floorplans are topology diagrams, not geographic or distance-scale maps. Module dimensions are meters.",
+  "gridProposal": {
+    "baseUnitM": 1,
+    "structuralBayM": 4,
+    "clearCorridorM": 3,
+    "clearHeightM": 3.5,
+    "doorClearanceM": [
+      2.4,
+      3
+    ],
+    "rampRunRiseM": [
+      4,
+      0.5
+    ]
+  },
+  "existingPlayer": {
+    "heightM": 1.8,
+    "radiusM": 0.35,
+    "slopeLimitDeg": 45,
+    "stepOffsetM": 0.25
+  },
+  "scenes": [
+    {
+      "id": "forest",
+      "proposedName": "Level1_Pohorje",
+      "includes": "Bellevue + Pohorje",
+      "maxRegularEnemies": 8
+    },
+    {
+      "id": "city",
+      "proposedName": "Level2_Maribor",
+      "includes": "Maribor",
+      "maxRegularEnemies": 12
+    },
+    {
+      "id": "feri",
+      "proposedName": "Level3_FERI",
+      "includes": "FERI + one shared classroom",
+      "maxRegularEnemies": 8
+    }
+  ],
+  "sheets": [
+    {
+      "key": "01-bellevue-start",
+      "title": "BELLEVUE / SHARED START",
+      "kind": "start",
+      "scene": "Level1_Pohorje (proposed)",
+      "scale": "Shared prologue + safe learning approach",
+      "dimensions": [
+        [
+          "Ground kit grid",
+          "4 × 4 m"
+        ],
+        [
+          "Safe lane clear width",
+          "4 m proposal"
+        ],
+        [
+          "Fence section",
+          "4 m long"
+        ],
+        [
+          "Turn / fork pocket",
+          "8 × 8 m proposal"
+        ],
+        [
+          "Intro timing",
+          "20–30 s canonical"
+        ]
+      ],
+      "build": [
+        "Bellevue overlook is part of the Pohorje scene, not a fourth gameplay scene.",
+        "Use faceted ground tiles, bank wedges, spruce, rock and a simple skyline card.",
+        "Place bottle, scooter and intro markers off the collision-critical ride lane.",
+        "One clear approach reaches the three-way fork; C is initially locked."
+      ],
+      "collision": [
+        "Use continuous ramp collision under scenic height changes.",
+        "Fence/trunk blocking uses simple boxes or capsules.",
+        "Keep the safe approach free of snagging decoration.",
+        "No unapproved fall-death or checkpoint mechanic is introduced."
+      ],
+      "wiring": [
+        "PlayerStart + IntroCamera markers + SafeApproach landmarks are proposed.",
+        "Intro skip lands at the same safe start with correct input state.",
+        "Fork gates use F_A / F_B / F_C route identifiers.",
+        "Watch remains 07:58 through Pohorje."
+      ],
+      "note": "Illustrated start geometry is a proposal. The prologue is skippable; the same run state reaches the fork.",
+      "palette": [
+        [
+          "Ground",
+          "#263B49"
+        ],
+        [
+          "Fog",
+          "#628D9F"
+        ],
+        [
+          "Spruce",
+          "#101B24"
+        ],
+        [
+          "Rave",
+          "#BA86EA"
+        ],
+        [
+          "Sign",
+          "#D0EF75"
+        ]
+      ]
+    },
+    {
+      "key": "02-pohorje-layout",
+      "title": "POHORJE / LEVEL LAYOUT",
+      "kind": "level",
+      "level": "forest",
+      "scene": "Level1_Pohorje (proposed)",
+      "scale": "Shared start → A/B/C variants → shared overlook",
+      "dimensions": [
+        [
+          "Travel surface grid",
+          "4 m proposal"
+        ],
+        [
+          "Forest clear lane",
+          "3–4 m proposal"
+        ],
+        [
+          "Tunnel clear W / H",
+          "3 / 3.5 m proposal"
+        ],
+        [
+          "Turn pocket",
+          "8 × 8 m proposal"
+        ],
+        [
+          "Target pacing",
+          "2–3 min canonical"
+        ]
+      ],
+      "build": [
+        "A: winding spruce slalom, logs, melee clearing and Guilt behind the player.",
+        "B: wider service slope, static gondola silhouette, maintenance cart and broken planks.",
+        "C: short rave tunnel, grate set piece, two stronger enemies and one guaranteed battery or XP pickup.",
+        "All branches merge into one city-facing exit; no route switching across branches."
+      ],
+      "collision": [
+        "Use smooth walkable ramp surfaces, with simple banks blocking shortcuts.",
+        "Treat gaps as movement-test dimensions; artwork does not prescribe a lethal pit.",
+        "Keep jump landings and the approach to the shared exit clear.",
+        "Use primitive trunk, rock and cart blockers; do not collide with every twig."
+      ],
+      "wiring": [
+        "Fork: F_A / F_B / F_C, snapshot gate availability.",
+        "Crossing an available gate records choice immediately and closes alternatives.",
+        "ExitForest saves Forest C globally for NEXT RUN, then changes scene once.",
+        "Regular enemy cap 8. Guilt uses a few offscreen reposition anchors."
+      ],
+      "note": "Editable floorplan controls route topology. View lengths and vertical exaggeration in concept art are not measured gameplay distances.",
+      "palette": [
+        [
+          "Ground",
+          "#263B49"
+        ],
+        [
+          "Fog",
+          "#628D9F"
+        ],
+        [
+          "Trees",
+          "#101B24"
+        ],
+        [
+          "C route",
+          "#BA86EA"
+        ],
+        [
+          "A route",
+          "#D0EF75"
+        ]
+      ]
+    },
+    {
+      "key": "03-pohorje-modules",
+      "title": "POHORJE / MODULAR MODEL KIT",
+      "kind": "kit",
+      "kit": "forest",
+      "scene": "Reusable forest + concrete kit",
+      "scale": "Metered modules; floor-corner and trunk-base origins",
+      "dimensions": [
+        [
+          "Path tile",
+          "4 × 4 m"
+        ],
+        [
+          "Ramp",
+          "4 m run / 0.5 m rise"
+        ],
+        [
+          "Tunnel bay",
+          "4 m length"
+        ],
+        [
+          "Fence bay",
+          "4 m length"
+        ],
+        [
+          "Texture target",
+          "256² tiling / 512² atlas"
+        ]
+      ],
+      "build": [
+        "Make separate render meshes for ground, banks, spruce, rocks, logs and fence.",
+        "Gondola pole/cabin remain static decorative meshes.",
+        "Keep maintenance cart and jump planks separate from terrain.",
+        "Rave tunnel uses straight, corner, grate and poster pieces shared with city/FERI."
+      ],
+      "collision": [
+        "Ground/ramp collision is authored separately from decorative facets.",
+        "Spruce trunk capsule; rock simple box/capsule combination.",
+        "Fence is continuous blocking volume, not individual rail colliders.",
+        "Tunnel floor/walls use boxes; roof may be a separate ceiling blocker."
+      ],
+      "wiring": [
+        "Floor tile origin: lower-left corner at finished floor Y = 0.",
+        "Snap_S / Snap_N at bay centerlines, facing outward.",
+        "Door/grate origin at hinge if animated; otherwise fixed leaf.",
+        "Use material sharing; add unique geometry only for silhouettes."
+      ],
+      "note": "Triangle and texture figures in the asset catalog are proposed authoring budgets, not measured performance.",
+      "palette": [
+        [
+          "Stone",
+          "#526572"
+        ],
+        [
+          "Earth",
+          "#35454A"
+        ],
+        [
+          "Needles",
+          "#192B31"
+        ],
+        [
+          "Wood",
+          "#66574B"
+        ],
+        [
+          "Concrete",
+          "#616C74"
+        ]
+      ]
+    },
+    {
+      "key": "04-maribor-layout",
+      "title": "MARIBOR / LEVEL LAYOUT",
+      "kind": "level",
+      "level": "city",
+      "scene": "Level2_Maribor (proposed)",
+      "scale": "Shared city arrival → filtered fork → shared FERI exit",
+      "dimensions": [
+        [
+          "Street clear width",
+          "6–8 m proposal"
+        ],
+        [
+          "Riverside lane",
+          "3 m proposal"
+        ],
+        [
+          "Underpass clear W / H",
+          "3 / 3.5 m proposal"
+        ],
+        [
+          "Encounter pocket",
+          "12 × 12 m proposal"
+        ],
+        [
+          "Target pacing",
+          "3–4 min canonical"
+        ]
+      ],
+      "build": [
+        "A / Tabor: facade-lined car slalom, two larger melee groups and a car-ramp escape.",
+        "B / Lent: flat river plane, two narrow riding paths, bridge silhouette and ranged Watchers.",
+        "C / Podzemni prehod: fence opening, closing door, Guilt at far end and a side escape opening.",
+        "All variants reach one FERI sign/transition; no water crossing or new travel mechanic."
+      ],
+      "collision": [
+        "Continuous curb ramps on the ride lane; perimeter rails block water access.",
+        "Cars use simple boxes; ramp traversal uses a distinct smooth surface.",
+        "C side escape must connect to the shared exit, not become a dead end.",
+        "Separate scenery-only facades/skyline from actual playable boundaries."
+      ],
+      "wiring": [
+        "Filter City gates from saved Forest choice and run-start unlock snapshot.",
+        "ExitCity saves City C for NEXT RUN and transitions once.",
+        "Watch changes toward 07:59 at the end of the city.",
+        "Regular enemy cap 12; instantiate small groups rather than all routes at once."
+      ],
+      "note": "The setting evokes Maribor; these routes are not a geographical reconstruction. Timings require later playtesting.",
+      "palette": [
+        [
+          "Sky",
+          "#B86742"
+        ],
+        [
+          "Asphalt",
+          "#263B49"
+        ],
+        [
+          "Brick",
+          "#795849"
+        ],
+        [
+          "Water",
+          "#172734"
+        ],
+        [
+          "Secret",
+          "#BA86EA"
+        ]
+      ]
+    },
+    {
+      "key": "05-maribor-modules",
+      "title": "MARIBOR / MODULAR MODEL KIT",
+      "kind": "kit",
+      "kit": "city",
+      "scene": "Reusable city street + river + underpass kit",
+      "scale": "Three facade models, one car base, shared concrete bays",
+      "dimensions": [
+        [
+          "Facade bay",
+          "4 m width"
+        ],
+        [
+          "Road tile",
+          "4 × 4 m"
+        ],
+        [
+          "Riverbank bay",
+          "4 m length"
+        ],
+        [
+          "Underpass bay",
+          "4 m length"
+        ],
+        [
+          "Texture target",
+          "256² tile / 512² atlas"
+        ]
+      ],
+      "build": [
+        "Three reusable facade fronts plus corners and roof silhouette caps.",
+        "One compact car mesh with upright/overturned placement variants.",
+        "Separate road, curb-ramp, riverbank edge, railing and flat water plane.",
+        "Underpass reuses concrete straight/corner/door pieces; no deep building interiors."
+      ],
+      "collision": [
+        "Facade/rail boundaries are coarse boxes, not window-level meshes.",
+        "Overturned cars use a few boxes; keep movement openings legible.",
+        "Water is a visual plane behind a physical boundary, with no new swimming rule.",
+        "Keep side-escape aperture and tunnel corner collision unobstructed."
+      ],
+      "wiring": [
+        "Snap module origins to meter grid; use shared bay end markers.",
+        "Streetlamp emitter does not imply every lamp needs a dynamic light.",
+        "Spawn/pickup markers are empty transforms separate from meshes.",
+        "Keep car-ramp collision distinct from the decorative car body."
+      ],
+      "note": "Art lighting is mood reference. Build with the project's few-light and short-view-distance constraints.",
+      "palette": [
+        [
+          "Stucco",
+          "#9F8B75"
+        ],
+        [
+          "Roof",
+          "#6A483D"
+        ],
+        [
+          "Road",
+          "#303B43"
+        ],
+        [
+          "River",
+          "#1B2E3C"
+        ],
+        [
+          "Lamp",
+          "#D9D6A6"
+        ]
+      ]
+    },
+    {
+      "key": "06-feri-layout",
+      "title": "FERI / LEVEL LAYOUT",
+      "kind": "level",
+      "level": "feri",
+      "scene": "Level3_FERI (proposed)",
+      "scale": "One campus fork → three entrances → ONE classroom",
+      "dimensions": [
+        [
+          "Corridor clear width",
+          "3 m proposal"
+        ],
+        [
+          "Corridor clear height",
+          "3.5 m proposal"
+        ],
+        [
+          "Door clear W / H",
+          "2.4 / 3 m proposal"
+        ],
+        [
+          "Ramp",
+          "4 m run / 0.5 m rise"
+        ],
+        [
+          "Approach pacing",
+          "1–2 min canonical"
+        ]
+      ],
+      "build": [
+        "A / Glavni vhod: repeated corridor and two small melee groups.",
+        "B / Dvorišče: courtyard, ambush pocket, ramp and side corridor.",
+        "C / Servisni vhod: utility hall, exactly two floor traps and optional POWER OFF panel.",
+        "All three visibly connect to the same classroom landing and boss arena."
+      ],
+      "collision": [
+        "Use ramps in place of stairs; avoid decorative lips in the scooter lane.",
+        "Keep pipes, planters and doors out of the clear corridor envelope.",
+        "C panel interaction must not block the route or require an extra new puzzle.",
+        "Keep the entry and arena floor open for the scooter and camera."
+      ],
+      "wiring": [
+        "Filter FERI gates from City choice and run-start unlock snapshot.",
+        "Arena entry saves FERI C for NEXT RUN; boss starts only once.",
+        "A standard; B adds two melee at 50% boss HP; C panel use starts boss at 85% HP.",
+        "Regular enemy cap 8 plus boss. Disable Guilt chase AI during boss."
+      ],
+      "note": "Classroom belongs to the FERI scene. The three entrances change a modifier, not the number of arenas.",
+      "palette": [
+        [
+          "Concrete",
+          "#58675E"
+        ],
+        [
+          "Fluorescent",
+          "#C3D4A8"
+        ],
+        [
+          "Floor",
+          "#3F4C49"
+        ],
+        [
+          "Danger",
+          "#EF624A"
+        ],
+        [
+          "Dark",
+          "#101B1B"
+        ]
+      ]
+    },
+    {
+      "key": "07-feri-modules",
+      "title": "FERI / MODULAR MODEL KIT",
+      "kind": "kit",
+      "kit": "feri",
+      "scene": "Reusable corridor, courtyard and classroom kit",
+      "scale": "4 m bays; separate floor, wall, ceiling and door meshes",
+      "dimensions": [
+        [
+          "Structural bay",
+          "4 × 4 m"
+        ],
+        [
+          "Wall thickness",
+          "0.2 m proposal"
+        ],
+        [
+          "Clear corridor W / H",
+          "3 / 3.5 m proposal"
+        ],
+        [
+          "Door clear W / H",
+          "2.4 / 3 m proposal"
+        ],
+        [
+          "Texture target",
+          "256² tile / 512² atlas"
+        ]
+      ],
+      "build": [
+        "Straight corridor, inside/outside corner, floor and removable ceiling panels.",
+        "Door frame/leaf share one aperture; put leaf origin at hinge.",
+        "Desk/chair, lectern, board and fluorescent strip are reusable props.",
+        "One floor-trap mesh is instanced twice on C; POWER OFF cabinet has separate switch."
+      ],
+      "collision": [
+        "Boxes for floors, walls, desks and door blockers; smooth ramp surface.",
+        "Separate art ceiling from camera/physics boundaries and test the follow camera.",
+        "Trap marker footprint must agree with future damage logic.",
+        "Do not build furniture collision through the central dodge floor."
+      ],
+      "wiring": [
+        "Floor-corner origins; consistent Snap_N/E/S/W marker names.",
+        "DoorOpenMarker defines a tested leaf position clear of the lane.",
+        "PowerOffInteract marker stays reachable without entering trap geometry.",
+        "One shared material palette; no per-door unique texture requirement."
+      ],
+      "note": "Removable ceiling in a cutaway sheet is a presentation aid; camera visibility and collision must be tested in the actual scene.",
+      "palette": [
+        [
+          "Wall",
+          "#647165"
+        ],
+        [
+          "Floor",
+          "#45514E"
+        ],
+        [
+          "Wood",
+          "#6E5741"
+        ],
+        [
+          "Tube",
+          "#D1DEC2"
+        ],
+        [
+          "Panel",
+          "#4D5C58"
+        ]
+      ]
+    },
+    {
+      "key": "08-classroom-arena",
+      "title": "THE DEADLINE / SHARED ARENA",
+      "kind": "arena",
+      "scene": "Inside Level3_FERI (proposed)",
+      "scale": "One flat classroom and one shared entry",
+      "dimensions": [
+        [
+          "Room footprint",
+          "24 × 20 m proposal"
+        ],
+        [
+          "Ceiling clearance",
+          "4 m proposal"
+        ],
+        [
+          "Central clear floor",
+          "14 × 12 m proposal"
+        ],
+        [
+          "Shared door W / H",
+          "2.4 / 3 m proposal"
+        ],
+        [
+          "Boss pacing",
+          "1–2 min canonical"
+        ]
+      ],
+      "build": [
+        "Professor and lectern sit near far wall; Guilt remains a backdrop.",
+        "Desks/chairs occupy perimeter strips, preserving a clear central dodge zone.",
+        "Single shared door/landing accepts every FERI route.",
+        "Separate warning-ring and projectile art from classroom geometry."
+      ],
+      "collision": [
+        "Flat floor without dais, stairs or thresholds in the ride lane.",
+        "Simple furniture boxes, with no dead-end pocket around lectern.",
+        "Warning art radius must match the combat system's actual hit area.",
+        "Use arena walls for collision; wall-shadow art has no chase collider."
+      ],
+      "wiring": [
+        "ArenaEntry persists FERI C, locks repeated start and disables chase logic.",
+        "Exam Barrage releases 3 slow sheets; Deadline Slam warns for 0.8 s.",
+        "At 50% HP attacks become a little faster; B adds two melee once.",
+        "POWER OFF modifier applies only when activated on E_C."
+      ],
+      "note": "Room dimensions and clear-floor footprint are a first graybox proposal; tune them with actual movement and boss timing.",
+      "palette": [
+        [
+          "Green",
+          "#58675E"
+        ],
+        [
+          "Shadow",
+          "#090E14"
+        ],
+        [
+          "Warning",
+          "#EF624A"
+        ],
+        [
+          "Paper",
+          "#D9D6C5"
+        ],
+        [
+          "Wood",
+          "#6E5741"
+        ]
+      ]
+    },
+    {
+      "key": "09-gates-and-secret-passages",
+      "title": "GATES / LOCKS + SHARED PASSAGES",
+      "kind": "gates",
+      "scene": "Shared route-gate and concrete module family",
+      "scale": "One geometry family; state-driven render, blocker and trigger",
+      "dimensions": [
+        [
+          "Gate clear W / H",
+          "3 / 3.5 m proposal"
+        ],
+        [
+          "Passage bay",
+          "4 m length"
+        ],
+        [
+          "Gate leaf thickness",
+          "0.12 m proposal"
+        ],
+        [
+          "Fork pocket",
+          "8 × 8 m proposal"
+        ],
+        [
+          "State priority",
+          "ROUTE_LOCK first"
+        ]
+      ],
+      "build": [
+        "One frame/leaf/sign family with AVAILABLE, PERSISTENT_LOCK, ROUTE_LOCK and SELECTED appearances.",
+        "Concrete straight, corner and side-door modules are shared across C routes.",
+        "Render mesh, blocking collider and selection trigger are separate children.",
+        "Dark roots/shadow barrier is art; a real blocker closes the path."
+      ],
+      "collision": [
+        "Locked gates: blocker enabled, selection trigger disabled.",
+        "Available gates: passable opening, active selection trigger.",
+        "Selected route remains traversable; alternatives close immediately.",
+        "Place the selection trigger beyond the leaf, without overlap with other route triggers."
+      ],
+      "wiring": [
+        "Connection check precedes persistent-unlock check; show only the winning lock reason.",
+        "SELECTED applies only after crossing the actual selection trigger.",
+        "Unlock flags are snapshotted at run start; discoveries do not open current-run C gates.",
+        "POWER OFF is an optional E interaction on FERI C, not a universal gate key."
+      ],
+      "note": "Gate names and scene markers in this pack are proposals. Canonical state behavior lives in Gameplay.md §4.",
+      "palette": [
+        [
+          "Available",
+          "#D0EF75"
+        ],
+        [
+          "Remember",
+          "#BA86EA"
+        ],
+        [
+          "Route lock",
+          "#EF624A"
+        ],
+        [
+          "Concrete",
+          "#616C74"
+        ],
+        [
+          "Metal",
+          "#303B43"
+        ]
+      ]
+    }
+  ]
+}
