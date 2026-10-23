@@ -1,22 +1,22 @@
 [
   {
     "export": "PL_Route_A",
+    "source_meshes": 94,
+    "reimported_meshes": 94,
+    "mesh_count_passed": true,
+    "empty_material_slots": 0
+  },
+  {
+    "export": "PL_Route_C",
     "source_meshes": 64,
     "reimported_meshes": 64,
     "mesh_count_passed": true,
     "empty_material_slots": 0
   },
   {
-    "export": "PL_Route_C",
-    "source_meshes": 105,
-    "reimported_meshes": 105,
-    "mesh_count_passed": true,
-    "empty_material_slots": 0
-  },
-  {
     "export": "PL_Shared_Fork",
-    "source_meshes": 11,
-    "reimported_meshes": 11,
+    "source_meshes": 4,
+    "reimported_meshes": 4,
     "mesh_count_passed": true,
     "empty_material_slots": 0
   }

@@ -5,7 +5,7 @@ from mathutils import Vector
 
 scene = bpy.data.scenes['Pohorje_Large']
 bpy.context.window.scene = scene
-eye = Vector((0,20,37.8))
+eye = Vector((0,-14,9.8)) if scene.get('action_layout') else Vector((0,10,37.8))
 rotation = Vector((0,1,-.025)).to_track_quat('-Z','Y')
 for screen in bpy.data.screens:
     for area in screen.areas:

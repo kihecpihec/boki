@@ -1,99 +1,70 @@
-# Pohorje — large environment build
+# Pohorje — compact action layout
 
-Open [Source/Pohorje_Large.blend](Source/Pohorje_Large.blend), scene **Pohorje_Large**. Superseded Pohorje_FirstPass, Pohorje_Restrained and Pohorje_World scenes have been removed from this delivered source. The existing Unity scenes and prefabs are untouched.
+Open [Source/Pohorje_Large.blend](Source/Pohorje_Large.blend), scene **Pohorje_Large**. This replaces the long traversal layout with short branch entrances and three denser, distinct arenas. Existing Unity scenes/prefabs and the user's live Blender session are untouched. The superseded `output/pohorje-build-*` directories remain deleted.
 
-This build expands the approved uncanny low-poly direction into the complete Pohorje route layout. The original SVGs govern topology and beats; the larger dimensions below are construction proposals responding to the request for fast movement and roomy fighting. Canonical combat, gate and persistence rules remain unchanged.
+## Get to the action
 
-## Reference style update
+The safe ride is **8 m**. Three nearby, signed gates lead toward encounter candidates **5 m beyond selection**. From the player start, these candidates are about **23–24 m away**, approximately **4 seconds** of uninterrupted baseline travel. Full arena entrances are **46–68 m away**, approximately **8–11 seconds**. These are authoring distances; encounters still need binding in Unity.
 
-The latest screenshot guides cold blue-gray lighting, dark sparse spruce silhouettes, rough pixel stone and earth, and subdued warm lamps. [Reference-style riding view](Previews/12-reference-forest.png). This is an environment source update; the screenshot player, enemies and HUD are not baked into the map.
-
-`style-validation.json` confirms identical hashes for all 771 protected travel, collision and semantic marker objects before and after refinement. The 384 × 576 m terrain footprint, lane widths, combat pockets, route topology and all marker positions are preserved.
-
-## Arena approach dressing
-
-Each route now has four distinct scenic landmarks before its arena:
-
-- A: trail lanterns, exposed roots and rock outcrops, an overhead fallen trunk, then logging remains.
-- B: maintenance gantries, hazard-painted edge posts, a repair bay and cable supports, then an arrival frame.
-- C: graphic rave-poster bays, overhead utility conduits along the walls, grate-side details and purple arrival accents.
-
-These are environment meshes with shared existing materials. Twelve meshes batch the new landmarks by route and location. `approach-validation.json` confirms all 1,406 pre-existing mesh/marker objects retain identical geometry, transforms and properties. New scenery is outside the full lane envelope or at least 5.8 m overhead; arenas, travel surfaces, route connections, existing obstacles and charges are unchanged. This pass adds visual variety; the existing jump tests and encounters still require controller playtesting.
-
-The fixtures already include visible emissive faces. In Unity, assign the materials to URP and add a small number of local lights, final distance fog, tunnel flicker and spatial audio. Blender presentation lights are not exported by the mesh-export step. No new Light components, audio events, dynamic effects, gameplay triggers or colliders are wired by these scenic meshes. Keep the new route scenery under its selected-route visibility root.
-
-- [Forest canopy approach](Previews/13-forest-canopy.png)
-- [Maintenance approach](Previews/14-maintenance-approach.png)
-- [Tunnel approach](Previews/15-tunnel-approach.png)
-
-## Polish and Blender exploration
-
-Rigid fixtures now retain square corners instead of shearing with the ground slope. Maintenance uprights meet level crossbars, branch joints are aligned, snapped trunks support the overhead fallen tree, and the log pile has supports. Original path and arena geometry is preserved.
-
-Open the source to start at eye level at Bellevue. Hover over the viewport, press **F3**, search **Walk Navigation**, then use the mouse and **W/A/S/D**. See the [walkthrough guide](WALKTHROUGH.md) for speed, gravity, shading and recovery controls. The source also includes a `START_HERE_WALKTHROUGH` text block. Run `setup_walkthrough.py` after regenerating previews to restore this starting viewport.
-
-## Map and views
-
-- [Meter-scaled SVG map](Pohorje_Large_Map.svg)
-- [Whole environment](Previews/01-whole-pohorje.png) · [Roof cutaway](Previews/10-cutaway-map.png) · [Top-down render](Previews/11-top-down.png)
-- [Bellevue](Previews/02-bellevue.png) · [Forest traversal](Previews/03-forest-traversal.png) · [Forest fighting space](Previews/04-forest-combat.png)
-- [Gondola service route](Previews/05-gondola.png) · [Service fighting space](Previews/06-service-combat.png)
-- [Rave tunnel](Previews/07-rave-tunnel.png) · [Rave fighting space](Previews/08-rave-combat.png) · [City overlook](Previews/09-city-overlook.png)
-
-## Space and route design
-
-The terrain covers **384 × 576 m**, with scenic silhouettes beyond its edges. Bellevue leads through a safe approach into a graded decision room with three nearby gate assemblies. Separate branch links lead to traversal, a combat pocket, rear seal, shared merge, and city overlook. Rounded centerlines reduce sharp scooter turns. Rock banks protect the lanes and pocket perimeters; geometry guides describe the required collision.
-
-| Selected route | Approximate full route centerline | Main clear lane | Fighting area |
+| Route | Full centerline, previous → current | Start to arena | Arena footprint |
 | --- | --- | --- | --- |
-| A / Gozdna strmina | 616.8 m | 8 m | 64 × 60 m |
-| B / Gondolska servisna pot | 622.9 m | 10 m | 60 × 56 m |
-| C / Rave tunel | 584.3 m | 8 m | 48 × 44 m |
+| A / Gozdna strmina | 552.9 → 199.2 m | 67.7 m / 11.3 s | 56 × 64 m |
+| B / Gondolska servisna pot | 534.8 → 198.4 m | 67.7 m / 11.3 s | 52 × 60 m |
+| C / Rave tunel | 486.4 → 130.0 m | 46 m / 7.7 s | 48 × 52 m |
 
-Centerline lengths include shared sections and travel through the pocket; they do not measure actual player paths or establish pacing. At the documented M1 6 m/s baseline, uninterrupted centerline travel would be roughly 97–104 seconds, before fighting and decisions. Confirm the 2–3 minute forest target with the actual controller and encounters; boost and shortcuts within the rooms change this considerably.
+Full routes are **64–73% shorter than the previous delivery** and include crossing the arena and reaching the shared exit. The main lanes have a consistent **9 m** clear surface. The arenas were deliberately tightened from the preceding 80 × 96 / 75 × 89.6 / 60 × 70.4 m rectangles: useful space, landmarks and crossing choices replace empty perimeter acreage. C remains the shorter secret branch. The scenic footprint is **230 × 162 m**.
 
-A emphasizes spruce slalom, logs, and the largest fighting floor. B has broad switchbacks, static gondola silhouettes, abandoned carts, broken-board tests, and a Watcher anchor. C remains shorter, with a roofed descent, large rave room, two authored regular-enemy anchors, and a side grate/reveal alcove. All three reach one overlook. Pockets have three fixed charge locations each, candidate spawn/Guilt anchors, open exits, and no kill-quota mechanism. C Charge 1 remains guaranteed. Central fighting floors are intentionally clear; clutter sits at the edges.
+The canonical 2–3 minute forest target depends on fighting, decisions and lingering; uninterrupted travel time does not establish encounter pacing. The gameplay rules, lock priority, next-run C unlocks and open arena exits remain unchanged.
 
-## Low-poly and performance choices
+## Three distinct spaces
 
-The build has **348,670 render triangles across all three routes**, excluding collision guides, the unused module library, and any gameplay characters/effects. There are **2,014 source forest placements**, baked into **206 spatial chunks** rather than thousands of separate tree objects. Terrain uses 64 m chunks; forest uses 32 m cells. There are 653 render mesh objects before Unity batching/culling.
+**A — logging hollow.** A raised rocky shoulder and a low channel create different riding lines around a central stone island. A broad timber bridge crosses the channel, with approach ramps at both ends. Snapped trunks support a large fallen spruce overhead, making a recognizable landmark without blocking the riding loop. Log stacks and irregular rock rims break up sightlines and edges.
 
-Spruces use 176 triangles each; rocks 26; dead trees 24; poles/cabins 36; carts 48. Foliage is opaque. Shared 128² textures repeat across materials, including five nearest-sampled forest textures with irregular stone and earth patches. Tunnel wall and roof shells have thickness so they render from inside and outside with ordinary backface culling. A presentation-only atmospheric volume supplies blue-gray distance haze in Blender; do not export it. Use inexpensive URP distance fog in Unity. Sparse opaque undergrowth stays outside the travel lanes. The gondola remains static. Blender presentation uses one sun plus seven local lights; Unity should activate only the lights needed near the selected route.
+**B — gondola maintenance yard.** A raised concrete terminal has two broad ramps and a route through its supporting legs. Two red gantries, suspended static cabins and cables make the service space recognizable from its entrance. Carts and uneven ground divide the perimeter into smaller pockets while leaving room to circle the terminal.
 
-These are geometry budgets, **not measured target-hardware performance**. Apply sensible view distances, chunk culling, selected-branch visibility, and shadow limits in Unity. Measure a Windows 1280 × 720 Low player build on the Ryzen 5600G. Blender renders do not establish that result.
+**C — cistern rave.** A short roofed entrance reveals a sunken dance floor, four concrete columns, a raised DJ stage reached by side ramps, large speaker towers and floor/column emission. The east wall has an actual grate opening with a blocked reveal alcove behind it. Removable roofs allow editing and inspection. The stage leaves an independent route to the rear exit.
 
-## Source, export and collision structure
+All floors are connected terrain, with flat entrance/exit aprons and optional elevated landmarks. Arena terrain slopes peak around **35.2°**. The bridge, terminal and stage ramps have separate static surface guidance. Geometry checks do not prove controller or enemy navigation behavior.
 
-- `Source/Pohorje_Large.blend`: editable source, active world camera, separate route/shared collections, removable C roofs, module library, marker collection, and hidden collision guides.
-- `Export/`: individual reusable module FBXs, separate shared/route/terrain/forest/roof assembly FBXs, and separate collision-guide and gameplay-marker FBXs. Export preserves separate objects instead of welding the entire level.
-- `Textures/`: original texture PNGs; they are also packed into the source and embedded in FBX.
-- `layout.json`, `markers.json`, `forest-instances.json`: route geometry, semantic markers, and original instance placements. Coordinates are Blender XYZ meters, Z up; FBX exports use Y up/-Z forward.
-- `collision-guides.json`: proposed primitive boxes with dimensions, positions, rotation and route ownership. Hidden wire meshes are guides, not automatically installed Unity colliders. Dynamic gate blockers remain closed in this guide collection until runtime state is assigned.
+Three charge positions per arena are grounded to the current floor; C Charge 1 remains guaranteed. Offscreen spawn/Guilt candidates, authored A/C reveals, the B Watcher and early selected-route encounter candidates are semantic markers. No marker spawns enemies or runs gameplay on its own.
 
-Travel-surface guides follow the actual graded ribbon geometry. Curved downhill surfaces need a suitable static collision surface because one flat box cannot represent them accurately. Pocket floors, walls, banks, carts, logs and gates have primitive guidance. Chunked forest is scenic outside the banks and has no collider per decorative branch/tree. Gate leaves are parked above their frames in the authoring view; `closed_z` records the required closed position. All three branch interiors are visible for editing, rather than pretending this is a runtime selection state.
+## Pictures and exploration
 
-## Verification
+- [Whole layout](Previews/01-whole-pohorje.png) · [Roof cutaway](Previews/10-cutaway-map.png) · [Top-down](Previews/11-top-down.png)
+- [Logging hollow layout](Previews/16-forest-arena-layout.png) · [Gondola yard layout](Previews/17-service-arena-layout.png) · [Cistern rave layout](Previews/18-rave-arena-layout.png)
+- [Forest entrance](Previews/03-forest-traversal.png) · [Forest arena](Previews/04-forest-combat.png) · [Service arena](Previews/06-service-combat.png) · [Rave arena](Previews/08-rave-combat.png)
+- [Meter-scaled annotated map](Pohorje_Large_Map.svg) · [Blender walk controls](WALKTHROUGH.md)
 
-`validation.json` records actual geometry and export checks:
+The saved viewport starts at eye level at Bellevue. Hover over it, press F3, search **Walk Navigation**, then use the mouse and W/A/S/D. The overview views use clearer lighting for spatial review; the roofed rave view retains its local lighting. Blender navigation is not Boki's controller.
 
-- **1,683 lane samples:** no unsupported travel surfaces, height mismatches over the checked tolerance, or terrain intrusions. Wide polygons were split at grade transitions to remove a landing seam.
-- **428 static collision stations:** no point at which all three sampled lane tracks were obstructed, using a 0.35 m capsule margin. Dynamic gate blockers were intentionally excluded. See `collision-sampling.json`.
-- No zero-area render faces or FBX material warnings. Source modules have unit scale and closed manifold components.
-- Blender FBX reimports of A, C, and the shared fork preserve their respective 64, 105, and 11 mesh objects with no empty material slots. See `roundtrip-validation.json`.
-- Overview, riding-height, fighting-space and tunnel renders were inspected.
+## Delivery and verification
 
-These samples do not prove complete collision, route isolation, camera comfort, enemy navigation, jump feasibility, or balance. The broken-board art retains a continuous safety surface until jump testing defines a proper gap and landing. The scenic shell is not a certified play boundary. Bellevue/overlook edges, gate bypasses and narrow bank joins still need explicit controller tests. No death pits, swimming, checkpoint, puzzle, new AI species or kill-locked pocket was added.
+`Source/` contains the editable Blender environment. `Export/` contains current route/shared/terrain/forest/roof FBXs, unchanged-size reusable modules, collision guides and gameplay markers. Existing packed pixel textures are reused. JSON uses Blender XYZ meters with Z up; FBXs use Y up/-Z forward.
+
+Current reports:
+
+- `layout.json`: paths, dimensions, timing estimates and landmark positions.
+- `validation.json`: actual render budgets, zero-area faces, sampled travel support/terrain clearance and export warnings.
+- `arena-revision.json` and `arena-sampling.json`: floor dimensions/heights/slopes, render/guide agreement, underlay clearance, entry/exit aprons, nine charge locations and six ramp landing/slope checks.
+- `collision-sampling.json`: three-track static obstruction samples, excluding dynamic gates and walkable surface meshes.
+- `roundtrip-validation.json`: representative A/C/shared-fork FBX reimports and material slots.
+
+The source has **123,177 render triangles across 307 mesh objects**, across all routes. Foliage is opaque and baked into **61 spatial chunks from 620 placements**. The environment uses one sun and five presentation point lights; no animated gondola, volume fog or per-tree collider is required. The previous style/approach preservation reports are historical and do not describe the rebuilt map.
 
 ## Pending Unity owner work
 
-Import through **Unity 6000.6.7f1** so the Editor generates `.meta` files. All delivered assets remain outside `Game/Assets`; **Unity import and metadata generation are pending**. Map embedded color textures to URP materials and verify scale/orientation against Boki before assembly. Agree ownership before modifying the production scene.
+All assets remain outside `Game/Assets`. Import using **Unity 6000.6.7f1** so the Editor generates `.meta` files; import and metadata generation are pending. Assign URP materials, check scale against Boki, and obtain the scene owner's agreement before production scene edits.
 
-Create a disposable movement test, assign primitive colliders/static travel surfaces from the guides, and test seams, bank joins, gates, zero-battery access, boost, jump, camera and pocket turns. Bind the front blockers, separate selection triggers, opaque rear seals, and route visibility roots to the existing route systems. Only the selected branch opens at its rear; unchosen enemies/charges stay inactive and their interiors hidden. C uses the run-start unlock snapshot, and ExitForest discovers it for the next run. Keep ambient Guilt separate from authored events. Bind the three pocket charges, occupancy volumes and offscreen/valid-ground spawn candidates; markers alone do not implement these systems.
+Use primitive boxes/capsules for walls, gates, rock islands, logs, carts and other simple obstacles. `collision-guides.json` describes suggested shapes; it does not install colliders. Curved terrain, ramps and bridge surfaces need static surface collision. Opaque room rims and branch gates still require a controller test for bypasses and jumps. Decorative foliage is scenic.
 
-Windows performance, Unity material import, full controller traversal, interaction wiring and pacing remain unverified. Lighting and sky in these renders are presentation settings, not a finished Unity lighting/postprocess setup.
+Bind front gates, independent selection triggers, rear seals and selected-route visibility. Keep unchosen branches, enemies and charges inactive. Place the first regular encounters at the early candidate positions, within the existing enemy caps. Bind the three charges, combat occupancy covering the floor height (proposed 5–16 m range), valid-ground/offscreen spawn candidates, and authored events. C discoveries still apply on the next run. Do not add a kill quota.
 
-## Rebuild
+Test the bridge and six ramps, camera clearance under the terminal/fallen tree, pits, charges, zero-battery access, boost, jumps, spawn validity, navigation, route isolation and encounter pacing. **Unity/controller tests and Windows Ryzen 5600G performance are unverified.** Measure a Windows 1280 × 720 Low player; Blender geometry checks do not establish runtime performance.
 
-Run `build_pohorje.py` in Blender; it creates a separate scene and refuses to replace an existing `Pohorje_Large`. It calls `grade_surfaces.py` to preserve graded seams. For a fresh base, run `style_pohorje.py`, then `refine_reference.py` and `optimize_spruces.py`. Do not apply the one-time style script to the delivered source again. Run `dress_approaches.py` once to add the route scenery. Run `finish_pohorje.py` to validate, export, render and save the current source; `verify_collision.py` samples the static guides. Run `python3 draw_map.py` outside Blender to regenerate the meter-scaled SVG from the manifests. Later user edits should be preserved before any rebuild.
+## Rebuild and edit
 
-References: [original topology](../../floorplans/forest-topology.svg), [Pohorje sheet](../../figma/02-pohorje-layout.svg), [module sheet](../../figma/03-pohorje-modules.svg), [combat overlay](../../../gameplay-mocks-v2/HANDOFF.md), [canonical gameplay](../../../../docs/Gameplay.md), [story](../../../../docs/Story.md).
+`build_action_layout.py` constructs this revision from the delivered module library and packed materials. It refuses to overwrite a source already marked `action_layout`. Preserve later artist edits before any deliberate rebuild. The older base/style/approach/reshape/dressing scripts target superseded layouts and must not be applied to this delivery.
+
+After source edits, run `finish_pohorje.py`, `verify_arenas.py`, `verify_collision.py`, `verify_roundtrip.py`, and `setup_walkthrough.py` in Blender. Use `--python-exit-code 1` for batch verification. Run `python3 draw_map.py` outside Blender and update the ZIP. Keep the layout and semantic marker manifests consistent with geometry edits.
+
+References: [canonical gameplay](../../../../docs/Gameplay.md), [story](../../../../docs/Story.md), [original topology](../../floorplans/forest-topology.svg).

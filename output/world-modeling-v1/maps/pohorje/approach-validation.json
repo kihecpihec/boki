@@ -114,5 +114,6 @@
   ],
   "lane_envelope_violations": [],
   "minimum_overhead_clearance_m": 5.8,
-  "unity_work": "Final lights, flicker, fog, audio, interactions, controller and hardware checks pending"
+  "unity_work": "Final lights, flicker, fog, audio, interactions, controller and hardware checks pending",
+  "scope": "Historical pre-arena-revision pass; preservation hashes do not apply to the revised source."
 }

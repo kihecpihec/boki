@@ -2,44 +2,44 @@
   "scene": "Pohorje_Large",
   "unity_import": "pending",
   "windows_5600g_performance": "unmeasured",
-  "render_triangles_all_routes": 348670,
-  "render_mesh_objects": 653,
+  "render_triangles_all_routes": 123177,
+  "render_mesh_objects": 307,
   "collections": [
     {
       "collection": "PL_Shared_Bellevue",
-      "triangles": 773
+      "triangles": 46
     },
     {
       "collection": "PL_Shared_Fork",
-      "triangles": 158
+      "triangles": 114
     },
     {
       "collection": "PL_Shared_Overlook",
-      "triangles": 694
+      "triangles": 46
     },
     {
       "collection": "PL_Route_A",
-      "triangles": 6188
+      "triangles": 5406
     },
     {
       "collection": "PL_Route_B",
-      "triangles": 8987
+      "triangles": 4783
     },
     {
       "collection": "PL_Route_C",
-      "triangles": 4656
+      "triangles": 3558
     },
     {
       "collection": "PL_Terrain_Chunks",
-      "triangles": 7820
+      "triangles": 80
     },
     {
       "collection": "PL_Forest_Chunks",
-      "triangles": 318962
+      "triangles": 109120
     },
     {
       "collection": "PL_C_Removable_Roofs",
-      "triangles": 432
+      "triangles": 24
     }
   ],
   "zero_area_meshes": [],
@@ -123,49 +123,49 @@
     }
   ],
   "travel_checks": {
-    "sample_count": 1683,
+    "sample_count": 342,
     "surface_issues": [],
     "terrain_above_lane": []
   },
   "exports": [
     {
       "file": "PL_Shared_Bellevue.fbx",
-      "mesh_count": 25,
+      "mesh_count": 2,
       "warnings": []
     },
     {
       "file": "PL_Shared_Fork.fbx",
-      "mesh_count": 11,
+      "mesh_count": 4,
       "warnings": []
     },
     {
       "file": "PL_Shared_Overlook.fbx",
-      "mesh_count": 17,
+      "mesh_count": 2,
       "warnings": []
     },
     {
       "file": "PL_Route_A.fbx",
-      "mesh_count": 64,
+      "mesh_count": 94,
       "warnings": []
     },
     {
       "file": "PL_Route_B.fbx",
-      "mesh_count": 97,
+      "mesh_count": 75,
       "warnings": []
     },
     {
       "file": "PL_Route_C.fbx",
-      "mesh_count": 105,
+      "mesh_count": 64,
       "warnings": []
     },
     {
       "file": "PL_Terrain_Chunks.fbx",
-      "mesh_count": 126,
+      "mesh_count": 3,
       "warnings": []
     },
     {
       "file": "PL_Forest_Chunks.fbx",
-      "mesh_count": 206,
+      "mesh_count": 61,
       "warnings": []
     },
     {
@@ -175,7 +175,7 @@
     },
     {
       "file": "Pohorje_CollisionGuides.fbx",
-      "mesh_count": 691,
+      "mesh_count": 101,
       "warnings": []
     },
     {

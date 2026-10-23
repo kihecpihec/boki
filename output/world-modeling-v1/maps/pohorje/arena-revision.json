@@ -1,0 +1,73 @@
+{
+  "revision": "action_layout",
+  "arenas": [
+    {
+      "route": "A",
+      "dimensions_m": [
+        56,
+        64
+      ],
+      "area_m2": 3584,
+      "min_height_m": 6.308787822723389,
+      "max_height_m": 11.800000190734863,
+      "maximum_triangle_slope_degrees": 32.55
+    },
+    {
+      "route": "B",
+      "dimensions_m": [
+        52,
+        60
+      ],
+      "area_m2": 3120,
+      "min_height_m": 6.432183742523193,
+      "max_height_m": 11.399999618530273,
+      "maximum_triangle_slope_degrees": 33.9
+    },
+    {
+      "route": "C",
+      "dimensions_m": [
+        48,
+        52
+      ],
+      "area_m2": 2496,
+      "min_height_m": 5.5,
+      "max_height_m": 10.033522605895996,
+      "maximum_triangle_slope_degrees": 35.21
+    }
+  ],
+  "route_stats": {
+    "A": {
+      "centerline_m": 199.2,
+      "approach_m": 67.7,
+      "approach_seconds_at_6mps": 11.3,
+      "first_encounter_candidate_m": 24.2,
+      "lane_width_m": 9,
+      "combat_dimensions_m": [
+        56,
+        64
+      ]
+    },
+    "B": {
+      "centerline_m": 198.4,
+      "approach_m": 67.7,
+      "approach_seconds_at_6mps": 11.3,
+      "first_encounter_candidate_m": 24.2,
+      "lane_width_m": 9,
+      "combat_dimensions_m": [
+        52,
+        60
+      ]
+    },
+    "C": {
+      "centerline_m": 130.0,
+      "approach_m": 46.0,
+      "approach_seconds_at_6mps": 7.7,
+      "first_encounter_candidate_m": 23.0,
+      "lane_width_m": 9,
+      "combat_dimensions_m": [
+        48,
+        52
+      ]
+    }
+  }
+}

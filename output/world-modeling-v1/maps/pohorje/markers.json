@@ -1,207 +1,9 @@
 [
   {
-    "name": "PlayerStart",
-    "xyz": [
-      0,
-      16,
-      36
-    ],
-    "kind": "intro",
-    "route": "shared"
-  },
-  {
-    "name": "Intro_LowCamera",
-    "xyz": [
-      0,
-      2,
-      36.25
-    ],
-    "kind": "intro",
-    "route": "shared"
-  },
-  {
-    "name": "Intro_Scooter",
-    "xyz": [
-      1,
-      4,
-      36
-    ],
-    "kind": "intro",
-    "route": "shared"
-  },
-  {
-    "name": "Intro_Watch",
-    "xyz": [
-      0,
-      3,
-      37.4
-    ],
-    "kind": "intro",
-    "route": "shared"
-  },
-  {
-    "name": "Intro_GuiltSilhouette",
-    "xyz": [
-      -24,
-      33,
-      39
-    ],
-    "kind": "intro",
-    "route": "shared"
-  },
-  {
-    "name": "ExitForest",
-    "xyz": [
-      0,
-      522,
-      0
-    ],
-    "kind": "one-way scene transition; persist Forest C for next run",
-    "route": "shared"
-  },
-  {
-    "name": "A_Front_Gate",
-    "xyz": [
-      -20,
-      100,
-      34.666666666666664
-    ],
-    "kind": "gate assembly",
-    "route": "A",
-    "clear_width": 11,
-    "clear_height": 5.5,
-    "angle": 1.1902899330800738
-  },
-  {
-    "name": "F_A_Selection",
-    "xyz": [
-      -22.785429894924164,
-      101.11417201161385,
-      34.51811039845149
-    ],
-    "kind": "selection trigger beyond leaf",
-    "route": "A"
-  },
-  {
-    "name": "A_Rear_Gate",
-    "xyz": [
-      -64,
-      452,
-      2.338461538461538
-    ],
-    "kind": "gate assembly",
-    "route": "A",
-    "clear_width": 11,
-    "clear_height": 5.5,
-    "angle": -0.05875582293447927
-  },
-  {
-    "name": "B_Front_Gate",
-    "xyz": [
-      0,
-      108,
-      33.6
-    ],
-    "kind": "gate assembly",
-    "route": "B",
-    "clear_width": 13,
-    "clear_height": 5.5,
-    "angle": -0.0
-  },
-  {
-    "name": "F_B_Selection",
-    "xyz": [
-      0.0,
-      111.0,
-      33.2
-    ],
-    "kind": "selection trigger beyond leaf",
-    "route": "B"
-  },
-  {
-    "name": "B_Rear_Gate",
-    "xyz": [
-      0,
-      452,
-      2.338461538461538
-    ],
-    "kind": "gate assembly",
-    "route": "B",
-    "clear_width": 13,
-    "clear_height": 5.5,
-    "angle": -0.0
-  },
-  {
-    "name": "C_Front_Gate",
-    "xyz": [
-      20,
-      100,
-      34.666666666666664
-    ],
-    "kind": "gate assembly",
-    "route": "C",
-    "clear_width": 11,
-    "clear_height": 5.5,
-    "angle": -1.1902899330800738
-  },
-  {
-    "name": "F_C_Selection",
-    "xyz": [
-      22.785429894924164,
-      101.11417201161385,
-      34.51811039845149
-    ],
-    "kind": "selection trigger beyond leaf",
-    "route": "C"
-  },
-  {
-    "name": "C_Rear_Gate",
-    "xyz": [
-      64,
-      452,
-      2.338461538461538
-    ],
-    "kind": "gate assembly",
-    "route": "C",
-    "clear_width": 11,
-    "clear_height": 5.5,
-    "angle": -0.0
-  },
-  {
-    "name": "B_JumpTest_204",
-    "xyz": [
-      18.0,
-      206.6,
-      20.453333333333333
-    ],
-    "kind": "jump-gap proposal; continuous safety surface retained",
-    "route": "B"
-  },
-  {
-    "name": "B_JumpTest_266",
-    "xyz": [
-      23.138709677419367,
-      268.6,
-      12.18666666666666
-    ],
-    "kind": "jump-gap proposal; continuous safety surface retained",
-    "route": "B"
-  },
-  {
-    "name": "B_Watcher",
-    "xyz": [
-      38.04838709677419,
-      283,
-      20.266666666666666
-    ],
-    "kind": "Watcher on static gondola; red cue",
-    "route": "B"
-  },
-  {
     "name": "C_GrateReveal",
     "xyz": [
-      127.0,
-      317,
+      27.0,
+      57,
       8
     ],
     "kind": "authored Guilt appearance behind grate",
@@ -210,39 +12,65 @@
   {
     "name": "C_GateStrike",
     "xyz": [
-      124.0,
-      317,
+      24.0,
+      57,
       8
     ],
     "kind": "authored grate strike; suspend ambient Guilt",
     "route": "C"
   },
   {
-    "name": "C_StrongerRegular_1",
+    "name": "A_Front_Gate",
     "xyz": [
-      94,
-      309,
+      -10,
+      -1,
       8
     ],
-    "kind": "authored stronger regular enemy",
-    "route": "C"
+    "kind": "gate assembly",
+    "route": "A",
+    "clear_width": 10,
+    "clear_height": 5.5,
+    "angle": 1.1902899330800738
   },
   {
-    "name": "C_StrongerRegular_2",
+    "name": "A_Rear_Gate",
     "xyz": [
-      106,
-      315,
+      -44,
+      95,
       8
     ],
-    "kind": "authored stronger regular enemy",
-    "route": "C"
+    "kind": "gate assembly",
+    "route": "A",
+    "clear_width": 10,
+    "clear_height": 5.5,
+    "angle": -1.080839002294246
+  },
+  {
+    "name": "F_A_Selection",
+    "xyz": [
+      -10,
+      1,
+      8
+    ],
+    "kind": "selection trigger beyond leaf",
+    "route": "A"
+  },
+  {
+    "name": "A_FirstEncounter",
+    "xyz": [
+      -14.642383575439453,
+      0.8569533824920654,
+      8
+    ],
+    "kind": "early regular encounter candidate; activate only after route selection",
+    "route": "A"
   },
   {
     "name": "A_Charge_1",
     "xyz": [
-      -121.76,
-      308,
-      8
+      -81.92,
+      32,
+      8.0
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "A",
@@ -251,9 +79,9 @@
   {
     "name": "A_Charge_2",
     "xyz": [
-      -78.24,
-      308,
-      8
+      -46.08,
+      63.6,
+      8.0
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "A",
@@ -262,9 +90,9 @@
   {
     "name": "A_Charge_3",
     "xyz": [
-      -100,
-      352,
-      8
+      -64,
+      79,
+      8.079181671142578
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "A",
@@ -273,21 +101,25 @@
   {
     "name": "A_CombatSpace",
     "xyz": [
-      -100,
-      330.0,
+      -64,
+      54.0,
       8
     ],
     "kind": "combat occupancy; free exit",
     "route": "A",
-    "width": 64,
-    "depth": 60
+    "width": 56,
+    "depth": 64,
+    "height_range_m": [
+      5,
+      16
+    ]
   },
   {
     "name": "A_SpawnCandidate_1",
     "xyz": [
-      -128.0,
-      304,
-      8
+      -86.0,
+      30,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "A"
@@ -295,9 +127,9 @@
   {
     "name": "A_SpawnCandidate_2",
     "xyz": [
-      -72.0,
-      304,
-      8
+      -42.0,
+      30,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "A"
@@ -305,9 +137,9 @@
   {
     "name": "A_SpawnCandidate_3",
     "xyz": [
-      -128.0,
-      330.0,
-      8
+      -86.0,
+      78,
+      8.231534957885742
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "A"
@@ -315,29 +147,9 @@
   {
     "name": "A_SpawnCandidate_4",
     "xyz": [
-      -72.0,
-      330.0,
-      8
-    ],
-    "kind": "offscreen >=8 m; wait if invalid",
-    "route": "A"
-  },
-  {
-    "name": "A_SpawnCandidate_5",
-    "xyz": [
-      -128.0,
-      356,
-      8
-    ],
-    "kind": "offscreen >=8 m; wait if invalid",
-    "route": "A"
-  },
-  {
-    "name": "A_SpawnCandidate_6",
-    "xyz": [
-      -72.0,
-      356,
-      8
+      -42.0,
+      78,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "A"
@@ -345,9 +157,9 @@
   {
     "name": "A_GuiltAnchor_1",
     "xyz": [
-      -100,
-      304,
-      8
+      -78.0,
+      40,
+      8.75741195678711
     ],
     "kind": "offscreen behind Boki; candidate only",
     "route": "A"
@@ -355,29 +167,65 @@
   {
     "name": "A_GuiltAnchor_2",
     "xyz": [
-      -80.8,
-      330.0,
-      8
+      -50.0,
+      72,
+      7.986835479736328
     ],
     "kind": "offscreen behind Boki; candidate only",
     "route": "A"
   },
   {
-    "name": "A_GuiltAnchor_3",
+    "name": "B_Front_Gate",
     "xyz": [
-      -100,
-      356,
+      10,
+      -1,
       8
     ],
-    "kind": "offscreen behind Boki; candidate only",
-    "route": "A"
+    "kind": "gate assembly",
+    "route": "B",
+    "clear_width": 10,
+    "clear_height": 5.5,
+    "angle": -1.1902899330800738
+  },
+  {
+    "name": "B_Rear_Gate",
+    "xyz": [
+      44,
+      95,
+      8
+    ],
+    "kind": "gate assembly",
+    "route": "B",
+    "clear_width": 10,
+    "clear_height": 5.5,
+    "angle": 0.9827936901846228
+  },
+  {
+    "name": "F_B_Selection",
+    "xyz": [
+      10,
+      1,
+      8
+    ],
+    "kind": "selection trigger beyond leaf",
+    "route": "B"
+  },
+  {
+    "name": "B_FirstEncounter",
+    "xyz": [
+      14.642383575439453,
+      0.8569533824920654,
+      8
+    ],
+    "kind": "early regular encounter candidate; activate only after route selection",
+    "route": "B"
   },
   {
     "name": "B_Charge_1",
     "xyz": [
-      -20.400000000000002,
-      308,
-      8
+      47.36,
+      32,
+      8.0
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "B",
@@ -386,9 +234,9 @@
   {
     "name": "B_Charge_2",
     "xyz": [
-      20.400000000000002,
-      308,
-      8
+      80.64,
+      61.0,
+      7.73199462890625
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "B",
@@ -397,9 +245,9 @@
   {
     "name": "B_Charge_3",
     "xyz": [
-      0,
-      348,
-      8
+      64,
+      75,
+      8.05093002319336
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "B",
@@ -408,21 +256,25 @@
   {
     "name": "B_CombatSpace",
     "xyz": [
-      0,
-      328.0,
+      64,
+      52.0,
       8
     ],
     "kind": "combat occupancy; free exit",
     "route": "B",
-    "width": 60,
-    "depth": 56
+    "width": 52,
+    "depth": 60,
+    "height_range_m": [
+      5,
+      16
+    ]
   },
   {
     "name": "B_SpawnCandidate_1",
     "xyz": [
-      -26.0,
-      304,
-      8
+      44.0,
+      30,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "B"
@@ -430,9 +282,9 @@
   {
     "name": "B_SpawnCandidate_2",
     "xyz": [
-      26.0,
-      304,
-      8
+      84.0,
+      30,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "B"
@@ -440,9 +292,9 @@
   {
     "name": "B_SpawnCandidate_3",
     "xyz": [
-      -26.0,
-      328.0,
-      8
+      44.0,
+      74,
+      9.888801574707031
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "B"
@@ -450,29 +302,9 @@
   {
     "name": "B_SpawnCandidate_4",
     "xyz": [
-      26.0,
-      328.0,
-      8
-    ],
-    "kind": "offscreen >=8 m; wait if invalid",
-    "route": "B"
-  },
-  {
-    "name": "B_SpawnCandidate_5",
-    "xyz": [
-      -26.0,
-      352,
-      8
-    ],
-    "kind": "offscreen >=8 m; wait if invalid",
-    "route": "B"
-  },
-  {
-    "name": "B_SpawnCandidate_6",
-    "xyz": [
-      26.0,
-      352,
-      8
+      84.0,
+      74,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "B"
@@ -480,9 +312,9 @@
   {
     "name": "B_GuiltAnchor_1",
     "xyz": [
-      0,
-      304,
-      8
+      51.0,
+      40,
+      8.0
     ],
     "kind": "offscreen behind Boki; candidate only",
     "route": "B"
@@ -490,29 +322,65 @@
   {
     "name": "B_GuiltAnchor_2",
     "xyz": [
-      18.0,
-      328.0,
-      8
+      77.0,
+      68,
+      8.0
     ],
     "kind": "offscreen behind Boki; candidate only",
     "route": "B"
   },
   {
-    "name": "B_GuiltAnchor_3",
+    "name": "C_Front_Gate",
     "xyz": [
       0,
-      352,
+      4,
       8
     ],
-    "kind": "offscreen behind Boki; candidate only",
-    "route": "B"
+    "kind": "gate assembly",
+    "route": "C",
+    "clear_width": 10,
+    "clear_height": 5.5,
+    "angle": -0.0
+  },
+  {
+    "name": "C_Rear_Gate",
+    "xyz": [
+      0,
+      96,
+      8
+    ],
+    "kind": "gate assembly",
+    "route": "C",
+    "clear_width": 10,
+    "clear_height": 5.5,
+    "angle": -0.0
+  },
+  {
+    "name": "F_C_Selection",
+    "xyz": [
+      0,
+      6,
+      8
+    ],
+    "kind": "selection trigger beyond leaf",
+    "route": "C"
+  },
+  {
+    "name": "C_FirstEncounter",
+    "xyz": [
+      0.0,
+      9.0,
+      8
+    ],
+    "kind": "early regular encounter candidate; activate only after route selection",
+    "route": "C"
   },
   {
     "name": "C_Charge_1",
     "xyz": [
-      83.68,
-      308,
-      8
+      -15.36,
+      42,
+      7.798641204833984
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "C",
@@ -521,9 +389,9 @@
   {
     "name": "C_Charge_2",
     "xyz": [
-      116.32,
-      308,
-      8
+      15.36,
+      65.80000000000001,
+      7.7980499267578125
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "C",
@@ -532,9 +400,9 @@
   {
     "name": "C_Charge_3",
     "xyz": [
-      100,
-      336,
-      8
+      0,
+      77,
+      10.02996826171875
     ],
     "kind": "stationary rechargeable contact charge",
     "route": "C",
@@ -543,21 +411,25 @@
   {
     "name": "C_CombatSpace",
     "xyz": [
-      100,
-      322.0,
+      0,
+      58.0,
       8
     ],
     "kind": "combat occupancy; free exit",
     "route": "C",
     "width": 48,
-    "depth": 44
+    "depth": 52,
+    "height_range_m": [
+      5,
+      16
+    ]
   },
   {
     "name": "C_SpawnCandidate_1",
     "xyz": [
-      80.0,
-      304,
-      8
+      -18.0,
+      40,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "C"
@@ -565,9 +437,9 @@
   {
     "name": "C_SpawnCandidate_2",
     "xyz": [
-      120.0,
-      304,
-      8
+      18.0,
+      40,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "C"
@@ -575,9 +447,9 @@
   {
     "name": "C_SpawnCandidate_3",
     "xyz": [
-      80.0,
-      322.0,
-      8
+      -18.0,
+      76,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "C"
@@ -585,29 +457,9 @@
   {
     "name": "C_SpawnCandidate_4",
     "xyz": [
-      120.0,
-      322.0,
-      8
-    ],
-    "kind": "offscreen >=8 m; wait if invalid",
-    "route": "C"
-  },
-  {
-    "name": "C_SpawnCandidate_5",
-    "xyz": [
-      80.0,
-      340,
-      8
-    ],
-    "kind": "offscreen >=8 m; wait if invalid",
-    "route": "C"
-  },
-  {
-    "name": "C_SpawnCandidate_6",
-    "xyz": [
-      120.0,
-      340,
-      8
+      18.0,
+      76,
+      8.0
     ],
     "kind": "offscreen >=8 m; wait if invalid",
     "route": "C"
@@ -615,9 +467,9 @@
   {
     "name": "C_GuiltAnchor_1",
     "xyz": [
-      100,
-      304,
-      8
+      -12.0,
+      50,
+      6.75
     ],
     "kind": "offscreen behind Boki; candidate only",
     "route": "C"
@@ -625,19 +477,9 @@
   {
     "name": "C_GuiltAnchor_2",
     "xyz": [
-      114.4,
-      322.0,
-      8
-    ],
-    "kind": "offscreen behind Boki; candidate only",
-    "route": "C"
-  },
-  {
-    "name": "C_GuiltAnchor_3",
-    "xyz": [
-      100,
-      340,
-      8
+      12.0,
+      70,
+      7.951725006103516
     ],
     "kind": "offscreen behind Boki; candidate only",
     "route": "C"
@@ -645,11 +487,101 @@
   {
     "name": "A_AuthoredGuilt",
     "xyz": [
-      -100,
-      357,
+      -52,
+      83,
       8
     ],
     "kind": "authored behind-player reveal; suspend ambient pursuit",
     "route": "A"
+  },
+  {
+    "name": "C_StrongerRegular_1",
+    "xyz": [
+      -7,
+      49,
+      5.519248962402344
+    ],
+    "kind": "authored stronger regular enemy",
+    "route": "C"
+  },
+  {
+    "name": "C_StrongerRegular_2",
+    "xyz": [
+      7,
+      58,
+      5.5120849609375
+    ],
+    "kind": "authored stronger regular enemy",
+    "route": "C"
+  },
+  {
+    "name": "B_Watcher",
+    "xyz": [
+      59,
+      68,
+      21
+    ],
+    "kind": "Watcher on static gondola; red cue",
+    "route": "B"
+  },
+  {
+    "name": "PlayerStart",
+    "xyz": [
+      0,
+      -14,
+      8
+    ],
+    "kind": "intro",
+    "route": "shared"
+  },
+  {
+    "name": "Intro_LowCamera",
+    "xyz": [
+      0,
+      -18,
+      8.25
+    ],
+    "kind": "intro",
+    "route": "shared"
+  },
+  {
+    "name": "Intro_Scooter",
+    "xyz": [
+      2,
+      -18,
+      8
+    ],
+    "kind": "intro",
+    "route": "shared"
+  },
+  {
+    "name": "Intro_Watch",
+    "xyz": [
+      0,
+      -18,
+      9.4
+    ],
+    "kind": "intro",
+    "route": "shared"
+  },
+  {
+    "name": "Intro_GuiltSilhouette",
+    "xyz": [
+      -18,
+      -14,
+      12
+    ],
+    "kind": "intro",
+    "route": "shared"
+  },
+  {
+    "name": "ExitForest",
+    "xyz": [
+      0,
+      118,
+      8
+    ],
+    "kind": "one-way scene transition; persist Forest C for next run",
+    "route": "shared"
   }
 ]
