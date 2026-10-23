@@ -1,0 +1,242 @@
+{
+  "scene": "Pohorje_Large",
+  "unity_import": "pending",
+  "windows_5600g_performance": "unmeasured",
+  "render_triangles_all_routes": 138686,
+  "render_mesh_objects": 639,
+  "collections": [
+    {
+      "collection": "PL_Shared_Bellevue",
+      "triangles": 773
+    },
+    {
+      "collection": "PL_Shared_Fork",
+      "triangles": 158
+    },
+    {
+      "collection": "PL_Shared_Overlook",
+      "triangles": 694
+    },
+    {
+      "collection": "PL_Route_A",
+      "triangles": 2660
+    },
+    {
+      "collection": "PL_Route_B",
+      "triangles": 3363
+    },
+    {
+      "collection": "PL_Route_C",
+      "triangles": 3072
+    },
+    {
+      "collection": "PL_Terrain_Chunks",
+      "triangles": 7820
+    },
+    {
+      "collection": "PL_Forest_Chunks",
+      "triangles": 119714
+    },
+    {
+      "collection": "PL_C_Removable_Roofs",
+      "triangles": 432
+    }
+  ],
+  "zero_area_meshes": [],
+  "modules": [
+    {
+      "name": "PL_ENV_F_Spruce_0",
+      "triangles": 64,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_Spruce_1",
+      "triangles": 64,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_Spruce_2",
+      "triangles": 64,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_Rock_0",
+      "triangles": 26,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_Rock_1",
+      "triangles": 26,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_Rock_2",
+      "triangles": 26,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_DeadTree",
+      "triangles": 24,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_Log",
+      "triangles": 12,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_GondolaPole",
+      "triangles": 36,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_GondolaCabin",
+      "triangles": 36,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "PL_ENV_F_MaintenanceCart",
+      "triangles": 48,
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    }
+  ],
+  "travel_checks": {
+    "sample_count": 1683,
+    "surface_issues": [],
+    "terrain_above_lane": []
+  },
+  "exports": [
+    {
+      "file": "PL_Shared_Bellevue.fbx",
+      "mesh_count": 25,
+      "warnings": []
+    },
+    {
+      "file": "PL_Shared_Fork.fbx",
+      "mesh_count": 11,
+      "warnings": []
+    },
+    {
+      "file": "PL_Shared_Overlook.fbx",
+      "mesh_count": 17,
+      "warnings": []
+    },
+    {
+      "file": "PL_Route_A.fbx",
+      "mesh_count": 59,
+      "warnings": []
+    },
+    {
+      "file": "PL_Route_B.fbx",
+      "mesh_count": 92,
+      "warnings": []
+    },
+    {
+      "file": "PL_Route_C.fbx",
+      "mesh_count": 101,
+      "warnings": []
+    },
+    {
+      "file": "PL_Terrain_Chunks.fbx",
+      "mesh_count": 126,
+      "warnings": []
+    },
+    {
+      "file": "PL_Forest_Chunks.fbx",
+      "mesh_count": 206,
+      "warnings": []
+    },
+    {
+      "file": "PL_C_Removable_Roofs.fbx",
+      "mesh_count": 2,
+      "warnings": []
+    },
+    {
+      "file": "Pohorje_CollisionGuides.fbx",
+      "mesh_count": 691,
+      "warnings": []
+    },
+    {
+      "file": "Pohorje_GameplayMarkers.fbx",
+      "mesh_count": 0,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Spruce_0.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Spruce_1.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Spruce_2.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Rock_0.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Rock_1.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Rock_2.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_DeadTree.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_Log.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_GondolaPole.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_GondolaCabin.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    },
+    {
+      "file": "ENV_F_MaintenanceCart.fbx",
+      "mesh_count": 1,
+      "warnings": []
+    }
+  ]
+}
