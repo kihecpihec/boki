@@ -45,7 +45,11 @@ namespace Boki.Core
             SceneManager.sceneLoaded += SceneLoaded;
         }
 
-        private void SceneLoaded(Scene scene, LoadSceneMode mode) => IsLoading = false;
+        private void SceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            IsLoading = false;
+            State.Guilt.IsLoading = false;
+        }
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= SceneLoaded;
@@ -63,6 +67,7 @@ namespace Boki.Core
                 || State.Choice(RouteLevel.Feri) == RouteChoice.None) return false;
             if (UsesPersistentUnlocks) unlocks.Earn(State, RouteLevel.Feri);
             hasEnteredBossArena = true;
+            State.Guilt.EndForBoss();
             return true;
         }
 
@@ -100,6 +105,7 @@ namespace Boki.Core
                 if (UsesPersistentUnlocks) unlocks.Earn(State, from);
                 State.TryAdvance(from);
             }
+            State.Guilt.IsLoading = true;
 #if UNITY_EDITOR
             UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(path,
                 new LoadSceneParameters(LoadSceneMode.Single));

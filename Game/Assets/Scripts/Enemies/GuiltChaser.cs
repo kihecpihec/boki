@@ -1,5 +1,6 @@
 using System;
 using Boki.Player;
+using Boki.Core;
 using UnityEngine;
 
 namespace Boki.Enemies
@@ -13,13 +14,22 @@ namespace Boki.Enemies
         [SerializeField] private PlayerHealth target;
         [SerializeField] private GameObject visualRoot;
         [SerializeField] private Transform[] spawnPoints;
-        [SerializeField] private bool pressureActive = true;
+        [SerializeField] private bool useRunSession;
+        [SerializeField] private LayerMask groundMask = 1;
+        [SerializeField] private LayerMask obstructionMask = ~0;
         [SerializeField, Min(0.5f)] private float contactDistance = 2f;
         [SerializeField, Min(0.1f)] private float contactCooldown = 1f;
         [SerializeField, Min(8f)] private float minimumSpawnDistance = 12f;
         [SerializeField, Min(10f)] private float repositionDistance = 45f;
         [SerializeField, Min(0.5f)] private float stuckSeconds = 2f;
-        private readonly GuiltState state = new GuiltState();
+        private readonly GuiltState standaloneState = new GuiltState();
+        private GuiltState state;
+        private readonly Plane[] frustumPlanes = new Plane[6];
+        private readonly Collider[] overlaps = new Collider[16];
+        private bool placed;
+        private bool cycleHasWarning;
+        private bool repositionPending;
+        private float retryRemaining;
         private CooldownTimer contact;
         private CharacterController controller;
         private CharacterController targetController;
@@ -28,20 +38,32 @@ namespace Boki.Enemies
         private float stuckTimer;
         private Vector3 stuckAnchor;
         private int nextSpawn;
-        public GuiltPhase Phase => state.Phase;
+        public GuiltState Pressure
+        {
+            get
+            {
+                if (state == null) BindState();
+                return state;
+            }
+        }
+        public GuiltPhase Phase => state != null ? state.Phase : GuiltPhase.Distant;
         public event Action<GuiltPhase> PhaseChanged;
         public event Action Struck;
 
-        // Callers pass false outside combat spaces, during pause, upgrade selection and scripted sequences.
-        public void SetPressureActive(bool active) => pressureActive = active;
-        public void ResetPressure()
+        // Standalone test-space convenience. Production volumes use their own IDs so overlaps are safe.
+        public void SetPressureActive(bool active) => SetCombatSpaceOccupied(GetEntityId().GetRawData(), active);
+        public void SetCombatSpaceOccupied(ulong spaceId, bool occupied)
         {
-            state.Reset();
-            Hide();
+            if (state == null) BindState();
+            state.SetCombatSpaceOccupied(spaceId, occupied);
+            if (!state.IsActive) SuspendPresentation();
         }
+
+        private void BindState() => state = useRunSession ? RunSession.Ensure().State.Guilt : standaloneState;
 
         private void OnEnable()
         {
+            BindState();
             controller = GetComponent<CharacterController>();
             if (target == null || visualRoot == null || spawnPoints == null || spawnPoints.Length == 0)
             {
@@ -51,35 +73,97 @@ namespace Boki.Enemies
             }
             targetController = target.GetComponent<CharacterController>();
             viewCamera = Camera.main;
-            contact = new CooldownTimer(contactCooldown);
+            if (contact == null) contact = new CooldownTimer(contactCooldown);
+            if (viewCamera == null)
+            {
+                Debug.LogError("GuiltChaser needs a camera tagged MainCamera for safe offscreen placement.", this);
+                enabled = false;
+                return;
+            }
             state.PhaseChanged += OnPhaseChanged;
-            Hide();
+            cycleHasWarning = !state.AwaitingPlacement
+                && (state.Phase == GuiltPhase.Warning || state.Phase == GuiltPhase.Chase);
+            SuspendPresentation();
         }
 
-        private void OnDisable() => state.PhaseChanged -= OnPhaseChanged;
+        private void OnDisable()
+        {
+            if (state != null) state.PhaseChanged -= OnPhaseChanged;
+            if (visualRoot != null) SuspendPresentation();
+        }
 
         private void Update()
         {
-            if (!target.isActiveAndEnabled || !target.IsAlive) return;
+            if (!target.isActiveAndEnabled || !target.IsAlive || !state.IsActive)
+            {
+                SuspendPresentation();
+                return;
+            }
             float dt = Time.deltaTime;
-            if (pressureActive) state.Tick(dt);
-            if (state.Phase != GuiltPhase.Chase || !pressureActive) return;
-            Chase(dt);
+            if (dt <= 0f) return;
+            state.Tick(dt);
+            contact.Tick(dt);
+            if (state.Phase != GuiltPhase.Warning && state.Phase != GuiltPhase.Chase) return;
+            if (!placed && (state.Phase == GuiltPhase.Warning || cycleHasWarning || repositionPending))
+            {
+                retryRemaining -= dt;
+                if (retryRemaining <= 0f)
+                {
+                    retryRemaining = 0.25f;
+                    if (TryPlace())
+                    {
+                        repositionPending = false;
+                        if (state.Phase == GuiltPhase.Warning)
+                        {
+                            state.ConfirmPlacement();
+                            cycleHasWarning = true;
+                        }
+                        PhaseChanged?.Invoke(state.Phase);
+                    }
+                }
+            }
+            if (state.Phase == GuiltPhase.Chase && placed) Chase(dt);
         }
 
         private void OnPhaseChanged(GuiltPhase phase)
         {
             switch (phase)
             {
-                case GuiltPhase.Warning: Place(PickSpawnPoint()); break;
-                case GuiltPhase.Reposition: Hide(); break;
+                case GuiltPhase.Warning:
+                    cycleHasWarning = TryPlace();
+                    if (!cycleHasWarning)
+                    {
+                        state.WaitForPlacement();
+                        return;
+                    }
+                    break;
+                case GuiltPhase.Chase:
+                    if (!cycleHasWarning) return;
+                    break;
+                case GuiltPhase.Reposition:
+                    Hide();
+                    placed = false;
+                    break;
+                case GuiltPhase.Distant:
+                    Hide();
+                    placed = cycleHasWarning = repositionPending = false;
+                    verticalSpeed = stuckTimer = 0f;
+                    if (state.AccumulatedCombatSeconds == 0f) contact = new CooldownTimer(contactCooldown);
+                    break;
             }
             PhaseChanged?.Invoke(phase);
         }
 
+        private void SuspendPresentation()
+        {
+            Hide();
+            placed = false;
+            retryRemaining = 0f;
+            verticalSpeed = stuckTimer = 0f;
+        }
+
         private void Chase(float dt)
         {
-            contact.Tick(dt);
             Vector3 delta = target.transform.position - transform.position;
             Vector3 flat = Vector3.ProjectOnPlane(delta, Vector3.up);
             if (flat.magnitude > repositionDistance || IsStuck(dt)) { Reposition(); return; }
@@ -112,43 +196,63 @@ namespace Boki.Enemies
 
         private void Reposition()
         {
-            if (state.RequestReposition()) Place(PickSpawnPoint());
+            if (!state.RequestReposition()) return;
+            repositionPending = true;
+            retryRemaining = 0f;
         }
 
-        private Transform PickSpawnPoint()
-        {
-            // Prefer an offscreen marker far enough from Boki; fall back to the next marker so Guilt never stalls.
-            for (int i = 0; i < spawnPoints.Length; i++)
-            {
-                Transform point = spawnPoints[(nextSpawn + i) % spawnPoints.Length];
-                if ((point.position - target.transform.position).sqrMagnitude < minimumSpawnDistance * minimumSpawnDistance) continue;
-                if (IsVisible(point.position)) continue;
-                nextSpawn = (nextSpawn + i + 1) % spawnPoints.Length;
-                return point;
-            }
-            Transform fallback = spawnPoints[nextSpawn % spawnPoints.Length];
-            nextSpawn = (nextSpawn + 1) % spawnPoints.Length;
-            return fallback;
-        }
-
-        private bool IsVisible(Vector3 position)
+        private bool TryPlace()
         {
             if (viewCamera == null) return false;
-            Vector3 viewport = viewCamera.WorldToViewportPoint(position);
-            return viewport.z > 0f && viewport.x > -0.1f && viewport.x < 1.1f && viewport.y > -0.1f && viewport.y < 1.1f;
+            GeometryUtility.CalculateFrustumPlanes(viewCamera, frustumPlanes);
+            Vector3 scale = transform.lossyScale;
+            float radius = controller.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.z));
+            float height = Mathf.Max(controller.height * Mathf.Abs(scale.y), radius * 2f);
+            Vector3 centerOffset = Vector3.up * (controller.center.y * Mathf.Abs(scale.y));
+            for (int i = 0; i < spawnPoints.Length; i++)
+            {
+                int index = (nextSpawn + i) % spawnPoints.Length;
+                Transform point = spawnPoints[index];
+                if (point == null) continue;
+                Vector3 fromPlayer = Vector3.ProjectOnPlane(point.position - target.transform.position, Vector3.up);
+                if (fromPlayer.sqrMagnitude < minimumSpawnDistance * minimumSpawnDistance) continue;
+                if (Vector3.Dot(fromPlayer, target.transform.forward) >= 0f) continue;
+                if (!Physics.Raycast(point.position + Vector3.up * 2f, Vector3.down, out RaycastHit ground,
+                    4f, groundMask, QueryTriggerInteraction.Ignore)) continue;
+                if (Vector3.Angle(ground.normal, Vector3.up) > controller.slopeLimit) continue;
+                Vector3 position = ground.point + Vector3.up * controller.skinWidth;
+                Vector3 center = position + centerOffset;
+                var bounds = new Bounds(center, new Vector3(radius * 2f, height, radius * 2f));
+                if (GeometryUtility.TestPlanesAABB(frustumPlanes, bounds)) continue;
+                Vector3 halfSegment = Vector3.up * (height * 0.5f - radius);
+                int count = Physics.OverlapCapsuleNonAlloc(center - halfSegment, center + halfSegment,
+                    radius, overlaps, obstructionMask, QueryTriggerInteraction.Ignore);
+                if (count == overlaps.Length) continue;
+                bool blocked = false;
+                for (int j = 0; j < count; j++)
+                {
+                    if (overlaps[j].transform.IsChildOf(transform)) continue;
+                    blocked = true;
+                    break;
+                }
+                if (blocked) continue;
+                nextSpawn = (index + 1) % spawnPoints.Length;
+                controller.enabled = false;
+                transform.SetPositionAndRotation(position, Quaternion.LookRotation(-fromPlayer.normalized));
+                controller.enabled = true;
+                verticalSpeed = stuckTimer = 0f;
+                stuckAnchor = position;
+                placed = true;
+                visualRoot.SetActive(true);
+                return true;
+            }
+            return false;
         }
 
-        private void Place(Transform point)
+        private void Hide()
         {
-            controller.enabled = false;
-            transform.SetPositionAndRotation(point.position, point.rotation);
-            controller.enabled = true;
-            verticalSpeed = 0f;
-            stuckTimer = 0f;
-            stuckAnchor = point.position;
-            visualRoot.SetActive(true);
+            if (visualRoot != null) visualRoot.SetActive(false);
+            if (controller != null) controller.enabled = false;
         }
-
-        private void Hide() => visualRoot.SetActive(false);
     }
 }

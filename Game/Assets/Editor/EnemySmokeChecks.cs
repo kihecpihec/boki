@@ -17,6 +17,14 @@ namespace Boki.Editor
     {
         private const string Key = "Boki.Enemies.SmokeRunning";
         private const string ScenePath = "Assets/Scenes/Enemy_Test.unity";
+        [Serializable]
+        private sealed class SavedSceneSetup
+        {
+            public string[] paths;
+            public bool[] loaded;
+            public bool[] active;
+        }
+
         private static bool failed;
         private static int stage;
         private static double stageStart;
@@ -44,6 +52,16 @@ namespace Boki.Editor
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             for (int i = 0; i < SceneManager.sceneCount; i++)
                 if (SceneManager.GetSceneAt(i).isDirty) throw new InvalidOperationException("Save open scenes first.");
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            var saved = new SavedSceneSetup { paths = new string[setup.Length],
+                loaded = new bool[setup.Length], active = new bool[setup.Length] };
+            for (int i = 0; i < setup.Length; i++)
+            {
+                saved.paths[i] = setup[i].path;
+                saved.loaded[i] = setup[i].isLoaded;
+                saved.active[i] = setup[i].isActive;
+            }
+            SessionState.SetString(Key + ".Scenes", JsonUtility.ToJson(saved));
             EditorSceneManager.OpenScene(ScenePath);
             // In-memory only (never saved): survive the whole check so isolation phases are not cut short by death.
             var health = Object.FindFirstObjectByType<PlayerHealth>();
@@ -60,7 +78,17 @@ namespace Boki.Editor
             if (state == PlayModeStateChange.EnteredPlayMode) Start();
             if (state != PlayModeStateChange.EnteredEditMode) return;
             SessionState.SetBool(Key, false);
-            EditorSceneManager.OpenScene(ScenePath); // discard the in-memory health override
+            EditorSceneManager.OpenScene(ScenePath); // discard in-memory fixture changes
+            var saved = JsonUtility.FromJson<SavedSceneSetup>(SessionState.GetString(Key + ".Scenes", ""));
+            if (saved != null && saved.paths.Length > 0 && !string.IsNullOrEmpty(saved.paths[0]))
+            {
+                var setup = new SceneSetup[saved.paths.Length];
+                for (int i = 0; i < setup.Length; i++)
+                    setup[i] = new SceneSetup { path = saved.paths[i], isLoaded = saved.loaded[i], isActive = saved.active[i] };
+                EditorSceneManager.RestoreSceneManagerSetup(setup);
+            }
+            else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            SessionState.EraseString(Key + ".Scenes");
             Debug.Log(failed ? "ENEMY_SMOKE_FAILED" : "ENEMY_SMOKE_PASSED");
             if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
         }
@@ -131,7 +159,71 @@ namespace Boki.Editor
             stage++;
             stageStart = EditorApplication.timeSinceStartup;
             if (stage == 1) SetActive(false, false, false, true);
-            else if (stage == 2) SetActive(false, false, true, false);
+            else if (stage == 2)
+            {
+                SetActive(false, false, true, false);
+                CheckGuiltPlacement();
+            }
+        }
+
+        // In-memory fixture only: exercise real physics/camera rejection without changing the scene asset.
+        private static void CheckGuiltPlacement()
+        {
+            var playerController = player.GetComponent<CharacterController>();
+            playerController.enabled = false;
+            player.transform.SetPositionAndRotation(new Vector3(0f, 0.1f, 0f), Quaternion.identity);
+            playerController.enabled = true;
+            Camera camera = Camera.main;
+            camera.transform.SetPositionAndRotation(new Vector3(0f, 4f, -6f),
+                Quaternion.LookRotation(new Vector3(0f, -0.3f, 1f)));
+            var serialized = new SerializedObject(guilt);
+            var markers = serialized.FindProperty("spawnPoints");
+            var visual = (GameObject)serialized.FindProperty("visualRoot").objectReferenceValue;
+            var controller = guilt.GetComponent<CharacterController>();
+            Vector3[] invalid = { new Vector3(0f, 0f, 13f), new Vector3(0f, 0f, -3f),
+                new Vector3(0f, -10f, -13f) };
+            foreach (Vector3 position in invalid)
+            {
+                for (int i = 0; i < markers.arraySize; i++)
+                    ((Transform)markers.GetArrayElementAtIndex(i).objectReferenceValue).position = position;
+                Physics.SyncTransforms();
+                guilt.Pressure.Reset();
+                guilt.SetPressureActive(true);
+                guilt.Pressure.Tick(20f);
+                Check(guilt.Pressure.AwaitingPlacement && !visual.activeSelf && !controller.enabled,
+                    "Guilt must remain hidden with no safe marker at " + position);
+                if (failed) return;
+            }
+            for (int i = 0; i < markers.arraySize; i++)
+                ((Transform)markers.GetArrayElementAtIndex(i).objectReferenceValue).position = new Vector3(0f, 0f, -13f);
+            GameObject blocker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            blocker.transform.position = new Vector3(0f, 1f, -13f);
+            blocker.transform.localScale = new Vector3(3f, 3f, 3f);
+            Physics.SyncTransforms();
+            guilt.Pressure.Reset();
+            guilt.SetPressureActive(true);
+            guilt.Pressure.Tick(20f);
+            Check(guilt.Pressure.AwaitingPlacement && !visual.activeSelf, "Guilt must reject occupied capsule space.");
+            Object.DestroyImmediate(blocker);
+            Physics.SyncTransforms();
+            guilt.Pressure.Reset();
+            guilt.SetPressureActive(true);
+            guilt.Pressure.Tick(20f);
+            Check(!guilt.Pressure.AwaitingPlacement && visual.activeSelf && controller.enabled,
+                "Guilt must appear at a valid offscreen grounded marker behind Boki.");
+            guilt.SetPressureActive(false);
+            guilt.Pressure.Tick(10f);
+            Check(!visual.activeSelf && !controller.enabled && guilt.Pressure.AccumulatedCombatSeconds == 20f,
+                "Leaving the combat space must hide Guilt and freeze pressure.");
+            guilt.SetPressureActive(true);
+            guilt.Pressure.EndForBoss();
+            Check(!visual.activeSelf && !controller.enabled && !guilt.Pressure.IsActive,
+                "Boss entry must end ambient Guilt.");
+            guilt.Pressure.Reset();
+            guilt.SetPressureActive(true);
+            sawWarning = sawChase = sawReposition = false;
+            guiltStrikes = 0;
+            Debug.Log("GUILT_PLACEMENT: invalid distance/direction/ground, occupied marker, valid marker, exit and boss checks completed.");
         }
 
         private static void SetActive(bool meleeOn, bool rangedOn, bool guiltOn, bool bossOn)
@@ -139,6 +231,7 @@ namespace Boki.Editor
             foreach (MeleeEnemy enemy in melee) if (enemy != null) enemy.gameObject.SetActive(meleeOn);
             foreach (RangedEnemy enemy in ranged) if (enemy != null) enemy.gameObject.SetActive(rangedOn);
             guilt.gameObject.SetActive(guiltOn);
+            if (guiltOn) guilt.SetPressureActive(true);
             boss.gameObject.SetActive(bossOn);
         }
 
