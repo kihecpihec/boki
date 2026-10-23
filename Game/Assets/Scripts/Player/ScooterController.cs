@@ -21,19 +21,20 @@ namespace Boki.Player
 
         // Movement.md §10: first-pass momentum tuning; serialized M1 speed/boost values stay intact.
         [SerializeField, Min(0f)] private float groundAcceleration = 60f;
-        [SerializeField, Min(0f)] private float airAcceleration = 20f;
+        [SerializeField, Min(0f)] private float airAcceleration = 35f;
         [SerializeField, Min(0f)] private float brakeDeceleration = 25f;
         [SerializeField, Min(0f)] private float groundOverspeedDecay = 6f;
-        [SerializeField, Min(0f)] private float airOverspeedDecay = 2f;
-        [SerializeField, Min(0f)] private float overspeedTurnRate = 240f;
+        [SerializeField, Min(0f)] private float airOverspeedDecay = 0.75f;
+        [SerializeField, Min(0f)] private float overspeedTurnRate = 360f;
         [SerializeField, Min(0f)] private float coyoteTime = 0.1f;
         [SerializeField, Min(0f)] private float jumpBuffer = 0.1f;
         [SerializeField, Min(0f)] private float landingGrace = 0.1f;
         [SerializeField, Min(0f)] private float snapDistance = 0.3f;
         [SerializeField] private LayerMask groundMask = Physics.DefaultRaycastLayers;
         [SerializeField, Min(0f)] private float slopeGain = 0.5f;
-        [SerializeField, Min(0f)] private float airStrafeAcceleration = 6f;
-        [SerializeField, Min(1f)] private float airStrafeMaxMultiplier = 2f;
+        [SerializeField, Min(0f)] private float airStrafeAcceleration = 18f;
+        [SerializeField, Min(1f)] private float airStrafeMaxMultiplier = 3f;
+        [SerializeField, Min(0f)] private float bunnyHopGain = 1.5f;
 
         private CharacterController controller;
         private ScooterMotion motion;
@@ -66,7 +67,8 @@ namespace Boki.Player
             motion = new ScooterMotion(new ScooterMotionTuning(speed, speed * boostMultiplier,
                 boostDuration, boostCooldown, jumpHeight, Mathf.Abs(gravity), groundAcceleration,
                 airAcceleration, brakeDeceleration, groundOverspeedDecay, airOverspeedDecay,
-                overspeedTurnRate, coyoteTime, jumpBuffer, landingGrace, airStrafeAcceleration, airStrafeMaxMultiplier));
+                overspeedTurnRate, coyoteTime, jumpBuffer, landingGrace, airStrafeAcceleration, airStrafeMaxMultiplier,
+                bunnyHopGain));
             walkableNormalY = Mathf.Cos(controller.slopeLimit * Mathf.Deg2Rad);
             ownsMove = EnableAction(moveAction);
             ownsJump = EnableAction(jumpAction);

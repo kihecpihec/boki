@@ -157,6 +157,33 @@ namespace Boki.Editor
             }
         }
 
+        [MenuItem("Boki/Player Model/Apply Faster Strafe and Hop Tuning")]
+        public static void ApplyFasterMovementTuning()
+        {
+            RequireCleanScenes();
+            Scene scene = SceneManager.GetActiveScene();
+            if (scene.path != ScenePath)
+                throw new InvalidOperationException("Open the owned Player_Model_Test scene before applying movement tuning.");
+            foreach (var root in scene.GetRootGameObjects())
+            {
+                if (!root.TryGetComponent<ScooterController>(out var movement)) continue;
+                var serialized = new SerializedObject(movement);
+                serialized.FindProperty("airAcceleration").floatValue = 35f;
+                serialized.FindProperty("airOverspeedDecay").floatValue = 0.75f;
+                serialized.FindProperty("overspeedTurnRate").floatValue = 360f;
+                serialized.FindProperty("airStrafeAcceleration").floatValue = 18f;
+                serialized.FindProperty("airStrafeMaxMultiplier").floatValue = 3f;
+                serialized.FindProperty("bunnyHopGain").floatValue = 1.5f;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                PrefabUtility.RecordPrefabInstancePropertyModifications(movement);
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log("FASTER_MOVEMENT_READY: strafe acceleration 18, air steering 35, hop gain 1.5, generated speed limit 18 m/s.");
+                return;
+            }
+            throw new InvalidOperationException("The test player is missing.");
+        }
+
         private static void ConfigurePresentation(Scene scene, ScooterController movement, Camera camera)
         {
             Transform visuals = movement.transform.Find("Visuals");

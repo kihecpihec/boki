@@ -9,6 +9,7 @@ namespace Boki.Player
         private Vector2 horizontal;
         private float coyoteRemaining, bufferRemaining, graceRemaining;
         private bool wasGrounded, ignoreGroundUntilAirborne;
+        private bool hasBeenAirborne, hopEligible;
 
         public float HorizontalX => horizontal.X;
         public float HorizontalZ => horizontal.Y;
@@ -29,12 +30,14 @@ namespace Boki.Player
             coyoteRemaining = bufferRemaining = graceRemaining = 0f;
             DisplacementX = DisplacementY = DisplacementZ = 0f;
             wasGrounded = ignoreGroundUntilAirborne = false;
+            hasBeenAirborne = hopEligible = false;
         }
 
         public void SuspendInput()
         {
             horizontal = Vector2.Zero;
             bufferRemaining = BoostRemaining = 0f;
+            hopEligible = false;
         }
 
         public void Tick(float directionX, float directionZ, bool grounded,
@@ -49,9 +52,18 @@ namespace Boki.Player
             var input = new Vector2(directionX, directionZ);
             var slopeAcceleration = new Vector2(slopeAccelerationX, slopeAccelerationZ);
             if (input.LengthSquared() > 1f) input = Vector2.Normalize(input);
-            if (!grounded) ignoreGroundUntilAirborne = false;
+            if (!grounded)
+            {
+                ignoreGroundUntilAirborne = false;
+                hasBeenAirborne = true;
+            }
             grounded &= !ignoreGroundUntilAirborne;
-            if (grounded && !wasGrounded) graceRemaining = tuning.LandingGrace;
+            if (grounded && !wasGrounded)
+            {
+                graceRemaining = tuning.LandingGrace;
+                hopEligible = hasBeenAirborne;
+                hasBeenAirborne = false;
+            }
             if (jumpPressed) bufferRemaining = tuning.JumpBuffer;
             if (boostPressed && grounded && BoostRemaining <= 0f && CooldownRemaining <= 0f)
             {
@@ -73,6 +85,13 @@ namespace Boki.Player
                 bool jump = bufferRemaining > 0f && (grounded || coyoteRemaining > 0f);
                 if (jump)
                 {
+                    if (grounded && hopEligible && graceRemaining > 0f && BoostRemaining <= 0f
+                        && Speed >= tuning.Speed * 0.8f && Speed > 0.001f && Vector2.Dot(horizontal, input) > 0f)
+                    {
+                        float limit = tuning.Speed * tuning.AirStrafeMaxMultiplier;
+                        if (Speed < limit) horizontal *= Math.Min(limit, Speed + tuning.BunnyHopGain) / Speed;
+                    }
+                    hopEligible = false;
                     VerticalSpeed = (float)Math.Sqrt(2f * tuning.Gravity * tuning.JumpHeight);
                     bufferRemaining = coyoteRemaining = 0f;
                     ignoreGroundUntilAirborne = true;
