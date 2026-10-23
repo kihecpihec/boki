@@ -13,6 +13,7 @@ namespace Boki.Combat
         [SerializeField] private Transform aimPoint;
         private HealthState state;
         public int Current => State.Current;
+        public int Maximum => State.Maximum;
         public bool IsAlive => State.IsAlive;
         public Vector3 AimPosition => aimPoint != null ? aimPoint.position : transform.position + Vector3.up;
         public event Action Died;

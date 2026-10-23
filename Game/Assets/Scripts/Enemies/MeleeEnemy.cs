@@ -1,3 +1,4 @@
+using System;
 using Boki.Combat;
 using Boki.Player;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace Boki.Enemies
         private CharacterController targetController;
         private float verticalSpeed;
         private float cooldown;
+        public event Action Attacked;
+        public bool IsMoving { get; private set; }
 
         private void OnEnable()
         {
@@ -47,7 +50,8 @@ namespace Boki.Enemies
             CollisionFlags collision = controller.Move((direction * speed + Vector3.up * verticalSpeed) * dt);
             if ((collision & CollisionFlags.Below) != 0) verticalSpeed = -2f;
             if ((collision & CollisionFlags.Above) != 0 && verticalSpeed > 0f) verticalSpeed = 0f;
-            if (horizontal.sqrMagnitude > 0.001f) transform.rotation = Quaternion.LookRotation(direction);
+            IsMoving = horizontal.sqrMagnitude > 0.001f;
+            if (IsMoving) transform.rotation = Quaternion.LookRotation(direction);
 
             // Compare capsule centers in 3D so jumping above contact range avoids damage.
             Vector3 ownCenter = transform.TransformPoint(controller.center);
@@ -58,6 +62,7 @@ namespace Boki.Enemies
             if (Physics.Linecast(ownCenter, playerCenter, 1, QueryTriggerInteraction.Ignore)) return;
             cooldown = Mathf.Max(0.01f, attackInterval);
             target.TakeDamage(damage);
+            Attacked?.Invoke();
         }
     }
 }
