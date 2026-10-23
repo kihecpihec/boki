@@ -1,0 +1,55 @@
+{
+  "mesh_checks": [
+    {
+      "name": "ENV_F_PathTile_4m",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "ENV_SH_Ramp_4m",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "ENV_F_BankWedge",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "ENV_F_Spruce",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "ENV_F_Rock",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "ENV_F_Log",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    },
+    {
+      "name": "Calibration_1m",
+      "nonmanifold_edges": 0,
+      "zero_area_faces": 0,
+      "unit_scale": true
+    }
+  ],
+  "calibration_fbx_blender_roundtrip": {
+    "dimensions_m": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "passed": true
+  },
+  "unity_validation": "pending"
+}
