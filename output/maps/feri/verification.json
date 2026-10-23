@@ -1,0 +1,69 @@
+{
+  "checks": {
+    "route_A_reaches_classroom": true,
+    "route_B_reaches_classroom": true,
+    "route_C_reaches_classroom": true,
+    "floor_samples": 694,
+    "trap_count": 2,
+    "boss_charge_count": 2
+  },
+  "roundtrip": {
+    "FERI_Arena_Classroom.fbx": {
+      "passed": true,
+      "triangles": 4584,
+      "bounds_error_m": 6.198883056640625e-06
+    },
+    "FERI_CollisionGuides.fbx": {
+      "passed": true,
+      "triangles": 4632,
+      "bounds_error_m": 1.6689300537109375e-06
+    },
+    "FERI_Markers.fbx": {
+      "passed": true,
+      "triangles": 0,
+      "bounds_error_m": 0
+    },
+    "FERI_Removable_Roofs.fbx": {
+      "passed": true,
+      "triangles": 5904,
+      "bounds_error_m": 6.198883056640625e-06
+    },
+    "FERI_Route_A.fbx": {
+      "passed": true,
+      "triangles": 4272,
+      "bounds_error_m": 3.933906555175781e-06
+    },
+    "FERI_Route_B.fbx": {
+      "passed": true,
+      "triangles": 4504,
+      "bounds_error_m": 3.933906555175781e-06
+    },
+    "FERI_Route_C.fbx": {
+      "passed": true,
+      "triangles": 4724,
+      "bounds_error_m": 3.933906555175781e-06
+    },
+    "FERI_Seals.fbx": {
+      "passed": true,
+      "triangles": 1992,
+      "bounds_error_m": 9.437237658005415e-09
+    },
+    "FERI_Shared_Arrival.fbx": {
+      "passed": true,
+      "triangles": 3656,
+      "bounds_error_m": 5.960464477539062e-07
+    },
+    "FERI_Shared_Landing.fbx": {
+      "passed": true,
+      "triangles": 3456,
+      "bounds_error_m": 4.678964614868164e-06
+    }
+  },
+  "errors": [],
+  "status": "passed",
+  "limitations": [
+    "No Unity controller/camera or gameplay tests",
+    "No Windows target-hardware measurement",
+    "Grid and support checks do not prove full mesh-overlap or navigation clearance"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "meshes": 8,
+  "triangles": 4272,
+  "materials": [
+    "M_FERI_Concrete",
+    "M_FERI_Dark",
+    "M_FERI_Floor",
+    "M_FERI_Iron",
+    "M_FERI_Paper",
+    "M_FERI_Tube",
+    "M_FERI_Wall",
+    "M_FERI_Wood"
+  ],
+  "errors": [],
+  "warnings": []
+}
