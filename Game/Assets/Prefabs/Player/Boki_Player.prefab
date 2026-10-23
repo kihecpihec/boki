@@ -85,6 +85,23 @@ MonoBehaviour:
   boostMultiplier: 1.75
   boostDuration: 0.35
   boostCooldown: 1
+  groundAcceleration: 60
+  airAcceleration: 35
+  brakeDeceleration: 25
+  groundOverspeedDecay: 6
+  airOverspeedDecay: 0.75
+  overspeedTurnRate: 360
+  coyoteTime: 0.1
+  jumpBuffer: 0.1
+  landingGrace: 0.1
+  snapDistance: 0.3
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 51
+  slopeGain: 0.5
+  airStrafeAcceleration: 18
+  airStrafeMaxMultiplier: 3
+  bunnyHopGain: 1.5
 --- !u!1 &8032205565900627213
 GameObject:
   m_ObjectHideFlags: 0
