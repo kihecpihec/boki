@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Boki.Combat;
+using Boki.Enemies;
 
 namespace Boki.Routes
 {
@@ -21,6 +22,7 @@ namespace Boki.Routes
     public sealed class RunState
     {
         private readonly RouteChoice[] choices = new RouteChoice[3];
+        public GuiltState Guilt { get; } = new GuiltState();
         public HealthState Health { get; private set; }
         public int Battery { get; set; }
         public int XP { get; set; }
@@ -35,6 +37,7 @@ namespace Boki.Routes
 
         public void NewRun(UnlockSnapshot unlocks, double startedAt)
         {
+            Guilt.Reset();
             Health = new HealthState(100);
             Battery = 100;
             XP = KillCount = 0;
@@ -98,6 +101,7 @@ namespace Boki.Routes
         public bool TryAdvance(RouteLevel level)
         {
             if (!CanAdvance(level)) return false;
+            Guilt.Reset();
             ActiveLevel = (RouteLevel)((int)level + 1);
             Changed?.Invoke();
             return true;
