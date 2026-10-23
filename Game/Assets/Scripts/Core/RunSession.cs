@@ -16,11 +16,14 @@ namespace Boki.Core
         [SerializeField] private string forestDestination = ForestScene;
         [SerializeField] private string cityDestination = CityScene;
         [SerializeField] private string feriDestination = "";
+        private PersistentUnlocks unlocks;
+        private bool hasEnteredBossArena;
         public string EntryScene => forestDestination;
         public static RunSession Instance { get; private set; }
         public RunState State { get; private set; }
         public bool IsLoading { get; private set; }
-        // M5 supplies saved flags here before starting the next run.
+        // In-memory input retained for the standalone M3 demonstration.
+        // Production scenes read permanent flags from PlayerPrefs on every new run.
         public UnlockSnapshot NextRunUnlocks { get; set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -37,7 +40,8 @@ namespace Boki.Core
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            State = new RunState(NextRunUnlocks, Time.realtimeSinceStartupAsDouble);
+            unlocks = new PersistentUnlocks(new PlayerPrefsUnlockStore());
+            State = new RunState(ReadNewRunUnlocks(), Time.realtimeSinceStartupAsDouble);
             SceneManager.sceneLoaded += SceneLoaded;
         }
 
@@ -46,6 +50,20 @@ namespace Boki.Core
         {
             SceneManager.sceneLoaded -= SceneLoaded;
             if (Instance == this) Instance = null;
+        }
+
+        // Production routing owns persistence. A scene cached before M5 must not
+        // silently disable saving because it lacks a newly serialized checkbox.
+        private bool UsesPersistentUnlocks => forestDestination == PohorjeScene;
+        private UnlockSnapshot ReadNewRunUnlocks() => UsesPersistentUnlocks ? unlocks.Read() : NextRunUnlocks;
+
+        public bool EnterBossArena()
+        {
+            if (hasEnteredBossArena || IsLoading || State.ActiveLevel != RouteLevel.Feri || !State.Health.IsAlive
+                || State.Choice(RouteLevel.Feri) == RouteChoice.None) return false;
+            if (UsesPersistentUnlocks) unlocks.Earn(State, RouteLevel.Feri);
+            hasEnteredBossArena = true;
+            return true;
         }
 
         public bool Retry() => Load(forestDestination, true, RouteLevel.Forest);
@@ -70,8 +88,18 @@ namespace Boki.Core
                 return false;
             }
             IsLoading = true;
-            if (newRun) State.NewRun(NextRunUnlocks, Time.realtimeSinceStartupAsDouble);
-            else if (!State.TryAdvance(from)) { IsLoading = false; return false; }
+            if (newRun)
+            {
+                hasEnteredBossArena = false;
+                State.NewRun(ReadNewRunUnlocks(), Time.realtimeSinceStartupAsDouble);
+            }
+            else
+            {
+                // The destination and prerequisites are valid before progress is saved.
+                if (!State.CanAdvance(from)) { IsLoading = false; return false; }
+                if (UsesPersistentUnlocks) unlocks.Earn(State, from);
+                State.TryAdvance(from);
+            }
 #if UNITY_EDITOR
             UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(path,
                 new LoadSceneParameters(LoadSceneMode.Single));

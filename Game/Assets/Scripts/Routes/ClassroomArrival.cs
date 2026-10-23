@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Boki.Routes
 {
-    // M4 endpoint only. M5 owns the arena unlock and M6 owns boss startup.
+    // Arena entry earns the M5 unlock; M6 owns boss startup.
     public sealed class ClassroomArrival : MonoBehaviour
     {
         [SerializeField] private RouteManager manager;
@@ -16,8 +16,9 @@ namespace Boki.Routes
             if (!isActiveAndEnabled || HasArrived || manager == null || !manager.IsPlayer(other) || !manager.IsReady
                 || manager.Level != RouteLevel.Feri
                 || RunSession.Instance.State.Choice(RouteLevel.Feri) == RouteChoice.None) return;
+            if (!RunSession.Instance.EnterBossArena()) return;
             HasArrived = true;
-            if (message != null) message.text = "CLASSROOM REACHED — END OF M4 GRAYBOX";
+            if (message != null) message.text = "CLASSROOM REACHED — C ROUTES AVAILABLE NEXT RUN";
         }
     }
 }
