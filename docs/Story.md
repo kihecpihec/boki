@@ -8,7 +8,7 @@
 
 ## 1. Core Idea and Tone
 
-The game is both funny and unsettling. Boki and his comments are absurd; the world around him is truly horrifying. The player must keep moving: Boki rides an electric scooter, his rave laser fires automatically, and the scooter light holds enemies back. The enormous, unkillable shadow Guilt follows in the background.
+The game is both funny and unsettling. Boki and his comments are absurd; the world around him is truly horrifying. The player must keep moving: Boki rides an electric scooter, his rave laser fires automatically, and the scooter light holds enemies back. The enormous, unkillable shadow Guilt follows in the background. Each chosen path leads to a combat space: Boki can linger to fight, collect XP, and gain upgrades, but Guilt appears more often, moves faster, and deals more damage the longer he stays. That pressure pushes him to continue toward FERI before the risk outweighs another upgrade. [Gameplay.md §5](Gameplay.md#5-loop-within-each-route) defines this loop and its open tuning decisions.
 
 **Core premise:** choosing a route on Pohorje limits the available routes in Maribor; choosing a route in Maribor limits the entrances to FERI. Hidden paths unlock permanently across attempts, but a previous choice can still block them during a particular run.
 
@@ -70,7 +70,7 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 ### LEVEL 1 — “POHORJE: WRONG WAY HOME” (2–3 Minutes)
 
-**Shared section:** 10–15 seconds of safe riding to learn movement, with a short jump/boost prompt. The first dark silhouettes appear before the fork. The laser hits them automatically; they leave XP particles and light energy when killed. Fog makes the trees feel too close. During the first encounter with Guilt, the bass slows into a heartbeat.
+**Shared section:** 10–15 seconds of safe riding to learn movement, with a short jump/boost prompt. The first dark silhouettes appear before the fork. The laser hits them automatically; they leave XP particles when killed; scattered battery charges reward riding through the combat space. Fog makes the trees feel too close. During the first encounter with Guilt, the bass slows into a heartbeat.
 
 **Choice A: Gozdna strmina.** A narrow, winding route between tall spruces and logs. It has the most regular enemies and therefore the most early XP. Special event: at the end of a clearing, the monster appears directly behind the player, who gains a short panic speed advantage. Atmosphere: black trees, thick blue fog, a few orange lights. **Gameplay:** tree slalom and XP collection; simple to build using terrain and cylinders.
 
@@ -144,10 +144,10 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 
 - Boki: 100 HP; speed 7 m/s; boost 11 m/s for 0.6 s with a 3 s cooldown; CharacterController jump.
 - Auto-laser: nearest target within 12 m; fires every 0.5 s; base damage 10.
-- Light battery: 100; drain 1.5/s; regular kills restore +10, battery pickups +25. At 0 battery, enemies gain +30% speed, with no extra damage boost.
+- Light battery: 100; drain 1.5/s; regular kills never restore charge; arena battery pickups restore +25, with placement and recharge rules in [Gameplay §5](Gameplay.md#battery-charges-and-action-feedback). At 0 battery, enemies gain +30% speed, with no extra damage boost.
 - Melee: approximately 20–30 HP; ranged: 15–25 HP. Increase stats slightly by level, e.g. HP ×1.0 / ×1.25 / ×1.4, without new AI types.
-- Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. No instant death.
-- Professor: approximately **400 HP** initially, two attack types; tune after testing for a 60–100 s fight.
+- Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. Lingering increases its appearance frequency, chase speed, and damage under [Gameplay.md §5](Gameplay.md#5-loop-within-each-route); approved initial scaling values and caps are specified there. No instant-death mechanic.
+- Professor: **4000 HP** in M6, with two attack types. This targets approximately 80 seconds of continuous fire with the approved [M2 combat baseline](Gameplay.md#m2-combat-baseline), before route modifiers. Verify the 60–100 s fight target through interactive playtesting.
 - Active regular enemy cap: Pohorje 8; Maribor 12; FERI 8 plus boss. Spawn from a few predefined points only.
 
 ### Difficulty Curve
@@ -156,20 +156,30 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 **Maribor:** greater overall pressure, ranged projectiles, more demanding battery management.  
 **FERI:** fewer regular enemies, different hazards, boss with red warnings.
 
-Difficulty **does not automatically increase** on subsequent runs. Routes, hidden shortcuts, different encounters, and upgrade choices provide replay value. A separate Hard mode option is optional if time remains; it is outside the MVP.
+Within a run, staying longer in a combat space escalates Guilt pressure. Difficulty **does not automatically increase** merely because the player starts a subsequent run. Routes, hidden shortcuts, different encounters, and upgrade choices provide replay value. A separate Hard mode option is optional if time remains; it is outside the MVP.
 
 ## 5. Upgrades and Replay Motivation
 
-Regular enemies drop XP. At 3, 7, and 12 collected XP packs (initial tuning), briefly pause and offer **three random options**, of which the player chooses one. Aim for approximately 2–3 upgrades per run.
+Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **3 → 7 → 12 → 18 → 25 → 33**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
 
-- **Rave Overdrive:** +30% laser damage.
-- **Turbo Skiro:** +20% movement speed.
-- **Bigger Battery:** +40% battery capacity, with a proportional increase in current charge.
-- **Double Trouble:** each shot adds a second laser projectile toward the same or another target.
-- **Panic Mode:** stronger temporary boost while Guilt is nearby.
-- **Emergency Snack:** immediately restores 30 HP.
+Crossing a threshold pauses gameplay and offers three distinct random eligible options. Select exactly one before resuming; if multiple thresholds are crossed, resolve choices sequentially without unpausing combat. Bonuses add percentages of the original base stat rather than multiplying previous upgrades.
 
-**For the 48-hour jam:** implement Damage, Speed, Battery, and Heal first if time is short. A generic Unity UI with three cards is sufficient.
+| Upgrade | Exact effect | Selection cap per run |
+|---|---|---:|
+| **Rave Overdrive** | +30% original base laser damage per selection; three selections give +90%. | 3 |
+| **Turbo Skiro** | +20% original base movement speed per selection; does not raise boost speed. | 2 |
+| **Bigger Battery** | +40% original base battery capacity per selection (100 → 140 → 180); preserve charge percentage when capacity changes. | 2 |
+| **Double Trouble** | Each firing cycle adds a second full-damage instantaneous laser hit. Prefer another valid visible in-range target; otherwise hit the original if still alive and valid. Respect occlusion; never hit a dead target. Uses upgraded laser damage and does not alter fire cadence. | 1 |
+| **Panic Mode** | Boost modification described below. | 1 |
+| **Emergency Snack** | Restore 30 HP, capped at maximum; eligible only while injured. | Repeatable |
+
+Remove capped or ineligible options from the offer pool. If needed to maintain three choices, add distinct recovery rewards: **Battery Charge** (+25 current battery, clamped to capacity) and **Emergency Snack** (+30 HP). Label recovery cards `RECOVERY`; never show Emergency Snack twice as both an upgrade and a fallback. Battery Charge is eligible only below battery capacity. Each selected recovery consumes one of the six selections. With the caps above and six selections, sufficient uncapped stat upgrades remain to fill an offer even if healing is ineligible; do not duplicate cards.
+
+Turbo Skiro and the existing Guilt movement advantage add: one Turbo selection plus panic gives +45% original base movement speed; two give +65%. Apply this movement bonus to ordinary riding, not boost speed. Preserve the approved [M1 baseline](Gameplay.md#m1-movement-baseline); this does not approve the separate proposed movement overhaul.
+
+**Panic Mode:** when a boost starts while Guilt is actively chasing within 10 m, give that boost +25% boost speed and +50% duration, with normal cooldown. Snapshot eligibility at activation and retain the values until that boost ends, even if Guilt moves away. Outside that condition use the ordinary boost. This does not grant a permanent movement bonus or stack repeatedly during a boost. Show `PANIC READY` on the boost indicator while eligible. Use the currently approved base boost values, not unapproved Movement.md proposals.
+
+**Delivery order:** Damage, Speed, Battery, and Heal can ship first for the minimum slice; all six remain required for the documented full design. A generic three-card Unity UI is sufficient. Guilt pressure, pause timing, arena battery charges, and replenishment are specified in [Gameplay §5](Gameplay.md#5-loop-within-each-route).
 
 ## 6. Visual and Audio Direction
 
