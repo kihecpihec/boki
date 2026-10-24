@@ -9,6 +9,48 @@ namespace Boki.Tests
             6f, 10.5f, 0.35f, 1f, 1.2f, 25f, 60f, 20f, 25f, 6f, 2f, 240f, 0.1f, 0.1f, 0.1f));
 
         [Test]
+        public void GuiltRidingAdvantageExpiresAndCannotRetriggerBeforeCooldown()
+        {
+            var advantage = new GuiltMovementAdvantage();
+            advantage.Tick(true, .01f);
+            Assert.That(advantage.IsActive, Is.True);
+            advantage.Tick(false, 0f);
+            Assert.That(advantage.Remaining, Is.EqualTo(2f));
+            advantage.Tick(true, 2.01f);
+            Assert.That(advantage.IsActive, Is.False);
+            advantage.Tick(true, 2f);
+            Assert.That(advantage.IsActive, Is.False);
+            advantage.Tick(true, 1f);
+            Assert.That(advantage.IsActive, Is.True);
+        }
+
+        [Test]
+        public void TurboRaisesOnlyRidingSpeedAndPanicSnapshotsOneBoost()
+        {
+            var motion = Make();
+            motion.SetModifiers(1.4f, false);
+            motion.Tick(0f, 1f, true, false, false, 1f);
+            Assert.That(motion.Speed, Is.EqualTo(8.4f).Within(.002f));
+            motion.Tick(0f, 1f, true, false, true, .01f);
+            Assert.That(motion.Speed, Is.EqualTo(10.5f).Within(.002f));
+            motion.Tick(0f, 1f, true, false, false, 2f);
+            motion.SetModifiers(1.4f, true);
+            motion.Tick(0f, 1f, true, false, true, .01f);
+            Assert.That(motion.ActiveBoostSpeed, Is.EqualTo(13.125f).Within(.002f));
+            Assert.That(motion.ActiveBoostDuration, Is.EqualTo(.525f).Within(.002f));
+            motion.SetModifiers(1.4f, false);
+            motion.Tick(0f, 1f, true, false, false, .35f);
+            Assert.That(motion.BoostRemaining, Is.GreaterThan(0f));
+            Assert.That(motion.Speed, Is.EqualTo(13.125f).Within(.002f));
+            motion.Tick(0f, 1f, true, false, false, .166f);
+            Assert.That(motion.CooldownRemaining, Is.EqualTo(1f).Within(.003f));
+            motion.Tick(0f, 1f, true, false, false, 1.1f);
+            motion.Tick(0f, 1f, true, false, true, .01f);
+            Assert.That(motion.ActiveBoostDuration, Is.EqualTo(.35f).Within(.002f));
+            Assert.That(motion.ActiveBoostSpeed, Is.EqualTo(10.5f).Within(.002f));
+        }
+
+        [Test]
         public void AcceleratesWithoutExceedingCapAndNormalizesDiagonalInput()
         {
             var motion = Make();

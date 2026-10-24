@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Boki.Core;
+using Boki.Upgrades;
 
 namespace Boki.Combat
 {
@@ -45,6 +47,13 @@ namespace Boki.Combat
         private void OnDisable() => active.Remove(this);
         private void Die()
         {
+            var session = RunSession.Instance;
+            if (session != null && session.State.Health.IsAlive)
+            {
+                session.State.KillCount++;
+                if (!session.State.Progression.IsMaxLevel && GetComponent<Boki.Enemies.ProfessorBoss>() == null)
+                    XpPickup.Spawn(transform.position, gameObject.scene);
+            }
             active.Remove(this);
             Died?.Invoke();
             Destroy(gameObject);

@@ -25,13 +25,12 @@ namespace Boki.UI
         [SerializeField] private Image xpFill;
         [SerializeField] private RawImage guiltEdges;
         [SerializeField] private bool screenEffectsEnabled = true;
-        // Display milestones only; selecting upgrades belongs to the upgrade system (Story §5).
-        [SerializeField] private int[] xpMilestones = { 3, 7, 12, 18, 25, 33 };
         [SerializeField, Min(1f)] private float guiltWarningDistance = 15f;
         private Texture2D edgeTexture;
-        private int lastHealth = -1, lastMaximum = -1, lastCharge = -1, lastCapacity = -1, lastXp = -1;
+        private int lastHealth = -1, lastMaximum = -1, lastCharge = -1, lastCapacity = -1, lastXp = -1, lastSelections = -1;
         private RouteLevel? lastLevel;
         public bool ScreenEffectsEnabled { get => screenEffectsEnabled; set => screenEffectsEnabled = value; }
+        public void BindGuilt(GuiltChaser chaser) => guilt = chaser;
 
         private void OnEnable()
         {
@@ -43,7 +42,7 @@ namespace Boki.UI
                 enabled = false;
                 return;
             }
-            lastHealth = lastMaximum = lastCharge = lastCapacity = lastXp = -1;
+            lastHealth = lastMaximum = lastCharge = lastCapacity = lastXp = lastSelections = -1;
             lastLevel = null;
             edgeTexture = new Texture2D(64, 64, TextureFormat.RGBA32, false) { name = "HUD Guilt Edges", wrapMode = TextureWrapMode.Clamp };
             for (int y = 0; y < 64; y++)
@@ -78,15 +77,12 @@ namespace Boki.UI
             batteryFill.fillAmount = battery.State.Current / Mathf.Max(1f, battery.State.Capacity);
             var state = RunSession.Instance != null ? RunSession.Instance.State : null;
             int xp = state != null ? state.XP : 0;
-            if (xp != lastXp)
+            if (xp != lastXp || (state != null && state.Progression.Selections != lastSelections))
             {
                 lastXp = xp;
-                int next = 0, previous = 0;
-                foreach (int milestone in xpMilestones)
-                {
-                    if (xp < milestone) { next = milestone; break; }
-                    previous = milestone;
-                }
+                lastSelections = state != null ? state.Progression.Selections : 0;
+                int next = state != null ? state.Progression.NextThreshold : 3;
+                int previous = state != null ? state.Progression.PreviousThreshold : 0;
                 xpText.text = next > 0 ? $"XP {xp}/{next}" : "MAX LEVEL";
                 xpFill.fillAmount = next > previous ? Mathf.Clamp01((float)(xp - previous) / (next - previous)) : 1f;
             }
@@ -97,7 +93,7 @@ namespace Boki.UI
                 locationText.text = level == RouteLevel.Forest ? "POHORJE" : level == RouteLevel.City ? "MARIBOR" : "FERI";
             }
             string boost = !health.IsAlive ? "BOOST UNAVAILABLE" : movement.BoostRemaining > 0f
-                ? "SHIFT: BOOST ACTIVE" : movement.CooldownRemaining > 0f ? "SHIFT: BOOST RECHARGING" : "SHIFT: BOOST READY";
+                ? "SHIFT: BOOST ACTIVE" : movement.CooldownRemaining > 0f ? "SHIFT: BOOST RECHARGING" : movement.PanicReady ? "PANIC READY" : "SHIFT: BOOST READY";
             if (boostText.text != boost) boostText.text = boost;
             float warning = screenEffectsEnabled && health.IsAlive && guilt != null && guilt.isActiveAndEnabled
                 && guilt.Pressure.IsActive && !guilt.Pressure.AwaitingPlacement
