@@ -10,7 +10,7 @@ namespace Boki.Upgrades
     // Story §5 owns progression, additive bonuses, caps and recovery eligibility.
     public sealed class UpgradeState
     {
-        private static readonly int[] thresholds = { 15, 35, 60, 90, 125, 165 };
+        private static readonly int[] thresholds = { 8, 18, 30, 45, 65, 90 };
         private readonly int[] stacks = new int[7];
         private readonly UpgradeId[] offers = new UpgradeId[3];
         private readonly List<UpgradeId> accepted = new List<UpgradeId>();

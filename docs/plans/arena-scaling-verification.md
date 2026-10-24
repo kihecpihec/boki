@@ -13,7 +13,7 @@ Player_Model_Test retains its isolated enemy stations; it demonstrates the reduc
 1. Open V1_Pohorje, choose a route and enter its combat space. Expect 15 opening enemies, spread across safe positions. If positions are blocked, the remaining opening enemies wait for valid ground. Watch for overlap, inaccessible spawns and Console errors.
 2. Avoid killing enemies for two minutes. Population must exceed 15 and keep increasing; cadence falls from 4 to 2 seconds (Maribor: 3 to 1.5). New enemies have 1.5 times base health and 1.3 times base damage at two combat minutes; existing enemies retain their original stats. Verify both melee hits and ranged shots.
 3. Leave and reenter: no second opening group and no reset of scaling. Pause or open an upgrade offer: timers and spawning freeze. Check scripted City C sequence, next-level clock reset, boss entry stopping replenishment, and death/New Run clearing progression and restoring the opening group.
-4. Collect death XP: one XP per pack, first offer at 15, then cumulative thresholds 35/60/90/125/165. Six selections still end progression. In Player_Model_Test, verify the laser deals 10 before upgrades and that upgrade visuals still follow selections.
+4. Collect death XP: one XP per pack, first offer at 8, then cumulative thresholds 18/30/45/65/90. Six selections still end progression. In Player_Model_Test, verify the laser deals 10 before upgrades and that upgrade visuals still follow selections.
 5. Run a Windows x86_64 player on the Ryzen 5600G at 1280×720 Low, including an extended stay with many surviving enemies. Uncapped populations have not been performance validated.
 
 No manual Play Mode or Windows performance verification was performed by the coding agent.

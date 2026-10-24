@@ -166,7 +166,7 @@ Within a run, staying longer in a combat space escalates Guilt pressure. Difficu
 
 ## 5. Upgrades and Replay Motivation
 
-Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **15 → 35 → 60 → 90 → 125 → 165**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
+Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **8 → 18 → 30 → 45 → 65 → 90**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
 
 Crossing a threshold pauses gameplay and offers three distinct random eligible options, or two when only two eligible rewards remain. Select exactly one before resuming; if multiple thresholds are crossed, resolve choices sequentially without unpausing combat. Bonuses add percentages of the original base stat rather than multiplying previous upgrades.
 
