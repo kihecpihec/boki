@@ -6,6 +6,7 @@ using UnityEngine.Rendering.Universal;
 namespace Boki.Battery
 {
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(100)]
     public sealed class LightBattery : MonoBehaviour
     {
         [SerializeField] private PlayerHealth player;
@@ -21,6 +22,7 @@ namespace Boki.Battery
         [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 1.3f;
         [SerializeField, Min(1f)] private float nearbyRangeMultiplier = 1.4f;
         [SerializeField, Min(0f)] private float headlightHeightOffset = 0.1f;
+        [Tooltip("Offset in the horizontal camera frame; negative Z moves the fill toward the camera.")]
         [SerializeField] private Vector3 riderFillPosition = new Vector3(0f, 1.6f, -0.9f);
         [SerializeField, Min(0f)] private float emptyFillIntensity = 0.12f;
         [SerializeField, Min(0.1f)] private float emptyFillRange = 2.2f;
@@ -28,12 +30,14 @@ namespace Boki.Battery
         public float WarningStrength { get; set; }
         public float Visibility { get; private set; }
         private static readonly Color LampColor = Color.white;
+        private static readonly Color GuiltWarningColor = new Color(1f, 0.04f, 0.02f);
         private float warningTime;
         private const uint WorldRenderingLayer = 1u;
         private const uint RiderRenderingLayer = 2u;
         private Renderer[] riderRenderers;
         private uint[] originalRenderingLayers;
         private Light nearbyFill;
+        private Camera riderFillCamera;
         private RunSession session;
         public LightBatteryState State => (session != null ? session : RunSession.Ensure()).State.LightBattery;
         public bool IsGameplayActive => isActiveAndEnabled && player != null
@@ -42,6 +46,7 @@ namespace Boki.Battery
 
         private void Awake()
         {
+            riderFillCamera = Camera.main;
             riderRenderers = GetComponentsInChildren<Renderer>(true);
             originalRenderingLayers = new uint[riderRenderers.Length];
             for (int i = 0; i < riderRenderers.Length; i++)
@@ -95,18 +100,29 @@ namespace Boki.Battery
             Vector3 lampOrigin = headlightMount != null ? headlightMount.position : transform.TransformPoint(headlightPosition);
             surroundingLight.transform.position = lampOrigin + transform.up * headlightHeightOffset;
             surroundingLight.enabled = player.IsAlive && State.Current > 0f;
-            if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
+            // Keep the gentle fill on the visible side of Boki as he turns or the camera orbits.
+            if (riderFillCamera != null)
+            {
+                Vector3 towardCamera = Vector3.ProjectOnPlane(
+                    riderFillCamera.transform.position - transform.position, transform.up).normalized;
+                if (towardCamera.sqrMagnitude < 0.001f) towardCamera = -transform.forward;
+                Vector3 cameraRight = Vector3.Cross(towardCamera, transform.up);
+                nearbyFill.transform.position = transform.position + transform.up * riderFillPosition.y
+                    + cameraRight * riderFillPosition.x - towardCamera * riderFillPosition.z;
+            }
             float fraction = ChargeFraction;
             float targetVisibility = Mathf.SmoothStep(0f, 1f, fraction);
             Visibility = Mathf.Lerp(Visibility, targetVisibility, 1f - Mathf.Exp(-Time.deltaTime * 5f));
             if (fraction <= 0f) Visibility = 0f;
             float visibility = Visibility;
             float warning = Mathf.Clamp01(WarningStrength);
-            surroundingLight.color = nearbyFill.color = LampColor;
-            // Warnings modulate brightness gently without changing the road's color.
+            if (warning <= 0f) warningTime = 0f;
+            else if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
+            float pulse = 0.5f + 0.5f * Mathf.Cos(warningTime * Mathf.PI * 4f);
+            surroundingLight.color = Color.Lerp(LampColor, GuiltWarningColor, warning * pulse);
+            nearbyFill.color = LampColor;
             float warningDip = strongGuiltWarning ? 0.18f : 0.1f;
-            float flicker = 1f - warning * warningDip
-                * (0.5f + 0.5f * Mathf.Sin(warningTime * Mathf.PI * 4f));
+            float flicker = 1f - warning * warningDip * pulse;
             // Fade reach as well as brightness so low charge leaves only the immediate riding area.
             surroundingLight.range = headlightRange * Mathf.Lerp(0.1f, 1f, visibility);
             nearbyFill.range = Mathf.Lerp(emptyFillRange, fillRange * nearbyRangeMultiplier, visibility);
