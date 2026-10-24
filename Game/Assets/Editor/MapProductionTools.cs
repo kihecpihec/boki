@@ -425,21 +425,15 @@ namespace Boki.Editor
         {
             ImportAndValidate();
             CaptureAndExport();
-            if (IsCity && AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/Maribor_Map_Test.unity") != null)
-                CaptureBaseline();
         }
 
-        public void Capture() => CaptureScene(PreviewScene, "unity-");
-
-        internal void CaptureBaseline() => CaptureScene("Assets/Scenes/" + mapName + "_Map_Test.unity", "before-");
-
-        private void CaptureScene(string scenePath, string prefix)
+        public void Capture()
         {
             RequireSafeEditor();
             var setup = EditorSceneManager.GetSceneManagerSetup();
             try
             {
-                EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+                EditorSceneManager.OpenScene(PreviewScene, OpenSceneMode.Single);
                 string directory = Path.Combine(Output, "Previews");
                 Directory.CreateDirectory(directory);
                 var go = new GameObject(mapName + " Review Camera");
@@ -467,7 +461,7 @@ namespace Boki.Editor
                         try
                         {
                             image.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0);
-                            File.WriteAllBytes(Path.Combine(directory, prefix+shot.name+".png"), image.EncodeToPNG());
+                            File.WriteAllBytes(Path.Combine(directory, "unity-"+shot.name+".png"), image.EncodeToPNG());
                         }
                         finally { RenderTexture.active = previous; Object.DestroyImmediate(image); }
                     }

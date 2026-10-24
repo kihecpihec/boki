@@ -6,10 +6,10 @@ Open `Source/FERI.blend` or browse the [preview gallery](index.html). The saved 
 
 ## Design sources
 
-- [FERI layout](../../world-modeling-v1/figma/06-feri-layout.svg), [module kit](../../world-modeling-v1/figma/07-feri-modules.svg), and [classroom](../../world-modeling-v1/figma/08-classroom-arena.svg).
-- [Connected topology](../../world-modeling-v1/floorplans/feri-topology.svg), [classroom dimensions](../../world-modeling-v1/floorplans/classroom-dimensioned.svg), [updated approach combat pockets](../../gameplay-mocks-v2/sheets/feri-combat-plan.svg), and [boss recovery](../../gameplay-mocks-v2/sheets/boss-recovery-plan.svg).
-- [Maribor construction and horror pass](../../world-modeling-v1/maps/maribor/README.md): low-poly silhouettes, distressed opaque pixel textures, material/chunk batching, separately authored collision and markers. FERI uses its own canonical green/red palette instead of the city's orange-red lighting.
-- [Gameplay](../../../docs/Gameplay.md), [Story](../../../docs/Story.md), and [Movement](../../../docs/Movement.md) govern runtime behavior. The model supplies no gameplay logic.
+- [FERI layout](../../figma/06-feri-layout.svg), [module kit](../../figma/07-feri-modules.svg), and [classroom](../../figma/08-classroom-arena.svg).
+- [Connected topology](../../floorplans/feri-topology.svg), [classroom dimensions](../../floorplans/classroom-dimensioned.svg), [updated approach combat pockets](../../../gameplay-mocks-v2/sheets/feri-combat-plan.svg), and [boss recovery](../../../gameplay-mocks-v2/sheets/boss-recovery-plan.svg).
+- [Maribor construction and horror pass](../../../world-modeling-v3/maps/maribor/README.md): low-poly silhouettes, distressed opaque pixel textures, material/chunk batching, separately authored collision and markers. FERI uses its own canonical green/red palette instead of the city's orange-red lighting.
+- [Gameplay](../../../../docs/Gameplay.md), [Story](../../../../docs/Story.md), and [Movement](../../../../docs/Movement.md) govern runtime behavior. The model supplies no gameplay logic.
 
 ## Built spaces
 

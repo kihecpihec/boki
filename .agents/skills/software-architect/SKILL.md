@@ -34,7 +34,7 @@ Scope: if an argument names a focus or path, review only that, but still read en
 
 ### 2. Inventory
 
-List every `.cs` under `Game/Assets` (excluding `TutorialInfo`), every `.asmdef`, and every scene and prefab. Get sizes with `wc -l`. Build a picture of: assemblies and their references, which scripts are pure C# rules versus MonoBehaviours, and what the Editor-only scripts do.
+List every `.cs` under `Game/Assets`, every `.asmdef`, and every scene and prefab. Get sizes with `wc -l`. Build a picture of: assemblies and their references, which scripts are pure C# rules versus MonoBehaviours, and what the Editor-only scripts do.
 
 ### 3. Review lenses
 

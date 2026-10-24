@@ -64,4 +64,4 @@ Keep effects short and bounded. Guilt warnings, attack telegraphs, and low-batte
 
 ## Rebuild
 
-Run `python3 output/gameplay-mocks-v2/build.py` for HTML/SVG/JSON. To also rebuild PNGs, run `uv run --with cairosvg python output/gameplay-mocks-v2/build.py --render` (the checked-in PNGs are rasterizations of these editable vectors). Rebuild the output ZIPs after a design update. Use the full sibling packs together so their cross-links resolve.
+Run `python3 output/gameplay-mocks-v2/build.py` for HTML/SVG/JSON. To also rebuild PNGs, run `uv run --with cairosvg python output/gameplay-mocks-v2/build.py --render` (the checked-in PNGs are rasterizations of these editable vectors). Use the full sibling packs together so their cross-links resolve.

@@ -8,7 +8,7 @@ Open [index.html](index.html) for the complete gallery or [ui-states.html](ui-st
 - [HANDOFF.md](HANDOFF.md): scene assignments, isolation/timer rules, recorded proposals, and pending Editor checks.
 - [build.py](build.py): reproducible HTML/SVG/JSON generator; optional PNG rendering through CairoSVG.
 
-Use this folder beside `world-modeling-v1/` and `character-modeling-v2/` under `output/`. If using ZIPs, extract all three packs beside one another. The old galleries link to this update and the relevant world sections show its PNG plans beside the original art.
+Use this folder beside `world-modeling-v1/` and `character-modeling-v2/` under `output/`. The old galleries link to this update and the relevant world sections show its PNG plans beside the original art.
 
 The original reference PNGs remain shape and atmosphere references. These code-native overlays add gameplay planning without regenerating or editing the raster artwork. Canonical rules remain in `docs/`; new dimensions, marker coordinates, and Lent's extra charge are proposals for playtesting. Figma and Unity assets are unchanged.
 
