@@ -17,7 +17,7 @@ namespace Boki.UI
         [SerializeField, Min(0f)] private float forwardOffset = 2f;
         [SerializeField, Range(0.1f, 1f)] private float radiusScale = 0.75f;
         [SerializeField, Range(0f, 0.2f)] private float extraDarkness = 0.08f;
-        [SerializeField, Min(1f)] private float chargedRadiusMultiplier = 1.6f;
+        [SerializeField, Min(1f)] private float chargedRadiusMultiplier = 2.4f;
         [SerializeField, Range(0f, 1f)] private float chargedOpacityMultiplier = 0.65f;
         private Material material;
         private static readonly int Center = Shader.PropertyToID("_Center");
