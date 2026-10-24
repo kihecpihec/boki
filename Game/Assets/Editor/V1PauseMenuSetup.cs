@@ -17,7 +17,8 @@ namespace Boki.Editor
         public static void SmokeChecks()
         {
             SessionState.SetBool("Boki.PauseSmoke", true);
-            EditorSceneManager.OpenScene("Assets/Scenes/V1_Pohorje.unity");
+            SessionState.SetBool("Boki.MenuLaunchSmoke", true);
+            EditorSceneManager.OpenScene(Boki.Core.RunSession.MainMenuScene);
             ResumeSmokeChecks();
             EditorApplication.isPlaying = true;
         }
@@ -36,8 +37,31 @@ namespace Boki.Editor
             if (!EditorApplication.isPlaying || EditorApplication.timeSinceStartup < nextCheck) return;
             try
             {
+                if (SessionState.GetBool("Boki.MenuLaunchSmoke", false))
+                {
+                    var screen = UnityEngine.Object.FindAnyObjectByType<MenuScreen>();
+                    if (SceneManager.GetActiveScene().name != "MainMenu" || screen == null
+                        || !screen.IsMainMenuVisible || Time.timeScale != 0f)
+                        throw new InvalidOperationException("Build entry did not show the main menu.");
+                    SessionState.SetBool("Boki.MenuLaunchSmoke", false);
+                    screen.Activate(0);
+                    nextCheck = EditorApplication.timeSinceStartup + 5;
+                    return;
+                }
                 if (checkingRestart != 0)
                 {
+                    if (checkingRestart == 2)
+                    {
+                        var mainMenu = UnityEngine.Object.FindAnyObjectByType<MainMenuFlow>();
+                        var mainScreen = UnityEngine.Object.FindAnyObjectByType<MenuScreen>();
+                        if (SceneManager.GetActiveScene().name != "MainMenu" || mainMenu == null
+                            || !mainScreen.IsMainMenuVisible || Time.timeScale != 0f)
+                            throw new InvalidOperationException("Quit to menu did not load the production menu.");
+                        mainScreen.Activate(0);
+                        checkingRestart = 3;
+                        nextCheck = EditorApplication.timeSinceStartup + 5;
+                        return;
+                    }
                     if (SceneManager.GetActiveScene().name != "V1_Pohorje")
                         throw new InvalidOperationException("Restart did not return to Pohorje.");
                     if (checkingRestart == 1)
@@ -46,13 +70,18 @@ namespace Boki.Editor
                         Boki.Core.RunSession.Instance.SetPaused(Boki.Core.PauseReason.ScriptedSequence, false);
                         loadedMenu.PauseRequested.Invoke();
                         loadedMenu.Activate(3);
-                        if (!loadedMenu.IsMainMenuVisible || Time.timeScale != 0f)
-                            throw new InvalidOperationException("Quit to menu failed.");
-                        loadedMenu.Activate(0);
                         checkingRestart = 2;
                         nextCheck = EditorApplication.timeSinceStartup + 5;
                         return;
                     }
+                    var restarted = Boki.Core.RunSession.Instance;
+                    if (restarted.EntryScene != Boki.Core.RunSession.V1PohorjeScene
+                        || restarted.State.XP != 0 || restarted.State.KillCount != 0
+                        || restarted.State.Choice(Boki.Routes.RouteLevel.Forest) != Boki.Routes.RouteChoice.None
+                        || UnityEngine.Object.FindObjectsByType<Boki.Core.RunSession>().Length != 1)
+                        throw new InvalidOperationException("New Run did not reset the V1 session.");
+                    restarted.SetPaused(Boki.Core.PauseReason.ScriptedSequence, false);
+                    if (Time.timeScale == 0f) throw new InvalidOperationException("Menu pause leaked into New Run.");
                     Debug.Log("V1_PAUSE_SMOKE_PASSED: " + Maps[smokeMap]);
                     smokeMap++;
                     checkingRestart = 0;

@@ -8,6 +8,10 @@ namespace Boki.Core
     [DefaultExecutionOrder(-1000)]
     public sealed class RunSession : MonoBehaviour
     {
+        public const string MainMenuScene = "Assets/Scenes/MainMenu.unity";
+        public const string V1PohorjeScene = "Assets/Scenes/V1_Pohorje.unity";
+        public const string V1MariborScene = "Assets/Scenes/V1_Maribor.unity";
+        public const string V1FeriScene = "Assets/Scenes/V1_FERI.unity";
         public const string ForestScene = "Assets/Scenes/Routes_Forest_Test.unity";
         public const string CityScene = "Assets/Scenes/Routes_City_Test.unity";
         public const string PohorjeScene = "Assets/Scenes/Level1_Pohorje.unity";
@@ -121,6 +125,28 @@ namespace Boki.Core
             return true;
         }
 
+        public bool StartV1Run()
+        {
+            if (IsLoading) return false;
+            forestDestination = V1PohorjeScene;
+            cityDestination = V1MariborScene;
+            feriDestination = V1FeriScene;
+            persistentProgress = true;
+            return Retry();
+        }
+
+        public bool ReturnToMainMenu()
+        {
+            if (IsLoading || !CanLoad(MainMenuScene)) return false;
+            IsLoading = true;
+            State.Pause.Reset();
+            SetPaused(PauseReason.Menu, true);
+            State.Guilt.IsLoading = true;
+            SetPaused(PauseReason.Loading, true);
+            LoadScene(MainMenuScene);
+            return true;
+        }
+
         public bool Retry() => Load(forestDestination, true, RouteLevel.Forest);
         public bool Advance(RouteLevel level)
         {
@@ -132,16 +158,7 @@ namespace Boki.Core
 
         private bool Load(string path, bool newRun, RouteLevel from)
         {
-            if (IsLoading) return false;
-#if UNITY_EDITOR
-            if (UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEditor.SceneAsset>(path) == null)
-#else
-            if (!Application.CanStreamedLevelBeLoaded(path))
-#endif
-            {
-                Debug.LogError("Missing run destination in the build scene list: " + path, this);
-                return false;
-            }
+            if (IsLoading || !CanLoad(path)) return false;
             IsLoading = true;
             if (newRun)
             {
@@ -157,13 +174,29 @@ namespace Boki.Core
             }
             State.Guilt.IsLoading = true;
             SetPaused(PauseReason.Loading, true);
+            LoadScene(path);
+            return true;
+        }
+
+        private bool CanLoad(string path)
+        {
+#if UNITY_EDITOR
+            bool available = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEditor.SceneAsset>(path) != null;
+#else
+            bool available = Application.CanStreamedLevelBeLoaded(path);
+#endif
+            if (!available) Debug.LogError("Missing run destination in the build scene list: " + path, this);
+            return available;
+        }
+
+        private static void LoadScene(string path)
+        {
 #if UNITY_EDITOR
             UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(path,
                 new LoadSceneParameters(LoadSceneMode.Single));
 #else
             SceneManager.LoadScene(path);
 #endif
-            return true;
         }
     }
 }

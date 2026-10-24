@@ -20,7 +20,9 @@ overrides are preserved. Other scenes and enemy prefabs are unchanged.
 - Regular enemies: ten hit and four death variations, with a single greeting
   on the first eligible enemy activation in each scene. Numbering/category
   suggestions follow the source manifest and the approved short/long grouping.
-- Maribor/FERI arrivals: two teleport variations.
+- Portal proximity: two teleport variations, played once per portal per scene visit
+  within `RecordedGameAudio.portalVoiceDistance` (default 8 m from its trigger).
+  Existing scene wiring is reused; loading the next scene does not play a cue.
 - Intro: `fak_ne_spet` plays during the existing spoken-line shot.
 - Actual FERI boss entry: `professor_question`, then `skoraj_pravocasno`.
   Shared `ScriptedSequence` pause holds combat during these two lines and releases
@@ -93,7 +95,11 @@ establish audible mix quality or Windows performance.
 3. Fight repeated enemies on each chosen branch. Hit/death cues should vary;
    deaths should finish after enemies disappear. Pause and change application
    focus during a voice, then resume. Inactive branches must stay silent.
-4. Travel into Maribor and FERI. Listen for arrival cues. Enter the current FERI
+4. Approach the portals in V1_Pohorje and V1_Maribor: hear one cue within 8 m
+   of the trigger, before travelling. Move away and return: no repeat. Pause or
+   lose focus before approaching: the cue waits until gameplay resumes. Loading
+   Maribor/FERI must not play an arrival cue. Retry resets proximity cues.
+   Enter the current FERI
    arena: both opening lines finish before the professor resumes moving/firing.
    Defeat him and hear the Saturday line followed by Boki's reaction. Retry and
    confirm the next run has fresh audio state.
