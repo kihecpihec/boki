@@ -130,10 +130,11 @@ namespace Boki.Editor
                         Require(battery.State.Current < 100f && lamp.enabled, "Active gameplay drains battery and keeps charged light on.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         battery.State.Current = 100f;
-                        Require(fill.type == LightType.Spot
-                            && Vector3.Dot(fill.transform.forward, battery.transform.forward) > 0.7f
-                            && Vector3.Dot(lamp.transform.forward, battery.transform.forward) > 0.9f,
-                            "Both scooter beams must shine ahead rather than back onto Boki.");
+                        Require(fill.type == LightType.Point && fill.color == Color.white && lamp.color == Color.white
+                            && lamp.spotAngle >= 120f && lamp.range <= 8f
+                            && lamp.transform.position.y > battery.transform.position.y + 1.5f
+                            && Vector3.Dot(lamp.transform.forward, battery.transform.forward) > 0.8f,
+                            "The raised white beam is broad and short; the point fill reveals the rider.");
                         Teleport(first.transform.position - Vector3.up * 0.6f);
                         Next();
                         break;
@@ -170,8 +171,9 @@ namespace Boki.Editor
                         Next();
                         break;
                     case 5:
-                        Require(!lamp.enabled && !fill.enabled && battery.EnemySpeedMultiplier == 1.3f,
-                            "Empty battery extinguishes both lights and enemy movement multiplier is 1.3.");
+                        Require(!lamp.enabled && fill.enabled && fill.intensity > 0f && fill.intensity <= 0.15f
+                            && fill.range <= 2.5f && fill.color == Color.white && battery.EnemySpeedMultiplier == 1.3f,
+                            "Empty battery leaves only a faint white rider fill; enemy movement multiplier remains 1.3.");
                         var absentSpace = first.GetComponentInParent<BatteryCombatSpace>();
                         Require(absentSpace.State.Remaining(new SerializedObject(first).FindProperty("slot").intValue) == pausedTimer,
                             "Recharge cannot advance while outside the space.");

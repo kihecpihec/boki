@@ -40095,7 +40095,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightAngle
-      value: 65
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightBrightnessMultiplier
@@ -40103,7 +40103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: nearbyBrightnessMultiplier
-      value: 12
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightMount
@@ -40115,7 +40115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightDownwardAngle
-      value: 12
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 6084012843138093686, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Name
@@ -40131,23 +40131,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Range
-      value: 15
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Color.g
-      value: 0.94
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Color.r
-      value: 0.82
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_SpotAngle
-      value: 65
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_InnerSpotAngle
-      value: 29.25
+      value: 56.25
       objectReference: {fileID: 0}
     - target: {fileID: 545227383665380783, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: laser
