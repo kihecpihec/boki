@@ -1,0 +1,5 @@
+{
+  "station_count": 87,
+  "all_three_lanes_blocked": [],
+  "note": "Static guide point samples at center and +/-30% lane width, 0.35 m capsule margin. Dynamic gate leaves excluded. This is not a Unity physics or camera test."
+}

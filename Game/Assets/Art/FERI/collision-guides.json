@@ -1,0 +1,2342 @@
+[
+  {
+    "name": "COL_Floor_Shared_Arrival_001",
+    "position": [
+      0.0,
+      4.0,
+      -0.2
+    ],
+    "size": [
+      92,
+      8,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_A_001",
+    "position": [
+      -42.0,
+      37.0,
+      -0.2
+    ],
+    "size": [
+      4,
+      58,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_B_001",
+    "position": [
+      0.0,
+      31.0,
+      -0.2
+    ],
+    "size": [
+      4,
+      46,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_C_001",
+    "position": [
+      42.0,
+      37.0,
+      -0.2
+    ],
+    "size": [
+      4,
+      58,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_A_002",
+    "position": [
+      -52.0,
+      36.0,
+      -0.2
+    ],
+    "size": [
+      16,
+      32,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_A_003",
+    "position": [
+      -32.0,
+      36.0,
+      -0.2
+    ],
+    "size": [
+      16,
+      32,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_B_002",
+    "position": [
+      -10.0,
+      36.0,
+      -0.2
+    ],
+    "size": [
+      16,
+      32,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_B_003",
+    "position": [
+      10.0,
+      36.0,
+      -0.2
+    ],
+    "size": [
+      16,
+      32,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_C_002",
+    "position": [
+      32.0,
+      36.0,
+      -0.2
+    ],
+    "size": [
+      16,
+      32,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_C_003",
+    "position": [
+      52.0,
+      36.0,
+      -0.2
+    ],
+    "size": [
+      16,
+      32,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Route_B_004",
+    "position": [
+      0.0,
+      64.0,
+      -0.2
+    ],
+    "size": [
+      4,
+      4,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Shared_Landing_001",
+    "position": [
+      0.0,
+      70.0,
+      -0.2
+    ],
+    "size": [
+      92,
+      8,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Shared_Landing_002",
+    "position": [
+      0.0,
+      75.0,
+      -0.2
+    ],
+    "size": [
+      4,
+      2,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Floor_Arena_Classroom_001",
+    "position": [
+      0.0,
+      86.0,
+      -0.2
+    ],
+    "size": [
+      24,
+      20,
+      0.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_001_001",
+    "position": [
+      0.0,
+      0.0,
+      2.2
+    ],
+    "size": [
+      92,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_002_001",
+    "position": [
+      -46.0,
+      4.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      8,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_003_001",
+    "position": [
+      -45.0,
+      8.0,
+      2.2
+    ],
+    "size": [
+      2,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_004_001",
+    "position": [
+      -21.0,
+      8.0,
+      2.2
+    ],
+    "size": [
+      38,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_005_001",
+    "position": [
+      21.0,
+      8.0,
+      2.2
+    ],
+    "size": [
+      38,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_006_001",
+    "position": [
+      45.0,
+      8.0,
+      2.2
+    ],
+    "size": [
+      2,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_007_001",
+    "position": [
+      46.0,
+      4.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      8,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_008_001",
+    "position": [
+      -44.0,
+      14.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      12,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_009_001",
+    "position": [
+      -44.0,
+      59.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      14,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_010_001",
+    "position": [
+      -40.0,
+      14.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      12,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_011_001",
+    "position": [
+      -40.0,
+      59.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      14,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_012_001",
+    "position": [
+      -52.0,
+      20.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_013_001",
+    "position": [
+      -32.0,
+      20.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_014_001",
+    "position": [
+      -60.0,
+      36.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      32,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_015_001",
+    "position": [
+      -52.0,
+      52.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_016_001",
+    "position": [
+      -32.0,
+      52.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_017_001",
+    "position": [
+      -24.0,
+      36.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      32,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_018_001",
+    "position": [
+      -2.0,
+      14.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      12,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_019_001",
+    "position": [
+      -2.0,
+      59.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      14,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_020_001",
+    "position": [
+      2.0,
+      14.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      12,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_021_001",
+    "position": [
+      2.0,
+      59.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      14,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_022_001",
+    "position": [
+      -10.0,
+      20.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_023_001",
+    "position": [
+      10.0,
+      20.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_024_001",
+    "position": [
+      -18.0,
+      36.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      32,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_025_001",
+    "position": [
+      -10.0,
+      52.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_026_001",
+    "position": [
+      10.0,
+      52.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_027_001",
+    "position": [
+      18.0,
+      36.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      32,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_028_001",
+    "position": [
+      40.0,
+      14.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      12,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_029_001",
+    "position": [
+      40.0,
+      59.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      14,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_030_001",
+    "position": [
+      44.0,
+      14.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      12,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_031_001",
+    "position": [
+      44.0,
+      59.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      14,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_032_001",
+    "position": [
+      32.0,
+      20.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_033_001",
+    "position": [
+      52.0,
+      20.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_034_001",
+    "position": [
+      24.0,
+      36.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      32,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_035_001",
+    "position": [
+      32.0,
+      52.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_036_001",
+    "position": [
+      52.0,
+      52.0,
+      2.2
+    ],
+    "size": [
+      16,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_037_001",
+    "position": [
+      60.0,
+      36.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      32,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_038_001",
+    "position": [
+      -45.0,
+      66.0,
+      2.2
+    ],
+    "size": [
+      2,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_039_001",
+    "position": [
+      -21.0,
+      66.0,
+      2.2
+    ],
+    "size": [
+      38,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_040_001",
+    "position": [
+      21.0,
+      66.0,
+      2.2
+    ],
+    "size": [
+      38,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_041_001",
+    "position": [
+      45.0,
+      66.0,
+      2.2
+    ],
+    "size": [
+      2,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_042_001",
+    "position": [
+      -46.0,
+      70.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      8,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_043_001",
+    "position": [
+      -24.0,
+      74.0,
+      2.2
+    ],
+    "size": [
+      44,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_044_001",
+    "position": [
+      24.0,
+      74.0,
+      2.2
+    ],
+    "size": [
+      44,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_045_001",
+    "position": [
+      46.0,
+      70.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      8,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_046_001",
+    "position": [
+      -2.0,
+      75.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      2,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_047_001",
+    "position": [
+      2.0,
+      75.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      2,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_048_001",
+    "position": [
+      -7.0,
+      76.0,
+      2.2
+    ],
+    "size": [
+      10,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_049_001",
+    "position": [
+      7.0,
+      76.0,
+      2.2
+    ],
+    "size": [
+      10,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_050_001",
+    "position": [
+      -12.0,
+      86.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      20,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_051_001",
+    "position": [
+      0.0,
+      96.0,
+      2.2
+    ],
+    "size": [
+      24,
+      0.22,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Wall_052_001",
+    "position": [
+      12.0,
+      86.0,
+      2.2
+    ],
+    "size": [
+      0.22,
+      20,
+      4.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_A_001",
+    "position": [
+      -42.0,
+      37.0,
+      4.55
+    ],
+    "size": [
+      4,
+      58,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_B_001",
+    "position": [
+      0.0,
+      14.0,
+      4.55
+    ],
+    "size": [
+      4,
+      12,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_C_001",
+    "position": [
+      42.0,
+      37.0,
+      4.55
+    ],
+    "size": [
+      4,
+      58,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_A_002",
+    "position": [
+      -52.0,
+      36.0,
+      4.55
+    ],
+    "size": [
+      16,
+      32,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_A_003",
+    "position": [
+      -32.0,
+      36.0,
+      4.55
+    ],
+    "size": [
+      16,
+      32,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_C_002",
+    "position": [
+      32.0,
+      36.0,
+      4.55
+    ],
+    "size": [
+      16,
+      32,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_C_003",
+    "position": [
+      52.0,
+      36.0,
+      4.55
+    ],
+    "size": [
+      16,
+      32,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Route_B_002",
+    "position": [
+      0.0,
+      59.0,
+      4.55
+    ],
+    "size": [
+      4,
+      14,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Shared_Landing_001",
+    "position": [
+      0.0,
+      70.0,
+      4.55
+    ],
+    "size": [
+      92,
+      8,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Shared_Landing_002",
+    "position": [
+      0.0,
+      75.0,
+      4.55
+    ],
+    "size": [
+      4,
+      2,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Landing",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Roof_Arena_Classroom_001",
+    "position": [
+      0.0,
+      86.0,
+      4.55
+    ],
+    "size": [
+      24,
+      20,
+      0.2
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Seal_A_Front_001_001",
+    "position": [
+      -42,
+      8,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Seal_A_Rear_001_001",
+    "position": [
+      -42,
+      66,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_001_001",
+    "position": [
+      -54.6,
+      25.333333333333332,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_002_001",
+    "position": [
+      -54.6,
+      36.0,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_003_001",
+    "position": [
+      -54.6,
+      46.66666666666667,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_004_001",
+    "position": [
+      -29.4,
+      25.333333333333332,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_005_001",
+    "position": [
+      -29.4,
+      36.0,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_006_001",
+    "position": [
+      -29.4,
+      46.66666666666667,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_A",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Seal_B_Front_001_001",
+    "position": [
+      0,
+      8,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Seal_B_Rear_001_001",
+    "position": [
+      0,
+      66,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Planter_001_001",
+    "position": [
+      -12.6,
+      25.333333333333332,
+      0.4
+    ],
+    "size": [
+      2.8,
+      2,
+      0.8
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Planter_002_001",
+    "position": [
+      -12.6,
+      36.0,
+      0.4
+    ],
+    "size": [
+      2.8,
+      2,
+      0.8
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Planter_003_001",
+    "position": [
+      -12.6,
+      46.66666666666667,
+      0.4
+    ],
+    "size": [
+      2.8,
+      2,
+      0.8
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Planter_004_001",
+    "position": [
+      12.600000000000001,
+      25.333333333333332,
+      0.4
+    ],
+    "size": [
+      2.8,
+      2,
+      0.8
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Planter_005_001",
+    "position": [
+      12.600000000000001,
+      36.0,
+      0.4
+    ],
+    "size": [
+      2.8,
+      2,
+      0.8
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Planter_006_001",
+    "position": [
+      12.600000000000001,
+      46.66666666666667,
+      0.4
+    ],
+    "size": [
+      2.8,
+      2,
+      0.8
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Seal_C_Front_001_001",
+    "position": [
+      42,
+      8,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_PL_Seal_C_Rear_001_001",
+    "position": [
+      42,
+      66,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Cabinet_001_001",
+    "position": [
+      29.4,
+      25.333333333333332,
+      1.2
+    ],
+    "size": [
+      1.2,
+      1,
+      2.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Cabinet_002_001",
+    "position": [
+      29.4,
+      36.0,
+      1.2
+    ],
+    "size": [
+      1.2,
+      1,
+      2.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Cabinet_003_001",
+    "position": [
+      29.4,
+      46.66666666666667,
+      1.2
+    ],
+    "size": [
+      1.2,
+      1,
+      2.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Cabinet_004_001",
+    "position": [
+      54.6,
+      25.333333333333332,
+      1.2
+    ],
+    "size": [
+      1.2,
+      1,
+      2.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Cabinet_005_001",
+    "position": [
+      54.6,
+      36.0,
+      1.2
+    ],
+    "size": [
+      1.2,
+      1,
+      2.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Cabinet_006_001",
+    "position": [
+      54.6,
+      46.66666666666667,
+      1.2
+    ],
+    "size": [
+      1.2,
+      1,
+      2.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_PowerOffCabinet_001_001",
+    "position": [
+      58.9,
+      46.66666666666667,
+      1.3
+    ],
+    "size": [
+      1,
+      1,
+      2.6
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_C",
+    "shape": "box"
+  },
+  {
+    "name": "COL_Tree_001",
+    "position": [
+      -10.8,
+      39.55555555555556,
+      2.5
+    ],
+    "size": [
+      0.6,
+      0.6,
+      5
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Bench_001_001",
+    "position": [
+      -9.0,
+      36.0,
+      0.55
+    ],
+    "size": [
+      2,
+      0.6,
+      0.15
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Bench_002_001",
+    "position": [
+      9.0,
+      36.0,
+      0.55
+    ],
+    "size": [
+      2,
+      0.6,
+      0.15
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Route_B",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_EntryPillar_001_001",
+    "position": [
+      -5.7,
+      0.5,
+      1.8
+    ],
+    "size": [
+      0.6,
+      0.8,
+      3.6
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_EntryPillar_002_001",
+    "position": [
+      5.7,
+      0.5,
+      1.8
+    ],
+    "size": [
+      0.6,
+      0.8,
+      3.6
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Shared_Arrival",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ArenaEntrySeal_001",
+    "position": [
+      0,
+      75,
+      2
+    ],
+    "size": [
+      4,
+      0.25,
+      4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Seals",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_007_001",
+    "position": [
+      -9.5,
+      80,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_008_001",
+    "position": [
+      -9.5,
+      84,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_009_001",
+    "position": [
+      -9.5,
+      88,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_010_001",
+    "position": [
+      -9.5,
+      92,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_011_001",
+    "position": [
+      9.5,
+      80,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_012_001",
+    "position": [
+      9.5,
+      84,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_013_001",
+    "position": [
+      9.5,
+      88,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Desk_014_001",
+    "position": [
+      9.5,
+      92,
+      0.82
+    ],
+    "size": [
+      1.5,
+      0.8,
+      0.12
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  },
+  {
+    "name": "COL_ENV_Lectern_001_001",
+    "position": [
+      0,
+      93,
+      0.7
+    ],
+    "size": [
+      2,
+      1.1,
+      1.4
+    ],
+    "rotation": [
+      0,
+      0,
+      0
+    ],
+    "owner": "Arena_Classroom",
+    "shape": "box"
+  }
+]

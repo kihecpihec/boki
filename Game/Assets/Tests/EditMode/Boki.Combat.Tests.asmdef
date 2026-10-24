@@ -1,0 +1,6 @@
+{
+  "name": "Boki.Combat.Tests",
+  "references": ["Boki.Combat.Rules"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

@@ -25,7 +25,7 @@ Check that trails, laser, headlight, and model render without pink materials or 
 
 `AutoLaser` uses a scene-local origin and unshadowed line renderer with the existing laser material. `PlayerHealth`, `LightBattery`, the camera, movement presentation, and HUD retain their existing scene assignments. No additional Inspector setup is required after running the command.
 
-The earlier `BokiEffectsPreview` in the source project is a standalone placeholder demonstration. Its effects have been wired onto the real model here; the preview and source scenes were left intact to avoid deleting work or breaking references.
+The earlier `BokiEffectsPreview` is a standalone placeholder demonstration. Its effects have been wired onto the real model here; the preview and other scenes were left intact to avoid deleting work or breaking references.
 
 ## Validation recorded for this consolidation
 

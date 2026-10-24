@@ -1,0 +1,1618 @@
+[
+  {
+    "name": "PL_COL_A_CombatSpace",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -92.0,
+      22.0,
+      6.308787822723389
+    ],
+    "bounds_max": [
+      -36.0,
+      86.0,
+      11.800000190734863
+    ]
+  },
+  {
+    "name": "PL_COL_B_CombatSpace",
+    "route": "B",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      38.0,
+      22.0,
+      6.432183742523193
+    ],
+    "bounds_max": [
+      90.0,
+      82.0,
+      11.399999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_C_CombatSpace",
+    "route": "C",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -24.0,
+      32.0,
+      5.5
+    ],
+    "bounds_max": [
+      24.0,
+      84.0,
+      10.033522605895996
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_Safe",
+    "route": "shared",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -5.0,
+      -19.0,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      5.0,
+      -1.0,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_ForkA",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -14.5,
+      -10.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      4.5,
+      3.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_ForkB",
+    "route": "B",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -4.5,
+      -10.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      14.5,
+      3.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_ForkC",
+    "route": "C",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -4.5,
+      -10.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      4.5,
+      8.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_A",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -56.5,
+      -5.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      -5.5,
+      26.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_B",
+    "route": "B",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      5.5,
+      -5.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      56.5,
+      26.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_C",
+    "route": "C",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -4.5,
+      -0.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      4.5,
+      36.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_ExitA",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -56.5,
+      81.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      4.5,
+      110.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_ExitB",
+    "route": "B",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -4.5,
+      77.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      56.5,
+      110.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_ExitC",
+    "route": "C",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -4.5,
+      79.5,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      4.5,
+      110.5,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Travel_Final",
+    "route": "shared",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -5.0,
+      101.0,
+      8.024999618530273
+    ],
+    "bounds_max": [
+      5.0,
+      121.0,
+      8.024999618530273
+    ]
+  },
+  {
+    "name": "PL_COL_Bellevue",
+    "route": "shared",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -10.0,
+      -23.0,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      10.0,
+      -11.0,
+      8.0
+    ]
+  },
+  {
+    "name": "PL_COL_Decision",
+    "route": "shared",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -15.5,
+      -10.5,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      15.5,
+      6.5,
+      8.0
+    ]
+  },
+  {
+    "name": "PL_COL_Overlook",
+    "route": "shared",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -12.0,
+      110.0,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      12.0,
+      122.0,
+      8.0
+    ]
+  },
+  {
+    "name": "PL_COL_A_Boundary",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -94.0,
+      22.0,
+      7.0
+    ],
+    "bounds_max": [
+      -92.0,
+      86.0,
+      12.0
+    ]
+  },
+  {
+    "name": "PL_COL_A_Boundary.001",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -36.0,
+      22.0,
+      7.0
+    ],
+    "bounds_max": [
+      -34.0,
+      86.0,
+      12.0
+    ]
+  },
+  {
+    "name": "PL_COL_A_EndWall",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -92.0,
+      21.200000762939453,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -58.0,
+      22.799999237060547,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_EndWall.001",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -46.0,
+      21.200000762939453,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -36.0,
+      22.799999237060547,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_EndWall.002",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -92.0,
+      85.19999694824219,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -58.0,
+      86.80000305175781,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_EndWall.003",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -46.0,
+      85.19999694824219,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -36.0,
+      86.80000305175781,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_Boundary",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      36.0,
+      22.0,
+      7.0
+    ],
+    "bounds_max": [
+      38.0,
+      82.0,
+      12.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_Boundary.001",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      90.0,
+      22.0,
+      7.0
+    ],
+    "bounds_max": [
+      92.0,
+      82.0,
+      12.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_EndWall",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      38.0,
+      21.200000762939453,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      46.0,
+      22.799999237060547,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_EndWall.001",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      58.0,
+      21.200000762939453,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      90.0,
+      22.799999237060547,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_EndWall.002",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      38.0,
+      81.19999694824219,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      46.0,
+      82.80000305175781,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_EndWall.003",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      58.0,
+      81.19999694824219,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      90.0,
+      82.80000305175781,
+      12.5
+    ]
+  },
+  {
+    "name": "PL_COL_C_RoomSide",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -24.700000762939453,
+      32.0,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -23.299999237060547,
+      84.0,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_RoomSide.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      23.299999237060547,
+      32.0,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      24.700000762939453,
+      54.0,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_RoomSide.002",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      23.299999237060547,
+      61.0,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      24.700000762939453,
+      84.0,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_EndWall",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -24.0,
+      31.200000762939453,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -6.0,
+      32.79999923706055,
+      17.200000762939453
+    ]
+  },
+  {
+    "name": "PL_COL_C_EndWall.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      6.0,
+      31.200000762939453,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      24.0,
+      32.79999923706055,
+      17.200000762939453
+    ]
+  },
+  {
+    "name": "PL_COL_C_EndWall.002",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -24.0,
+      83.19999694824219,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      -6.0,
+      84.80000305175781,
+      17.200000762939453
+    ]
+  },
+  {
+    "name": "PL_COL_C_EndWall.003",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      6.0,
+      83.19999694824219,
+      7.699999809265137
+    ],
+    "bounds_max": [
+      24.0,
+      84.80000305175781,
+      17.200000762939453
+    ]
+  },
+  {
+    "name": "PL_A_IslandGuide_0",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -63.400001525878906,
+      57.29999923706055,
+      6.350982666015625
+    ],
+    "bounds_max": [
+      -58.599998474121094,
+      62.70000076293945,
+      11.750982284545898
+    ]
+  },
+  {
+    "name": "PL_A_IslandGuide_1",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -82.23999786376953,
+      62.47999954223633,
+      11.797811508178711
+    ],
+    "bounds_max": [
+      -77.76000213623047,
+      67.5199966430664,
+      16.837812423706055
+    ]
+  },
+  {
+    "name": "PL_A_IslandGuide_2",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -46.599998474121094,
+      66.19999694824219,
+      8.0
+    ],
+    "bounds_max": [
+      -43.400001525878906,
+      69.80000305175781,
+      11.600000381469727
+    ]
+  },
+  {
+    "name": "PL_COL_A_BridgeSurface",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -71.0,
+      47.0,
+      8.079999923706055
+    ],
+    "bounds_max": [
+      -49.0,
+      53.0,
+      10.76605224609375
+    ]
+  },
+  {
+    "name": "PL_COL_A_BridgeEntryRamp",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -75.0,
+      47.0,
+      10.76605224609375
+    ],
+    "bounds_max": [
+      -71.0,
+      53.0,
+      11.717517852783203
+    ]
+  },
+  {
+    "name": "PL_COL_A_BridgeExitRamp",
+    "route": "A",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -49.0,
+      47.0,
+      8.0
+    ],
+    "bounds_max": [
+      -45.0,
+      53.0,
+      8.079999923706055
+    ]
+  },
+  {
+    "name": "PL_COL_A_SnappedTrunk",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -83.0,
+      68.13397216796875,
+      11.278646469116211
+    ],
+    "bounds_max": [
+      -81.0,
+      69.86602783203125,
+      17.0
+    ]
+  },
+  {
+    "name": "PL_COL_A_SnappedTrunk.001",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -48.0,
+      68.13397216796875,
+      8.0
+    ],
+    "bounds_max": [
+      -46.0,
+      69.86602783203125,
+      17.0
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -86.0,
+      35.70000076293945,
+      8.057868003845215
+    ],
+    "bounds_max": [
+      -80.0,
+      36.29999923706055,
+      8.577483177185059
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.001",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -86.0,
+      36.29999923706055,
+      8.537867546081543
+    ],
+    "bounds_max": [
+      -80.0,
+      36.89999771118164,
+      9.057482719421387
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.002",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -86.0,
+      36.900001525878906,
+      9.017868041992188
+    ],
+    "bounds_max": [
+      -80.0,
+      37.5,
+      9.537483215332031
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.003",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -50.0,
+      39.70000076293945,
+      8.040192604064941
+    ],
+    "bounds_max": [
+      -44.0,
+      40.29999923706055,
+      8.559807777404785
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.004",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -50.0,
+      40.29999923706055,
+      8.52019214630127
+    ],
+    "bounds_max": [
+      -44.0,
+      40.89999771118164,
+      9.039807319641113
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.005",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -50.0,
+      40.900001525878906,
+      9.000192642211914
+    ],
+    "bounds_max": [
+      -44.0,
+      41.5,
+      9.519807815551758
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.006",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -85.0,
+      75.69999694824219,
+      8.805516242980957
+    ],
+    "bounds_max": [
+      -79.0,
+      76.30000305175781,
+      9.3251314163208
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.007",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -85.0,
+      76.29999542236328,
+      9.285515785217285
+    ],
+    "bounds_max": [
+      -79.0,
+      76.9000015258789,
+      9.805130958557129
+    ]
+  },
+  {
+    "name": "PL_COL_A_LogPile.008",
+    "route": "A",
+    "primitive": "FIT_CAPSULE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -85.0,
+      76.89999389648438,
+      9.76551628112793
+    ],
+    "bounds_max": [
+      -79.0,
+      77.5,
+      10.285131454467773
+    ]
+  },
+  {
+    "name": "PL_COL_B_TerminalDeck",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      48.0,
+      51.0,
+      13.5
+    ],
+    "bounds_max": [
+      62.0,
+      65.0,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_TerminalLeg",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      48.5,
+      51.5,
+      9.278934478759766
+    ],
+    "bounds_max": [
+      49.5,
+      52.5,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_TerminalLeg.001",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      48.5,
+      63.5,
+      11.352027893066406
+    ],
+    "bounds_max": [
+      49.5,
+      64.5,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_TerminalLeg.002",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      60.5,
+      51.5,
+      8.715370178222656
+    ],
+    "bounds_max": [
+      61.5,
+      52.5,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_TerminalLeg.003",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      60.5,
+      63.5,
+      8.715370178222656
+    ],
+    "bounds_max": [
+      61.5,
+      64.5,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_FrontRamp",
+    "route": "B",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      52.0,
+      35.0,
+      8.0
+    ],
+    "bounds_max": [
+      58.0,
+      51.0,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_SideRamp",
+    "route": "B",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      61.75,
+      55.0,
+      6.663326263427734
+    ],
+    "bounds_max": [
+      76.0,
+      61.0,
+      14.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_GantryFoot",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      43.70000076293945,
+      34.599998474121094,
+      8.0
+    ],
+    "bounds_max": [
+      44.29999923706055,
+      35.400001525878906,
+      22.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_GantryFoot.001",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      81.69999694824219,
+      34.599998474121094,
+      8.0
+    ],
+    "bounds_max": [
+      82.30000305175781,
+      35.400001525878906,
+      22.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_GantryFoot.002",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      43.70000076293945,
+      68.5999984741211,
+      8.0
+    ],
+    "bounds_max": [
+      44.29999923706055,
+      69.4000015258789,
+      22.0
+    ]
+  },
+  {
+    "name": "PL_COL_B_GantryFoot.003",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      81.69999694824219,
+      68.5999984741211,
+      8.0
+    ],
+    "bounds_max": [
+      82.30000305175781,
+      69.4000015258789,
+      22.0
+    ]
+  },
+  {
+    "name": "PL_B_CartGuide",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      77.4000015258789,
+      37.75,
+      7.317535400390625
+    ],
+    "bounds_max": [
+      80.5999984741211,
+      42.25,
+      9.317535400390625
+    ]
+  },
+  {
+    "name": "PL_B_CartGuide.001",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      76.4000015258789,
+      64.75,
+      8.0
+    ],
+    "bounds_max": [
+      79.5999984741211,
+      69.25,
+      10.0
+    ]
+  },
+  {
+    "name": "PL_B_CartGuide.002",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      45.400001525878906,
+      35.75,
+      8.0
+    ],
+    "bounds_max": [
+      48.599998474121094,
+      40.25,
+      10.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_EntryTunnelWall",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -6.0,
+      10.0,
+      7.800000190734863
+    ],
+    "bounds_max": [
+      -5.0,
+      32.0,
+      16.799999237060547
+    ]
+  },
+  {
+    "name": "PL_COL_C_EntryTunnelWall.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      5.0,
+      10.0,
+      7.800000190734863
+    ],
+    "bounds_max": [
+      6.0,
+      32.0,
+      16.799999237060547
+    ]
+  },
+  {
+    "name": "PL_COL_C_CisternColumn",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -18.100000381469727,
+      43.900001525878906,
+      7.9879150390625
+    ],
+    "bounds_max": [
+      -15.899999618530273,
+      46.099998474121094,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_CisternColumn.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -18.100000381469727,
+      66.9000015258789,
+      8.011241912841797
+    ],
+    "bounds_max": [
+      -15.899999618530273,
+      69.0999984741211,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_CisternColumn.002",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      15.899999618530273,
+      43.900001525878906,
+      7.987918853759766
+    ],
+    "bounds_max": [
+      18.100000381469727,
+      46.099998474121094,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_CisternColumn.003",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      15.899999618530273,
+      66.9000015258789,
+      8.011241912841797
+    ],
+    "bounds_max": [
+      18.100000381469727,
+      69.0999984741211,
+      19.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_Stage",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -9.0,
+      70.0,
+      10.5
+    ],
+    "bounds_max": [
+      9.0,
+      78.0,
+      11.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_StageRamp",
+    "route": "C",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -15.0,
+      71.0,
+      8.215799331665039
+    ],
+    "bounds_max": [
+      -8.75,
+      77.0,
+      11.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_SpeakerTower",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -11.300000190734863,
+      73.80000305175781,
+      11.0
+    ],
+    "bounds_max": [
+      -8.699999809265137,
+      76.19999694824219,
+      15.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_StageRamp.001",
+    "route": "C",
+    "primitive": "STATIC_SURFACE",
+    "dynamic_gate": false,
+    "bounds_min": [
+      8.75,
+      71.0,
+      8.215799331665039
+    ],
+    "bounds_max": [
+      15.0,
+      77.0,
+      11.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_SpeakerTower.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      8.699999809265137,
+      73.80000305175781,
+      11.0
+    ],
+    "bounds_max": [
+      11.300000190734863,
+      76.19999694824219,
+      15.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_DJBooth",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -2.5,
+      75.30000305175781,
+      11.0
+    ],
+    "bounds_max": [
+      2.5,
+      76.69999694824219,
+      12.199999809265137
+    ]
+  },
+  {
+    "name": "PL_COL_C_AlcoveBack",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      29.5,
+      53.5,
+      8.0
+    ],
+    "bounds_max": [
+      30.5,
+      60.5,
+      17.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_AlcoveSide",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      24.0,
+      53.0,
+      8.0
+    ],
+    "bounds_max": [
+      30.0,
+      54.0,
+      17.0
+    ]
+  },
+  {
+    "name": "PL_COL_C_AlcoveSide.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      24.0,
+      60.0,
+      8.0
+    ],
+    "bounds_max": [
+      30.0,
+      61.0,
+      17.0
+    ]
+  },
+  {
+    "name": "PL_C_GrateBlocker",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      23.75,
+      53.5,
+      8.0
+    ],
+    "bounds_max": [
+      24.25,
+      60.5,
+      15.0
+    ]
+  },
+  {
+    "name": "PL_A_Front_GateBlocker",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": true,
+    "bounds_min": [
+      -12.04265022277832,
+      -5.71666145324707,
+      8.0
+    ],
+    "bounds_max": [
+      -7.957350254058838,
+      3.7166614532470703,
+      13.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_GatePillar",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -12.655444145202637,
+      -6.663707256317139,
+      8.0
+    ],
+    "bounds_max": [
+      -11.429855346679688,
+      -5.549535751342773,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_GatePillar.001",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -8.570144653320312,
+      3.5495352745056152,
+      8.0
+    ],
+    "bounds_max": [
+      -7.344555377960205,
+      4.663707733154297,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_A_Rear_GateBlocker",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": true,
+    "bounds_min": [
+      -46.52941131591797,
+      90.4941177368164,
+      8.0
+    ],
+    "bounds_max": [
+      -41.47058868408203,
+      99.5058822631836,
+      13.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_GatePillar.002",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -47.217647552490234,
+      99.26470184326172,
+      8.0
+    ],
+    "bounds_max": [
+      -45.958824157714844,
+      100.44117736816406,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_COL_A_GatePillar.003",
+    "route": "A",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -42.041175842285156,
+      89.55882263183594,
+      8.0
+    ],
+    "bounds_max": [
+      -40.782352447509766,
+      90.73529815673828,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_B_Front_GateBlocker",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": true,
+    "bounds_min": [
+      7.9573516845703125,
+      -5.7166619300842285,
+      8.0
+    ],
+    "bounds_max": [
+      12.042648315429688,
+      3.7166619300842285,
+      13.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_GatePillar",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      7.34455680847168,
+      3.5495357513427734,
+      8.0
+    ],
+    "bounds_max": [
+      8.570146560668945,
+      4.663707733154297,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_GatePillar.001",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      11.429854393005371,
+      -6.663707256317139,
+      8.0
+    ],
+    "bounds_max": [
+      12.65544319152832,
+      -5.549536228179932,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_B_Rear_GateBlocker",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": true,
+    "bounds_min": [
+      41.060089111328125,
+      90.72881317138672,
+      8.0
+    ],
+    "bounds_max": [
+      46.939910888671875,
+      99.27118682861328,
+      13.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_GatePillar.002",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      40.311241149902344,
+      89.81355285644531,
+      8.0
+    ],
+    "bounds_max": [
+      41.58705520629883,
+      91.03389739990234,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_COL_B_GatePillar.003",
+    "route": "B",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      46.41294479370117,
+      98.96610260009766,
+      8.0
+    ],
+    "bounds_max": [
+      47.688758850097656,
+      100.18644714355469,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_C_Front_GateBlocker",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": true,
+    "bounds_min": [
+      -5.0,
+      3.799999952316284,
+      8.0
+    ],
+    "bounds_max": [
+      5.0,
+      4.199999809265137,
+      13.5
+    ]
+  },
+  {
+    "name": "PL_COL_C_GatePillar",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -5.900000095367432,
+      3.5,
+      8.0
+    ],
+    "bounds_max": [
+      -5.099999904632568,
+      4.5,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_COL_C_GatePillar.001",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      5.099999904632568,
+      3.5,
+      8.0
+    ],
+    "bounds_max": [
+      5.900000095367432,
+      4.5,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_C_Rear_GateBlocker",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": true,
+    "bounds_min": [
+      -5.0,
+      95.80000305175781,
+      8.0
+    ],
+    "bounds_max": [
+      5.0,
+      96.19999694824219,
+      13.5
+    ]
+  },
+  {
+    "name": "PL_COL_C_GatePillar.002",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      -5.900000095367432,
+      95.5,
+      8.0
+    ],
+    "bounds_max": [
+      -5.099999904632568,
+      96.5,
+      14.5
+    ]
+  },
+  {
+    "name": "PL_COL_C_GatePillar.003",
+    "route": "C",
+    "primitive": "BOX",
+    "dynamic_gate": false,
+    "bounds_min": [
+      5.099999904632568,
+      95.5,
+      8.0
+    ],
+    "bounds_max": [
+      5.900000095367432,
+      96.5,
+      14.5
+    ]
+  }
+]

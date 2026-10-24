@@ -1,0 +1,39 @@
+{
+  "scene": "Pohorje_Production",
+  "render_triangles": 74546,
+  "render_objects": 294,
+  "materials": [
+    "Pohorje_Concrete",
+    "Pohorje_Dark",
+    "Pohorje_Foliage",
+    "Pohorje_Ground",
+    "Pohorje_Metal",
+    "Pohorje_Rust",
+    "Pohorje_Signs",
+    "Pohorje_Snow",
+    "Pohorje_Stone",
+    "Pohorje_Timber",
+    "Pohorje_Trail",
+    "Pohorje_Violet",
+    "Pohorje_Warm"
+  ],
+  "terrain_triangles": 28890,
+  "terrain_chunks": 74,
+  "interior_holes": 0,
+  "collision_shapes": {
+    "Box": 330,
+    "Capsule": 13
+  },
+  "collision_roles": {
+    "roof": 7,
+    "obstacle": 148,
+    "walkable": 7,
+    "seal_front": 3,
+    "seal_rear": 3,
+    "boundary": 175
+  },
+  "markers": 69,
+  "scenic_trees": 320,
+  "floor_samples": 843,
+  "errors": []
+}

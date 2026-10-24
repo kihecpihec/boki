@@ -1,0 +1,104 @@
+{
+  "source_geometry": {
+    "closed_components": 5767,
+    "inside_out_components": 0,
+    "visual_floor_samples": 2673,
+    "visual_floor_failures": [],
+    "collision_guide_failures": []
+  },
+  "relative_source_textures": [
+    "//../Textures/Maribor_Ashlar.png",
+    "//../Textures/Maribor_Asphalt.png",
+    "//../Textures/Maribor_Cobble.png",
+    "//../Textures/Maribor_Concrete.png",
+    "//../Textures/Maribor_Details.png",
+    "//../Textures/Maribor_Emission.png",
+    "//../Textures/Maribor_Grass.png",
+    "//../Textures/Maribor_Rock.png",
+    "//../Textures/Maribor_Slab.png",
+    "//../Textures/Maribor_Terracotta.png",
+    "//../Textures/Maribor_Water.png"
+  ],
+  "canonical_validator": {
+    "errors": [],
+    "warnings": [
+      "Light 'Preview_Sun' will not export (preview only)",
+      "Light 'Preview_MK_Light_C_Entry' will not export (preview only)",
+      "Light 'Preview_MK_Light_C_Main' will not export (preview only)",
+      "Light 'Preview_MK_Light_C_Reveal' will not export (preview only)",
+      "Light 'Preview_MK_Light_C_Escape' will not export (preview only)",
+      "Light 'Preview_MK_Light_C_Pocket' will not export (preview only)",
+      "Light 'Preview_MK_Light_Lamp_0' will not export (preview only)",
+      "Light 'Preview_MK_Light_Lamp_1' will not export (preview only)",
+      "Light 'Preview_MK_Light_Lamp_2' will not export (preview only)",
+      "Camera 'Maribor_ReviewCamera' will not export (preview only)"
+    ]
+  },
+  "roundtrip": [
+    {
+      "file": "Maribor_Shared.fbx",
+      "objects": 52,
+      "triangles": 31996,
+      "max_vertex_delta_m": 1.1414289474487305e-05,
+      "validator_errors": [],
+      "sha256": "b9595ddb49a4e59c146e7c687f6cdf84aabfccb1a3a82d37e88fef187f4ff912"
+    },
+    {
+      "file": "Maribor_Route_A.fbx",
+      "objects": 18,
+      "triangles": 16828,
+      "max_vertex_delta_m": 8.977949619293213e-06,
+      "validator_errors": [],
+      "sha256": "9f9b7f3497752917b417947dad7cff7a4be03383cd32f7476447f3d0ab0a5255"
+    },
+    {
+      "file": "Maribor_Route_B.fbx",
+      "objects": 15,
+      "triangles": 14158,
+      "max_vertex_delta_m": 8.851289749145508e-06,
+      "validator_errors": [],
+      "sha256": "30c74c3945065605883081b5d0721c6c0b66da0980d174780a6d1672386b3d8b"
+    },
+    {
+      "file": "Maribor_Route_C.fbx",
+      "objects": 19,
+      "triangles": 3406,
+      "max_vertex_delta_m": 9.179115295410156e-06,
+      "validator_errors": [],
+      "sha256": "8628fb3db8b7ecb8c5f93ffec3a4f331ee0d356010ace88233a9cd5393f61e58"
+    },
+    {
+      "file": "Maribor_Backdrop.fbx",
+      "objects": 158,
+      "triangles": 20358,
+      "max_vertex_delta_m": 3.719329833984375e-05,
+      "validator_errors": [],
+      "sha256": "b7780299ebceabc0d30f15d0deaa30e39fa50213f149090f3a0e9bd811aefa4c"
+    },
+    {
+      "file": "Maribor_Roofs.fbx",
+      "objects": 4,
+      "triangles": 108,
+      "max_vertex_delta_m": 8.58306884765625e-06,
+      "validator_errors": [],
+      "sha256": "4b487391fd6a80234005da4194c3a22be41d480b695c7b9b8131542a6bfe27b3"
+    },
+    {
+      "file": "Maribor_CollisionGuides.fbx",
+      "objects": 636,
+      "triangles": 9024,
+      "max_vertex_delta_m": 1.1444091796875e-05,
+      "validator_errors": [],
+      "sha256": "deed184a43401fb9982a2044bb205127f666e4bf50c671c102513c9f6b0c6e88"
+    },
+    {
+      "file": "Maribor_Markers.fbx",
+      "objects": 64,
+      "triangles": 0,
+      "max_vertex_delta_m": 0,
+      "validator_errors": [],
+      "sha256": "8d5319bffe44d59e275eec6517b876eabbc54f60e7c5b89ef06cad0827e90e27"
+    }
+  ],
+  "errors": []
+}

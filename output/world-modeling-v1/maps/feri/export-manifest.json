@@ -1,0 +1,42 @@
+{
+  "Shared_Arrival": {
+    "objects": 5,
+    "triangles": 488
+  },
+  "Route_A": {
+    "objects": 8,
+    "triangles": 1332
+  },
+  "Route_B": {
+    "objects": 8,
+    "triangles": 1672
+  },
+  "Route_C": {
+    "objects": 7,
+    "triangles": 1712
+  },
+  "Shared_Landing": {
+    "objects": 4,
+    "triangles": 384
+  },
+  "Arena_Classroom": {
+    "objects": 8,
+    "triangles": 1824
+  },
+  "Seals": {
+    "objects": 10,
+    "triangles": 1984
+  },
+  "Removable_Roofs": {
+    "objects": 5,
+    "triangles": 132
+  },
+  "CollisionGuides": {
+    "objects": 117,
+    "triangles": 1404
+  },
+  "Markers": {
+    "objects": 69,
+    "triangles": 0
+  }
+}

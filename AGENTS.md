@@ -19,11 +19,13 @@ Read only the sections relevant to the task. Keep game rules in their canonical 
 
 | Task | Reference to read |
 | --- | --- |
+| Scooter movement, boost, jump, or camera feel | [Movement.md](docs/Movement.md); base values in [Story.md §4](docs/Story.md#4-enemy-design-and-escalation) |
 | Routes, locks, unlocks, or run state | [Gameplay.md §2–4](docs/Gameplay.md#2-branching-route-graph); [Architecture.md §4](docs/Architecture.md#4-runtime-state) for implementation |
 | Dialogue, character prompts, or narrative | [Story.md §3](docs/Story.md#3-story-beats-and-script); §1 for tone |
 | Systems or scene wiring | [Architecture.md §3–6](docs/Architecture.md#3-proposed-modules-and-ownership) |
 | Linux/Windows behavior or performance | [Architecture.md §1 and §7](docs/Architecture.md#1-technical-goal-and-boundaries); [Gameplay.md §8](docs/Gameplay.md#8-performance-target-and-unity-settings) |
 | Editor setup and hardware | [README.md](README.md#development-setup) |
+| Writing, structuring, auditing, or verifying C#, asmdefs, tests, or Editor tools | Skill `boki-unity-architecture` ([SKILL.md](.agents/skills/boki-unity-architecture/SKILL.md)) |
 
 Do not invent missing design decisions. Check the relevant canonical document first.
 

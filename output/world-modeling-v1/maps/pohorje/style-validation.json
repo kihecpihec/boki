@@ -1,0 +1,49 @@
+{
+  "protected_objects": 771,
+  "travel_collision_marker_hashes_unchanged": true,
+  "removed_scene_versions": [
+    "Pohorje_FirstPass",
+    "Pohorje_Restrained",
+    "Pohorje_World"
+  ],
+  "layout_dimensions": {
+    "scene": "Pohorje_Large",
+    "route_stats": {
+      "A": {
+        "centerline_m": 616.8,
+        "lane_width_m": 8,
+        "combat_dimensions_m": [
+          64,
+          60
+        ]
+      },
+      "B": {
+        "centerline_m": 622.9,
+        "lane_width_m": 10,
+        "combat_dimensions_m": [
+          60,
+          56
+        ]
+      },
+      "C": {
+        "centerline_m": 584.3,
+        "lane_width_m": 8,
+        "combat_dimensions_m": [
+          48,
+          44
+        ]
+      }
+    },
+    "source_instances": 2014,
+    "forest_chunks": 206,
+    "terrain_footprint_m": [
+      384,
+      576
+    ],
+    "markers": 62,
+    "primitive_collider_guides": 673,
+    "geometry_status": "Authoring build; Unity import/controller/hardware validation pending"
+  },
+  "unity_import": "pending; source assets are outside Game/Assets",
+  "scope": "Historical pre-arena-revision pass; preservation hashes do not apply to the revised source."
+}

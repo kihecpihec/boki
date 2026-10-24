@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "render_triangles_all_routes": 133164,
+  "collections": [
+    {
+      "collection": "Collection",
+      "triangles": 0,
+      "mesh_objects": 0
+    },
+    {
+      "collection": "MB_Shared_Arrival_FERI",
+      "triangles": 25072,
+      "mesh_objects": 61
+    },
+    {
+      "collection": "MB_Route_A",
+      "triangles": 19220,
+      "mesh_objects": 74
+    },
+    {
+      "collection": "MB_Route_B",
+      "triangles": 15188,
+      "mesh_objects": 61
+    },
+    {
+      "collection": "MB_Route_C",
+      "triangles": 8400,
+      "mesh_objects": 66
+    },
+    {
+      "collection": "MB_Scenery",
+      "triangles": 64984,
+      "mesh_objects": 178
+    },
+    {
+      "collection": "MB_C_Removable_Roofs",
+      "triangles": 300,
+      "mesh_objects": 9
+    }
+  ],
+  "zero_area_meshes": [],
+  "path_samples": 1609,
+  "path_issues": [],
+  "charge_issues": [],
+  "fbx_roundtrips": [
+    {
+      "file": "MB_Route_A.fbx",
+      "source_triangles": 19220,
+      "imported_triangles": 19220,
+      "bounds_error_m": 0.00016498565673828125,
+      "passed": true
+    },
+    {
+      "file": "MB_Route_C.fbx",
+      "source_triangles": 8400,
+      "imported_triangles": 8400,
+      "bounds_error_m": 1.8894672393798828e-05,
+      "passed": true
+    }
+  ],
+  "gate_semantics": "Closed default gate meshes excluded from static traversal checks; Unity must bind selection and rear seals.",
+  "unity_import": "pending",
+  "controller_and_navigation": "unverified",
+  "windows_5600g_performance": "unmeasured"
+}

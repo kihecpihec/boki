@@ -1,0 +1,299 @@
+{
+  "revision": "action_layout",
+  "paths": {
+    "Safe": [
+      [
+        0,
+        -14
+      ],
+      [
+        0,
+        -6
+      ]
+    ],
+    "ForkA": [
+      [
+        0,
+        -6
+      ],
+      [
+        -10,
+        -1
+      ]
+    ],
+    "ForkB": [
+      [
+        0,
+        -6
+      ],
+      [
+        10,
+        -1
+      ]
+    ],
+    "ForkC": [
+      [
+        0,
+        -6
+      ],
+      [
+        0,
+        4
+      ]
+    ],
+    "A": [
+      [
+        -10,
+        -1
+      ],
+      [
+        -25,
+        5
+      ],
+      [
+        -41,
+        12
+      ],
+      [
+        -52,
+        22
+      ]
+    ],
+    "B": [
+      [
+        10,
+        -1
+      ],
+      [
+        25,
+        5
+      ],
+      [
+        41,
+        12
+      ],
+      [
+        52,
+        22
+      ]
+    ],
+    "C": [
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        16
+      ],
+      [
+        0,
+        32
+      ]
+    ],
+    "ExitA": [
+      [
+        -52,
+        86
+      ],
+      [
+        -44,
+        95
+      ],
+      [
+        -22,
+        102
+      ],
+      [
+        0,
+        106
+      ]
+    ],
+    "ExitB": [
+      [
+        52,
+        82
+      ],
+      [
+        44,
+        95
+      ],
+      [
+        22,
+        102
+      ],
+      [
+        0,
+        106
+      ]
+    ],
+    "ExitC": [
+      [
+        0,
+        84
+      ],
+      [
+        0,
+        96
+      ],
+      [
+        0,
+        106
+      ]
+    ],
+    "Final": [
+      [
+        0,
+        106
+      ],
+      [
+        0,
+        116
+      ]
+    ]
+  },
+  "widths": {
+    "Safe": 10,
+    "ForkA": 9,
+    "ForkB": 9,
+    "ForkC": 9,
+    "A": 9,
+    "B": 9,
+    "C": 9,
+    "ExitA": 9,
+    "ExitB": 9,
+    "ExitC": 9,
+    "Final": 10
+  },
+  "pockets": {
+    "A": [
+      -64,
+      22,
+      56,
+      64
+    ],
+    "B": [
+      64,
+      22,
+      52,
+      60
+    ],
+    "C": [
+      0,
+      32,
+      48,
+      52
+    ]
+  },
+  "ground_height_m": 8,
+  "terrain_bounds_m": [
+    -115,
+    -27,
+    115,
+    135
+  ],
+  "features": [
+    {
+      "route": "A",
+      "name": "Rock island / split riding loop",
+      "xy": [
+        -61,
+        60
+      ]
+    },
+    {
+      "route": "A",
+      "name": "Timber bridge / low channel",
+      "xy": [
+        -64,
+        50
+      ]
+    },
+    {
+      "route": "A",
+      "name": "Fallen spruce arch",
+      "xy": [
+        -64,
+        70
+      ]
+    },
+    {
+      "route": "B",
+      "name": "Elevated terminal / two ramps",
+      "xy": [
+        55,
+        58
+      ]
+    },
+    {
+      "route": "B",
+      "name": "Gantry and suspended gondolas",
+      "xy": [
+        64,
+        42
+      ]
+    },
+    {
+      "route": "C",
+      "name": "Sunken dance floor",
+      "xy": [
+        0,
+        57
+      ]
+    },
+    {
+      "route": "C",
+      "name": "Raised DJ stage / speaker towers",
+      "xy": [
+        0,
+        75
+      ]
+    }
+  ],
+  "stats": {
+    "scene": "Pohorje_Large",
+    "route_stats": {
+      "A": {
+        "centerline_m": 199.2,
+        "approach_m": 67.7,
+        "approach_seconds_at_6mps": 11.3,
+        "first_encounter_candidate_m": 24.2,
+        "lane_width_m": 9,
+        "combat_dimensions_m": [
+          56,
+          64
+        ]
+      },
+      "B": {
+        "centerline_m": 198.4,
+        "approach_m": 67.7,
+        "approach_seconds_at_6mps": 11.3,
+        "first_encounter_candidate_m": 24.2,
+        "lane_width_m": 9,
+        "combat_dimensions_m": [
+          52,
+          60
+        ]
+      },
+      "C": {
+        "centerline_m": 130.0,
+        "approach_m": 46.0,
+        "approach_seconds_at_6mps": 7.7,
+        "first_encounter_candidate_m": 23.0,
+        "lane_width_m": 9,
+        "combat_dimensions_m": [
+          48,
+          52
+        ]
+      }
+    },
+    "terrain_footprint_m": [
+      230,
+      162
+    ],
+    "source_instances": 620,
+    "forest_chunks": 61,
+    "markers": 54,
+    "collider_guides": 101
+  }
+}
