@@ -10,8 +10,10 @@ namespace Boki.Intro
         private float shotElapsed;
 
         public int ShotCount => shotSeconds.Length;
+        public float TotalSeconds { get; }
         public int ShotIndex { get; private set; }
         public float ShotProgress => IsFinished ? 1f : shotElapsed / shotSeconds[ShotIndex];
+        public float Elapsed => IsFinished ? TotalSeconds : ShotStart(ShotIndex) + shotElapsed;
         public bool HasStarted { get; private set; }
         public bool IsFinished { get; private set; }
         public bool WasSkipped { get; private set; }
@@ -27,6 +29,16 @@ namespace Boki.Intro
                 if (!(seconds > 0f) || float.IsInfinity(seconds))
                     throw new ArgumentOutOfRangeException(nameof(shotSeconds), "Each shot needs a finite positive duration.");
             this.shotSeconds = (float[])shotSeconds.Clone();
+            foreach (float seconds in this.shotSeconds) TotalSeconds += seconds;
+        }
+
+        // Sequence time at which a shot begins, so cues inside a shot can be placed on one clock.
+        public float ShotStart(int shot)
+        {
+            if (shot < 0 || shot >= shotSeconds.Length) throw new ArgumentOutOfRangeException(nameof(shot));
+            float start = 0f;
+            for (int i = 0; i < shot; i++) start += shotSeconds[i];
+            return start;
         }
 
         public bool Begin()

@@ -102,6 +102,42 @@ namespace Boki.Tests
         }
 
         [Test]
+        public void ShotStartsAreCumulativeAndElapsedFollowsTheCurrentShot()
+        {
+            var timeline = Make(out _);
+            Assert.That(timeline.TotalSeconds, Is.EqualTo(6f));
+            Assert.That(timeline.ShotStart(0), Is.Zero);
+            Assert.That(timeline.ShotStart(1), Is.EqualTo(2f));
+            Assert.That(timeline.ShotStart(2), Is.EqualTo(3f));
+            timeline.Begin();
+            timeline.Advance(3.5f);
+            Assert.That(timeline.Elapsed, Is.EqualTo(3.5f).Within(1e-5f));
+        }
+
+        [Test]
+        public void ElapsedIsTheTotalOnceFinishedWhetherPlayedOrSkipped()
+        {
+            var played = Make(out _);
+            played.Begin();
+            played.Advance(99f);
+            Assert.That(played.Elapsed, Is.EqualTo(6f));
+
+            var skipped = Make(out _);
+            skipped.Begin();
+            skipped.Advance(1f);
+            skipped.TrySkip();
+            Assert.That(skipped.Elapsed, Is.EqualTo(6f));
+        }
+
+        [Test]
+        public void ShotStartRejectsAShotThatDoesNotExist()
+        {
+            var timeline = Make(out _);
+            Assert.Throws<ArgumentOutOfRangeException>(() => timeline.ShotStart(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => timeline.ShotStart(3));
+        }
+
+        [Test]
         public void ConstructorRejectsMissingOrNonPositiveShots()
         {
             Assert.Throws<ArgumentException>(() => new IntroTimeline(null));

@@ -54,7 +54,7 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 **Shot 1:** Boki lies on the ground beside a plastic bottle and scooter. The camera rises. Gray fog, dark city outlines, and something wrong with the sky's color fill the horizon.
 
-**Shot 2:** Boki raises his left arm. His low-poly watch fills almost the entire screen: **07:58**. A short phone beep: *»PREDAVANJE — 08:00 / FERI«*.
+**Shot 2:** Boki raises his left arm. His low-poly watch fills almost the entire screen: **07:58**. His eyes pop out of his head. A short phone beep: *»PREDAVANJE — 08:00 / FERI«*, and they pop out again, bigger.
 
 **Boki:** »Fak ... ne spet.«
 
@@ -62,7 +62,7 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 **Boki:** »... kaj je to blo?«
 
-**Shot 4:** Boki steps onto the scooter. Its large headlight and improvised laser projector from the previous rave turn on.
+**Shot 4:** Boki scrambles onto the scooter: he bolts upright, sprints the wrong way, skids, turns back and leaps on. Its large headlight and improvised laser projector from the previous rave turn on.
 
 **HUD:** `OBJECTIVE: GET TO FERI` / `DON'T LOOK BACK`.
 
