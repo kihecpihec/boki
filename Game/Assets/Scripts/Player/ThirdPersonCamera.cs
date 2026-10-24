@@ -23,6 +23,10 @@ namespace Boki.Player
         [Tooltip("Include environment layers; exclude the player layer.")]
         [SerializeField] private LayerMask obstructionMask = Physics.DefaultRaycastLayers;
 
+        private Transform dialogueTarget;
+
+        public void SetDialogueTarget(Transform target) => dialogueTarget = target;
+
         private float yaw;
         private float pitch;
         private float currentDistance;
@@ -111,6 +115,16 @@ namespace Boki.Player
 
         private void LateUpdate()
         {
+            if (dialogueTarget != null && followPivot != null)
+            {
+                Vector3 target = dialogueTarget.position + Vector3.up * 1.5f;
+                Vector3 forward = Vector3.ProjectOnPlane(target - followPivot.position, Vector3.up).normalized;
+                // Place the shot ahead of Boki, on the arena side of the entrance seal.
+                Vector3 position = followPivot.position + forward * 1.5f + Vector3.up * 0.7f;
+                transform.SetPositionAndRotation(position, Quaternion.LookRotation(target - position));
+                skipLookFrame = true;
+                return;
+            }
             if (followPivot == null || (RunSession.Instance != null && RunSession.Instance.State.Pause.IsPaused))
                 return;
 
