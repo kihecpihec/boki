@@ -19,3 +19,7 @@ Read the relevant sections for your task rather than all documents upfront:
 - [Architecture](docs/Architecture.md): planned Unity modules, scene integration, platform checks, and milestones.
 
 These documents describe the intended design; they do not imply that the systems are already implemented.
+
+## Player effects preview
+
+The first boost trails and damage flash have an isolated [preview and integration guide](docs/PlayerEffects.md). Open `Game/Assets/Scenes/BokiEffectsPreview.unity` in the pinned Editor and press Play; hold Left Shift for trails and press H for a damage flash.
