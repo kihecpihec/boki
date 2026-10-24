@@ -87,17 +87,21 @@ namespace Boki.Editor
             var battery = movement.GetComponent<LightBattery>();
             var lightSettings = new SerializedObject(battery);
             lightSettings.FindProperty("headlightMount").objectReferenceValue = mount;
-            lightSettings.FindProperty("headlightAngle").floatValue = 125f;
-            lightSettings.FindProperty("headlightDownwardAngle").floatValue = 24f;
+            lightSettings.FindProperty("headlightAngle").floatValue = 140f;
+            lightSettings.FindProperty("headlightDownwardAngle").floatValue = 18f;
+            lightSettings.FindProperty("headlightRange").floatValue = 24f;
+            lightSettings.FindProperty("headlightBrightnessMultiplier").floatValue = 24f;
+            lightSettings.FindProperty("nearbyBrightnessMultiplier").floatValue = 1.3f;
+            lightSettings.FindProperty("riderFillPosition").vector3Value = new Vector3(0f, 1.6f, -0.9f);
             lightSettings.ApplyModifiedPropertiesWithoutUndo();
             var lamp = (Light)lightSettings.FindProperty("surroundingLight").objectReferenceValue;
             // Keep the prefab hierarchy intact in Edit Mode; LightBattery attaches it on enable.
-            lamp.transform.position = mount.position + movement.transform.up * 1.2f;
-            lamp.transform.rotation = mount.rotation * Quaternion.Euler(24f, 0f, 0f);
+            lamp.transform.position = mount.position + movement.transform.up * 0.65f;
+            lamp.transform.rotation = mount.rotation * Quaternion.Euler(18f, 0f, 0f);
             lamp.type = LightType.Spot;
-            lamp.spotAngle = 125f;
-            lamp.innerSpotAngle = 56.25f;
-            lamp.range = 8f;
+            lamp.spotAngle = 140f;
+            lamp.innerSpotAngle = 63f;
+            lamp.range = 24f;
             lamp.color = Color.white;
             lamp.shadows = LightShadows.None;
             foreach (Object changed in new Object[] { origin, beam, mount, battery, lamp, lamp.transform })

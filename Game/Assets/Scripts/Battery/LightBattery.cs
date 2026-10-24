@@ -13,16 +13,16 @@ namespace Boki.Battery
         [SerializeField] private bool strongGuiltWarning;
         [SerializeField, Min(0f)] private float intensity = 5f;
         [SerializeField] private Vector3 headlightPosition = new Vector3(0f, 0.65f, 0.85f);
-        [SerializeField, Range(0f, 45f)] private float headlightDownwardAngle = 24f;
-        [SerializeField, Min(1f)] private float headlightRange = 8f;
-        [SerializeField, Range(1f, 179f)] private float headlightAngle = 125f;
+        [SerializeField, Range(0f, 45f)] private float headlightDownwardAngle = 18f;
+        [SerializeField, Min(1f)] private float headlightRange = 24f;
+        [SerializeField, Range(1f, 179f)] private float headlightAngle = 140f;
         [SerializeField, Min(0f)] private float fillIntensity = 0.55f;
         [SerializeField, Min(0.1f)] private float fillRange = 2.5f;
-        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 4f;
-        [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 3f;
+        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 24f;
+        [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 1.3f;
         [SerializeField, Min(1f)] private float nearbyRangeMultiplier = 1.4f;
-        [SerializeField, Min(0f)] private float headlightHeightOffset = 1.2f;
-        [SerializeField] private Vector3 riderFillPosition = new Vector3(0f, 1.2f, -0.35f);
+        [SerializeField, Min(0f)] private float headlightHeightOffset = 0.65f;
+        [SerializeField] private Vector3 riderFillPosition = new Vector3(0f, 1.6f, -0.9f);
         [SerializeField, Min(0f)] private float emptyFillIntensity = 0.12f;
         [SerializeField, Min(0.1f)] private float emptyFillRange = 2.2f;
         public float ChargeFraction => Mathf.Clamp01(State.Current / State.Capacity);
@@ -56,6 +56,7 @@ namespace Boki.Battery
             surroundingLight.spotAngle = headlightAngle;
             surroundingLight.innerSpotAngle = headlightAngle * 0.45f;
             surroundingLight.color = LampColor;
+            surroundingLight.useColorTemperature = false;
             surroundingLight.shadows = LightShadows.None;
             if (nearbyFill == null)
             {
@@ -66,7 +67,8 @@ namespace Boki.Battery
             // A small point fill reaches the rider's back and scooter as well as the nearby ground.
             nearbyFill.transform.localPosition = riderFillPosition;
             nearbyFill.type = LightType.Point;
-            nearbyFill.color = surroundingLight.color;
+            nearbyFill.color = LampColor;
+            nearbyFill.useColorTemperature = false;
             nearbyFill.range = fillRange;
             nearbyFill.intensity = fillIntensity;
             nearbyFill.shadows = LightShadows.None;
@@ -95,7 +97,7 @@ namespace Boki.Battery
             float flicker = 1f - warning * warningDip
                 * (0.5f + 0.5f * Mathf.Sin(warningTime * Mathf.PI * 4f));
             // Fade reach as well as brightness so low charge leaves only the immediate riding area.
-            surroundingLight.range = headlightRange * Mathf.Lerp(0.25f, 1f, visibility);
+            surroundingLight.range = headlightRange * Mathf.Lerp(0.1f, 1f, visibility);
             nearbyFill.range = Mathf.Lerp(emptyFillRange, fillRange * nearbyRangeMultiplier, visibility);
             surroundingLight.intensity = intensity * headlightBrightnessMultiplier * visibility * flicker;
             nearbyFill.intensity = Mathf.Lerp(emptyFillIntensity, fillIntensity * nearbyBrightnessMultiplier, visibility) * flicker;

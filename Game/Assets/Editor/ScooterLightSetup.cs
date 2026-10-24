@@ -124,10 +124,13 @@ namespace Boki.Editor
             }
             Light light = lamp.GetComponent<Light>();
             if (light == null) light = lamp.gameObject.AddComponent<Light>();
-            light.type = LightType.Point;
-            light.range = 9f;
-            light.intensity = 5f;
-            light.color = new Color(1f, 0.94f, 0.82f);
+            light.type = LightType.Spot;
+            light.range = 24f;
+            light.spotAngle = 140f;
+            light.innerSpotAngle = 63f;
+            light.intensity = 120f;
+            light.color = Color.white;
+            light.useColorTemperature = false;
             light.shadows = LightShadows.None;
             light.renderMode = LightRenderMode.ForcePixel;
             LightBattery battery = player.GetComponent<LightBattery>();

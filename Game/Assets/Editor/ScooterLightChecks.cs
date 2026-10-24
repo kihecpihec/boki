@@ -131,10 +131,10 @@ namespace Boki.Editor
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         battery.State.Current = 100f;
                         Require(fill.type == LightType.Point && fill.color == Color.white && lamp.color == Color.white
-                            && lamp.spotAngle >= 120f && lamp.range <= 8f
-                            && lamp.transform.position.y > battery.transform.position.y + 1.5f
+                            && lamp.spotAngle >= 135f && lamp.range > 20f
+                            && lamp.transform.position.y > battery.transform.position.y + 0.65f
                             && Vector3.Dot(lamp.transform.forward, battery.transform.forward) > 0.8f,
-                            "The raised white beam is broad and short; the point fill reveals the rider.");
+                            "The white beam covers a wide, distant area; the point fill reveals the rider.");
                         Teleport(first.transform.position - Vector3.up * 0.6f);
                         Next();
                         break;
