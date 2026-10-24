@@ -20,7 +20,7 @@ namespace Boki.Tests
         }
 
         [Test]
-        public void BarrageFiresThreeSheetsThenSlamAlternates()
+        public void BarrageFiresThreeSheetsThenDoubleSlam()
         {
             var boss = new BossAttackScheduler(2f, 0.5f, 1.25f, 1f);
             var actions = Run(boss, 12f, 1f).ConvertAll(entry => entry.action);
@@ -29,7 +29,8 @@ namespace Boki.Tests
                 BossAction.FireSheet, BossAction.FireSheet, BossAction.FireSheet,
                 BossAction.StartSlamTelegraph, BossAction.SlamImpact
             }));
-            Assert.That(actions[5], Is.EqualTo(BossAction.FireSheet));
+            Assert.That(actions[5], Is.EqualTo(BossAction.StartSlamTelegraph));
+            Assert.That(actions[6], Is.EqualTo(BossAction.SlamImpact));
         }
 
         [Test]
@@ -82,6 +83,42 @@ namespace Boki.Tests
             float start = log.Find(e => e.action == BossAction.StartSlamTelegraph).time;
             float impact = log.Find(e => e.action == BossAction.SlamImpact).time;
             Assert.That(impact - start, Is.EqualTo(BossAttackScheduler.SlamTelegraphSeconds).Within(0.06f));
+        }
+
+        [Test]
+        public void FullCycleContainsOffsetRingsAndTripleSlamThenRepeats()
+        {
+            var boss = new BossAttackScheduler(0.2f, 0.2f, 1.25f, 0f);
+            var actions = Run(boss, 12f, 1f).ConvertAll(entry => entry.action);
+            Assert.That(actions.GetRange(0, 18), Is.EqualTo(new[]
+            {
+                BossAction.FireSheet, BossAction.FireSheet, BossAction.FireSheet,
+                BossAction.StartSlamTelegraph, BossAction.SlamImpact,
+                BossAction.StartSlamTelegraph, BossAction.SlamImpact,
+                BossAction.FirePaperRing, BossAction.FirePaperRing,
+                BossAction.StartSlamTelegraph, BossAction.SlamImpact,
+                BossAction.StartSlamTelegraph, BossAction.SlamImpact,
+                BossAction.StartSlamTelegraph, BossAction.SlamImpact,
+                BossAction.FireSheet, BossAction.FireSheet, BossAction.FireSheet
+            }));
+        }
+
+        [Test]
+        public void EveryComboSlamKeepsFullWarningAndPauseDoesNotAdvanceIt()
+        {
+            var boss = new BossAttackScheduler(0.2f, 0.2f, 2f, 0f);
+            var log = Run(boss, 20f, 0.2f);
+            for (int i = 0; i < log.Count - 1; i++)
+            {
+                if (log[i].action != BossAction.StartSlamTelegraph) continue;
+                Assert.That(log[i + 1].action, Is.EqualTo(BossAction.SlamImpact));
+                Assert.That(log[i + 1].time - log[i].time, Is.GreaterThanOrEqualTo(0.799f));
+            }
+            var paused = new BossAttackScheduler(0.2f, 0.2f, 1.25f, 0f);
+            while (paused.Tick(0.05f, 1f) != BossAction.StartSlamTelegraph) { }
+            for (int i = 0; i < 100; i++) Assert.That(paused.Tick(0f, 1f), Is.EqualTo(BossAction.None));
+            Assert.That(paused.Tick(0.79f, 1f), Is.EqualTo(BossAction.None));
+            Assert.That(paused.Tick(0.02f, 1f), Is.EqualTo(BossAction.SlamImpact));
         }
 
         [Test]

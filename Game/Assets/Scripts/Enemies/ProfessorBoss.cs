@@ -90,6 +90,7 @@ namespace Boki.Enemies
                 bar = display.AddComponent<ProfessorHealthBar>();
             }
             bar.Bind(this, health, target);
+            if (GetComponent<ProfessorAttackAudio>() == null) gameObject.AddComponent<ProfessorAttackAudio>();
             slamRing.gameObject.SetActive(false);
             fighting = startOnEnable;
         }
@@ -119,6 +120,7 @@ namespace Boki.Enemies
             switch (scheduler.Tick(Time.deltaTime, fraction))
             {
                 case BossAction.FireSheet: FireSheet(); break;
+                case BossAction.FirePaperRing: FirePaperRing(); break;
                 case BossAction.StartSlamTelegraph: StartTelegraph(); break;
                 case BossAction.SlamImpact: Slam(); break;
             }
@@ -193,6 +195,21 @@ namespace Boki.Enemies
             Vector3 center = TargetCenter() + Vector3.ClampMagnitude(targetVelocity * aimLeadSeconds, 3f);
             EnemyProjectile sheet = Instantiate(sheetPrefab, origin, Quaternion.LookRotation(center - origin));
             sheet.Launch(target, center - origin, Mathf.RoundToInt(sheetDamage * attackDamageMultiplier));
+            BarrageSheetFired?.Invoke();
+        }
+
+        private void FirePaperRing()
+        {
+            const int count = 12;
+            Vector3 origin = sheetOrigin.position;
+            // Alternate the gaps between volleys while leaving room to dodge between papers.
+            float offset = scheduler.PaperRingIndex * (180f / count);
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 direction = Quaternion.Euler(0f, offset + i * (360f / count), 0f) * Vector3.forward;
+                EnemyProjectile sheet = Instantiate(sheetPrefab, origin, Quaternion.LookRotation(direction));
+                sheet.Launch(target, direction, Mathf.RoundToInt(sheetDamage * attackDamageMultiplier));
+            }
             BarrageSheetFired?.Invoke();
         }
 
