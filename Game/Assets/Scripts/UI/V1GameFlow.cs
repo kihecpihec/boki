@@ -142,9 +142,7 @@ namespace Boki.UI
         private void MainMenu()
         {
             if (terminal || choosing) return;
-            paused = true;
-            Suspend(true);
-            menu.ShowMainMenu();
+            session.ReturnToMainMenu();
         }
         private void Quit() => Application.Quit();
         public void Retry() { if (session != null) session.Retry(); }
