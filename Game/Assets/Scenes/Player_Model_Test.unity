@@ -40391,7 +40391,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   range: 10
-  damage: 20
+  damage: 10
   fireInterval: 0.4
   beamDuration: 0.08
 --- !u!114 &7868977143442150409

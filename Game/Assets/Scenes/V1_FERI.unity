@@ -5895,8 +5895,7 @@ MonoBehaviour:
   - {fileID: 776498229}
   - {fileID: 1646948495}
   - {fileID: 1124523369}
-  desiredCount: 4
-  maximumCount: 8
+  initialCount: 15
   cadence: 4
 --- !u!4 &505658271
 Transform:
@@ -10019,8 +10018,7 @@ MonoBehaviour:
   - {fileID: 1691230118}
   - {fileID: 151714685}
   - {fileID: 949310177}
-  desiredCount: 4
-  maximumCount: 8
+  initialCount: 15
   cadence: 4
 --- !u!4 &805964106
 Transform:
@@ -16956,8 +16954,7 @@ MonoBehaviour:
   - {fileID: 411227411}
   - {fileID: 203800581}
   - {fileID: 1386876983}
-  desiredCount: 4
-  maximumCount: 8
+  initialCount: 15
   cadence: 4
 --- !u!4 &1395323522
 Transform:
@@ -29928,7 +29925,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   range: 10
-  damage: 20
+  damage: 10
   fireInterval: 0.4
   beamDuration: 0.08
 --- !u!114 &7868977143442150409

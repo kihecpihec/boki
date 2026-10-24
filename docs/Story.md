@@ -149,12 +149,12 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 **Suggested initial playtest values, subject to balancing:**
 
 - Boki: 100 HP; speed 7 m/s; boost 11 m/s for 0.6 s with a 3 s cooldown; CharacterController jump.
-- Auto-laser: nearest target within 12 m; fires every 0.5 s; base damage 10.
+- Auto-laser: nearest visible target within 10 m; fires every 0.4 s; base damage 10.
 - Light battery: 100; drain 1.5/s; regular kills never restore charge; arena battery pickups restore +25, with placement and recharge rules in [Gameplay §5](Gameplay.md#battery-charges-and-action-feedback). At 0 battery, enemies gain +30% speed, with no extra damage boost.
 - Melee: approximately 20–30 HP; ranged: 15–25 HP. Increase stats slightly by level, e.g. HP ×1.0 / ×1.25 / ×1.4, without new AI types.
 - Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. Lingering increases its appearance frequency, chase speed, and damage under [Gameplay.md §5](Gameplay.md#5-loop-within-each-route); approved initial scaling values and caps are specified there. No instant-death mechanic.
 - Professor: **4000 HP** in M6, with two attack types. This targets approximately 80 seconds of continuous fire with the approved [M2 combat baseline](Gameplay.md#m2-combat-baseline), before route modifiers. Verify the 60–100 s fight target through interactive playtesting.
-- Active regular enemy cap: Pohorje 8; Maribor 12; FERI 8 plus boss. Spawn from a few predefined points only.
+- Regular arenas open with 15 enemies and replenish without a population cap; spawn cadence and health/damage scaling are defined in [Gameplay §5](Gameplay.md#enemy-replenishment-and-exits). Use predefined spawn points.
 
 ### Difficulty Curve
 
@@ -166,7 +166,7 @@ Within a run, staying longer in a combat space escalates Guilt pressure. Difficu
 
 ## 5. Upgrades and Replay Motivation
 
-Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **3 → 7 → 12 → 18 → 25 → 33**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
+Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **15 → 35 → 60 → 90 → 125 → 165**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
 
 Crossing a threshold pauses gameplay and offers three distinct random eligible options, or two when only two eligible rewards remain. Select exactly one before resuming; if multiple thresholds are crossed, resolve choices sequentially without unpausing combat. Bonuses add percentages of the original base stat rather than multiplying previous upgrades.
 
@@ -210,7 +210,7 @@ Differentiate branches through **obstacle layout, encounter types, and lighting/
 
 Hardware and Editor setup live in [README.md](../README.md#development-setup); performance settings and measurement requirements live in [Gameplay.md §8](Gameplay.md#8-performance-target-and-unity-settings) and [Architecture.md §7](Architecture.md#7-project-settings-and-performance).
 
-Keep the visual direction within that budget: simple lighting, small textures, short ParticleSystem effects, simple colliders, three gameplay scenes plus a menu, and no realistic scooter simulation or hundreds of active enemies. Add object pooling only if spawning causes measurable stutter. A Very Low preset can disable AA, reduce additional lights and view distance, and turn off grain. Test an actual Windows build on the integrated Radeon early; FPS in a stronger machine's Editor is not a valid target-hardware test.
+Keep the visual direction within that budget: simple lighting, small textures, short ParticleSystem effects, simple colliders, three gameplay scenes plus a menu, and no realistic scooter simulation. Regular arena populations are uncapped per Gameplay §5; validate large surviving hordes on target hardware. Add object pooling only if spawning causes measurable stutter. A Very Low preset can disable AA, reduce additional lights and view distance, and turn off grain. Test an actual Windows build on the integrated Radeon early; FPS in a stronger machine's Editor is not a valid target-hardware test.
 
 ## 9. Minimum Scope for 48 Hours
 

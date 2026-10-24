@@ -58,6 +58,15 @@ namespace Boki.Combat
             Died?.Invoke();
             Destroy(gameObject);
         }
+        public void ConfigureEncounterHealth(float multiplier)
+        {
+            // Encounter templates are configured while inactive, before their first activation.
+            if (gameObject.activeInHierarchy) throw new InvalidOperationException("Configure encounter health before activation.");
+            if (state != null) state.Died -= Die;
+            state = new HealthState(Mathf.Max(1, Mathf.RoundToInt(maximumHealth * multiplier)));
+            state.Died += Die;
+        }
+
         public void TakeDamage(int damage)
         {
             if (!isActiveAndEnabled || !IsAlive || damage <= 0) return;

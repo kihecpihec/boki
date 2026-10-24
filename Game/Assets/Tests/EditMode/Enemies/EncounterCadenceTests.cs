@@ -19,6 +19,17 @@ namespace Boki.Enemies.Tests
             Assert.That(EncounterCadence.Evaluate(initial, seconds), Is.EqualTo(expected).Within(0.0001f));
         }
 
+        [TestCase(-10f, 1f, 1f)]
+        [TestCase(0f, 1f, 1f)]
+        [TestCase(60f, 1.25f, 1.15f)]
+        [TestCase(120f, 1.5f, 1.3f)]
+        [TestCase(600f, 3.5f, 2.5f)]
+        public void RegularEnemyStrengthGrowsBeyondTheCadencePlateau(float seconds, float health, float damage)
+        {
+            Assert.That(EncounterCadence.HealthMultiplier(seconds), Is.EqualTo(health).Within(0.0001f));
+            Assert.That(EncounterCadence.DamageMultiplier(seconds), Is.EqualTo(damage).Within(0.0001f));
+        }
+
         [Test]
         public void SharedClockRetainsProgressOnReentryAndFreezesWhileSuspended()
         {

@@ -16,6 +16,8 @@ namespace Boki.Enemies
         [SerializeField, Min(1)] private int damage = 10;
         [SerializeField, Min(0.01f)] private float attackInterval = 0.75f;
         private CharacterController controller;
+        private float damageMultiplier = 1f;
+        public void SetDamageMultiplier(float multiplier) => damageMultiplier = Mathf.Max(1f, multiplier);
         private EnemyHealth health;
         private CharacterController targetController;
         private LightBattery targetLight;
@@ -65,7 +67,7 @@ namespace Boki.Enemies
             // A thin wall must not allow contact damage through it.
             if (Physics.Linecast(ownCenter, playerCenter, 1, QueryTriggerInteraction.Ignore)) return;
             cooldown = Mathf.Max(0.01f, attackInterval);
-            target.TakeDamage(damage);
+            target.TakeDamage(Mathf.RoundToInt(damage * damageMultiplier));
             Attacked?.Invoke();
         }
     }
