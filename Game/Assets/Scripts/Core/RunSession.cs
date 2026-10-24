@@ -1,4 +1,5 @@
 using Boki.Routes;
+using Boki.Battery;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,11 +18,14 @@ namespace Boki.Core
         [SerializeField] private string cityDestination = CityScene;
         [SerializeField] private string feriDestination = "";
         private PersistentUnlocks unlocks;
+        private LightBattery lightDriver;
         private bool hasEnteredBossArena;
         public string EntryScene => forestDestination;
         public static RunSession Instance { get; private set; }
         public RunState State { get; private set; }
         public bool IsLoading { get; private set; }
+        public bool IsGameplayActive => State != null && State.Health.IsAlive
+            && !IsLoading && !State.Guilt.GameplaySuspended;
         // In-memory input retained for the standalone M3 demonstration.
         // Production scenes read permanent flags from PlayerPrefs on every new run.
         public UnlockSnapshot NextRunUnlocks { get; set; }
@@ -44,6 +48,25 @@ namespace Boki.Core
             State = new RunState(ReadNewRunUnlocks(), Time.realtimeSinceStartupAsDouble);
             SceneManager.sceneLoaded += SceneLoaded;
         }
+
+        public bool BindLight(LightBattery driver)
+        {
+            if (lightDriver != null && lightDriver != driver)
+            {
+                Debug.LogError("Only one active player may drive the run light battery.", driver);
+                return false;
+            }
+            lightDriver = driver;
+            return true;
+        }
+
+        public void UnbindLight(LightBattery driver)
+        {
+            if (lightDriver == driver) lightDriver = null;
+        }
+
+        private void Update() => State.LightBattery.Tick(Time.deltaTime,
+            lightDriver != null && lightDriver.IsGameplayActive);
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode)
         {

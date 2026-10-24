@@ -1,6 +1,6 @@
 {
   "name": "Boki.Run.Tests",
-  "references": ["Boki.Run.Rules", "Boki.Combat.Rules", "Boki.Enemies.Rules"],
+  "references": ["Boki.Battery.Rules", "Boki.Run.Rules", "Boki.Combat.Rules", "Boki.Enemies.Rules"],
   "includePlatforms": ["Editor"],
   "optionalUnityReferences": ["TestAssemblies"]
 }
