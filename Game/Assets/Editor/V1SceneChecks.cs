@@ -338,18 +338,16 @@ namespace Boki.Editor
             ValidateEnemyEffects(scene);
             var battery = new SerializedObject(V1SceneSetup.Find<LightBattery>(scene));
             var lamp = battery.FindProperty("surroundingLight").objectReferenceValue as Light;
-            Check(battery.FindProperty("headlightAngle").floatValue == 140f
-                && battery.FindProperty("headlightRange").floatValue == 24f
-                && battery.FindProperty("headlightDownwardAngle").floatValue == 18f
-                && battery.FindProperty("headlightBrightnessMultiplier").floatValue == 24f,
-                "Wide, long-reaching V1 scooter beam is explicitly configured");
-            Check(lamp != null && lamp.color == Color.white && !lamp.useColorTemperature
+            Check(battery.FindProperty("headlightRange").floatValue == 28f
+                && battery.FindProperty("headlightBrightnessMultiplier").floatValue == 12f,
+                "Wide, surrounding V1 scooter light is explicitly configured");
+            Check(lamp != null && lamp.type == LightType.Point && lamp.color == Color.white && !lamp.useColorTemperature
                 && lamp.shadows == LightShadows.None, "V1 scooter beam stays white without additional shadows");
             Check(battery.FindProperty("riderFillPosition").vector3Value == new Vector3(0f, 1.6f, -0.9f)
                 && battery.FindProperty("nearbyBrightnessMultiplier").floatValue == 1.3f,
                 "Restrained V1 rider fill avoids a backpack hotspot");
             var darkness = new SerializedObject(V1SceneSetup.Find<ScooterDarkness>(scene));
-            Check(darkness.FindProperty("chargedRadiusMultiplier").floatValue == 2.4f
+            Check(darkness.FindProperty("chargedRadiusMultiplier").floatValue == 3f
                 && darkness.FindProperty("darknessOpacity").floatValue == 0.3f,
                 "V1 darkness opening accommodates the wide beam");
             Check(V1SceneSetup.All<RouteGate>(scene).Count == 3, "Exactly three route gates");

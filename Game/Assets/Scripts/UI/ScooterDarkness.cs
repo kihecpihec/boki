@@ -14,10 +14,10 @@ namespace Boki.UI
         [SerializeField] private bool darknessEnabled = true;
         [SerializeField, Min(0.1f)] private float lightRadius = 7f;
         [SerializeField, Range(0f, 0.8f)] private float darknessOpacity = 0.65f;
-        [SerializeField, Min(0f)] private float forwardOffset = 2f;
+        [SerializeField, Min(0f)] private float forwardOffset = 0f;
         [SerializeField, Range(0.1f, 1f)] private float radiusScale = 0.75f;
         [SerializeField, Range(0f, 0.2f)] private float extraDarkness = 0.08f;
-        [SerializeField, Min(1f)] private float chargedRadiusMultiplier = 2.4f;
+        [SerializeField, Min(1f)] private float chargedRadiusMultiplier = 3f;
         [SerializeField, Range(0f, 1f)] private float chargedOpacityMultiplier = 0.65f;
         private Material material;
         private static readonly int Center = Shader.PropertyToID("_Center");

@@ -1,6 +1,7 @@
 using Boki.Core;
 using Boki.Player;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Boki.Battery
 {
@@ -13,15 +14,13 @@ namespace Boki.Battery
         [SerializeField] private bool strongGuiltWarning;
         [SerializeField, Min(0f)] private float intensity = 5f;
         [SerializeField] private Vector3 headlightPosition = new Vector3(0f, 0.65f, 0.85f);
-        [SerializeField, Range(0f, 45f)] private float headlightDownwardAngle = 18f;
-        [SerializeField, Min(1f)] private float headlightRange = 24f;
-        [SerializeField, Range(1f, 179f)] private float headlightAngle = 140f;
+        [SerializeField, Min(1f)] private float headlightRange = 28f;
         [SerializeField, Min(0f)] private float fillIntensity = 0.55f;
         [SerializeField, Min(0.1f)] private float fillRange = 2.5f;
-        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 24f;
+        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 12f;
         [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 1.3f;
         [SerializeField, Min(1f)] private float nearbyRangeMultiplier = 1.4f;
-        [SerializeField, Min(0f)] private float headlightHeightOffset = 0.65f;
+        [SerializeField, Min(0f)] private float headlightHeightOffset = 0.1f;
         [SerializeField] private Vector3 riderFillPosition = new Vector3(0f, 1.6f, -0.9f);
         [SerializeField, Min(0f)] private float emptyFillIntensity = 0.12f;
         [SerializeField, Min(0.1f)] private float emptyFillRange = 2.2f;
@@ -30,12 +29,24 @@ namespace Boki.Battery
         public float Visibility { get; private set; }
         private static readonly Color LampColor = Color.white;
         private float warningTime;
+        private const uint WorldRenderingLayer = 1u;
+        private const uint RiderRenderingLayer = 2u;
+        private Renderer[] riderRenderers;
+        private uint[] originalRenderingLayers;
         private Light nearbyFill;
         private RunSession session;
         public LightBatteryState State => (session != null ? session : RunSession.Ensure()).State.LightBattery;
         public bool IsGameplayActive => isActiveAndEnabled && player != null
             && player.isActiveAndEnabled && player.IsAlive && session != null && session.IsGameplayActive;
         public float EnemySpeedMultiplier => State.EnemySpeedMultiplier;
+
+        private void Awake()
+        {
+            riderRenderers = GetComponentsInChildren<Renderer>(true);
+            originalRenderingLayers = new uint[riderRenderers.Length];
+            for (int i = 0; i < riderRenderers.Length; i++)
+                originalRenderingLayers[i] = riderRenderers[i].renderingLayerMask;
+        }
 
         private void OnEnable()
         {
@@ -50,11 +61,12 @@ namespace Boki.Battery
             // Keep the existing serialized light reference so authored scenes need no rewiring.
             surroundingLight.transform.SetParent(headlightMount != null ? headlightMount : transform, false);
             surroundingLight.transform.localPosition = headlightMount != null ? Vector3.zero : headlightPosition;
-            surroundingLight.transform.localRotation = Quaternion.Euler(headlightDownwardAngle, 0f, 0f);
-            surroundingLight.type = LightType.Spot;
+            surroundingLight.type = LightType.Point;
+            surroundingLight.GetUniversalAdditionalLightData().renderingLayers = WorldRenderingLayer;
+            // Keep the broad scooter spill off the rider; his own fill stays restrained.
+            for (int i = 0; i < riderRenderers.Length; i++)
+                if (riderRenderers[i] != null) riderRenderers[i].renderingLayerMask = RiderRenderingLayer;
             surroundingLight.range = headlightRange;
-            surroundingLight.spotAngle = headlightAngle;
-            surroundingLight.innerSpotAngle = headlightAngle * 0.45f;
             surroundingLight.color = LampColor;
             surroundingLight.useColorTemperature = false;
             surroundingLight.shadows = LightShadows.None;
@@ -64,9 +76,10 @@ namespace Boki.Battery
                 nearbyFill = fillObject.AddComponent<Light>();
             }
             nearbyFill.transform.SetParent(transform, false);
-            // A small point fill reaches the rider's back and scooter as well as the nearby ground.
+            // The second light reveals only the rider and scooter, without a ground hotspot.
             nearbyFill.transform.localPosition = riderFillPosition;
             nearbyFill.type = LightType.Point;
+            nearbyFill.GetUniversalAdditionalLightData().renderingLayers = RiderRenderingLayer;
             nearbyFill.color = LampColor;
             nearbyFill.useColorTemperature = false;
             nearbyFill.range = fillRange;
@@ -79,8 +92,6 @@ namespace Boki.Battery
         private void LateUpdate() => Refresh();
         private void Refresh()
         {
-            // Imported model sockets can have a rotated basis; aim in the riding frame.
-            surroundingLight.transform.rotation = transform.rotation * Quaternion.Euler(headlightDownwardAngle, 0f, 0f);
             Vector3 lampOrigin = headlightMount != null ? headlightMount.position : transform.TransformPoint(headlightPosition);
             surroundingLight.transform.position = lampOrigin + transform.up * headlightHeightOffset;
             surroundingLight.enabled = player.IsAlive && State.Current > 0f;
@@ -109,6 +120,8 @@ namespace Boki.Battery
             if (session != null) session.UnbindLight(this);
             if (surroundingLight != null) surroundingLight.enabled = false;
             if (nearbyFill != null) nearbyFill.enabled = false;
+            for (int i = 0; i < riderRenderers.Length; i++)
+                if (riderRenderers[i] != null) riderRenderers[i].renderingLayerMask = originalRenderingLayers[i];
         }
     }
 }
