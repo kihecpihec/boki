@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Boki.Combat
 {
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(100)]
     public sealed class AutoLaser : MonoBehaviour
     {
         [SerializeField] private PlayerHealth playerHealth;
@@ -81,11 +82,6 @@ namespace Boki.Combat
             cooldown = Mathf.Max(0f, cooldown - dt);
             beamRemaining = Mathf.Max(0f, beamRemaining - dt);
             if (beamRemaining <= 0f) beam.enabled = false;
-            else
-            {
-                beam.SetPosition(0, beamOrigin.position);
-                beam.SetPosition(1, impactPosition);
-            }
             if (cooldown > 0f) return;
             EnemyHealth target = FindTarget();
             if (target == null) return;
@@ -103,6 +99,14 @@ namespace Boki.Combat
                 impactBurst.Pause(false);
             }
             // Keep the short pulse visible even when damage destroys its target.
+        }
+
+        private void LateUpdate()
+        {
+            // Presentation can lean the scooter after combat updates its shot timers.
+            if (beam == null || !beam.enabled || beamOrigin == null) return;
+            beam.SetPosition(0, beamOrigin.position);
+            beam.SetPosition(1, impactPosition);
         }
     }
 }
