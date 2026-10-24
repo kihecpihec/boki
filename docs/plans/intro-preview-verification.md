@@ -20,27 +20,33 @@ full prologue stays M10 in [Architecture.md](../Architecture.md#completion-of-th
 Enter skips. Playing to the end and skipping reach the same end state: rider
 visible, headlight on, camera on the `ThirdPersonCamera` rest pose, letterbox and skip
 hint gone, then `ScooterController` and `ThirdPersonCamera` are re-enabled. The
-objective stays on screen for six seconds after control returns. I replays the intro.
+objective stays on screen for six seconds after control returns. I replays the intro only in `Player_Model_Test`.
 
-## Ownership and isolation
+## Pohorje integration
 
-Everything here is new or belongs to the intro; no map is involved.
+`V1_Pohorje` now plays the intro at its authored player start, in the actual map,
+then hands control to the existing rider without loading another scene.
+`Intro_Preview` keeps its established path and GUID and uses a saved copy of that
+integrated scene, including its map, lighting, player and gameplay wiring. The
+original primitive meadow/skyline set is no longer the preview's environment.
 
-- `Assets/Scenes/Intro_Preview.unity`: the intro's own scene. A neutral set built from
-  primitives and low-poly meshes: a dawn sky with a low sun, a meadow with a dirt
-  patch, pines in two stands, three rows of skyline blocks, rocks and grass. It uses
-  **no** Pohorje, Maribor or FERI asset and none of the level or map-test scenes. It is
-  not in the build list, like the other previews.
-- `Assets/Cutscenes/Intro/`: `IntroCutscene.prefab` (the whole intro), `IntroInput.asset`
-  (`Skip` = Enter, `Replay` = I) and the set's small materials.
-- `Assets/Art/Intro/`: `Boki_Intro.prefab`, the intro-only Boki (below), its bind-pose
-  rig copy, atlas, face materials and low-poly meshes.
-- It does depend on the Boki player (`Boki_Rigged_Test.prefab`, `CHR_Boki`, the scooter
-  model and atlas) and on the shared movement input assets, because the intro hands
-  control to that player and reuses its scooter prop. It does not modify them.
-- `Player_Model_Test.unity` is deliberately **not** touched: the intro is kept out
-  of shared and map scenes so it cannot collide with other work. The intro Boki is a
-  separate model, so the player-model demo scene is unaffected.
+`Boki/Intro/Integrate Pohorje Intro` upgrades `V1_Pohorje` in place, refreshes
+`Intro_Preview`, and wires an opt-in intro into `Player_Model_Test` (press I).
+It refuses Play Mode and dirty scenes and restores the previous scene setup.
+It does not rebuild maps or change shared prefabs or build settings.
+Production and preview disable replay so I cannot trigger a cutscene after riding
+away from the start. Retry reloads V1_Pohorje and starts the intro again.
+
+The existing `RunSession` owns `PauseReason.ScriptedSequence` while the intro runs:
+physics, battery drain and gameplay pressure stay suspended. Presentation uses
+unscaled time, and completing or skipping releases only the intro's pause reason.
+V1's pause menu cannot take over the camera during the sequence. Movement,
+follow camera and scooter presentation are disabled during the shots and restored
+at the handoff. Gameplay canvases are hidden during the sequence and restored to their previous enabled state afterwards; the model test starts with the intro overlay hidden. The follow distance matches the scene's authored camera.
+
+The reusable `Assets/Cutscenes/Intro/IntroCutscene.prefab`, intro Boki, audio,
+acting, Slovenian lines and skip input are retained. No shared player or map prefab
+is modified.
 
 ## The intro Boki
 
@@ -75,7 +81,7 @@ Six scene-side references are left empty on purpose and are assigned per scene:
 `shotCamera` (the camera running `ThirdPersonCamera`), `rider` (the player's
 `Visuals` child), `riderRoot` (the player root), `followPivot` (the player's
 `CameraPivot`), `headlight` (the player's `LightBattery`) and `controls`
-(`ScooterController` and `ThirdPersonCamera`, both disabled during the intro).
+(`ScooterController`, `ThirdPersonCamera`, and optional `ScooterPresentation`, disabled during the intro).
 `playOnStart` is off in the prefab; the preview scene turns it on. Missing
 references log an error and disable the component rather than failing silently.
 
@@ -108,12 +114,12 @@ All refuse Play Mode and dirty scenes.
 3. Play again and press Enter mid-way (once in the wake-up, once during the message).
    The end state must be identical to playing through, with the beep silenced if it
    was playing. Pressing Enter after the end does nothing.
-4. Press I after the end: it replays and the player controls are locked meanwhile.
+4. In `Player_Model_Test`, press I at the authored start: it replays with controls locked. V1 and Intro_Preview intentionally ignore replay.
 5. Exit Play Mode; the cursor state is restored. The Console shows no new errors
    or warnings from the intro. Enter Play Mode twice without a domain reload: no
    duplicated input or objects.
 
-## Adding it to a map later
+## Generic adoption into another map
 
 Agree it with whoever owns the map first. The scene must already have the player
 and its follow camera:
@@ -135,10 +141,9 @@ and its follow camera:
    few metres of clear ground; the face shots use the stage light inside the prefab.
 
 By hand the same thing is: drag the prefab in, move it, and fill the references
-listed under "The prefab". The preview's sky, meadow, pines and skyline are the
-preview's own set and are not part of the prefab.
+listed under "The prefab". Environment geometry and lighting belong to the host scene, not the prefab.
 
-## Verification record
+## Original isolated-preview verification record
 
 Unity `6000.6.7f1`, run headless on Linux (AMD Radeon 780M for rendering).
 
@@ -183,8 +188,29 @@ the set uses a procedural sky and primitive meshes. The preview sky is a clean s
 calmer than Story §3's "something wrong with the sky's color"; tint `DawnSky.mat`
 and the fog in the scene if the map should look sicker.
 
-## Deferred
+## Original deferred work
 
 Shot 3 (VHS glitch, cars, black figure), distant techno bass fading into wind, a
 Guilt silhouette, the objective as part of the real HUD, wiring into `Level1_Pohorje`,
 a Windows build check, authored animation clips in place of pose code if the gags grow.
+
+## Pohorje change verification
+
+Open `V1_Pohorje` and enter Play Mode: the wake-up, watch, reaction, scramble
+and mount must play against the real Pohorje scenery. Check each camera shot for
+terrain/prop clipping. Enter must skip to the same rider/camera pose; riding,
+boost, laser, HUD and route choices must work afterwards. Battery must stay full
+through the intro. Escape must not open the V1 pause menu during it; pause/resume
+must work after the handoff. Retry must replay the intro with fresh run state.
+Open `Intro_Preview` and repeat. In `Player_Model_Test`, I starts the same acting
+at the authored test start. Inspector references are assigned by the integration
+helper; no manual assignments are required.
+
+Manual visual/interaction verification and Windows player performance remain
+required; batch import and tests alone do not establish camera framing quality.
+
+Checks for this integration: Unity 6000.6.7f1 imported and saved all three scenes;
+152/152 EditMode tests passed. All 28 review frames rendered successfully, with
+wake, reaction, scramble and mount frames inspected against the Pohorje setting.
+The architecture audit and `git diff --check` passed. Full interactive Play Mode
+and Windows player checks have not been performed.
