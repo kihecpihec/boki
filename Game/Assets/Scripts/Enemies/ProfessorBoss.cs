@@ -1,5 +1,6 @@
 using System;
 using Boki.Combat;
+using Boki.Core;
 using Boki.Player;
 using UnityEngine;
 
@@ -30,6 +31,11 @@ namespace Boki.Enemies
         private bool fighting;
         private Vector3 slamCenter;
         public bool IsFighting => fighting;
+        public bool CanAttack => fighting && health != null && health.IsAlive
+            && target != null && target.isActiveAndEnabled && target.IsAlive;
+        public bool IsSlamWarning { get; private set; }
+        public Vector3 SlamCenter => slamCenter;
+        public float SlamRadius => slamRadius;
         public event Action BarrageSheetFired;
         public event Action SlamTelegraphStarted;
         public event Action SlamLanded;
@@ -59,7 +65,13 @@ namespace Boki.Enemies
 
         private void Update()
         {
-            if (!fighting || !health.IsAlive || !target.isActiveAndEnabled || !target.IsAlive) return;
+            if (!CanAttack)
+            {
+                IsSlamWarning = false;
+                slamRing.gameObject.SetActive(false);
+                return;
+            }
+            if (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive) return;
             float fraction = health.Maximum > 0 ? (float)health.Current / health.Maximum : 0f;
             switch (scheduler.Tick(Time.deltaTime, fraction))
             {
@@ -71,6 +83,7 @@ namespace Boki.Enemies
 
         private void OnDisable()
         {
+            IsSlamWarning = false;
             if (slamRing != null) slamRing.gameObject.SetActive(false);
         }
 
@@ -95,11 +108,13 @@ namespace Boki.Enemies
             slamRing.position = slamCenter + Vector3.up * 0.03f;
             slamRing.localScale = new Vector3(slamRadius, 1f, slamRadius);
             slamRing.gameObject.SetActive(true);
+            IsSlamWarning = true;
             SlamTelegraphStarted?.Invoke();
         }
 
         private void Slam()
         {
+            IsSlamWarning = false;
             slamRing.gameObject.SetActive(false);
             Vector3 offset = target.transform.position - slamCenter;
             // Airborne Boki clears the ring: damage only when close to the ground plane as well as inside the radius.

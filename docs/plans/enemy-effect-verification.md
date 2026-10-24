@@ -7,9 +7,17 @@ Implements initial enemy hit/death presentation from [Gameplay §5](../Gameplay.
 **Boki → Enemy Models → Upgrade Test Models and Effects** opens and saves the existing `Assets/Scenes/Enemy_Test.unity`, refuses Play Mode and dirty scenes, and restores the previous scene setup. Repeating the command reuses the visual hierarchy and feedback components. It refuses a missing scene rather than creating a replacement.
 
 - Boki's placeholder body, deck and forward marker are disabled by scene overrides. `Visuals` copies the imported character and scooter from `Boki_Rigged_Test`, including the atlas, Generic Animator and `Boki_RideIdle` pose. Existing player health, controller, collision, camera, HUD and combat references remain on their original objects. `AutoLaser.Beam Origin` points at `Visuals`' scooter `Socket_LaserMuzzle`.
-- All three melee variants, both Watchers and the professor have an explicit enabled `EnemyFeedback` alongside `EnemyHealth`. Their existing animation, hover, eye, orb, paper and slam-ring assets remain connected. Death particles are emitted on demand; no continuously running particle systems are needed.
+- All three melee variants, both Watchers and the professor have an explicit enabled `EnemyFeedback` alongside `EnemyHealth`. Their existing animation, hover, eye, orb and paper assets remain connected. The professor uses `ProfessorAttackView` for casting recoil, slam windup and recovery, an exact-radius red boundary, a shrinking amber countdown, and an expanding impact ring. Death particles are emitted on demand; no continuously running particle systems are needed.
 - Guilt retains its warning/chase animation and visibility lifecycle, with no damageable health or hit/death feedback. This upgrade adds no new audio or light-flicker system.
 - No manual Inspector assignments are required. Boki's dedicated movement/effect demonstrations remain in `Player_Model_Test`, which already uses the same imported rigged model.
+
+## Attack presentation
+
+- The same upgrade command configures scene-local paper/orb templates beneath the inactive `Enemy Attack Templates` root. The professor's `Sheet Prefab` and both Watchers' `Projectile Prefab` reference those templates. Shared prefabs remain untouched. `Launch` activates each spawned copy and aims its forward axis along the shot.
+- `M_EnemyAttackFX` uses the existing vertex-color particle shader for transparent lines and trails. Papers have amber trails, Watcher orbs red trails, and impacts use the existing bounded burst system. No lights or additional packages are required.
+- `ProfessorAttackView.Visual` points to the professor's `Visual`; `Warning`, `Countdown`, `Shockwave`, and `Cast Pulse` point to the four named line children. The old `SlamRing` marker remains assigned to `ProfessorBoss`, with its model renderers disabled by scene overrides. The red line stays at `Slam Radius`; the shrinking amber line counts down the canonical warning time. The expanding ring after impact is decorative.
+- Professor posing, warnings and projectiles stop advancing while the run is inactive. Death, target death and disabling the professor clear its presentation and restore its visual transform. Attack counts, damage, route modifiers and warning duration retain their canonical values.
+- Projectile hit detection checks the travelled segment against Boki's existing hit radius so a shot cannot skip across the target between frames. Walls still block projectiles. No additional Inspector assignments are needed in `Enemy_Test`.
 
 ## Behavior and setup
 
@@ -30,7 +38,7 @@ Use Unity `6000.6.7f1`.
 
 ## Manual verification still required
 
-Open `Enemy_Test` and enter Play Mode. Confirm the rigged Boki sits on the scooter and the laser fires from its muzzle. Select a melee enemy or Watcher and let the existing auto-laser hit it. Confirm the short warm flash is visible in the level lighting, fades smoothly, and leaves no changed material after stopping Play Mode. Kill both types and confirm a small burst at their aim position; the melee death animation should finish independently. Check the professor too: its ground warnings must remain more prominent than these effects. Verify Guilt's warning/chase cycle, pause/resume mid-flash and mid-burst, rapid kills, scene transition during a burst, and no new Console messages. There is no sound layer in this first effect pass.
+Open `Enemy_Test` and enter Play Mode. Confirm the rigged Boki sits on the scooter and the laser fires from its muzzle. Select a melee enemy or Watcher and let the existing auto-laser hit it. Confirm the short warm flash is visible in the level lighting, fades smoothly, and leaves no changed material after stopping Play Mode. Kill both types and confirm a small burst at their aim position; the melee death animation should finish independently. Check the professor too: three amber paper sheets should launch with recoil and trails, followed by a red boundary and shrinking countdown at Boki's previous position. Boost out before impact; verify the warning stays in place and the shockwave dissipates. Repeat while standing inside and jumping over the slam. Its ground warnings must remain more prominent than hit/death bursts. Pause during the countdown, then kill or disable the boss during a warning and verify all lines disappear. Verify Guilt's warning/chase cycle, pause/resume mid-flash and mid-burst, rapid kills, scene transition during a burst, and no new Console messages. There is no sound layer in this first effect pass.
 
 Graphical review on Low and a Windows x86_64 player run on the Ryzen 5600G at 1280×720 remain required. Headless Linux checks do not establish visual quality, shader rendering, Windows compatibility or target frame rate.
 
@@ -50,3 +58,11 @@ Graphical review on Low and a Windows x86_64 player run on the Ryzen 5600G at 12
 - Architecture audit: no failures; asset pairing and GUID uniqueness pass. It warns about `Resources.Load`; this single shader resource keeps the default runtime effect available without scene/prefab wiring or changes to shared graphics settings. Existing build-settings and milestone-helper warnings remain outside this task.
 - `git diff --check` passes. No scene, prefab, map, package or project-settings changes.
 - Unity reports an Editor Search startup `ArgumentOutOfRangeException` in `UnityEditor.Search.SearchDatabase.EnumerateAll`, independent of the effect check. Existing project compiler deprecation warnings also remain; no fixes to that unrelated code are included.
+
+## Recorded attack presentation checks (2026-10-24)
+
+- Pinned Unity `6000.6.7f1` imported the new view and effect material, generated their `.meta` files, and saved `Enemy_Test`. Repeating the upgrade produced the same scene SHA-256 before whitespace cleanup; templates, view and line objects were reused.
+- EditMode suite: 117/117 passed, none skipped (`/tmp/boki-attack-editmode.xml`).
+- Extended `EnemySmokeChecks.Run` passed (`/tmp/boki-attack-smoke-final.log`, `ENEMY_SMOKE_PASSED`): melee/Watcher attacks, three professor sheets, telegraph and impact, exact damage-radius boundary, projectile trails, effect cleanup on disable, a projectile crossing the player between frames, and the existing Guilt placement/lifecycle checks.
+- Architecture audit has no failures; existing warnings remain. `git diff --check` passes. No shared prefabs, other scenes, packages or project settings were changed.
+- These were headless Linux checks. Interactive visual review, pause/death during warnings, boost/jump avoidance, and Windows/5600G performance remain manual checks; they are not established by the smoke run.
