@@ -83,6 +83,7 @@ namespace Boki.Intro
 
         private void OnDisable()
         {
+            if (audioSource != null) audioSource.Stop();
             if (timeline != null) Unsubscribe(timeline);
             ReleasePause();
             RestoreCanvases();

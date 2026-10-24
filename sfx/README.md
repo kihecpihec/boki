@@ -40,6 +40,9 @@ internal pauses within dialogue lines and multi-part effects are retained.
 Very brief isolated handling clicks are excluded. No upward normalization, pitch
 effects, or denoising has been applied. The manifest records each clip's gain.
 
-These are prepared source audio files outside `Game/Assets`. They have not been
-imported or wired into Unity. Decode, duration, and original-hash checks validate
-the exports; final listening and mix review remain separate.
+This folder retains the prepared source recordings. Runtime copies are imported
+as mono PCM WAV assets in `Game/Assets/Audio/Sfx/Recorded/` and wired into the V1
+scenes and `Player_Model_Test`. See
+[recorded SFX wiring and verification](../docs/plans/recorded-sfx-verification.md).
+Decode, duration, and original-hash checks validate these MP3 exports; final
+listening and mix review remain separate.
