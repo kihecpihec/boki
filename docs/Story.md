@@ -184,6 +184,7 @@ Turbo Skiro and the existing Guilt movement advantage add: one Turbo selection p
 ## 6. Visual and Audio Direction
 
 - Low-poly PS1/VHS: low-resolution textures, short view distance, strong fog. Use a consistent limited palette: cold blue/black forest, orange-red city, unsettling green-red FERI.
+- V1 lighting: surroundings should be nearly black, with black distance fog and no broad daylight fill. Keep the location palette in surfaces and small landmark accents. The battery-powered scooter lamp uses neutral warm light to reveal nearby riding space and enemies; empty battery removes both its beam and nearby fill. Preserve visible recovery-pickup and attack-warning cues in darkness. `Player_Model_Test` demonstrates the same lighting.
 - Scenes must stay **readable while moving**: clear contrasting enemy silhouettes, red warnings, yellow/green pickups. Keep the VHS shader subtle and switchable.
 - Show Guilt mostly as a distant silhouette in fog or on roofs. Constantly rendering a large mesh is unnecessary and less frightening.
 - Audio: distant techno bass in the prologue, heartbeat near Guilt, digital transition glitches, laser sounds, scooter-wheel impacts, school bell, and an unusually quiet space before the boss.
