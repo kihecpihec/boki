@@ -10,6 +10,19 @@ namespace Boki.Player
         [SerializeField, ColorUsage(false, false)] private Color damageColor = new Color(1f, 0.15f, 0.25f);
         [SerializeField, Min(0.01f)] private float damageFlashDuration = 0.15f;
 
+        [SerializeField] private ParticleSystem pickupGlow;
+
+        public void PlayPickupGlow(bool batteryEnergy)
+        {
+            if (!isActiveAndEnabled || pickupGlow == null) return;
+            var emission = new ParticleSystem.EmitParams
+            {
+                startColor = batteryEnergy ? new Color(0.2f, 1f, 0.75f) : new Color(1f, 0.75f, 0.15f)
+            };
+            pickupGlow.Emit(emission, 16);
+            pickupGlow.Pause(false);
+        }
+
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
         private static readonly int ColorProperty = Shader.PropertyToID("_Color");
         private FlashTarget[] flashTargets;
@@ -99,6 +112,9 @@ namespace Boki.Player
 
         private void Update()
         {
+            if (Time.deltaTime <= 0f || (Boki.Core.RunSession.Instance != null
+                && !Boki.Core.RunSession.Instance.IsGameplayActive)) return;
+            if (pickupGlow != null) pickupGlow.Simulate(Time.deltaTime, false, false, false);
             if (flashRemaining <= 0f)
                 return;
 
@@ -120,6 +136,7 @@ namespace Boki.Player
         private void OnDisable()
         {
             StopTrails();
+            if (pickupGlow != null) pickupGlow.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             RestoreColors();
         }
 

@@ -17,6 +17,13 @@ namespace Boki.Player
         [SerializeField, Range(30f, 110f)] private float restingFieldOfView = 70f;
         [SerializeField, Range(30f, 110f)] private float fastFieldOfView = 80f;
 
+        [SerializeField, Range(0f, 15f)] private float takeoffLean = 7f;
+        [SerializeField, Range(0f, 0.2f)] private float landingSquash = 0.1f;
+        [SerializeField] private bool cameraPulseEnabled = true;
+        public float GuiltWarningStrength { get; set; }
+        private Vector3 visualScale;
+        private bool wasGrounded;
+        private float jumpLean, squash, pulseTime;
         private Quaternion visualRest, frontRest, rearRest;
         private Vector3 previousPosition;
         private float previousYaw, wheelAngle, originalFieldOfView;
@@ -31,6 +38,9 @@ namespace Boki.Player
                 return;
             }
             visualRest = visualRoot.localRotation;
+            visualScale = visualRoot.localScale;
+            wasGrounded = movement.IsGrounded;
+            jumpLean = squash = pulseTime = 0f;
             frontRest = frontWheel.localRotation;
             rearRest = rearWheel.localRotation;
             originalFieldOfView = speedCamera.fieldOfView;
@@ -43,7 +53,11 @@ namespace Boki.Player
         private void OnDisable()
         {
             if (!initialized) return;
-            if (visualRoot != null) visualRoot.localRotation = visualRest;
+            if (visualRoot != null)
+            {
+                visualRoot.localRotation = visualRest;
+                visualRoot.localScale = visualScale;
+            }
             if (frontWheel != null) frontWheel.localRotation = frontRest;
             if (rearWheel != null) rearWheel.localRotation = rearRest;
             if (speedCamera != null) speedCamera.fieldOfView = originalFieldOfView;
@@ -53,7 +67,16 @@ namespace Boki.Player
         private void LateUpdate()
         {
             float dt = Time.deltaTime;
-            if (dt <= 0f) return;
+            if (dt <= 0f || (Boki.Core.RunSession.Instance != null
+                && !Boki.Core.RunSession.Instance.IsGameplayActive)) return;
+            if (wasGrounded && !movement.IsGrounded && movement.transform.position.y > previousPosition.y)
+                jumpLean = -takeoffLean;
+            if (!wasGrounded && movement.IsGrounded) squash = landingSquash;
+            wasGrounded = movement.IsGrounded;
+            jumpLean = Mathf.MoveTowards(jumpLean, 0f, takeoffLean * dt / 0.22f);
+            squash = Mathf.MoveTowards(squash, 0f, landingSquash * dt / 0.18f);
+            visualRoot.localScale = Vector3.Scale(visualScale, new Vector3(1f + squash * 0.5f, 1f - squash, 1f + squash * 0.5f));
+            pulseTime = Mathf.Repeat(pulseTime + dt, 1f);
             Vector3 travel = movement.transform.position - previousPosition;
             float yaw = movement.transform.eulerAngles.y;
             float turnRate = Mathf.DeltaAngle(previousYaw, yaw) / dt;
@@ -73,9 +96,11 @@ namespace Boki.Player
             float pitch = Mathf.Clamp(Mathf.Atan2(normal.z, normal.y) * Mathf.Rad2Deg, -maximumPitch, maximumPitch);
             float blend = 1f - Mathf.Exp(-smoothing * dt);
             visualRoot.localRotation = Quaternion.Slerp(visualRoot.localRotation,
-                visualRest * Quaternion.Euler(pitch, 0f, lean), blend);
+                visualRest * Quaternion.Euler(pitch + jumpLean, 0f, lean), blend);
             speedCamera.fieldOfView = Mathf.Lerp(speedCamera.fieldOfView,
-                Mathf.Lerp(restingFieldOfView, fastFieldOfView, speedFraction), 1f - Mathf.Exp(-5f * dt));
+                Mathf.Lerp(restingFieldOfView, fastFieldOfView, speedFraction)
+                    + (cameraPulseEnabled ? Mathf.Clamp01(GuiltWarningStrength) * 1.2f
+                        * Mathf.Pow(Mathf.Sin(pulseTime * Mathf.PI), 8f) : 0f), 1f - Mathf.Exp(-5f * dt));
         }
     }
 }

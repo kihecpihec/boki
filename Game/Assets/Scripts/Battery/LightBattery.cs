@@ -16,6 +16,8 @@ namespace Boki.Battery
         [SerializeField, Range(1f, 179f)] private float headlightAngle = 85f;
         [SerializeField, Min(0f)] private float fillIntensity = 0.55f;
         [SerializeField, Min(0.1f)] private float fillRange = 4.5f;
+        public float WarningStrength { get; set; }
+        private float warningTime;
         private Light nearbyFill;
         private RunSession session;
         public LightBatteryState State => (session != null ? session : RunSession.Ensure()).State.LightBattery;
@@ -62,7 +64,12 @@ namespace Boki.Battery
         private void Refresh()
         {
             surroundingLight.enabled = player.IsAlive && State.Current > 0f;
-            surroundingLight.intensity = intensity;
+            if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
+            float fraction = Mathf.Clamp01(State.Current / State.Capacity);
+            float flicker = 1f - Mathf.Clamp01(WarningStrength) * 0.45f
+                * Mathf.Pow(Mathf.Sin(warningTime * Mathf.PI * 7f), 8f);
+            surroundingLight.intensity = intensity * Mathf.Lerp(0.15f, 1f, fraction) * flicker;
+            nearbyFill.intensity = fillIntensity * Mathf.Lerp(0.15f, 1f, fraction) * flicker;
             nearbyFill.enabled = surroundingLight.enabled;
         }
 

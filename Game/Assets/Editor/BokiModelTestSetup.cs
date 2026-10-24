@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Boki.Combat;
+using Boki.Battery;
 using Boki.Player;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -51,6 +52,9 @@ namespace Boki.Editor
                     trail.numCapVertices = trail.numCornerVertices = 0;
                     trails[i] = trail;
                 }
+                var pickup = ConfigureBurst(Child(visuals, "Pickup Glow"), true);
+                pickup.transform.localPosition = new Vector3(0f, 0.65f, 0f);
+                Set(effects, "pickupGlow", pickup);
                 var so = new SerializedObject(effects);
                 AssignArray(so.FindProperty("boostTrails"), trails);
                 AssignArray(so.FindProperty("damageRenderers"), visuals.GetComponentsInChildren<Renderer>(true)
@@ -70,12 +74,20 @@ namespace Boki.Editor
                 beam.useWorldSpace = true;
                 beam.positionCount = 2;
                 beam.enabled = false;
+                var impact = ConfigureBurst(Child(player.transform, "Laser Impact"), false);
                 var laser = GetOrAdd<AutoLaser>(player);
+                Set(laser, "impactBurst", impact);
                 var health = player.GetComponent<PlayerHealth>();
                 Set(laser, "playerHealth", health); Set(laser, "beamOrigin", origin); Set(laser, "beam", beam);
 
                 var bridge = GetOrAdd<BokiModelTestEffects>(player);
                 Set(bridge, "movement", movement); Set(bridge, "health", health); Set(bridge, "effects", effects);
+                Set(bridge, "battery", player.GetComponent<LightBattery>());
+                Set(bridge, "presentation", player.GetComponent<ScooterPresentation>());
+                var bridgeSettings = new SerializedObject(bridge);
+                AssignArray(bridgeSettings.FindProperty("charges"), scene.GetRootGameObjects()
+                    .SelectMany(r => r.GetComponentsInChildren<BatteryCharge>(true)).ToArray());
+                bridgeSettings.ApplyModifiedPropertiesWithoutUndo();
                 Set(bridge, "targetMaterial", AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Battery/ChargeAvailable.mat"));
                 var hud = scene.GetRootGameObjects().Single(r => r.name == "MovementHUD");
                 var instructions = Child(hud.transform, "Model Test Controls");
@@ -84,11 +96,11 @@ namespace Boki.Editor
                 text.fontSize = 16;
                 text.color = Color.white;
                 text.raycastTarget = false;
-                text.text = "BOKI MODEL TEST | WASD: ride | Space: jump | Shift: boost\nH: take 5 damage / flash | T: spawn laser target | Esc: release mouse\nRide over charges to refill the headlight. Restart Play Mode to reset.";
+                text.text = "BOKI MODEL TEST | WASD: ride | Space: jump | Shift: boost\nH: damage | T: laser target | B: drain 25 battery | G: warning preview (3s)\nX: XP glow preview (no XP awarded) | Ride over charges: refill + green glow | Esc: release mouse.";
                 var rect = text.rectTransform;
                 rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
                 rect.anchoredPosition = new Vector2(24f, -110f);
-                rect.sizeDelta = new Vector2(1050f, 80f);
+                rect.sizeDelta = new Vector2(1150f, 85f);
                 foreach (var component in new Component[] { effects, laser, bridge })
                     PrefabUtility.RecordPrefabInstancePropertyModifications(component);
                 EditorSceneManager.MarkSceneDirty(scene);
@@ -99,6 +111,47 @@ namespace Boki.Editor
             {
                 if (setup.Length > 0 && !string.IsNullOrEmpty(setup[0].path)) EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
+        }
+
+        private static ParticleSystem ConfigureBurst(Transform anchor, bool pickup)
+        {
+            const string materialPath = "Assets/Effects/Boki/FeedbackParticles.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                material = new Material(AssetDatabase.LoadAssetAtPath<Shader>("Assets/Resources/EnemyFeedbackParticles.shader"));
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            var particles = GetOrAdd<ParticleSystem>(anchor.gameObject);
+            particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = particles.main;
+            main.playOnAwake = false;
+            main.loop = false;
+            main.duration = 0.4f;
+            main.startLifetime = pickup ? 0.35f : 0.14f;
+            main.startSpeed = pickup ? 0.7f : 1.5f;
+            main.startSize = pickup ? 0.14f : 0.08f;
+            main.startColor = new Color(0.4f, 1f, 1f);
+            main.maxParticles = pickup ? 32 : 16;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
+            var emission = particles.emission;
+            emission.enabled = false;
+            var shape = particles.shape;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = pickup ? 0.45f : 0.06f;
+            var fade = particles.colorOverLifetime;
+            fade.enabled = true;
+            var gradient = new Gradient();
+            gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+            fade.color = gradient;
+            var renderer = particles.GetComponent<ParticleSystemRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            return particles;
         }
 
         private static T GetOrAdd<T>(GameObject go) where T : Component
