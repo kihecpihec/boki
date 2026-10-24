@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -42,6 +43,12 @@ namespace Boki.UI
         public UnityEvent QuitRequested => quitRequested;
         public UnityEvent PauseRequested => pauseRequested;
 
+        // Feedback hooks for audio; they carry no gameplay meaning.
+        public event Action Selected;
+        public event Action Confirmed;
+        public event Action Backed;
+        public event Action PauseShown;
+
         private void OnEnable()
         {
             if (panel == null || effects == null || location == null || subtitle == null || details == null
@@ -76,7 +83,7 @@ namespace Boki.UI
         }
 
         public void ShowMainMenu() { paused = false; Show(); }
-        public void ShowPauseMenu() { paused = true; Show(); }
+        public void ShowPauseMenu() { paused = true; Show(); PauseShown?.Invoke(); }
         public void Hide() { visible = false; panel.SetActive(false); }
         public void SetRunSummary(string summary)
         {
@@ -107,6 +114,7 @@ namespace Boki.UI
         public void Activate(int index)
         {
             if (!visible) return;
+            Confirmed?.Invoke();
             if (settings || unlocks)
             {
                 if (settings && index == 0)
@@ -151,6 +159,7 @@ namespace Boki.UI
             if (!visible) return;
             int count = settings ? 2 : unlocks ? 1 : 4;
             Select((selected + (context.ReadValue<float>() > 0f ? -1 : 1) + count) % count);
+            Selected?.Invoke();
         }
 
         private void Submit(InputAction.CallbackContext context)
@@ -165,8 +174,8 @@ namespace Boki.UI
         private void Back(InputAction.CallbackContext context)
         {
             if (!visible) pauseRequested.Invoke();
-            else if (settings || unlocks) Show();
-            else if (paused) resumeRequested.Invoke();
+            else if (settings || unlocks) { Backed?.Invoke(); Show(); }
+            else if (paused) { Backed?.Invoke(); resumeRequested.Invoke(); }
         }
     }
 }

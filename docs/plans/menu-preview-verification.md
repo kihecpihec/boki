@@ -15,6 +15,14 @@ animated backgrounds remain presentation work.
 Listener so this camera-free UI scene can play its main menu track. The music
 setup command also repairs a missing listener when music is already wired.
 
+`Menu Sfx` has a 2D Audio Source and `MenuSfx`, which plays the clips in
+`Assets/Audio/Sfx/` from `MenuScreen` events: `menu_select` when W/S or the
+arrows move the selection, `menu_click` for any activated option (Enter or
+mouse), `menu_back` for Escape out of Settings/Unlocks or resuming, and
+`menu_pause` when the pause menu opens. Regenerate the clips with
+`python3 music/generate_menu_sfx.py`; wire them with **Boki > Menus > Add Menu
+Sound Effects To Preview** (idempotent). Mouse hover does not play a sound.
+
 ## Open and use
 
 Open `Assets/Scenes/Menu_Preview.unity` in Unity `6000.6.7f1` and enter Play Mode.
@@ -51,6 +59,10 @@ Manual verification:
    fades it out, the pause menu stays silent, and Quit to Menu fades it back in.
    Confirm there is exactly one enabled Audio Listener and no missing-listener
    warning. No additional Inspector assignments are required.
+8. Verify one soft tick per W/S move, a two-note click per activated option
+   (keyboard and mouse), a falling two-note sound for Escape out of a subpage,
+   and a low power-down sound when Escape opens the pause menu. Effects must
+   stay audible over the menu music and are silent when the menu is hidden.
 
 ## Connect later
 
