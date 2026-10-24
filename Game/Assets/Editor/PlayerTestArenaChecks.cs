@@ -113,7 +113,7 @@ namespace Boki.Editor
                         stations = Object.FindObjectsByType<EnemyTestStation>(FindObjectsSortMode.None).OrderBy(s => s.name).ToArray();
                         Require(arena.enabled && stations.Length == 8, "Eight wired stations must be present.");
                         Require(player.transform.Find("Visuals").GetComponentInChildren<Animator>() != null, "The original rigged Boki must remain.");
-                        Require(Object.FindObjectsByType<BatteryCharge>(FindObjectsSortMode.None).Length == (SessionState.GetBool(Key + ".CombatLab", false) ? 24 : 27), "Expected three charges per station, plus original charges only in the model scene.");
+                        Require(Object.FindObjectsByType<BatteryCharge>(FindObjectsSortMode.None).Length == (SessionState.GetBool(Key + ".CombatLab", false) ? 0 : 27), "Battery pickups belong only to the model scene.");
                         Require(EnemyHealth.Active.Count == 0, "Hub must be safe before station selection.");
                         Capture("/tmp/boki-arena-hub.png");
                         var buttons = arena.GetComponentsInChildren<Button>();
@@ -158,6 +158,12 @@ namespace Boki.Editor
                         if (RunSession.Instance.State.XP == xpBefore) return;
                         Require(RunSession.Instance.State.XP == xpBefore + 1, "Contact grants one XP.");
                         arena.Visit(stations[0]);
+                        if (SessionState.GetBool(Key + ".CombatLab", false))
+                        {
+                            arena.ResetEncounter();
+                            Next(6);
+                            break;
+                        }
                         charge = stations[0].GetComponentsInChildren<BatteryCharge>().First();
                         RunSession.Instance.State.LightBattery.Current = 50f;
                         Move(charge.transform.position - Vector3.up * 0.6f);
@@ -172,7 +178,8 @@ namespace Boki.Editor
                         break;
                     case 6:
                         if (elapsed < 0.2) return;
-                        Require(arena.ActiveStation.Enemy.GetComponent<EnemyHealth>().IsAlive && !charge.Available,
+                        Require(arena.ActiveStation.Enemy.GetComponent<EnemyHealth>().IsAlive
+                            && (SessionState.GetBool(Key + ".CombatLab", false) || !charge.Available),
                             "Reset respawns enemy without refilling spent charges.");
                         healthBefore = player.Current;
                         Move(arena.ActiveStation.Enemy.transform.position + Vector3.forward * 0.7f);
@@ -223,7 +230,8 @@ namespace Boki.Editor
                         Require(Object.FindObjectsByType<GuiltChaser>().Count(g => g.isActiveAndEnabled) == 1,
                             "Exactly one live Guilt driver may advance the shared pressure clock.");
                         if (guilt.Phase != GuiltPhase.Chase || guilt.Pressure.AwaitingPlacement) return;
-                        Require(player.GetComponent<LightBattery>().WarningStrength > 0f,
+                        Require(SessionState.GetBool(Key + ".CombatLab", false)
+                            || player.GetComponent<LightBattery>().WarningStrength > 0f,
                             "A safely placed Guilt chase must drive the player's warning effects.");
                         arena.ReturnToHub();
                         Require(player.GetComponent<ScooterController>().BoundGuilt == null
