@@ -33,7 +33,12 @@ namespace Boki.Editor
         }
 
         [MenuItem("Boki/Player Model/Run Arena Checks")]
-        public static void Run()
+        public static void Run() => RunScene(BokiModelTestSetup.ScenePath);
+
+        [MenuItem("Boki/Enemies/Run Combat Lab Checks")]
+        public static void RunCombatLab() => RunScene(EnemyCombatLab.ScenePath);
+
+        private static void RunScene(string scenePath)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             var setup = EditorSceneManager.GetSceneManagerSetup();
@@ -46,7 +51,8 @@ namespace Boki.Editor
                 loaded = setup.Select(s => s.isLoaded).ToArray(),
                 active = setup.Select(s => s.isActive).ToArray()
             }));
-            EditorSceneManager.OpenScene(BokiModelTestSetup.ScenePath);
+            SessionState.SetBool(Key + ".CombatLab", scenePath == EnemyCombatLab.ScenePath);
+            EditorSceneManager.OpenScene(scenePath);
             SessionState.SetBool(Key, true);
             EditorApplication.EnterPlaymode();
         }
@@ -107,13 +113,13 @@ namespace Boki.Editor
                         stations = Object.FindObjectsByType<EnemyTestStation>(FindObjectsSortMode.None).OrderBy(s => s.name).ToArray();
                         Require(arena.enabled && stations.Length == 8, "Eight wired stations must be present.");
                         Require(player.transform.Find("Visuals").GetComponentInChildren<Animator>() != null, "The original rigged Boki must remain.");
-                        Require(Object.FindObjectsByType<BatteryCharge>(FindObjectsSortMode.None).Length == 27, "Expected 24 station charges and three original charges.");
+                        Require(Object.FindObjectsByType<BatteryCharge>(FindObjectsSortMode.None).Length == (SessionState.GetBool(Key + ".CombatLab", false) ? 24 : 27), "Expected three charges per station, plus original charges only in the model scene.");
                         Require(EnemyHealth.Active.Count == 0, "Hub must be safe before station selection.");
                         Capture("/tmp/boki-arena-hub.png");
                         var buttons = arena.GetComponentsInChildren<Button>();
-                        Require(buttons.Length == 13 && buttons.All(b => b.onClick.GetPersistentEventCount() == 1
+                        Require(buttons.Length == (SessionState.GetBool(Key + ".CombatLab", false) ? 12 : 13) && buttons.All(b => b.onClick.GetPersistentEventCount() == 1
                             && b.onClick.GetPersistentTarget(0) != null), "All test panel buttons must have live callbacks.");
-                        arena.ToggleLaser();
+                        if (player.GetComponent<AutoLaser>().enabled) arena.ToggleLaser();
                         arena.Visit(stations[stationIndex]);
                         Next(1);
                         break;
