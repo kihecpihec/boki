@@ -37,6 +37,7 @@ namespace Boki.Editor
         private static bool sawWarning, sawChase, sawReposition;
         private static int projectilesSeen;
         private static int hpBefore;
+        private static bool sawDeadlineBoundary, sawDeadlineImpact, sawProjectileTrail;
 
         static EnemySmokeChecks()
         {
@@ -99,6 +100,7 @@ namespace Boki.Editor
             stage = 0;
             meleeHits = shots = sheets = telegraphs = slams = guiltStrikes = projectilesSeen = 0;
             sawWarning = sawChase = sawReposition = false;
+            sawDeadlineBoundary = sawDeadlineImpact = sawProjectileTrail = false;
             player = Object.FindFirstObjectByType<PlayerHealth>();
             melee = Object.FindObjectsByType<MeleeEnemy>(FindObjectsSortMode.None);
             ranged = Object.FindObjectsByType<RangedEnemy>(FindObjectsSortMode.None);
@@ -107,6 +109,26 @@ namespace Boki.Editor
             guilt = Object.FindFirstObjectByType<GuiltChaser>();
             boss = Object.FindFirstObjectByType<ProfessorBoss>();
             Check(melee.Length == 3 && ranged.Length == 2 && guilt != null && boss != null, "Expected 3 melee, 2 ranged, Guilt and the boss.");
+            if (failed) return;
+            var attackView = boss.GetComponent<ProfessorAttackView>();
+            Check(attackView != null && attackView.enabled, "Professor attack presentation must be wired.");
+            Transform visuals = player.transform.Find("Visuals");
+            Check(visuals != null && visuals.GetComponentInChildren<SkinnedMeshRenderer>() != null,
+                "Enemy_Test must use the rigged Boki model.");
+            if (failed) return;
+            foreach (string name in new[] { "Boki placeholder", "Scooter deck", "Forward marker" })
+                Check(!player.transform.Find(name).gameObject.activeSelf, "Player placeholder still visible: " + name);
+            var animator = visuals.GetComponentInChildren<Animator>();
+            Check(animator != null && animator.runtimeAnimatorController != null && !animator.applyRootMotion,
+                "Boki must retain the riding animation without root motion.");
+            var laserSettings = new SerializedObject(player.GetComponent<AutoLaser>());
+            Check(laserSettings.FindProperty("beamOrigin").objectReferenceValue is Transform muzzle
+                && muzzle.name == "Socket_LaserMuzzle" && muzzle.IsChildOf(visuals),
+                "Laser must originate at the new scooter muzzle.");
+            foreach (EnemyHealth enemy in Object.FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None))
+                Check(enemy.GetComponent<EnemyFeedback>() != null && enemy.GetComponent<EnemyFeedback>().enabled,
+                    "Missing enabled hit/death feedback on " + enemy.name);
+            Check(guilt.GetComponent<EnemyHealth>() == null, "Guilt must remain invulnerable.");
             if (failed) return;
             foreach (MeleeEnemy enemy in melee) enemy.Attacked += () => meleeHits++;
             foreach (RangedEnemy enemy in ranged) enemy.Fired += () => shots++;
@@ -128,6 +150,26 @@ namespace Boki.Editor
         {
             if (!SessionState.GetBool(Key, false) || !EditorApplication.isPlaying || failed || stage >= 99) return;
             double elapsed = EditorApplication.timeSinceStartup - stageStart;
+            foreach (EnemyProjectile projectile in Object.FindObjectsByType<EnemyProjectile>())
+            {
+                var trail = projectile.GetComponent<TrailRenderer>();
+                sawProjectileTrail |= trail != null && trail.sharedMaterial != null;
+            }
+            if (stage == 1)
+            {
+                var boundary = boss.transform.Find("Deadline Boundary").GetComponent<LineRenderer>();
+                var impact = boss.transform.Find("Deadline Impact").GetComponent<LineRenderer>();
+                if (boundary.enabled)
+                {
+                    sawDeadlineBoundary = true;
+                    Vector3 point = boundary.GetPosition(0);
+                    Vector3 center = boss.SlamCenter;
+                    point.y = center.y;
+                    Check(Mathf.Abs(Vector3.Distance(point, center) - boss.SlamRadius) < 0.01f,
+                        "Deadline boundary must match the damage radius.");
+                }
+                sawDeadlineImpact |= impact.enabled;
+            }
             switch (stage)
             {
                 case 0: // melee and Watchers
@@ -135,7 +177,11 @@ namespace Boki.Editor
                     else if (elapsed > 15) Fail("Melee hit " + meleeHits + ", Watcher shots " + shots + " within 15 s.");
                     break;
                 case 1: // boss: barrage then slam
-                    if (sheets >= 3 && telegraphs >= 1 && slams >= 1) Advance();
+                    if (sheets >= 3 && telegraphs >= 1 && slams >= 1 && sawDeadlineImpact)
+                    {
+                        Check(sawDeadlineBoundary && sawProjectileTrail, "Missing deadline boundary or projectile trails.");
+                        if (!failed) Advance();
+                    }
                     else if (elapsed > 25) Fail("Boss sheets " + sheets + ", telegraphs " + telegraphs + ", slams " + slams + " within 25 s.");
                     break;
                 case 2: // Guilt at accelerated time (grace 20 s + warning 1.5 s + chase)
@@ -146,6 +192,8 @@ namespace Boki.Editor
                     break;
                 case 3:
                     Time.timeScale = 1f;
+                    CheckSweptProjectile();
+                    if (failed) return;
                     Debug.Log("ENEMY_SMOKE: melee hits " + meleeHits + ", Watcher shots " + shots + ", sheets " + sheets
                         + ", telegraphs " + telegraphs + ", slams " + slams + ", Guilt strikes " + guiltStrikes);
                     stage = 99;
@@ -162,6 +210,8 @@ namespace Boki.Editor
             else if (stage == 2)
             {
                 SetActive(false, false, true, false);
+                foreach (LineRenderer line in boss.GetComponentsInChildren<LineRenderer>(true))
+                    Check(!line.enabled, "Professor effects must clear when disabled.");
                 CheckGuiltPlacement();
             }
         }
@@ -224,6 +274,33 @@ namespace Boki.Editor
             sawWarning = sawChase = sawReposition = false;
             guiltStrikes = 0;
             Debug.Log("GUILT_PLACEMENT: invalid distance/direction/ground, occupied marker, valid marker, exit and boss checks completed.");
+        }
+
+        private static void CheckSweptProjectile()
+        {
+            // Cross the target in one frame, with both endpoints outside its hit radius.
+            var targetObject = new GameObject("Projectile sweep target");
+            var shotObject = new GameObject("Projectile sweep check");
+            try
+            {
+                targetObject.transform.position = new Vector3(0f, 100f, 0f);
+                var targetHealth = targetObject.AddComponent<PlayerHealth>();
+                var shot = shotObject.AddComponent<EnemyProjectile>();
+                shotObject.transform.position = targetObject.transform.position + new Vector3(0f, 0.9f, -2f);
+                var settings = new SerializedObject(shot);
+                settings.FindProperty("speed").floatValue = 4f / Time.deltaTime;
+                settings.FindProperty("obstructionMask").intValue = 0;
+                settings.ApplyModifiedPropertiesWithoutUndo();
+                shot.Launch(targetHealth, Vector3.forward, 7);
+                shot.SendMessage("Update");
+                Check(targetHealth.Current == targetHealth.Maximum - 7,
+                    "A projectile crossing Boki between frames must land exactly one hit.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(shotObject);
+                Object.DestroyImmediate(targetObject);
+            }
         }
 
         private static void SetActive(bool meleeOn, bool rangedOn, bool guiltOn, bool bossOn)

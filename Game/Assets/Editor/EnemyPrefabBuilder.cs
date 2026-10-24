@@ -99,6 +99,159 @@ namespace Boki.Editor
 
         // ---- prefab builders ----
 
+        [MenuItem("Boki/Enemy Models/Upgrade Test Models and Effects")]
+        public static void UpgradeTestScene()
+        {
+            RequireClean();
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null)
+                throw new InvalidOperationException("Enemy_Test is missing; refusing to create a replacement.");
+            var template = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Player/Boki_Rigged_Test.prefab");
+            if (template == null || template.transform.Find("Visuals") == null)
+                throw new InvalidOperationException("The rigged Boki test prefab is missing its Visuals.");
+            SceneSetup[] previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+                var player = UnityEngine.Object.FindFirstObjectByType<ScooterController>();
+                if (player == null) throw new InvalidOperationException("Enemy_Test has no player.");
+                Transform visuals = player.transform.Find("Visuals");
+                if (visuals == null)
+                {
+                    // Copy only the presentation; retain the arena's player, combat, input and camera references.
+                    visuals = UnityEngine.Object.Instantiate(template.transform.Find("Visuals"), player.transform, false);
+                    visuals.name = "Visuals";
+                }
+                foreach (string name in new[] { "Boki placeholder", "Scooter deck", "Forward marker" })
+                {
+                    Transform placeholder = player.transform.Find(name);
+                    if (placeholder == null) throw new InvalidOperationException("Missing placeholder: " + name);
+                    placeholder.gameObject.SetActive(false);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(placeholder.gameObject);
+                }
+                Animator animator = visuals.GetComponentInChildren<Animator>(true);
+                if (animator == null || animator.runtimeAnimatorController == null)
+                    throw new InvalidOperationException("The riding model has no configured Animator.");
+                animator.applyRootMotion = false;
+                foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+                    if (clip.name == "Boki_RideIdle") clip.SampleAnimation(animator.gameObject, 0f);
+
+                var laser = player.GetComponent<AutoLaser>();
+                Transform muzzle = FindDeep(visuals, "Socket_LaserMuzzle");
+                if (laser == null || muzzle == null)
+                    throw new InvalidOperationException("The existing laser or scooter muzzle is missing.");
+                SetObject(laser, "beamOrigin", muzzle);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(laser);
+
+                var enemies = UnityEngine.Object.FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
+                if (enemies.Length != 6)
+                    throw new InvalidOperationException("Expected three melee enemies, two Watchers and the professor.");
+                foreach (EnemyHealth health in enemies)
+                {
+                    if (health.GetComponent<EnemyFeedback>() == null) health.gameObject.AddComponent<EnemyFeedback>();
+                    var serialized = new SerializedObject(health);
+                    serialized.FindProperty("showCombatFeedback").boolValue = true;
+                    serialized.ApplyModifiedPropertiesWithoutUndo();
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(health);
+                }
+                UpgradeAttacks(scene);
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log("ENEMY_TEST_UPGRADED: rigged Boki and scooter, muzzle-mounted laser, six hit/death feedback components; professor cast/recoil, exact-radius deadline countdown and shockwave, paper/orb trails and impacts configured.");
+            }
+            finally
+            {
+                if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
+        private static void UpgradeAttacks(Scene scene)
+        {
+            const string materialPath = Art + "M_EnemyAttackFX.mat";
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                Shader shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Resources/EnemyFeedbackParticles.shader");
+                if (shader == null) throw new InvalidOperationException("Missing enemy effect shader.");
+                material = new Material(shader) { name = "M_EnemyAttackFX" };
+                AssetDatabase.CreateAsset(material, materialPath);
+            }
+            Transform templates = null;
+            foreach (GameObject root in scene.GetRootGameObjects())
+                if (root.name == "Enemy Attack Templates") templates = root.transform;
+            if (templates == null) templates = new GameObject("Enemy Attack Templates").transform;
+            templates.gameObject.SetActive(false);
+            EnemyProjectile paper = AttackTemplate(templates, "Proj_ExamPaper", material,
+                new Color(1f, 0.65f, 0.12f), 0.16f);
+            EnemyProjectile orb = AttackTemplate(templates, "Proj_WatcherOrb", material,
+                new Color(1f, 0.1f, 0.05f), 0.2f);
+            foreach (RangedEnemy ranged in UnityEngine.Object.FindObjectsByType<RangedEnemy>())
+            {
+                SetObject(ranged, "projectilePrefab", orb);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(ranged);
+            }
+            var boss = UnityEngine.Object.FindAnyObjectByType<ProfessorBoss>();
+            if (boss == null) throw new InvalidOperationException("Enemy_Test has no professor.");
+            SetObject(boss, "sheetPrefab", paper);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(boss);
+            // Replace the textured model with an exact world-space radius, retaining the boss's marker reference.
+            var settings = new SerializedObject(boss);
+            Transform marker = (Transform)settings.FindProperty("slamRing").objectReferenceValue;
+            foreach (Renderer renderer in marker.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.enabled = false;
+                PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
+            }
+            var view = boss.GetComponent<ProfessorAttackView>();
+            if (view == null) view = boss.gameObject.AddComponent<ProfessorAttackView>();
+            SetObject(view, "visual", boss.transform.Find("Visual"));
+            SetObject(view, "warning", AttackLine(boss.transform, "Deadline Boundary", material));
+            SetObject(view, "countdown", AttackLine(boss.transform, "Deadline Countdown", material));
+            SetObject(view, "shockwave", AttackLine(boss.transform, "Deadline Impact", material));
+            SetObject(view, "castPulse", AttackLine(boss.transform, "Exam Cast", material));
+            AssetDatabase.SaveAssets();
+        }
+
+        private static EnemyProjectile AttackTemplate(Transform parent, string name, Material material, Color color, float width)
+        {
+            Transform child = parent.Find(name);
+            if (child == null)
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabFolder + name + ".prefab");
+                if (prefab == null) throw new InvalidOperationException("Missing projectile: " + name);
+                GameObject instance = UnityEngine.Object.Instantiate(prefab, parent, false);
+                instance.name = name;
+                child = instance.transform;
+            }
+            var projectile = child.GetComponent<EnemyProjectile>();
+            SetObject(projectile, "trailMaterial", material);
+            SetFloat(projectile, "trailWidth", width);
+            Apply(projectile, "trailColor", p => p.colorValue = color);
+            return projectile;
+        }
+
+        private static LineRenderer AttackLine(Transform parent, string name, Material material)
+        {
+            Transform child = parent.Find(name);
+            if (child == null)
+            {
+                child = new GameObject(name).transform;
+                child.SetParent(parent, false);
+            }
+            var line = child.GetComponent<LineRenderer>();
+            if (line == null) line = child.gameObject.AddComponent<LineRenderer>();
+            line.sharedMaterial = material;
+            line.useWorldSpace = true;
+            line.loop = true;
+            line.positionCount = 64;
+            line.numCornerVertices = 2;
+            line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            line.receiveShadows = false;
+            line.enabled = false;
+            return line;
+        }
+
         private static void BuildMelee(string name, Material skin, bool jacket, bool backpack)
         {
             GameObject root = NewRoot(name);

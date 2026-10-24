@@ -1,0 +1,265 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5856271106735619868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Choice3
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 58f47e34-0eea-45ae-9a63-875b80995df6
+--- !u!114 &-1134488824696849258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Choice2
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 9f2f4806-7ac9-49d8-b4f3-90d4fbebdc69
+--- !u!114 &-393724099084901518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Submit
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 8f06663e-0c85-49be-bce5-146ef7037138
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39fa3d8997a24136984ca6e2c99902bc, type: 3}
+  m_Name: UpgradeInput
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionAsset
+  m_ActionMaps:
+  - m_Name: Upgrade
+    m_Id: 98599a32-aaa9-4965-87b7-ed0a50883d4c
+    m_Asset: {fileID: 11400000}
+    m_Actions:
+    - m_Name: Navigate
+      m_Type: 1
+      m_ExpectedControlType: 
+      m_Id: 66646103-0d06-409c-8cbe-51c84f3ee614
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: Submit
+      m_Type: 1
+      m_ExpectedControlType: 
+      m_Id: 8f06663e-0c85-49be-bce5-146ef7037138
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: Choice1
+      m_Type: 1
+      m_ExpectedControlType: 
+      m_Id: 0405b4e7-1781-4e8b-8f00-1294daae2a0b
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: Choice2
+      m_Type: 1
+      m_ExpectedControlType: 
+      m_Id: 9f2f4806-7ac9-49d8-b4f3-90d4fbebdc69
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: Choice3
+      m_Type: 1
+      m_ExpectedControlType: 
+      m_Id: 58f47e34-0eea-45ae-9a63-875b80995df6
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    m_Bindings:
+    - m_Name: 1DAxis
+      m_Id: 8b5ed408-fcc2-410a-98b4-c1257c6e5428
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 4
+    - m_Name: Negative
+      m_Id: 8fef4676-bff9-4b1d-a265-a42d15926ede
+      m_Path: <Keyboard>/a
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: Positive
+      m_Id: eeb19630-15cf-490d-8bc6-383e17eeac29
+      m_Path: <Keyboard>/d
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: 1DAxis
+      m_Id: 80ea2007-ffaa-4ee7-89cc-a9e56812e7b0
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 4
+    - m_Name: Negative
+      m_Id: 5cb4f78f-9cdd-4c56-956c-b3e8e8637855
+      m_Path: <Keyboard>/leftArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: Positive
+      m_Id: f7dd4195-dc97-442a-a6f3-1a2d4334dbcf
+      m_Path: <Keyboard>/rightArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: 1DAxis
+      m_Id: 1de0d589-71ee-4a28-813f-7a8a391de45c
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 4
+    - m_Name: Negative
+      m_Id: 66ac73fb-7c7c-4cd6-87c4-9c2a72b89f85
+      m_Path: <Keyboard>/w
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: Positive
+      m_Id: 6f835413-30e0-49b0-a6e3-6f5d26828ba4
+      m_Path: <Keyboard>/s
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: 1DAxis
+      m_Id: cec938c4-aaec-464d-8da7-acda02cda9ba
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 4
+    - m_Name: Negative
+      m_Id: 55410007-3b52-43c5-a897-5b5919035fa4
+      m_Path: <Keyboard>/upArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: Positive
+      m_Id: 0cd6a7ed-6e87-4c35-acea-4fe413cc5918
+      m_Path: <Keyboard>/downArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Navigate
+      m_Flags: 8
+    - m_Name: 
+      m_Id: d36ade7d-428d-4e1c-adab-75e8f9f2666b
+      m_Path: <Keyboard>/enter
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Submit
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 6de5ebd8-2600-4b1b-a2c4-18fdfa46f02e
+      m_Path: <Keyboard>/1
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Choice1
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 3ee11fb8-9103-4719-bdf2-19c204c1e651
+      m_Path: <Keyboard>/2
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Choice2
+      m_Flags: 0
+    - m_Name: 
+      m_Id: beb4aeb3-3533-4380-b8f2-8d59b22121ed
+      m_Path: <Keyboard>/3
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Choice3
+      m_Flags: 0
+  m_ControlSchemes: []
+  m_IsProjectWide: 0
+--- !u!114 &1877744696431638725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Navigate
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 66646103-0d06-409c-8cbe-51c84f3ee614
+--- !u!114 &4975628869461882072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Choice1
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 0405b4e7-1781-4e8b-8f00-1294daae2a0b
