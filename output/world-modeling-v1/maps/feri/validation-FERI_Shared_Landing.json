@@ -1,6 +1,6 @@
 {
   "meshes": 4,
-  "triangles": 3456,
+  "triangles": 384,
   "materials": [
     "M_FERI_Concrete",
     "M_FERI_Floor",
