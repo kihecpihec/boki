@@ -1,4 +1,5 @@
 using System;
+using Boki.Battery;
 using Boki.Combat;
 using Boki.Player;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace Boki.Enemies
         [SerializeField] private LayerMask obstructionMask = 1;
         private EnemyHealth health;
         private CharacterController targetController;
+        private LightBattery targetLight;
         private RangedShooterState shooter;
         private float baseHeight;
         private float hoverPhase;
@@ -40,6 +42,7 @@ namespace Boki.Enemies
             }
             if (muzzle == null) muzzle = transform;
             targetController = target.GetComponent<CharacterController>();
+            targetLight = target.GetComponent<LightBattery>();
             shooter = new RangedShooterState(fireRange, fireInterval, firstShotDelay);
             baseHeight = transform.position.y;
             hoverPhase = UnityEngine.Random.value * Mathf.PI * 2f;
@@ -48,12 +51,13 @@ namespace Boki.Enemies
         private void Update()
         {
             if (!health.IsAlive || !target.isActiveAndEnabled || !target.IsAlive) return;
+            if (targetLight != null && !targetLight.IsGameplayActive) return;
             float dt = Time.deltaTime;
             Vector3 center = TargetCenter();
             Vector3 flat = Vector3.ProjectOnPlane(center - transform.position, Vector3.up);
             float distance = flat.magnitude;
 
-            if (distance > preferredDistance && flat.sqrMagnitude > 0.001f) Advance(flat.normalized * (moveSpeed * dt));
+            if (distance > preferredDistance && flat.sqrMagnitude > 0.001f) Advance(flat.normalized * (moveSpeed * (targetLight != null ? targetLight.EnemySpeedMultiplier : 1f) * dt));
             Vector3 position = transform.position;
             position.y = baseHeight + Mathf.Sin(Time.time * hoverFrequency + hoverPhase) * hoverAmplitude;
             transform.position = position;

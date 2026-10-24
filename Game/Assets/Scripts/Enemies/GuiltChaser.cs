@@ -1,4 +1,5 @@
 using System;
+using Boki.Battery;
 using Boki.Player;
 using Boki.Core;
 using UnityEngine;
@@ -33,6 +34,7 @@ namespace Boki.Enemies
         private CooldownTimer contact;
         private CharacterController controller;
         private CharacterController targetController;
+        private LightBattery targetLight;
         private Camera viewCamera;
         private float verticalSpeed;
         private float stuckTimer;
@@ -72,6 +74,7 @@ namespace Boki.Enemies
                 return;
             }
             targetController = target.GetComponent<CharacterController>();
+            targetLight = target.GetComponent<LightBattery>();
             viewCamera = Camera.main;
             if (contact == null) contact = new CooldownTimer(contactCooldown);
             if (viewCamera == null)
@@ -99,6 +102,7 @@ namespace Boki.Enemies
                 SuspendPresentation();
                 return;
             }
+            if (targetLight != null && !targetLight.IsGameplayActive) return;
             float dt = Time.deltaTime;
             if (dt <= 0f) return;
             state.Tick(dt);
@@ -171,7 +175,7 @@ namespace Boki.Enemies
             if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;
             verticalSpeed -= 25f * dt;
             Vector3 direction = flat.sqrMagnitude > 0.001f ? flat.normalized : transform.forward;
-            controller.Move((direction * state.ChaseSpeed + Vector3.up * verticalSpeed) * dt);
+            controller.Move((direction * (state.ChaseSpeed * (targetLight != null ? targetLight.EnemySpeedMultiplier : 1f)) + Vector3.up * verticalSpeed) * dt);
             if (flat.sqrMagnitude > 0.001f) transform.rotation = Quaternion.LookRotation(direction);
 
             Vector3 ownCenter = transform.TransformPoint(controller.center);
