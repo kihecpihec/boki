@@ -35,6 +35,7 @@ Do not invent missing design decisions. Check the relevant canonical document fi
 
 ## Unity Changes
 
+- Use the existing `Player_Model_Test` scene as the shared demonstration scene for Boki's model. Wire every Boki-related model change, behavior, animation, and effect into that scene so its result can be seen and tested there. Preserve the scene name. If the scene is missing from the current checkout, report it instead of creating a replacement or modifying another scene.
 - Unity Editor's asset import pipeline generates `.meta` files. Preserve existing GUIDs and keep each asset paired with its `.meta` when moving or deleting it.
 - After adding a script or asset outside Unity, import it in the project's pinned Editor version so Unity generates the `.meta`. Never invent a GUID. If Unity cannot run, report the pending import and missing `.meta` explicitly; do not claim the asset is ready to integrate.
 - Do not edit generated `Library`, `Temp`, or package-cache files.

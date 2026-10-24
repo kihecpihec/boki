@@ -50,7 +50,7 @@ boki/
 └── CLAUDE.md
 ```
 
-The listed `.unity` scenes and `Scripts/` subdirectories are **proposed future files**, not existing content. `Game/Assets/Scenes/SampleScene.unity` is the starting Unity scene. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
+The listed gameplay `.unity` scenes are **proposed future files**, not existing content in this checkout. `Game/Assets/Scenes/SampleScene.unity` is the starting Unity scene. Boki model and effects work is demonstrated in the existing `Game/Assets/Scenes/Player_Model_Test.unity`; see [PlayerEffects.md](PlayerEffects.md) for controls and scene wiring. The runtime script dependencies needed by that scene are included. Create and move content in the **Unity Editor** to preserve `.meta` references. Never rename a scene with a plain `mv` without its corresponding `.meta` file. Follow [Unity asset guidance](../AGENTS.md#unity-changes) for external script creation and pending imports.
 
 **Exclude from version control:** `Game/Library/`, `Game/Temp/`, `Game/Logs/`, `Game/Obj/`, local builds, and caches. **Include:** `Game/Assets/` with `.meta` files, `Game/Packages/`, `Game/ProjectSettings/`, `docs/`, and agent configuration. These inclusion rules do not authorize an agent to commit or push.
 
