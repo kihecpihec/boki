@@ -9,6 +9,31 @@ namespace Boki.Tests
             6f, 10.5f, 0.35f, 1f, 1.2f, 25f, 60f, 20f, 25f, 6f, 2f, 240f, 0.1f, 0.1f, 0.1f));
 
         [Test]
+        public void KnockbackReplacesMomentumCancelsBoostAndRespectsWalls()
+        {
+            var motion = Make();
+            motion.Tick(0f, 1f, true, false, true, .01f);
+            motion.ApplyKnockback(-2f, 0f, 10f);
+            Assert.That(motion.HorizontalX, Is.EqualTo(-10f).Within(.001f));
+            Assert.That(motion.HorizontalZ, Is.Zero);
+            Assert.That(motion.BoostRemaining, Is.Zero);
+            motion.ResolveWall(1f, 0f);
+            Assert.That(motion.Speed, Is.Zero);
+        }
+
+        [Test]
+        public void KnockbackDoesNotMoveDuringPauseAndResetClearsIt()
+        {
+            var motion = Make();
+            motion.ApplyKnockback(1f, 0f, 10f);
+            motion.Tick(0f, 0f, true, false, false, 0f);
+            Assert.That(motion.DisplacementX, Is.Zero);
+            Assert.That(motion.Speed, Is.EqualTo(10f));
+            motion.Reset();
+            Assert.That(motion.Speed, Is.Zero);
+        }
+
+        [Test]
         public void GuiltRidingAdvantageExpiresAndCannotRetriggerBeforeCooldown()
         {
             var advantage = new GuiltMovementAdvantage();
