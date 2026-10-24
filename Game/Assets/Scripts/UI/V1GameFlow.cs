@@ -151,7 +151,7 @@ namespace Boki.UI
         private void Died()
         {
             terminal = true;
-            ShowPanel("ABSENT", "Your run has ended.\nPermanent route discoveries are kept.\nRetry starts again at Pohorje.", false);
+            ShowPanel("Try again", $"Your run has ended.\n\nKILLS  {session.State.KillCount}   XP  {session.State.XP}\nUPGRADES  {session.State.Progression.Selections}\n\nRoute discoveries are kept.\nStart again at Pohorje.", false);
         }
         public void Victory()
         {
