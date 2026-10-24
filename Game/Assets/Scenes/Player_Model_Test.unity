@@ -40098,6 +40098,14 @@ PrefabInstance:
       value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightBrightnessMultiplier
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: nearbyBrightnessMultiplier
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightMount
       value:
       objectReference: {fileID: 2011934636}

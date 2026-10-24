@@ -124,12 +124,16 @@ namespace Boki.Editor
                         first = charges[0];
                         lamp = battery.GetComponentInChildren<Light>();
                         foreach (Light light in battery.GetComponentsInChildren<Light>())
-                            if (light.type == LightType.Point) fill = light;
+                            if (light.name == "Scooter Nearby Fill") fill = light;
                         Require(lamp.type == LightType.Spot && fill != null && fill.enabled,
                             "Charged scooter has a headlight and nearby fill.");
                         Require(battery.State.Current < 100f && lamp.enabled, "Active gameplay drains battery and keeps charged light on.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         battery.State.Current = 100f;
+                        Require(fill.type == LightType.Spot
+                            && Vector3.Dot(fill.transform.forward, battery.transform.forward) > 0.7f
+                            && Vector3.Dot(lamp.transform.forward, battery.transform.forward) > 0.9f,
+                            "Both scooter beams must shine ahead rather than back onto Boki.");
                         Teleport(first.transform.position - Vector3.up * 0.6f);
                         Next();
                         break;
@@ -234,18 +238,31 @@ namespace Boki.Editor
                     Next();
                     break;
                 case 1:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 1.0) return;
+                    foreach (Light light in battery.GetComponentsInChildren<Light>())
+                        Debug.Log($"SCOOTER_PREVIEW {light.name} position={light.transform.position} forward={light.transform.forward} intensity={light.intensity} range={light.range} player={battery.transform.position}");
+                    previewCamera.Render();
                     CaptureFrame("boki-light-charged.png");
                     Next();
                     break;
                 case 2:
-                    battery.State.Current = 0f;
+                    battery.State.Current = 50f;
                     Next();
                     break;
                 case 3:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 0.8) return;
+                    CaptureFrame("boki-light-half.png");
+                    Next();
+                    break;
+                case 4:
+                    battery.State.Current = 0f;
+                    Next();
+                    break;
+                case 5:
                     CaptureFrame("boki-light-empty.png");
                     Next();
                     break;
-                case 4: Finish(null); break;
+                case 6: Finish(null); break;
             }
         }
 

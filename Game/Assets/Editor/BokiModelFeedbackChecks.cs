@@ -190,7 +190,7 @@ namespace Boki.Editor
                         Require(battery.WarningStrength == 1f
                             && battery.GetComponent<ScooterPresentation>().GuiltWarningStrength == 1f,
                             "Shared Guilt warning must drive the headlight and camera.");
-                        Require(lamp.color.r > lamp.color.b * 2f, "Guilt warning must visibly tint the lamp red.");
+                        Require(lamp.color.b > lamp.color.r * 0.8f, "Guilt warning must preserve the warm-white road light.");
                         RunSession.Instance.State.Guilt.Reset();
                         battery.GetComponent<BokiModelTestEffects>().SpawnLaserTarget();
                         laserTarget = Object.FindAnyObjectByType<EnemyHealth>();
