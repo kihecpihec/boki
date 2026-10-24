@@ -30,6 +30,9 @@ namespace Boki.Editor
         private static float pausedBattery;
         private static int carriedHealth;
         private static bool encounterVerified;
+        private static int professorSamples;
+        private static Vector3 professorStart;
+        private static Vector3 professorPaused;
 
         static V1SceneChecks()
         {
@@ -60,12 +63,20 @@ namespace Boki.Editor
             EditorApplication.EnterPlaymode();
         }
 
+        [MenuItem("Boki/Version 1/Run Professor Checks")]
+        public static void RunProfessor()
+        {
+            Run();
+            SessionState.SetBool(Key + ".Professor", true);
+            EditorSceneManager.OpenScene(V1SceneSetup.Scenes[2]);
+        }
+
         private static void Changed(PlayModeStateChange state)
         {
             if (!SessionState.GetBool(Key, false)) return;
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                stage = 0; encounterVerified = false; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
+                stage = SessionState.GetBool(Key + ".Professor", false) ? 80 : 0; professorSamples = 0; encounterVerified = false; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             var saved = JsonUtility.FromJson<Saved>(SessionState.GetString(Key + ".Saved", ""));
@@ -73,6 +84,8 @@ namespace Boki.Editor
                 if (saved.has[i]) PlayerPrefs.SetInt(UnlockKeys[i], saved.values[i]); else PlayerPrefs.DeleteKey(UnlockKeys[i]);
             PlayerPrefs.Save();
             SessionState.SetBool(Key, false);
+            bool professorOnly = SessionState.GetBool(Key + ".Professor", false);
+            SessionState.EraseBool(Key + ".Professor");
             InputSystem.settings.backgroundBehavior = (InputSettings.BackgroundBehavior)saved.background;
             InputSystem.settings.editorInputBehaviorInPlayMode = (InputSettings.EditorInputBehaviorInPlayMode)saved.editorInput;
             bool restore = saved.paths.Length > 0;
@@ -84,7 +97,8 @@ namespace Boki.Editor
                 EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
             else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, portal guards/travel, XP contact, upgrade pause, state carry, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
+            if (professorOnly) Debug.Log(failed ? "PROFESSOR_ARENA_CHECKS_FAILED: " + failure : "PROFESSOR_ARENA_CHECKS_PASSED");
+            else Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, portal guards/travel, XP contact, upgrade pause, state carry, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
             if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
         }
         private static void Log(string message, string trace, LogType type)
@@ -113,6 +127,13 @@ namespace Boki.Editor
                 player.GetComponent<ScooterController>().enabled = false;
                 switch (stage)
                 {
+                    case 80:
+                        var focusedBoss = V1SceneSetup.Find<ProfessorBoss>(scene);
+                        Teleport(player, new Vector3(0f, 0.05f, 78f));
+                        focusedBoss.gameObject.SetActive(true);
+                        focusedBoss.BeginFight();
+                        stage = 8;
+                        break;
                     case 0:
                         Check(scene.path == V1SceneSetup.Scenes[0], "Starts in V1 Pohorje");
                         Validate(scene);
@@ -174,10 +195,56 @@ namespace Boki.Editor
                         Teleport(player, V1SceneSetup.Find<V1BossArena>(scene).transform.position - Vector3.up * 0.5f); stage++; break;
                     case 8:
                         var boss = V1SceneSetup.Find<ProfessorBoss>(scene);
-                        Check(session.HasEnteredBossArena && boss.IsFighting, "Physical arena entry begins professor fight");
-                        Check(session.State.Guilt.BossEntered, "Boss entry ends Guilt pressure");
+                        if (!SessionState.GetBool(Key + ".Professor", false))
+                        {
+                            Check(session.HasEnteredBossArena && boss.IsFighting, "Physical arena entry begins professor fight");
+                            Check(session.State.Guilt.BossEntered, "Boss entry ends Guilt pressure");
+                        }
+                        if (professorSamples++ == 0)
+                        {
+                            professorStart = boss.transform.position;
+                            var feedback = boss.GetComponent<EnemyFeedback>();
+                            Check(feedback != null && feedback.enabled, "Professor has active hit/death feedback");
+                            boss.GetComponent<EnemyHealth>().TakeDamage(1);
+                            bool flashed = false;
+                            var block = new MaterialPropertyBlock();
+                            foreach (var renderer in boss.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.GetPropertyBlock(block, 0);
+                                flashed |= block.HasColor(Shader.PropertyToID("_BaseColor"))
+                                    || block.HasColor(Shader.PropertyToID("_Color"));
+                            }
+                            Check(flashed, "Professor accepted hit flashes model materials");
+                            break;
+                        }
+                        if (professorSamples == 2)
+                        {
+                            professorPaused = boss.transform.position;
+                            session.State.Guilt.GameplaySuspended = true;
+                            break;
+                        }
+                        if (professorSamples == 3)
+                        {
+                            Check(boss.transform.position == professorPaused, "Professor patrol respects shared pause");
+                            session.State.Guilt.GameplaySuspended = false;
+                        }
+                        var floor = (BoxCollider)new SerializedObject(boss).FindProperty("movementFloor").objectReferenceValue;
+                        Bounds safe = floor.bounds;
+                        Vector3 at = boss.transform.position;
+                        Check(at.x > safe.min.x + 0.5f && at.x < safe.max.x - 0.5f
+                            && at.z > safe.min.z + 0.5f && at.z < safe.max.z - 0.5f,
+                            "Professor remains inside arena borders");
+                        if (professorSamples < 60) break;
+                        Check(Vector3.Distance(professorStart, at) > 1f, "Professor patrol moves during fight");
                         boss.GetComponent<EnemyHealth>().TakeDamage(10000);
+                        Check(Object.FindObjectsByType<EnemyDeathBurst>().Length > 0,
+                            "Professor death emits detached particle burst");
                         Check(flow.IsTerminal && Time.timeScale == 0, "Boss defeat shows terminal victory screen");
+                        if (SessionState.GetBool(Key + ".Professor", false))
+                        {
+                            EditorApplication.ExitPlaymode();
+                            break;
+                        }
                         flow.Retry(); stage++; break;
                     case 9:
                         Check(scene.path == V1SceneSetup.Scenes[0], "Victory retry returns to Pohorje");

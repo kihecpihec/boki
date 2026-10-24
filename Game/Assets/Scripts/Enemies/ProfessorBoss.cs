@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Boki.Enemies
 {
-    // Final boss (Story §3): stands at the lectern and alternates Exam Barrage and Deadline Slam.
+    // Final boss (Story §3): patrols the arena and alternates Exam Barrage and Deadline Slam.
     // Sequencing and the 0.8 s telegraph come from BossAttackScheduler; this component spawns and damages.
     [DisallowMultipleComponent]
     [RequireComponent(typeof(EnemyHealth))]
@@ -25,6 +25,10 @@ namespace Boki.Enemies
         [SerializeField, Min(1)] private int slamDamage = 25;
         [SerializeField, Min(0.5f)] private float slamRadius = 4f;
         [SerializeField] private LayerMask groundMask = 1;
+        [SerializeField] private BoxCollider movementFloor;
+        [SerializeField, Min(0f)] private float movementSpeed = 1.5f;
+        private int patrolCorner;
+        private readonly RaycastHit[] movementHits = new RaycastHit[16];
         private EnemyHealth health;
         private BossAttackScheduler scheduler;
         private CharacterController targetController;
@@ -72,6 +76,7 @@ namespace Boki.Enemies
                 return;
             }
             if (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive) return;
+            MoveInArena();
             float fraction = health.Maximum > 0 ? (float)health.Current / health.Maximum : 0f;
             switch (scheduler.Tick(Time.deltaTime, fraction))
             {
@@ -79,6 +84,44 @@ namespace Boki.Enemies
                 case BossAction.StartSlamTelegraph: StartTelegraph(); break;
                 case BossAction.SlamImpact: Slam(); break;
             }
+        }
+
+        private void MoveInArena()
+        {
+            if (movementFloor == null || movementSpeed <= 0f) return;
+            Bounds bounds = movementFloor.bounds;
+            // Leave room for the capsule and perimeter walls, even at the patrol corners.
+            Vector3 destination = new Vector3(
+                (patrolCorner == 0 || patrolCorner == 3) ? bounds.min.x + 6f : bounds.max.x - 6f,
+                transform.position.y,
+                patrolCorner < 2 ? bounds.min.z + 3f : bounds.max.z - 3f);
+            Vector3 delta = destination - transform.position;
+            if (delta.sqrMagnitude < 0.25f) patrolCorner = (patrolCorner + 1) % 4;
+            Vector3 step = Vector3.ClampMagnitude(delta, movementSpeed * Time.deltaTime);
+            Vector3 position = transform.position;
+            int count = Physics.CapsuleCastNonAlloc(position + Vector3.up * 0.5f,
+                position + Vector3.up * 1.4f, 0.45f, step.normalized, movementHits,
+                step.magnitude + 0.1f, ~0, QueryTriggerInteraction.Ignore);
+            bool blocked = count == movementHits.Length;
+            for (int i = 0; i < count; i++)
+            {
+                Transform hit = movementHits[i].collider.transform;
+                if (!hit.IsChildOf(transform) && movementHits[i].collider != movementFloor) blocked = true;
+            }
+            Vector3 next = position + step;
+            bool supported = Physics.Raycast(next + Vector3.up * 0.3f, Vector3.down,
+                out RaycastHit ground, 0.6f, groundMask, QueryTriggerInteraction.Ignore)
+                && ground.collider == movementFloor;
+            if (!blocked && supported && next.x > bounds.min.x + 1f && next.x < bounds.max.x - 1f
+                && next.z > bounds.min.z + 1f && next.z < bounds.max.z - 1f)
+                transform.position = next;
+            else patrolCorner = (patrolCorner + 1) % 4;
+
+            Vector3 facing = target.transform.position - transform.position;
+            facing.y = 0f;
+            if (facing.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                    Quaternion.LookRotation(facing), 180f * Time.deltaTime);
         }
 
         private void OnDisable()

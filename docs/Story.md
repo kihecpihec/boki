@@ -104,7 +104,7 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 ### FINAL BOSS — “THE DEADLINE” (1–2 Minutes)
 
-**Shot:** Boki races into the classroom. The professor stands behind the lectern. The board reads `PRISOTNOST: 0/1`.
+**Shot:** Boki races into the classroom. The professor stands at the back of the classroom, facing the entrance. The board reads `PRISOTNOST: 0/1`.
 
 **Professor (calmly):** »Boki. Koliko je ura?«
 
@@ -114,7 +114,7 @@ Boki checks his watch. The digits change: **07:59 → 08:00 → 88:88 → 08:00*
 
 The professor's shadow stretches. An enormous Guilt figure rises behind him from the back wall, then merges with his shadow. Red light fills the classroom. The screen displays `FINAL BOSS: THE DEADLINE`.
 
-**Boss rules:** one arena; the professor moves very little or stands behind the lectern. Alternate two attacks:
+**Boss rules:** one arena; the professor patrols inside the classroom perimeter, faces Boki during combat, and stops for pause or the end of combat. The lectern is removed to leave his approach clear. Alternate two attacks:
 
 1. **Exam Barrage:** fires 3 slow paper sheets, using the Watcher projectile system with another model.
 2. **Deadline Slam:** a red warning circle appears on the ground for 0.8 s, then the area deals damage. The player can boost out.
