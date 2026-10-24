@@ -29,14 +29,18 @@ namespace Boki.Editor
         public static void OpenControls() => GetWindow<EnemyCombatLab>("Enemy Combat Lab");
 
         [MenuItem("Boki/Enemies/Create Separate Combat Test Scene")]
-        public static void CreateScene()
+        public static void CreateScene() => BuildScene(false);
+
+        public static void RefreshForIntegration() => BuildScene(true);
+
+        private static void BuildScene(bool refresh)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 throw new InvalidOperationException("Exit Play Mode first.");
             for (int i = 0; i < SceneManager.sceneCount; i++)
                 if (SceneManager.GetSceneAt(i).isDirty)
                     throw new InvalidOperationException("Save dirty scenes first.");
-            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
+            if (!refresh && AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
             {
                 Debug.Log("Enemy_Combat_Test already exists; preserving its edits.");
                 return;
@@ -47,7 +51,8 @@ namespace Boki.Editor
             var previous = EditorSceneManager.GetSceneManagerSetup();
             try
             {
-                if (!AssetDatabase.CopyAsset(source, ScenePath))
+                var sourceScene = EditorSceneManager.OpenScene(source, OpenSceneMode.Single);
+                if (!EditorSceneManager.SaveScene(sourceScene, ScenePath, true))
                     throw new InvalidOperationException("Could not copy Player_Model_Test.");
                 var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
                 var arena = Find<PlayerTestArena>(scene).Single();

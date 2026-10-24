@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -208,10 +208,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &135936
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -314,7 +314,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21cbdf4f7d3d947719e7134f2b25f505, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.WatcherView
   visual: {fileID: 960261288}
   recoilDistance: 0.18
@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 32d3a71fc16a70eb7b0eaf45d901e44d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.RangedEnemy
   target: {fileID: 1369858379}
   projectilePrefab: {fileID: 1397848701}
@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 20
   aimPoint: {fileID: 192726223}
@@ -805,7 +805,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -936,7 +936,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1587001005}
   player: {fileID: 1369858379}
@@ -1090,7 +1090,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
   m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
@@ -1121,10 +1121,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 10
 --- !u!1 &71843511
 GameObject:
@@ -1136,7 +1136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 71843512}
   - component: {fileID: 71843514}
-  - component: {fileID: 71843513}
+  - component: {fileID: 71843515}
   m_Layer: 2
   m_Name: Forest shadow XP sample 1
   m_TagString: Untagged
@@ -1160,19 +1160,6 @@ Transform:
   - {fileID: 1345846855}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &71843513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71843511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &71843514
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1194,6 +1181,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &71843515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71843511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &77255379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1402,7 +1401,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 754613240}
   player: {fileID: 1369858379}
@@ -1712,7 +1711,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c6f476c1a2cfab4f957710e872011b1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ThirdPersonCamera
   followPivot: {fileID: 1469523660}
   lookAction: {fileID: 11400000, guid: 196a4ed7846cb1f7a93e2d6f9bfd61fd, type: 2}
@@ -1885,7 +1884,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -2250,7 +2249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 146649879}
   - component: {fileID: 146649881}
-  - component: {fileID: 146649880}
+  - component: {fileID: 146649882}
   m_Layer: 2
   m_Name: Student shadow XP sample 1
   m_TagString: Untagged
@@ -2274,19 +2273,6 @@ Transform:
   - {fileID: 2113053195}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &146649880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 146649878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &146649881
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2308,6 +2294,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &146649882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146649878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &152371579
 GameObject:
   m_ObjectHideFlags: 0
@@ -2356,7 +2354,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.12, g: 0.13, b: 0.13, a: 0.95}
@@ -2671,7 +2669,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -2711,10 +2709,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &200592004
@@ -2727,7 +2725,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -3521,14 +3519,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 276419885}
   entry: {fileID: 1617601115}
   enemyTemplate: {fileID: 1442560968}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "FOREST SHADOW \u2014 Pursuit and contact damage. Jump to evade; kill and collect its gold XP pack."
 --- !u!1 &285578802
 GameObject:
@@ -3883,7 +3879,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bee7550499d732648427bf3b766870e, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.ProfessorAttackView
   visual: {fileID: 1221349718}
   warning: {fileID: 356834996}
@@ -3900,7 +3896,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -3914,7 +3910,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 068a3d4f7af8f433dae226bfbf613889, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.ProfessorBoss
   target: {fileID: 1369858379}
   sheetPrefab: {fileID: 2102902037}
@@ -3941,7 +3937,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 4000
   aimPoint: {fileID: 1006128770}
@@ -4120,7 +4116,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 754613240}
   player: {fileID: 1369858379}
@@ -5765,7 +5761,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6007,7 +6003,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 706136765}
   player: {fileID: 1369858379}
@@ -6310,7 +6306,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1278452387}
   player: {fileID: 1369858379}
@@ -6555,7 +6551,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3cd50c56469140bd9710b858b0e6591, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.UI.BoostView
   movement: {fileID: 7868977143442150401}
   statusText: {fileID: 1208883036}
@@ -6570,7 +6566,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
@@ -6679,7 +6675,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -6719,10 +6715,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &491114266
@@ -6735,7 +6731,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -7157,7 +7153,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -7331,14 +7327,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 507744320}
   entry: {fileID: 1485100734}
   enemyTemplate: {fileID: 1944246843}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "CITY WATCHER \u2014 City ranged variant. Test orb trails, impact, line of sight and XP collection."
 --- !u!4 &510410234 stripped
 Transform:
@@ -7454,7 +7448,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -7648,14 +7642,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 523566897}
   entry: {fileID: 223920817}
   enemyTemplate: {fileID: 9158972}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "FOREST WATCHER \u2014 Slow red orbs. Switch laser OFF to observe, use cover, then kill for XP."
 --- !u!1 &533611321
 GameObject:
@@ -7938,7 +7930,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.015, g: 0.015, b: 0.015, a: 0.95}
@@ -7976,7 +7968,7 @@ GameObject:
   m_Component:
   - component: {fileID: 555389959}
   - component: {fileID: 555389961}
-  - component: {fileID: 555389960}
+  - component: {fileID: 555389962}
   m_Layer: 2
   m_Name: Forest Watcher XP sample 1
   m_TagString: Untagged
@@ -8000,19 +7992,6 @@ Transform:
   - {fileID: 1474990606}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &555389960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 555389958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &555389961
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -8034,6 +8013,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &555389962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555389958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &558879824
 GameObject:
   m_ObjectHideFlags: 0
@@ -8379,7 +8370,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
   m_IgnoreReversedGraphics: 1
   m_BlockingObjects: 0
@@ -8396,7 +8387,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
@@ -8527,7 +8518,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 754613240}
   player: {fileID: 1369858379}
@@ -8832,7 +8823,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.42, g: 0.46, b: 0.15, a: 1}
@@ -9065,7 +9056,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -9242,7 +9233,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -9851,7 +9842,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -10263,7 +10254,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -10453,7 +10444,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
@@ -10815,7 +10806,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 606028744}
   player: {fileID: 1369858379}
@@ -10990,7 +10981,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -11113,7 +11104,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa43d6db459f606378cdd4e44cebcfc2, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.PlayerTestArena
   player: {fileID: 1369858379}
   movement: {fileID: 7868977143442150401}
@@ -11211,7 +11202,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -11323,7 +11314,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -11363,10 +11354,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &781884806
@@ -11379,7 +11370,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -11706,7 +11697,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.06, g: 0.06, b: 0.09, a: 0.85}
@@ -11825,7 +11816,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.83, b: 0.75, a: 1}
@@ -12069,7 +12060,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -12109,10 +12100,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &878182810
@@ -12125,7 +12116,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -12309,7 +12300,7 @@ GameObject:
   m_Component:
   - component: {fileID: 899252340}
   - component: {fileID: 899252342}
-  - component: {fileID: 899252341}
+  - component: {fileID: 899252343}
   m_Layer: 2
   m_Name: Professor XP sample 2
   m_TagString: Untagged
@@ -12333,19 +12324,6 @@ Transform:
   - {fileID: 354289961}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &899252341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 899252339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &899252342
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12367,6 +12345,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &899252343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899252339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &899426801
 GameObject:
   m_ObjectHideFlags: 0
@@ -12377,7 +12367,7 @@ GameObject:
   m_Component:
   - component: {fileID: 899426802}
   - component: {fileID: 899426804}
-  - component: {fileID: 899426803}
+  - component: {fileID: 899426805}
   m_Layer: 2
   m_Name: Forest Watcher XP sample 2
   m_TagString: Untagged
@@ -12401,19 +12391,6 @@ Transform:
   - {fileID: 384024528}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &899426803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 899426801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &899426804
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12435,6 +12412,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &899426805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899426801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &899745233
 GameObject:
   m_ObjectHideFlags: 0
@@ -12480,7 +12469,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c85992119ef0afcbaa55c6b93532bb2a, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.GuiltView
   animator: {fileID: 1461714290}
 --- !u!114 &899745236
@@ -12493,7 +12482,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e13fa6cf6a6dbc3f0acf6509fd3707ab, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.GuiltChaser
   target: {fileID: 1369858379}
   visualRoot: {fileID: 1461714288}
@@ -12656,7 +12645,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.83, b: 0.75, a: 1}
@@ -12782,14 +12771,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 905215875}
   entry: {fileID: 1318518010}
   enemyTemplate: {fileID: 1797699055}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "IZGUBLJENI ME\u0160\u010CAN \u2014 City melee variant. Test contact, hit/death animation and XP collection."
 --- !u!1 &905653850
 GameObject:
@@ -13325,14 +13312,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 922930282}
   entry: {fileID: 96133444}
   enemyTemplate: {fileID: 1224920506}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "STUDENT SHADOW \u2014 FERI melee variant. Test pursuit, jumping over contact and XP collection."
 --- !u!1 &928259235
 GameObject:
@@ -13428,7 +13413,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 706136765}
   player: {fileID: 1369858379}
@@ -13826,7 +13811,7 @@ GameObject:
   m_Component:
   - component: {fileID: 940094266}
   - component: {fileID: 940094265}
-  - component: {fileID: 940094264}
+  - component: {fileID: 940094267}
   m_Layer: 2
   m_Name: Gold XP Pack
   m_TagString: Untagged
@@ -13834,19 +13819,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &940094264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940094263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &940094265
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13884,6 +13856,18 @@ Transform:
   - {fileID: 423131346}
   m_Father: {fileID: 1597784332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &940094267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940094263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &958061533
 GameObject:
   m_ObjectHideFlags: 0
@@ -14452,7 +14436,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.72, g: 0.95, b: 0.22, a: 1}
@@ -14784,7 +14768,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -14910,7 +14894,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 706136765}
   player: {fileID: 1369858379}
@@ -15299,7 +15283,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -15339,10 +15323,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1056764171
@@ -15355,7 +15339,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -15411,7 +15395,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.55, g: 0.15, b: 0.15, a: 1}
@@ -15486,7 +15470,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.55, g: 0.55, b: 0.53, a: 1}
@@ -15686,7 +15670,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1065940787}
   - component: {fileID: 1065940789}
-  - component: {fileID: 1065940788}
+  - component: {fileID: 1065940790}
   m_Layer: 2
   m_Name: Guilt XP sample 1
   m_TagString: Untagged
@@ -15710,19 +15694,6 @@ Transform:
   - {fileID: 937233142}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1065940788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1065940786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1065940789
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -15744,6 +15715,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1065940790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065940786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1072402090
 GameObject:
   m_ObjectHideFlags: 0
@@ -15822,7 +15805,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -15836,7 +15819,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 32d3a71fc16a70eb7b0eaf45d901e44d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.RangedEnemy
   target: {fileID: 1369858379}
   projectilePrefab: {fileID: 2102902037}
@@ -15862,7 +15845,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 20
   aimPoint: {fileID: 1756967775}
@@ -15917,7 +15900,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 521226290}
   player: {fileID: 1369858379}
@@ -16266,7 +16249,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
@@ -16716,7 +16699,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -16783,7 +16766,7 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02b663a3016f0afb58ca76d5a0ae2dbe, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.UI.BatteryView
   battery: {fileID: 1369858380}
   statusText: {fileID: 1704316984}
@@ -16797,7 +16780,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b33f4326b199c9ad9870dfab6e82306c, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.UI.ScooterDarkness
   battery: {fileID: 1369858380}
   worldCamera: {fileID: 110662113}
@@ -16939,7 +16922,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -17098,7 +17081,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1198122635}
   - component: {fileID: 1198122637}
-  - component: {fileID: 1198122636}
+  - component: {fileID: 1198122638}
   m_Layer: 2
   m_Name: Professor XP sample 1
   m_TagString: Untagged
@@ -17122,19 +17105,6 @@ Transform:
   - {fileID: 905653851}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1198122636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198122634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1198122637
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -17156,6 +17126,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1198122638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198122634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1207766015
 GameObject:
   m_ObjectHideFlags: 0
@@ -17215,7 +17197,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -17435,7 +17417,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -17582,7 +17564,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -17749,7 +17731,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -17763,7 +17745,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d77436fff3a9a8391aa44ba6f9d5e611, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.MeleeView
   animator: {fileID: 112101926}
   contactSeconds: 0.5
@@ -17778,7 +17760,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56cf3fa96d5bf06419178abbb2b88415, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.MeleeEnemy
   target: {fileID: 1369858379}
   speed: 3
@@ -17795,7 +17777,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 60
   aimPoint: {fileID: 835130672}
@@ -17919,7 +17901,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 606028744}
   player: {fileID: 1369858379}
@@ -18229,7 +18211,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb48fd5711fcfdddbae81edb9fa8039e, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.UI.PlayerHud
   health: {fileID: 1369858379}
   battery: {fileID: 1369858380}
@@ -18245,7 +18227,6 @@ MonoBehaviour:
   xpFill: {fileID: 1063761251}
   guiltEdges: {fileID: 714994048}
   screenEffectsEnabled: 1
-  xpMilestones: 03000000070000000c000000120000001900000021000000i
   guiltWarningDistance: 15
 --- !u!114 &1256973294
 MonoBehaviour:
@@ -18257,7 +18238,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
@@ -18564,7 +18545,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -18695,7 +18676,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1756961089}
   player: {fileID: 1369858379}
@@ -18751,7 +18732,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -18791,10 +18772,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1295184891
@@ -18807,7 +18788,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -19156,7 +19137,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -19348,7 +19329,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.12, g: 0.13, b: 0.13, a: 0.95}
@@ -19728,7 +19709,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.83, b: 0.75, a: 1}
@@ -19938,7 +19919,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -20069,7 +20050,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09f5ea82a884fbbc0a7d4ab2d7a9b240, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.PlayerHealth
 --- !u!114 &1369858380 stripped
 MonoBehaviour:
@@ -20080,7 +20061,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2aa1be53739861d9ba09f28d15e93b53, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.LightBattery
 --- !u!1 &1371851369
 GameObject:
@@ -20176,7 +20157,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 521226290}
   player: {fileID: 1369858379}
@@ -20244,7 +20225,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 606028744}
   player: {fileID: 1369858379}
@@ -20545,7 +20526,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c369187d1ac9b4355b269e824a1b1872, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyProjectile
   speed: 6
   lifetime: 6
@@ -20733,7 +20714,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.015, g: 0.015, b: 0.015, a: 0.95}
@@ -20898,7 +20879,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -21211,7 +21192,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -21225,7 +21206,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d77436fff3a9a8391aa44ba6f9d5e611, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.MeleeView
   animator: {fileID: 1182799951}
   contactSeconds: 0.5
@@ -21240,7 +21221,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56cf3fa96d5bf06419178abbb2b88415, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.MeleeEnemy
   target: {fileID: 1369858379}
   speed: 3
@@ -21257,7 +21238,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 60
   aimPoint: {fileID: 2090029894}
@@ -21365,14 +21346,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 1450436773}
   entry: {fileID: 1414785533}
   enemyTemplate: {fileID: 899745233}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "GUILT \u2014 Invulnerable. Stay 20 active seconds, look around for safe offscreen placement, then evade the chase."
 --- !u!1 &1461714288
 GameObject:
@@ -21425,7 +21404,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -21944,7 +21923,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1278452387}
   player: {fileID: 1369858379}
@@ -22435,7 +22414,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1514126385}
   - component: {fileID: 1514126387}
-  - component: {fileID: 1514126386}
+  - component: {fileID: 1514126388}
   m_Layer: 2
   m_Name: Floating exam paper XP sample 2
   m_TagString: Untagged
@@ -22459,19 +22438,6 @@ Transform:
   - {fileID: 1118763782}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1514126386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514126384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1514126387
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -22493,6 +22459,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1514126388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514126384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1516164238
 GameObject:
   m_ObjectHideFlags: 0
@@ -22569,14 +22547,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 1516164240}
   entry: {fileID: 997122807}
   enemyTemplate: {fileID: 1080407876}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "FLOATING EXAM PAPER \u2014 FERI ranged reskin using the existing shooter AI and paper projectile."
 --- !u!1 &1524867778
 GameObject:
@@ -22678,7 +22654,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1538815527}
   - component: {fileID: 1538815529}
-  - component: {fileID: 1538815528}
+  - component: {fileID: 1538815530}
   m_Layer: 2
   m_Name: Guilt XP sample 2
   m_TagString: Untagged
@@ -22702,19 +22678,6 @@ Transform:
   - {fileID: 576450567}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1538815528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538815526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1538815529
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -22736,6 +22699,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1538815530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538815526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1547475616
 GameObject:
   m_ObjectHideFlags: 0
@@ -22811,14 +22786,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 828f3433b8e496f4ca8e7bf41f645c93, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyTestStation
   arena: {fileID: 773182248}
   volume: {fileID: 1547475618}
   entry: {fileID: 17035145}
   enemyTemplate: {fileID: 295019973}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "PROFESSOR \u2014 Exam Barrage and Deadline Slam. Switch laser OFF to observe; boost out of the red circle."
 --- !u!1 &1555425623
 GameObject:
@@ -22991,7 +22964,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -23052,7 +23025,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1574267517}
   - component: {fileID: 1574267519}
-  - component: {fileID: 1574267518}
+  - component: {fileID: 1574267520}
   m_Layer: 2
   m_Name: City Watcher XP sample 1
   m_TagString: Untagged
@@ -23076,19 +23049,6 @@ Transform:
   - {fileID: 1054579175}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1574267518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574267516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1574267519
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -23110,6 +23070,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1574267520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574267516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1587001002
 GameObject:
   m_ObjectHideFlags: 0
@@ -23174,7 +23146,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -23416,7 +23388,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1624451246}
   - component: {fileID: 1624451248}
-  - component: {fileID: 1624451247}
+  - component: {fileID: 1624451249}
   m_Layer: 2
   m_Name: Forest shadow XP sample 2
   m_TagString: Untagged
@@ -23440,19 +23412,6 @@ Transform:
   - {fileID: 1751491058}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1624451247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624451245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1624451248
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -23474,6 +23433,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1624451249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624451245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1629233478
 GameObject:
   m_ObjectHideFlags: 0
@@ -23568,7 +23539,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1946776007}
   player: {fileID: 1369858379}
@@ -23931,7 +23902,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -23971,10 +23942,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1674716740
@@ -23987,7 +23958,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -24277,7 +24248,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -24702,7 +24673,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1587001005}
   player: {fileID: 1369858379}
@@ -24822,7 +24793,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.12, g: 0.13, b: 0.13, a: 0.95}
@@ -25003,7 +24974,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1735260795}
   - component: {fileID: 1735260797}
-  - component: {fileID: 1735260796}
+  - component: {fileID: 1735260798}
   m_Layer: 2
   m_Name: "Izgubljeni me\u0161\u010Dan XP sample 2"
   m_TagString: Untagged
@@ -25027,19 +24998,6 @@ Transform:
   - {fileID: 1084775695}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1735260796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1735260794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1735260797
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -25061,6 +25019,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1735260798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735260794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1737400152
 GameObject:
   m_ObjectHideFlags: 0
@@ -25266,7 +25236,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -25306,10 +25276,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1751604868
@@ -25322,7 +25292,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -25399,7 +25369,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -25439,10 +25409,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1754770476
@@ -25455,7 +25425,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -25751,7 +25721,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -25882,7 +25852,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 521226290}
   player: {fileID: 1369858379}
@@ -25917,7 +25887,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -26003,7 +25973,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1780994455}
   - component: {fileID: 1780994457}
-  - component: {fileID: 1780994456}
+  - component: {fileID: 1780994458}
   m_Layer: 2
   m_Name: "Izgubljeni me\u0161\u010Dan XP sample 1"
   m_TagString: Untagged
@@ -26027,19 +25997,6 @@ Transform:
   - {fileID: 258467440}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1780994456
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1780994454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1780994457
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -26061,6 +26018,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1780994458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780994454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1781947566
 GameObject:
   m_ObjectHideFlags: 0
@@ -26342,7 +26311,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -26356,7 +26325,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d77436fff3a9a8391aa44ba6f9d5e611, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.MeleeView
   animator: {fileID: 46836970}
   contactSeconds: 0.5
@@ -26371,7 +26340,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56cf3fa96d5bf06419178abbb2b88415, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.MeleeEnemy
   target: {fileID: 1369858379}
   speed: 3
@@ -26388,7 +26357,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 60
   aimPoint: {fileID: 114365892}
@@ -26478,7 +26447,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.83, b: 0.75, a: 1}
@@ -26620,7 +26589,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 0.85, g: 0.83, b: 0.75, a: 1}
@@ -26964,7 +26933,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1872332987}
   - component: {fileID: 1872332989}
-  - component: {fileID: 1872332988}
+  - component: {fileID: 1872332990}
   m_Layer: 2
   m_Name: City Watcher XP sample 2
   m_TagString: Untagged
@@ -26988,19 +26957,6 @@ Transform:
   - {fileID: 1214276539}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1872332988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1872332986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1872332989
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -27022,6 +26978,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1872332990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872332986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1875797980
 GameObject:
   m_ObjectHideFlags: 0
@@ -27556,7 +27524,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1756961089}
   player: {fileID: 1369858379}
@@ -27823,7 +27791,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.015, g: 0.015, b: 0.015, a: 0.95}
@@ -27931,7 +27899,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db11c7f92d757173f84bdff20ae0b333, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyFeedback
   hitColor: {r: 1, g: 0.85, b: 0.5, a: 1}
   flashSeconds: 0.1
@@ -27945,7 +27913,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21cbdf4f7d3d947719e7134f2b25f505, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.WatcherView
   visual: {fileID: 1847289636}
   recoilDistance: 0.18
@@ -27960,7 +27928,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 32d3a71fc16a70eb7b0eaf45d901e44d, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.RangedEnemy
   target: {fileID: 1369858379}
   projectilePrefab: {fileID: 1397848701}
@@ -27986,7 +27954,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f21987ab1e1f2fb6abf327ef6b342faa, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.EnemyHealth
   maximumHealth: 20
   aimPoint: {fileID: 1974663931}
@@ -28076,7 +28044,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85d7ab48e0825c38863ec43b9cb5904, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCombatSpace
   battery: {fileID: 1369858380}
   player: {fileID: 1369858379}
@@ -28176,7 +28144,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1946776007}
   player: {fileID: 1369858379}
@@ -28637,7 +28605,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -28763,7 +28731,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1278452387}
   player: {fileID: 1369858379}
@@ -29485,7 +29453,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -29525,10 +29493,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2039868315
@@ -29541,7 +29509,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -32178,8 +32146,8 @@ MonoBehaviour:
       m_Type: 0
       m_ExpectedControlType: Vector2
       m_Id: 351f2ccd-1f9f-44bf-9bec-d62ac5c5f408
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 1
       m_Priority: 0
@@ -32187,8 +32155,8 @@ MonoBehaviour:
       m_Type: 0
       m_ExpectedControlType: Vector2
       m_Id: 6b444451-8a00-4d00-a97e-f47457f736a8
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 1
       m_Priority: 0
@@ -32196,169 +32164,169 @@ MonoBehaviour:
       m_Type: 1
       m_ExpectedControlType: Button
       m_Id: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
     m_Bindings:
-    - m_Name: 
+    - m_Name:
       m_Id: 978bfe49-cc26-4a3d-ab7b-7d7a29327403
       m_Path: <Gamepad>/leftStick
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Move
       m_Flags: 0
     - m_Name: WASD
       m_Id: 00ca640b-d935-4593-8157-c05846ea39b3
       m_Path: Dpad
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
+      m_Interactions:
+      m_Processors:
+      m_Groups:
       m_Action: Move
       m_Flags: 4
     - m_Name: up
       m_Id: e2062cb9-1b15-46a2-838c-2f8d72a0bdd9
       m_Path: <Keyboard>/w
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: up
       m_Id: 8180e8bd-4097-4f4e-ab88-4523101a6ce9
       m_Path: <Keyboard>/upArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: down
       m_Id: 320bffee-a40b-4347-ac70-c210eb8bc73a
       m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: down
       m_Id: 1c5327b5-f71c-4f60-99c7-4e737386f1d1
       m_Path: <Keyboard>/downArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: left
       m_Id: d2581a9b-1d11-4566-b27d-b92aff5fabbc
       m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: left
       m_Id: 2e46982e-44cc-431b-9f0b-c11910bf467a
       m_Path: <Keyboard>/leftArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: right
       m_Id: fcfe95b8-67b9-4526-84b5-5d0bc98d6400
       m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
     - m_Name: right
       m_Id: 77bff152-3580-4b21-b6de-dcd0c7e41164
       m_Path: <Keyboard>/rightArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Move
       m_Flags: 8
-    - m_Name: 
+    - m_Name:
       m_Id: 1635d3fe-58b6-4ba9-a4e2-f4b964f6b5c8
       m_Path: <XRController>/{Primary2DAxis}
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: XR
       m_Action: Move
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 3ea4d645-4504-4529-b061-ab81934c3752
       m_Path: <Joystick>/stick
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Move
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: c1f7a91b-d0fd-4a62-997e-7fb9b69bf235
       m_Path: <Gamepad>/rightStick
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Look
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 8c8e490b-c610-4785-884f-f04217b23ca4
       m_Path: <Pointer>/delta
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse;Touch
       m_Action: Look
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 3e5f5442-8668-4b27-a940-df99bad7e831
       m_Path: <Joystick>/{Hatswitch}
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Look
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 143bb1cd-cc10-4eca-a2f0-a3664166fe91
       m_Path: <Gamepad>/rightTrigger
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Fire
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 05f6913d-c316-48b2-a6bb-e225f14c7960
       m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Fire
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 886e731e-7071-4ae4-95c0-e61739dad6fd
       m_Path: <Touchscreen>/primaryTouch/tap
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Touch
       m_Action: Fire
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: ee3d0cd2-254e-47a7-a8cb-bc94d9658c54
       m_Path: <Joystick>/trigger
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Fire
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 8255d333-5683-4943-a58a-ccb207ff1dce
       m_Path: <XRController>/{PrimaryAction}
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: XR
       m_Action: Fire
       m_Flags: 0
@@ -32370,8 +32338,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Vector2
       m_Id: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32379,8 +32347,8 @@ MonoBehaviour:
       m_Type: 1
       m_ExpectedControlType: Button
       m_Id: 7607c7b6-cd76-4816-beef-bd0341cfe950
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32388,8 +32356,8 @@ MonoBehaviour:
       m_Type: 1
       m_ExpectedControlType: Button
       m_Id: 15cef263-9014-4fd5-94d9-4e4a6234a6ef
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32397,8 +32365,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Vector2
       m_Id: 32b35790-4ed0-4e9a-aa41-69ac6d629449
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 1
       m_Priority: 0
@@ -32406,8 +32374,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Button
       m_Id: 3c7022bf-7922-4f7c-a998-c437916075ad
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 1
       m_Priority: 0
@@ -32415,8 +32383,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Vector2
       m_Id: 0489e84a-4833-4c40-bfae-cea84b696689
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32424,8 +32392,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Button
       m_Id: dad70c86-b58c-4b17-88ad-f5e53adf419e
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32433,8 +32401,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Button
       m_Id: 44b200b1-1557-4083-816c-b22cbdf77ddf
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32442,8 +32410,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Vector3
       m_Id: 24908448-c609-4bc3-a128-ea258674378a
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32451,8 +32419,8 @@ MonoBehaviour:
       m_Type: 2
       m_ExpectedControlType: Quaternion
       m_Id: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
-      m_Processors: 
-      m_Interactions: 
+      m_Processors:
+      m_Interactions:
       m_SingletonActionBindings: []
       m_Flags: 0
       m_Priority: 0
@@ -32460,304 +32428,304 @@ MonoBehaviour:
     - m_Name: Gamepad
       m_Id: 809f371f-c5e2-4e7a-83a1-d867598f40dd
       m_Path: 2DVector
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
+      m_Interactions:
+      m_Processors:
+      m_Groups:
       m_Action: Navigate
       m_Flags: 4
     - m_Name: up
       m_Id: 14a5d6e8-4aaf-4119-a9ef-34b8c2c548bf
       m_Path: <Gamepad>/leftStick/up
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: up
       m_Id: 9144cbe6-05e1-4687-a6d7-24f99d23dd81
       m_Path: <Gamepad>/rightStick/up
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: down
       m_Id: 2db08d65-c5fb-421b-983f-c71163608d67
       m_Path: <Gamepad>/leftStick/down
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: down
       m_Id: 58748904-2ea9-4a80-8579-b500e6a76df8
       m_Path: <Gamepad>/rightStick/down
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: left
       m_Id: 8ba04515-75aa-45de-966d-393d9bbd1c14
       m_Path: <Gamepad>/leftStick/left
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: left
       m_Id: 712e721c-bdfb-4b23-a86c-a0d9fcfea921
       m_Path: <Gamepad>/rightStick/left
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: right
       m_Id: fcd248ae-a788-4676-a12e-f4d81205600b
       m_Path: <Gamepad>/leftStick/right
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
     - m_Name: right
       m_Id: 1f04d9bc-c50b-41a1-bfcc-afb75475ec20
       m_Path: <Gamepad>/rightStick/right
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 8
-    - m_Name: 
+    - m_Name:
       m_Id: fb8277d4-c5cd-4663-9dc7-ee3f0b506d90
       m_Path: <Gamepad>/dpad
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Gamepad
       m_Action: Navigate
       m_Flags: 0
     - m_Name: Joystick
       m_Id: e25d9774-381c-4a61-b47c-7b6b299ad9f9
       m_Path: 2DVector
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
+      m_Interactions:
+      m_Processors:
+      m_Groups:
       m_Action: Navigate
       m_Flags: 4
     - m_Name: up
       m_Id: 3db53b26-6601-41be-9887-63ac74e79d19
       m_Path: <Joystick>/stick/up
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Navigate
       m_Flags: 8
     - m_Name: down
       m_Id: 0cb3e13e-3d90-4178-8ae6-d9c5501d653f
       m_Path: <Joystick>/stick/down
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Navigate
       m_Flags: 8
     - m_Name: left
       m_Id: 0392d399-f6dd-4c82-8062-c1e9c0d34835
       m_Path: <Joystick>/stick/left
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Navigate
       m_Flags: 8
     - m_Name: right
       m_Id: 942a66d9-d42f-43d6-8d70-ecb4ba5363bc
       m_Path: <Joystick>/stick/right
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Joystick
       m_Action: Navigate
       m_Flags: 8
     - m_Name: Keyboard
       m_Id: ff527021-f211-4c02-933e-5976594c46ed
       m_Path: 2DVector
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
+      m_Interactions:
+      m_Processors:
+      m_Groups:
       m_Action: Navigate
       m_Flags: 4
     - m_Name: up
       m_Id: 563fbfdd-0f09-408d-aa75-8642c4f08ef0
       m_Path: <Keyboard>/w
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: up
       m_Id: eb480147-c587-4a33-85ed-eb0ab9942c43
       m_Path: <Keyboard>/upArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: down
       m_Id: 2bf42165-60bc-42ca-8072-8c13ab40239b
       m_Path: <Keyboard>/s
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: down
       m_Id: 85d264ad-e0a0-4565-b7ff-1a37edde51ac
       m_Path: <Keyboard>/downArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: left
       m_Id: 74214943-c580-44e4-98eb-ad7eebe17902
       m_Path: <Keyboard>/a
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: left
       m_Id: cea9b045-a000-445b-95b8-0c171af70a3b
       m_Path: <Keyboard>/leftArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: right
       m_Id: 8607c725-d935-4808-84b1-8354e29bab63
       m_Path: <Keyboard>/d
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
     - m_Name: right
       m_Id: 4cda81dc-9edd-4e03-9d7c-a71a14345d0b
       m_Path: <Keyboard>/rightArrow
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Navigate
       m_Flags: 8
-    - m_Name: 
+    - m_Name:
       m_Id: 9e92bb26-7e3b-4ec4-b06b-3c8f8e498ddc
       m_Path: '*/{Submit}'
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse;Gamepad;Touch;Joystick;XR
       m_Action: Submit
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 82627dcc-3b13-4ba9-841d-e4b746d6553e
       m_Path: '*/{Cancel}'
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse;Gamepad;Touch;Joystick;XR
       m_Action: Cancel
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: c52c8e0b-8179-41d3-b8a1-d149033bbe86
       m_Path: <Mouse>/position
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Point
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: e1394cbc-336e-44ce-9ea8-6007ed6193f7
       m_Path: <Pen>/position
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Keyboard&Mouse
       m_Action: Point
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 5693e57a-238a-46ed-b5ae-e64e6e574302
       m_Path: <Touchscreen>/touch*/position
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Touch
       m_Action: Point
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 4faf7dc9-b979-4210-aa8c-e808e1ef89f5
       m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Click
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 8d66d5ba-88d7-48e6-b1cd-198bbfef7ace
       m_Path: <Pen>/tip
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: Click
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 47c2a644-3ebc-4dae-a106-589b7ca75b59
       m_Path: <Touchscreen>/touch*/press
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: Touch
       m_Action: Click
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: bb9e6b34-44bf-4381-ac63-5aa15d19f677
       m_Path: <XRController>/trigger
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: XR
       m_Action: Click
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 38c99815-14ea-4617-8627-164d27641299
       m_Path: <Mouse>/scroll
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: ScrollWheel
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 24066f69-da47-44f3-a07e-0015fb02eb2e
       m_Path: <Mouse>/middleButton
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: MiddleClick
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 4c191405-5738-4d4b-a523-c6a301dbf754
       m_Path: <Mouse>/rightButton
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: ;Keyboard&Mouse
       m_Action: RightClick
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 7236c0d9-6ca3-47cf-a6ee-a97f5b59ea77
       m_Path: <XRController>/devicePosition
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: XR
       m_Action: TrackedDevicePosition
       m_Flags: 0
-    - m_Name: 
+    - m_Name:
       m_Id: 23e01e3a-f935-4948-8d8b-9bcac77714fb
       m_Path: <XRController>/deviceRotation
-      m_Interactions: 
-      m_Processors: 
+      m_Interactions:
+      m_Processors:
       m_Groups: XR
       m_Action: TrackedDeviceOrientation
       m_Flags: 0
@@ -32790,6 +32758,138 @@ MonoBehaviour:
     - m_ControlPath: <XRController>
       m_Flags: 0
   m_IsProjectWide: 0
+--- !u!1001 &2073040466
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: submit
+      value:
+      objectReference: {fileID: -393724099084901518, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: navigate
+      value:
+      objectReference: {fileID: 1877744696431638725, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: 'quickSelect.Array.data[0]'
+      value:
+      objectReference: {fileID: 4975628869461882072, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: 'quickSelect.Array.data[1]'
+      value:
+      objectReference: {fileID: -1134488824696849258, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: 'quickSelect.Array.data[2]'
+      value:
+      objectReference: {fileID: -5856271106735619868, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 4598616970428654783, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_Name
+      value: UpgradeScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682159238172089488, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_SortingOrder
+      value: 50
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+--- !u!114 &2073040467 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+  m_PrefabInstance: {fileID: 2073040466}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f156e6c3046f05bfc87d3d55aa082398, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.UI.UpgradeScreen
 --- !u!1 &2076126916
 GameObject:
   m_ObjectHideFlags: 0
@@ -32991,7 +33091,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -33168,7 +33268,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2099497417}
   - component: {fileID: 2099497419}
-  - component: {fileID: 2099497418}
+  - component: {fileID: 2099497420}
   m_Layer: 2
   m_Name: Floating exam paper XP sample 1
   m_TagString: Untagged
@@ -33192,19 +33292,6 @@ Transform:
   - {fileID: 99258145}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2099497418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2099497416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &2099497419
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -33226,6 +33313,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2099497420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099497416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &2101611733
 GameObject:
   m_ObjectHideFlags: 0
@@ -33320,7 +33419,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1587001005}
   player: {fileID: 1369858379}
@@ -33374,7 +33473,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -33433,7 +33532,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c369187d1ac9b4355b269e824a1b1872, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.EnemyProjectile
   speed: 6
   lifetime: 6
@@ -33673,7 +33772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2123050285}
   - component: {fileID: 2123050287}
-  - component: {fileID: 2123050286}
+  - component: {fileID: 2123050288}
   m_Layer: 2
   m_Name: Student shadow XP sample 2
   m_TagString: Untagged
@@ -33697,19 +33796,6 @@ Transform:
   - {fileID: 713837102}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2123050286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2123050284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &2123050287
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -33731,6 +33817,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2123050288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123050284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &2123533701
 GameObject:
   m_ObjectHideFlags: 0
@@ -36076,7 +36174,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -36169,7 +36267,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1946776007}
   player: {fileID: 1369858379}
@@ -36533,7 +36631,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 1756961089}
   player: {fileID: 1369858379}
@@ -36797,7 +36895,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
@@ -36837,10 +36935,10 @@ MonoBehaviour:
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName:
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2141109299
@@ -36853,7 +36951,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -36935,7 +37033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6783409772840860504, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: movementCamera
-      value: 
+      value:
       objectReference: {fileID: 110662114}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -36971,6 +37069,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6084012843138093686, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7868977143442150407}
+    - targetCorrespondingSourceObject: {fileID: 6084012843138093686, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7868977143442150410}
   m_SourcePrefab: {fileID: 100100000, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
 --- !u!114 &7868977143442150401 stripped
 MonoBehaviour:
@@ -36981,7 +37082,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89e934151d2f0ca86ad9cff437e0e8b8, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ScooterController
 --- !u!4 &7868977143442150402 stripped
 Transform:
@@ -37013,7 +37114,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf71834f6353a495abb18fabd4192675, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ScooterPresentation
   movement: {fileID: 7868977143442150401}
   visualRoot: {fileID: 7868977143442150404}
@@ -37039,7 +37140,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e640a9ffc0820a9d48fed021db70303b, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.BokiModelTestEffects
   movement: {fileID: 7868977143442150401}
   health: {fileID: 1369858379}
@@ -37082,7 +37183,7 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56254648da44e7323be4467b5bf192c1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.AutoLaser
   playerHealth: {fileID: 1369858379}
   beamOrigin: {fileID: 911010609}
@@ -37105,7 +37206,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2e178f34691ec0d29b4798825d61f12, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.BokiPlayerEffects
   boostTrails:
   - {fileID: 1951874473}
@@ -37119,6 +37220,20 @@ MonoBehaviour:
   damageColor: {r: 1, g: 0.15, b: 0.25, a: 1}
   damageFlashDuration: 0.15
   pickupGlow: {fileID: 2123533702}
+--- !u!114 &7868977143442150410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7868977143442150405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27bc5c257d38cdaa9b656d8fda231ebb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.UpgradeManager
+  screen: {fileID: 2073040467}
+  player: {fileID: 1369858379}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -37130,3 +37245,4 @@ SceneRoots:
   - {fileID: 1161102927}
   - {fileID: 1256973296}
   - {fileID: 773182249}
+  - {fileID: 2073040466}
