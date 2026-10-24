@@ -55,6 +55,8 @@ The layout includes both implemented and proposed content. `SampleScene.unity` i
 
 Boki model, animation, behavior, and effect demonstrations share `Game/Assets/Scenes/Player_Model_Test.unity`. See [PlayerEffects.md](PlayerEffects.md) for the integrated setup, controls, and validation. Other developers' map scenes remain outside this model-scene workflow.
 
+The same scene includes an isolated enemy sandbox with the existing player, eight selectable enemy/reskin stations, arena battery charges and test-only contact XP. `PlayerTestArena` and `EnemyTestStation` own scene-local selection/reset controls; `ArenaXpPickup` updates the existing XP counter without implementing production upgrade selection. See [player arena verification](plans/player-test-arena-verification.md).
+
 Enemy model and effect demonstrations use `Game/Assets/Scenes/Enemy_Test.unity`, including the rigged Boki and scooter as the combat target. **Boki → Enemy Models → Upgrade Test Models and Effects** upgrades that existing scene without changing shared prefabs or production scenes. See [enemy effect verification](plans/enemy-effect-verification.md) for scene wiring and checks.
 
 **Code layering:** deterministic gameplay rules live in engine-free `Boki.<Domain>.Rules` assemblies (`Scripts/<Domain>/Rules/`, `noEngineReferences`) with matching EditMode test assemblies under `Assets/Tests/EditMode/`. MonoBehaviour adapters, UI, and Editor tools sit above them and never the reverse. Scenes load only through `RunSession`, and `ProjectSettings/EditorBuildSettings.asset` lists the three production scenes. The engineering rules, templates, and audit script are in the `boki-unity-architecture` skill (`.agents/skills/boki-unity-architecture/`).
