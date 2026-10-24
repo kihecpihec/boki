@@ -29,6 +29,7 @@ namespace Boki.Editor
             {
                 Scene source = EditorSceneManager.OpenScene(BokiModelTestSetup.ScenePath, OpenSceneMode.Single);
                 ConfigureEmitters(source);
+                ConfigureRidingEffects(source);
                 EditorSceneManager.SaveScene(source);
                 bool created = AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null;
                 if (created && !AssetDatabase.CopyAsset(BokiModelTestSetup.ScenePath, ScenePath))
@@ -36,6 +37,7 @@ namespace Boki.Editor
                 Scene solo = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
                 if (created) StripArena(solo);
                 ConfigureEmitters(solo);
+                ConfigureRidingEffects(solo);
                 Validate(solo);
                 EditorSceneManager.SaveScene(solo);
                 AssetDatabase.SaveAssets();
@@ -101,6 +103,77 @@ namespace Boki.Editor
             foreach (Object changed in new Object[] { origin, beam, mount, battery, lamp, lamp.transform })
                 PrefabUtility.RecordPrefabInstancePropertyModifications(changed);
             EditorSceneManager.MarkSceneDirty(scene);
+        }
+
+        private static void ConfigureRidingEffects(Scene scene)
+        {
+            var movement = Find<ScooterController>(scene).Single();
+            var effects = movement.GetComponent<BokiPlayerEffects>();
+            var presentation = new SerializedObject(movement.GetComponent<ScooterPresentation>());
+            var wheel = (Transform)presentation.FindProperty("rearWheel").objectReferenceValue;
+            Transform visuals = movement.transform.Find("Visuals");
+            var dirt = ConfigureDirt(visuals, "Rear Wheel Dirt", wheel, false);
+            var landing = ConfigureDirt(visuals, "Landing Dust", wheel, true);
+            var settings = new SerializedObject(effects);
+            settings.FindProperty("movement").objectReferenceValue = movement;
+            settings.FindProperty("health").objectReferenceValue = movement.GetComponent<PlayerHealth>();
+            settings.FindProperty("ridingDirt").objectReferenceValue = dirt;
+            settings.FindProperty("landingDust").objectReferenceValue = landing;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+            var battery = movement.GetComponent<LightBattery>();
+            var lightSettings = new SerializedObject(battery);
+            lightSettings.FindProperty("strongGuiltWarning").boolValue = true;
+            lightSettings.ApplyModifiedPropertiesWithoutUndo();
+            PrefabUtility.RecordPrefabInstancePropertyModifications(effects);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(battery);
+        }
+
+        private static ParticleSystem ConfigureDirt(Transform visuals, string name, Transform wheel, bool landing)
+        {
+            Transform anchor = visuals.Find(name);
+            if (anchor == null)
+            {
+                anchor = new GameObject(name).transform;
+                anchor.SetParent(visuals, false);
+            }
+            anchor.position = wheel.position + Vector3.down * 0.06f;
+            anchor.rotation = Quaternion.LookRotation(landing ? Vector3.up : -visuals.forward + Vector3.up * 0.55f);
+            Vector3 scale = visuals.lossyScale;
+            anchor.localScale = new Vector3(1f / scale.x, 1f / scale.y, 1f / scale.z);
+            var particles = anchor.GetComponent<ParticleSystem>();
+            if (particles == null) particles = anchor.gameObject.AddComponent<ParticleSystem>();
+            particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = particles.main;
+            main.playOnAwake = false;
+            main.loop = false;
+            main.duration = 1f;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.maxParticles = landing ? 24 : 64;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(landing ? 0.6f : 1.2f, landing ? 1.5f : 3.2f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.025f, landing ? 0.16f : 0.09f);
+            main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI);
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.28f, 0.16f, 0.07f, 0.85f),
+                new Color(0.65f, 0.47f, 0.25f, 0.65f));
+            main.gravityModifier = landing ? 0.15f : 0.7f;
+            var emission = particles.emission;
+            emission.enabled = false;
+            var shape = particles.shape;
+            shape.enabled = true;
+            shape.shapeType = landing ? ParticleSystemShapeType.Hemisphere : ParticleSystemShapeType.Cone;
+            shape.radius = landing ? 0.2f : 0.055f;
+            shape.angle = 28f;
+            var fade = particles.colorOverLifetime;
+            fade.enabled = true;
+            var gradient = new Gradient();
+            gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+            fade.color = gradient;
+            var renderer = particles.GetComponent<ParticleSystemRenderer>();
+            renderer.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Effects/Boki/FeedbackParticles.mat");
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            return particles;
         }
 
         private static void StripArena(Scene scene)
