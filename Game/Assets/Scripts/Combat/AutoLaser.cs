@@ -9,6 +9,7 @@ namespace Boki.Combat
         [SerializeField] private PlayerHealth playerHealth;
         [SerializeField] private Transform beamOrigin;
         [SerializeField] private LineRenderer beam;
+        [SerializeField] private ParticleSystem impactBurst;
         [Tooltip("Environment only. Exclude player and enemy geometry.")]
         [SerializeField] private LayerMask obstructionMask = 1;
         [SerializeField, Min(0.01f)] private float range = 10f;
@@ -17,7 +18,7 @@ namespace Boki.Combat
         [SerializeField, Min(0.01f)] private float beamDuration = 0.08f;
         private float cooldown;
         private float beamRemaining;
-        private EnemyHealth beamTarget;
+        private Vector3 impactPosition;
 
         private void OnEnable()
         {
@@ -36,7 +37,7 @@ namespace Boki.Combat
         private void OnDisable()
         {
             if (beam != null) beam.enabled = false;
-            beamTarget = null;
+            if (impactBurst != null) impactBurst.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             cooldown = beamRemaining = 0f;
         }
 
@@ -74,29 +75,34 @@ namespace Boki.Combat
                 beam.enabled = false;
                 return;
             }
+            if (!EnemyFeedback.CanAnimate) return;
             float dt = Time.deltaTime;
+            if (impactBurst != null) impactBurst.Simulate(dt, false, false, false);
             cooldown = Mathf.Max(0f, cooldown - dt);
             beamRemaining = Mathf.Max(0f, beamRemaining - dt);
-            if (beamRemaining <= 0f || beamTarget == null || !beamTarget.isActiveAndEnabled
-                || !beamTarget.IsAlive || (beamTarget.AimPosition - beamOrigin.position).sqrMagnitude > range * range
-                || !Visible(beamTarget))
-                beam.enabled = false;
+            if (beamRemaining <= 0f) beam.enabled = false;
             else
             {
                 beam.SetPosition(0, beamOrigin.position);
-                beam.SetPosition(1, beamTarget.AimPosition);
+                beam.SetPosition(1, impactPosition);
             }
             if (cooldown > 0f) return;
             EnemyHealth target = FindTarget();
             if (target == null) return;
             cooldown = Mathf.Max(0.01f, fireInterval);
-            beamTarget = target;
+            impactPosition = target.AimPosition;
             beamRemaining = beamDuration;
             beam.SetPosition(0, beamOrigin.position);
-            beam.SetPosition(1, target.AimPosition);
+            beam.SetPosition(1, impactPosition);
             beam.enabled = true;
             target.TakeDamage(damage);
-            // A lethal pulse is shown for this frame; the dead target cannot be hit again.
+            if (impactBurst != null)
+            {
+                impactBurst.transform.position = impactPosition;
+                impactBurst.Emit(8);
+                impactBurst.Pause(false);
+            }
+            // Keep the short pulse visible even when damage destroys its target.
         }
     }
 }

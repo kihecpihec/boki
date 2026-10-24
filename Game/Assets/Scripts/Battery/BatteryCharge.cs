@@ -12,6 +12,7 @@ namespace Boki.Battery
         [SerializeField, Min(0)] private int slot;
         [SerializeField] private GameObject chargedVisual;
         [SerializeField] private GameObject depletedVisual;
+        public event System.Action Collected;
         public bool Available => space.State.Available(slot);
 
         private void OnEnable()
@@ -34,7 +35,8 @@ namespace Boki.Battery
         private void Collect(Collider other)
         {
             if (!isActiveAndEnabled || !space.isActiveAndEnabled || other.GetComponentInParent<PlayerHealth>() != player) return;
-            space.State.TryCollect(slot, space.Battery.State, space.Battery.IsGameplayActive);
+            if (space.State.TryCollect(slot, space.Battery.State, space.Battery.IsGameplayActive))
+                Collected?.Invoke();
         }
     }
 }
