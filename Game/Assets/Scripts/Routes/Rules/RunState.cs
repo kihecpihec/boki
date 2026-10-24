@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Boki.Upgrades;
+using Boki.Core;
 using Boki.Combat;
 using Boki.Battery;
 using Boki.Enemies;
-using Boki.Progression;
 
 namespace Boki.Routes
 {
@@ -28,12 +29,13 @@ namespace Boki.Routes
         public HealthState Health { get; private set; }
         public LightBatteryState LightBattery { get; } = new LightBatteryState();
         public float Battery { get => LightBattery.Current; set => LightBattery.Current = value; }
-        public RunProgression Progression { get; } = new RunProgression();
-        public int XP { get => Progression.XP; set => Progression.XP = value; }
+        public PauseState Pause { get; } = new PauseState();
+        public UpgradeState Progression { get; private set; }
+        public int XP => Progression.XP;
+        public IReadOnlyList<UpgradeId> Upgrades => Progression.Accepted;
         public bool CitySideEscapeCompleted { get; private set; }
         public bool CityRetreatStarted { get; private set; }
         public bool PowerOff { get; private set; }
-        public List<string> Upgrades { get; } = new List<string>();
         public int KillCount { get; set; }
         public double StartedAt { get; private set; }
         public UnlockSnapshot AvailableUnlocks { get; private set; }
@@ -47,16 +49,20 @@ namespace Boki.Routes
             Guilt.Reset();
             Health = new HealthState(100);
             LightBattery.Reset();
-            Progression.Reset();
+            if (Progression != null) Progression.Changed -= NotifyChanged;
+            Progression = new UpgradeState(Health, LightBattery);
+            Progression.Changed += NotifyChanged;
+            KillCount = 0;
+            Pause.Reset();
             CityRetreatStarted = CitySideEscapeCompleted = PowerOff = false;
-            XP = KillCount = 0;
-            Upgrades.Clear();
             Array.Clear(choices, 0, choices.Length);
             ActiveLevel = RouteLevel.Forest;
             StartedAt = startedAt;
             AvailableUnlocks = unlocks;
             Changed?.Invoke();
         }
+
+        private void NotifyChanged() => Changed?.Invoke();
 
         public RouteChoice Choice(RouteLevel level) => ValidLevel(level) ? choices[(int)level] : RouteChoice.None;
         public static bool ValidLevel(RouteLevel level) => level >= RouteLevel.Forest && level <= RouteLevel.Feri;
@@ -128,17 +134,6 @@ namespace Boki.Routes
         {
             if (ActiveLevel != RouteLevel.Feri || Choice(RouteLevel.Feri) != RouteChoice.C || !Health.IsAlive) return false;
             PowerOff = true;
-            Changed?.Invoke();
-            return true;
-        }
-
-        public bool ChooseUpgrade(UpgradeKind kind)
-        {
-            if (!Health.IsAlive || !Progression.Choose(kind, Health.Current < Health.Maximum, Battery < LightBattery.Capacity)) return false;
-            if (kind == UpgradeKind.BiggerBattery) LightBattery.SetCapacity(Progression.BatteryCapacity);
-            else if (kind == UpgradeKind.EmergencySnack) Health.Heal(30);
-            else if (kind == UpgradeKind.BatteryCharge) LightBattery.TryRecharge();
-            Upgrades.Add(kind.ToString());
             Changed?.Invoke();
             return true;
         }

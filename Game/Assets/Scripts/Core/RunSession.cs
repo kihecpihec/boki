@@ -27,7 +27,7 @@ namespace Boki.Core
         public RunState State { get; private set; }
         public bool IsLoading { get; private set; }
         public bool IsGameplayActive => State != null && State.Health.IsAlive
-            && !IsLoading && !State.Guilt.GameplaySuspended;
+            && !IsLoading && !State.Pause.IsPaused && !State.Guilt.GameplaySuspended;
         // In-memory input retained for the standalone M3 demonstration.
         // Production scenes read permanent flags from PlayerPrefs on every new run.
         public UnlockSnapshot NextRunUnlocks { get; set; }
@@ -48,6 +48,7 @@ namespace Boki.Core
             DontDestroyOnLoad(gameObject);
             unlocks = new PersistentUnlocks(new PlayerPrefsUnlockStore());
             State = new RunState(ReadNewRunUnlocks(), Time.realtimeSinceStartupAsDouble);
+            State.Pause.Changed += ApplyPause;
             SceneManager.sceneLoaded += SceneLoaded;
         }
 
@@ -67,29 +68,47 @@ namespace Boki.Core
             if (lightDriver == driver) lightDriver = null;
         }
 
+        private float previousTimeScale = 1f;
+        private bool appliedPause;
+        public void SetPaused(PauseReason reason, bool paused) => State.Pause.Set(reason, paused);
+        private void ApplyPause()
+        {
+            if (State.Pause.IsPaused == appliedPause) return;
+            if (State.Pause.IsPaused)
+            {
+                previousTimeScale = Time.timeScale;
+                Time.timeScale = 0f;
+                appliedPause = true;
+            }
+            else
+            {
+                Time.timeScale = previousTimeScale;
+                appliedPause = false;
+            }
+        }
         private void Update() => State.LightBattery.Tick(Time.deltaTime,
-            lightDriver != null && lightDriver.IsGameplayActive);
+            IsGameplayActive && lightDriver != null && lightDriver.IsGameplayActive);
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
             IsLoading = false;
             State.Guilt.IsLoading = false;
+            SetPaused(PauseReason.Loading, false);
         }
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= SceneLoaded;
-            if (Instance == this) { Time.timeScale = 1f; Instance = null; }
+            if (State != null) State.Pause.Changed -= ApplyPause;
+            if (Instance == this)
+            {
+                if (appliedPause) Time.timeScale = previousTimeScale;
+                Instance = null;
+            }
         }
 
         // Production routing owns persistence. A scene cached before M5 must not
         // silently disable saving because it lacks a newly serialized checkbox.
         private bool UsesPersistentUnlocks => persistentProgress || forestDestination == PohorjeScene;
-
-        public void SetPaused(bool paused)
-        {
-            State.Guilt.GameplaySuspended = paused;
-            Time.timeScale = paused ? 0f : 1f;
-        }
         private UnlockSnapshot ReadNewRunUnlocks() => UsesPersistentUnlocks ? unlocks.Read() : NextRunUnlocks;
 
         public bool EnterBossArena()
@@ -124,7 +143,6 @@ namespace Boki.Core
                 return false;
             }
             IsLoading = true;
-            SetPaused(false);
             if (newRun)
             {
                 hasEnteredBossArena = false;
@@ -138,6 +156,7 @@ namespace Boki.Core
                 State.TryAdvance(from);
             }
             State.Guilt.IsLoading = true;
+            SetPaused(PauseReason.Loading, true);
 #if UNITY_EDITOR
             UnityEditor.SceneManagement.EditorSceneManager.LoadSceneInPlayMode(path,
                 new LoadSceneParameters(LoadSceneMode.Single));

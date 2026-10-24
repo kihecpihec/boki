@@ -4,7 +4,7 @@ using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
 using Boki.Player;
-using Boki.Progression;
+using Boki.Upgrades;
 using Boki.Routes;
 using Boki.UI;
 using UnityEditor;
@@ -135,13 +135,13 @@ namespace Boki.Editor
                         }
                         player.GetComponent<AutoLaser>().enabled = true;
                         player.TakeDamage(7);
-                        session.State.XP = 2;
+                        session.State.Progression.AddXp(2);
                         int killsBefore = session.State.KillCount;
-                        var rewardTemplate = V1SceneSetup.All<EnemyReward>(scene)[0].gameObject;
+                        var rewardTemplate = V1SceneSetup.All<MeleeEnemy>(scene)[0].gameObject;
                         var target = Object.Instantiate(rewardTemplate, player.transform.position + Vector3.right * 2, Quaternion.identity);
                         target.SetActive(true); target.GetComponent<EnemyHealth>().TakeDamage(10000);
                         Check(session.State.KillCount == killsBefore + 1, "Kill counted once");
-                        var pickup = V1SceneSetup.Find<XPPickup>(scene);
+                        var pickup = V1SceneSetup.Find<XpPickup>(scene);
                         Check(pickup != null, "Kill creates contact-collected XP");
                         Teleport(player, pickup.transform.position - Vector3.up * 0.5f);
                         stage++; break;
@@ -227,9 +227,9 @@ namespace Boki.Editor
                     case 20:
                         Check(scene.path == V1SceneSetup.Scenes[0] && player.Current == 100 && session.State.XP == 0, "Death retry resets run at Pohorje");
                         Check(Time.timeScale == 1 && !flow.IsTerminal, "Retry resumes gameplay");
-                        session.State.XP = 33;
-                        foreach (var kind in new[] { UpgradeKind.DoubleTrouble, UpgradeKind.PanicMode, UpgradeKind.TurboSkiro, UpgradeKind.TurboSkiro, UpgradeKind.RaveOverdrive })
-                            Check(session.State.ChooseUpgrade(kind), "Prepare capped late offer");
+                        session.State.Progression.AddXp(33);
+                        foreach (var kind in new[] { UpgradeId.DoubleTrouble, UpgradeId.PanicMode, UpgradeId.TurboSkiro, UpgradeId.TurboSkiro, UpgradeId.RaveOverdrive })
+                            Check(FixtureChoose(session.State.Progression, kind), "Prepare capped late offer");
                         player.GetComponent<LightBattery>().enabled = false; // Hold charge full for this eligibility fixture.
                         session.State.Battery = session.State.LightBattery.Capacity;
                         stage++; break;
@@ -243,7 +243,7 @@ namespace Boki.Editor
                         upgrade.RequestChoice(2);
                         Check(session.State.Progression.Selections == 5, "Hidden card cannot be selected");
                         upgrade.RequestChoice(0);
-                        Check(session.State.Progression.MaximumLevel && !flow.IsChoosing && Time.timeScale == 1, "Final choice resumes at maximum level");
+                        Check(session.State.Progression.IsMaxLevel && !flow.IsChoosing && Time.timeScale == 1, "Final choice resumes at maximum level");
                         EditorApplication.ExitPlaymode(); break;
                     case 100:
                         var occupied = V1SceneSetup.All<BatteryCombatSpace>(scene).Find(s => s.gameObject.activeInHierarchy);
@@ -253,6 +253,23 @@ namespace Boki.Editor
                 }
             }
             catch (Exception e) { Fail("stage " + stage + ": " + e.Message + "\n" + e.StackTrace); }
+        }
+
+        private sealed class PickRandom : System.Random
+        {
+            private readonly int first;
+            private bool picked;
+            public PickRandom(UpgradeId id, UpgradeState state)
+            {
+                for (UpgradeId candidate = 0; candidate < id; candidate++) if (state.Eligible(candidate)) first++;
+            }
+            public override int Next(int maxValue) { if (picked) return 0; picked = true; return first % maxValue; }
+        }
+        private static bool FixtureChoose(UpgradeState state, UpgradeId kind)
+        {
+            if (!state.CreateOffer(new PickRandom(kind, state))) return false;
+            for (int i = 0; i < state.OfferCount; i++) if (state.Offer(i) == kind) return state.TrySelect(i, state.OfferVersion);
+            return false;
         }
 
         private static V1RouteEvent Event(Scene scene, V1RouteEventKind kind)

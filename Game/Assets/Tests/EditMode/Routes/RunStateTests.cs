@@ -6,6 +6,11 @@ namespace Boki.Tests
 {
     public sealed class RunStateTests
     {
+        private sealed class FirstOfferRandom : System.Random
+        {
+            public override int Next(int maxValue) => 0;
+        }
+
         private static readonly RouteChoice[] Routes = { RouteChoice.A, RouteChoice.B, RouteChoice.C };
         private static UnlockSnapshot All => new UnlockSnapshot { ForestC = true, CityC = true, FeriC = true };
 
@@ -144,7 +149,10 @@ namespace Boki.Tests
             Assert.That(run.TryAdvance(RouteLevel.City), Is.False);
             run.TrySelect(RouteLevel.City, RouteChoice.B);
             run.Health.TakeDamage(27);
-            run.Battery = 23; run.XP = 4; run.KillCount = 2; run.Upgrades.Add("test");
+            run.Battery = 23; run.Progression.AddXp(4); run.KillCount = 2; run.Progression.CreateOffer(new FirstOfferRandom());
+            for (int i = 0; i < 3; i++)
+                if (run.Progression.Offer(i) == Boki.Upgrades.UpgradeId.RaveOverdrive)
+                { run.Progression.TrySelect(i, run.Progression.OfferVersion); break; }
             Assert.That(run.TryAdvance(RouteLevel.City));
             Assert.That(run.TryAdvance(RouteLevel.City), Is.False);
             Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Feri));
@@ -152,7 +160,7 @@ namespace Boki.Tests
             Assert.That(run.Battery, Is.EqualTo(23));
             Assert.That(run.XP, Is.EqualTo(4));
             Assert.That(run.KillCount, Is.EqualTo(2));
-            Assert.That(run.Upgrades, Is.EquivalentTo(new[] { "test" }));
+            Assert.That(run.Upgrades.Count, Is.EqualTo(1));
             Assert.That(run.StartedAt, Is.EqualTo(5));
             Assert.That(run.Choice(RouteLevel.Forest), Is.EqualTo(RouteChoice.A));
             Assert.That(run.Choice(RouteLevel.City), Is.EqualTo(RouteChoice.B));
@@ -177,7 +185,10 @@ namespace Boki.Tests
             source.ForestC = true;
             Assert.That(run.Gate(RouteLevel.Forest, RouteChoice.C), Is.EqualTo(GateState.PersistentLock));
             run.Health.TakeDamage(27);
-            run.Battery = 2; run.XP = 40; run.KillCount = 3; run.Upgrades.Add("test");
+            run.Battery = 2; run.Progression.AddXp(33); run.KillCount = 3; run.Progression.CreateOffer(new FirstOfferRandom());
+            for (int i = 0; i < 3; i++)
+                if (run.Progression.Offer(i) == Boki.Upgrades.UpgradeId.RaveOverdrive)
+                { run.Progression.TrySelect(i, run.Progression.OfferVersion); break; }
             run.TrySelect(RouteLevel.Forest, RouteChoice.A);
             Assert.That(run.TryAdvance(RouteLevel.Forest));
             Assert.That(run.TryAdvance(RouteLevel.Forest), Is.False);

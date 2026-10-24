@@ -1,3 +1,5 @@
+using Boki.Core;
+using Boki.Enemies;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -38,13 +40,28 @@ namespace Boki.Player
 
         private CharacterController controller;
         private ScooterMotion motion;
+        [SerializeField] private GuiltChaser guilt;
+        public GuiltChaser BoundGuilt => guilt;
+        public void BindGuilt(GuiltChaser chaser)
+        {
+            guilt = chaser;
+            guiltAdvantage = new GuiltMovementAdvantage();
+        }
+        private PlayerHealth playerHealth;
+        private GuiltMovementAdvantage guiltAdvantage;
+        private bool GuiltNearby => guilt != null && guilt.isActiveAndEnabled && guilt.Pressure.IsActive
+            && guilt.Phase == GuiltPhase.Chase && !guilt.Pressure.AwaitingPlacement
+            && (guilt.transform.position - transform.position).sqrMagnitude <= 100f;
+        public bool PanicReady => RunSession.Instance != null && RunSession.Instance.IsGameplayActive
+            && RunSession.Instance.State.Progression.PanicEligible(GuiltNearby,
+                guilt != null ? Vector3.Distance(transform.position, guilt.transform.position) : float.PositiveInfinity);
         private bool wasGrounded;
         private float walkableNormalY;
         public float HorizontalSpeed => motion?.Speed ?? 0f;
-        public float BoostSpeed => speed * boostMultiplier;
+        public float BoostSpeed => motion != null && motion.BoostRemaining > 0f ? motion.ActiveBoostSpeed : speed * boostMultiplier;
         public float BoostRemaining => motion?.BoostRemaining ?? 0f;
         public float CooldownRemaining => motion?.CooldownRemaining ?? 0f;
-        public float BoostDuration => boostDuration;
+        public float BoostDuration => motion != null && motion.BoostRemaining > 0f ? motion.ActiveBoostDuration : boostDuration;
         public float BoostCooldown => boostCooldown;
         public bool IsGrounded { get; private set; }
         public Vector3 GroundNormal { get; private set; } = Vector3.up;
@@ -52,15 +69,12 @@ namespace Boki.Player
         private bool ownsJump;
         private bool ownsBoost;
         private bool awaitingRelease;
-        public bool PanicBoostReady { get; set; }
-        public void SetRidingSpeedBonus(float bonus)
-        {
-            if (motion != null) motion.RidingSpeedBonus = Mathf.Max(0f, bonus);
-        }
 
         private void OnEnable()
         {
             controller = GetComponent<CharacterController>();
+            playerHealth = GetComponent<PlayerHealth>();
+            guiltAdvantage = new GuiltMovementAdvantage();
             if (movementCamera == null && Camera.main != null)
                 movementCamera = Camera.main.transform;
             if (movementCamera == null || !Valid(moveAction) || !Valid(jumpAction) || !Valid(boostAction))
@@ -114,7 +128,17 @@ namespace Boki.Player
         {
             if (movementCamera == null || !controller.enabled) return;
 
+            if (Time.deltaTime <= 0f || (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive))
+            {
+                awaitingRelease = true;
+                return;
+            }
+            if (playerHealth != null && !playerHealth.IsAlive) return;
             float dt = Time.deltaTime;
+            guiltAdvantage.Tick(GuiltNearby, dt);
+            var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
+            motion.SetModifiers(upgrades != null ? upgrades.RidingMultiplier(guiltAdvantage.IsActive)
+                : guiltAdvantage.IsActive ? 1.25f : 1f, PanicReady);
             Vector2 input = Vector2.ClampMagnitude(moveAction.action.ReadValue<Vector2>(), 1f);
             bool canRead = Application.isFocused && Cursor.lockState == CursorLockMode.Locked;
             if (!canRead)
@@ -141,7 +165,7 @@ namespace Boki.Player
             motion.Tick(direction.x, direction.z, grounded,
                 canRead && jumpAction.action.WasPressedThisFrame(),
                 canRead && boostAction.action.WasPressedThisFrame(), dt, transform.forward.x, transform.forward.z,
-                canRead ? slopeAcceleration.x : 0f, canRead ? slopeAcceleration.z : 0f, PanicBoostReady);
+                canRead ? slopeAcceleration.x : 0f, canRead ? slopeAcceleration.z : 0f);
 
             Vector3 horizontal = new Vector3(motion.DisplacementX, 0f, motion.DisplacementZ);
             if (grounded && motion.VerticalSpeed <= 0f)

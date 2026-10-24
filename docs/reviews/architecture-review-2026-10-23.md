@@ -1,5 +1,7 @@
 # Architecture Review — 2026-10-23
 
+> **Superseded in part (cleanup 2026-10-24):** this is a point-in-time snapshot of commit `43e1840`. Since then `RangedEnemy`, `EnemyProjectile`, `GuiltChaser`, `ProfessorBoss`, Guilt rules and tests, and the scooter-light battery rules landed on `dev`, so DOC-1, QUA-2, TEST-1 and test-coverage gap 1 need re-verifying before acting on them. `Pohorje_Map_Test`, `Maribor_Map_Test` and their builders were removed; PERF-2 applied to the retired Pohorje v2 map and no longer applies.
+
 **Scope:** all of `Game/Assets` (runtime scripts, Rules asmdefs, EditMode tests, Editor tools, scenes/prefabs, URP and quality settings) plus `AGENTS.md`, `docs/Architecture.md`, and `docs/plans/M1–M6`. `TutorialInfo` and binary art were not reviewed.
 **Commit:** `43e1840` on `t3/unity-architecture-review` (same tree as `dev`; clean working copy)
 **Method:** static review only; no Unity Editor, Play Mode, profiler, or Windows build was run. The `boki-unity-architecture` `audit.sh` was run (no FAILs, 3 WARNs).

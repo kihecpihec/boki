@@ -20,6 +20,7 @@ namespace Boki.UI
         [SerializeField] private InputActionReference submit;
         [SerializeField] private InputActionReference[] quickSelect;
         [SerializeField] private UnityEvent<int> choiceRequested = new UnityEvent<int>();
+        private readonly EventTrigger.Entry[] hoverEntries = new EventTrigger.Entry[3];
         private int selected;
         private bool ready;
         private bool submitting;
@@ -41,6 +42,16 @@ namespace Boki.UI
                 enabled = false;
                 return;
             }
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                int index = i;
+                var trigger = buttons[i].GetComponent<EventTrigger>();
+                if (trigger == null) trigger = buttons[i].gameObject.AddComponent<EventTrigger>();
+                var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+                entry.callback.AddListener(_ => { if (IsVisible && index < offerCount) Select(index); });
+                trigger.triggers.Add(entry);
+                hoverEntries[i] = entry;
+            }
             navigate.action.performed += Navigate;
             submit.action.performed += Submit;
             for (int i = 0; i < quickSelect.Length; i++)
@@ -58,6 +69,14 @@ namespace Boki.UI
 
         private void OnDisable()
         {
+            if (buttons != null)
+                for (int i = 0; i < buttons.Length && i < hoverEntries.Length; i++)
+                {
+                    if (buttons[i] == null || hoverEntries[i] == null) continue;
+                    var trigger = buttons[i].GetComponent<EventTrigger>();
+                    if (trigger != null) trigger.triggers.Remove(hoverEntries[i]);
+                    hoverEntries[i] = null;
+                }
             if (navigate != null) { navigate.action.performed -= Navigate; navigate.action.Disable(); }
             if (submit != null) { submit.action.performed -= Submit; submit.action.Disable(); }
             if (quickSelect != null)
@@ -77,18 +96,14 @@ namespace Boki.UI
             tags[index].text = tag;
         }
 
-        public void ShowOffer()
+        public void ShowOffer(int count = 3)
         {
             if (!ready) return;
-            panel.SetActive(true);
-            Select(0);
-        }
-
-        public void SetOfferSize(int count)
-        {
             if (count < 1 || count > 3) throw new System.ArgumentOutOfRangeException(nameof(count));
             offerCount = count;
             for (int i = 0; i < buttons.Length; i++) buttons[i].gameObject.SetActive(i < count);
+            panel.SetActive(true);
+            Select(0);
         }
 
         public void Hide()

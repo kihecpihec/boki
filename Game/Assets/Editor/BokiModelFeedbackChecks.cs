@@ -22,9 +22,9 @@ namespace Boki.Editor
         private static LightBattery battery;
         private static Light lamp;
         private static BokiPlayerEffects effects;
-        private static ParticleSystem glow, impact;
+        private static ParticleSystem glow, impact, dirt, landing;
         private static BatteryCharge charge;
-        private static float fullIntensity, pausedTime, restVisualHeight;
+        private static float fullIntensity, pausedTime, restVisualHeight, pausedDirtTime;
         private static EnemyHealth laserTarget;
         private static Vector3 colliderScale;
 
@@ -35,7 +35,12 @@ namespace Boki.Editor
         }
 
         [MenuItem("Boki/Player Model/Run Feedback Checks")]
-        public static void Run()
+        public static void Run() => RunScene(BokiModelTestSetup.ScenePath);
+
+        [MenuItem("Boki/Player Model/Run Solo Feedback Checks")]
+        public static void RunSolo() => RunScene(BokiSoloSetup.ScenePath);
+
+        private static void RunScene(string scenePath)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -49,7 +54,13 @@ namespace Boki.Editor
                 saved.active[i] = scenes[i].isActive;
             }
             SessionState.SetString(Key + ".Setup", JsonUtility.ToJson(saved));
-            EditorSceneManager.OpenScene(BokiModelTestSetup.ScenePath, OpenSceneMode.Single);
+            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+            foreach (var root in scene.GetRootGameObjects())
+            {
+                var controller = root.GetComponentInChildren<ScooterController>(true);
+                if (controller != null)
+                    SessionState.SetFloat(Key + ".VisualHeight", controller.transform.Find("Visuals").localScale.y);
+            }
             SessionState.SetBool(Key, true);
             EditorApplication.EnterPlaymode();
         }
@@ -99,10 +110,25 @@ namespace Boki.Editor
                         battery = Object.FindAnyObjectByType<LightBattery>();
                         if (battery == null || elapsed < 0.2) return;
                         effects = battery.GetComponent<BokiPlayerEffects>();
+                        dirt = battery.transform.Find("Visuals/Rear Wheel Dirt").GetComponent<ParticleSystem>();
+                        landing = battery.transform.Find("Visuals/Landing Dust").GetComponent<ParticleSystem>();
+                        Require(dirt.main.maxParticles <= 64 && landing.main.maxParticles <= 24,
+                            "Riding effects must keep their particle budget.");
                         glow = battery.transform.Find("Visuals/Pickup Glow").GetComponent<ParticleSystem>();
                         impact = battery.transform.Find("Laser Impact").GetComponent<ParticleSystem>();
-                        lamp = battery.transform.Find("Scooter Surrounding Light").GetComponent<Light>();
+                        var settings = new SerializedObject(battery);
+                        lamp = (Light)settings.FindProperty("surroundingLight").objectReferenceValue;
                         Require(battery.enabled && effects.enabled && lamp.enabled, "Scene feedback must be active.");
+                        var mount = (Transform)settings.FindProperty("headlightMount").objectReferenceValue;
+                        Require(mount != null && mount.parent.name == "Socket_Headlight"
+                            && lamp.transform.parent == mount && lamp.transform.localPosition == Vector3.zero,
+                            "Headlight must stay attached to the authored scooter socket in Play Mode.");
+                        var fill = mount.Find("Scooter Nearby Fill");
+                        Require(fill != null && Vector3.Distance(fill.position, mount.position) < 0.5f,
+                            "Nearby fill must remain on the scooter despite FBX socket scale.");
+                        var laserSettings = new SerializedObject(battery.GetComponent<AutoLaser>());
+                        var origin = (Transform)laserSettings.FindProperty("beamOrigin").objectReferenceValue;
+                        Require(origin.parent.name == "Socket_LaserMuzzle", "Laser must originate on the scooter muzzle.");
                         colliderScale = battery.transform.localScale;
                         battery.State.Current = 100;
                         Next();
@@ -136,15 +162,19 @@ namespace Boki.Editor
                         Require(battery.State.Current > 70 && glow.particleCount > 0, "Contact recharge must produce a pickup glow.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         pausedTime = glow.time;
+                        dirt.Emit(4);
+                        dirt.Pause(false);
+                        pausedDirtTime = dirt.time;
                         Next();
                         break;
                     case 5:
                         if (elapsed < 0.2) return;
+                        Require(dirt.time == pausedDirtTime, "Shared pause must freeze riding dirt.");
                         Require(glow.time == pausedTime, "Shared pause must freeze pickup particles.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = false;
                         charge.gameObject.SetActive(false);
                         glow.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                        RunSession.Instance.State.XP++;
+                        RunSession.Instance.State.Progression.AddXp();
                         Next();
                         break;
                     case 6:
@@ -160,6 +190,7 @@ namespace Boki.Editor
                         Require(battery.WarningStrength == 1f
                             && battery.GetComponent<ScooterPresentation>().GuiltWarningStrength == 1f,
                             "Shared Guilt warning must drive the headlight and camera.");
+                        Require(lamp.color.r > lamp.color.b * 2f, "Guilt warning must visibly tint the lamp red.");
                         RunSession.Instance.State.Guilt.Reset();
                         battery.GetComponent<BokiModelTestEffects>().SpawnLaserTarget();
                         laserTarget = Object.FindAnyObjectByType<EnemyHealth>();
@@ -169,10 +200,15 @@ namespace Boki.Editor
                         break;
                     case 8:
                         if (laserTarget != null || impact.particleCount == 0) return;
-                        Require(battery.GetComponentInChildren<LineRenderer>().enabled, "A laser hit must show the short beam and impact together.");
+                        var beamSettings = new SerializedObject(battery.GetComponent<AutoLaser>());
+                        var beam = (LineRenderer)beamSettings.FindProperty("beam").objectReferenceValue;
+                        var muzzle = (Transform)beamSettings.FindProperty("beamOrigin").objectReferenceValue;
+                        Require(beam.enabled, "A laser hit must show the short beam and impact together.");
+                        Require(Vector3.Distance(beam.GetPosition(0), muzzle.position) < 0.001f,
+                            "The visible laser pulse must start at the scooter emitter.");
                         Require(battery.transform.localScale == colliderScale, "Feedback must not scale the collision root.");
                         var visual = battery.transform.Find("Visuals");
-                        restVisualHeight = visual.localScale.y;
+                        restVisualHeight = SessionState.GetFloat(Key + ".VisualHeight", 1f);
                         var body = battery.GetComponent<CharacterController>();
                         body.enabled = false;
                         battery.transform.position += Vector3.up * 2f;
@@ -182,14 +218,16 @@ namespace Boki.Editor
                         break;
                     case 9:
                         if (battery.transform.Find("Visuals").localScale.y >= restVisualHeight * 0.98f) return;
+                        Require(landing.particleCount > 0, "Landing must emit a dust burst.");
                         Require(battery.transform.localScale == colliderScale, "Landing squash must preserve the collision root scale.");
                         Next();
                         break;
                     case 10:
                         if (elapsed < 0.3) return;
-                        Require(Mathf.Approximately(battery.transform.Find("Visuals").localScale.y, restVisualHeight),
-                            "Landing squash must return to the authored scale.");
+                        // Batch frame rate varies; let active simulation finish the recovery.
+                        if (!Mathf.Approximately(battery.transform.Find("Visuals").localScale.y, restVisualHeight)) return;
                         effects.enabled = false;
+                        Require(dirt.particleCount == 0 && landing.particleCount == 0, "Disabling effects must clear riding particles.");
                         Require(glow.particleCount == 0, "Disabling effects must clear pickup particles.");
                         stage = 99;
                         EditorApplication.ExitPlaymode();

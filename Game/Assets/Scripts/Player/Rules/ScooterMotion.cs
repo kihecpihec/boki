@@ -7,12 +7,22 @@ namespace Boki.Player
     {
         private readonly ScooterMotionTuning tuning;
         private Vector2 horizontal;
+        private float ridingMultiplier = 1f;
+        private bool panicReady;
+        private float activeBoostSpeed;
+        public float ActiveBoostDuration { get; private set; }
+        public float ActiveBoostSpeed => activeBoostSpeed;
+        public void SetModifiers(float ordinaryRidingMultiplier, bool eligiblePanicBoost)
+        {
+            if (ordinaryRidingMultiplier < 1f || float.IsNaN(ordinaryRidingMultiplier)
+                || float.IsInfinity(ordinaryRidingMultiplier)) throw new ArgumentOutOfRangeException(nameof(ordinaryRidingMultiplier));
+            ridingMultiplier = ordinaryRidingMultiplier;
+            panicReady = eligiblePanicBoost;
+        }
+        private float RidingSpeed => tuning.Speed * ridingMultiplier;
         private float coyoteRemaining, bufferRemaining, graceRemaining;
         private bool wasGrounded, ignoreGroundUntilAirborne;
         private bool hasBeenAirborne, hopEligible;
-        public float RidingSpeedBonus { get; set; }
-        private float RidingSpeed => tuning.Speed * (1f + Math.Max(0f, RidingSpeedBonus));
-        private float activeBoostSpeed;
 
         public float HorizontalX => horizontal.X;
         public float HorizontalZ => horizontal.Y;
@@ -29,6 +39,8 @@ namespace Boki.Player
         public void Reset()
         {
             horizontal = Vector2.Zero;
+            ActiveBoostDuration = tuning.BoostDuration;
+            activeBoostSpeed = tuning.BoostSpeed;
             VerticalSpeed = BoostRemaining = CooldownRemaining = 0f;
             coyoteRemaining = bufferRemaining = graceRemaining = 0f;
             DisplacementX = DisplacementY = DisplacementZ = 0f;
@@ -45,7 +57,7 @@ namespace Boki.Player
 
         public void Tick(float directionX, float directionZ, bool grounded,
             bool jumpPressed, bool boostPressed, float deltaSeconds, float facingX = 0f, float facingZ = 1f,
-            float slopeAccelerationX = 0f, float slopeAccelerationZ = 0f, bool panicBoost = false)
+            float slopeAccelerationX = 0f, float slopeAccelerationZ = 0f)
         {
             DisplacementX = DisplacementY = DisplacementZ = 0f;
             if (deltaSeconds <= 0f) return;
@@ -74,9 +86,10 @@ namespace Boki.Player
                 if (facing.LengthSquared() < 0.000001f) facing = Vector2.UnitY;
                 Vector2 heading = input.LengthSquared() > 0f ? Vector2.Normalize(input)
                     : Speed > 0f ? Vector2.Normalize(horizontal) : Vector2.Normalize(facing);
-                activeBoostSpeed = tuning.BoostSpeed * (panicBoost ? 1.25f : 1f);
+                activeBoostSpeed = tuning.BoostSpeed * (panicReady ? 1.25f : 1f);
+                ActiveBoostDuration = tuning.BoostDuration * (panicReady ? 1.5f : 1f);
                 horizontal = heading * Math.Max(Speed, activeBoostSpeed);
-                BoostRemaining = tuning.BoostDuration * (panicBoost ? 1.5f : 1f);
+                BoostRemaining = ActiveBoostDuration;
             }
 
             // Small bounded integration steps keep acceleration and timer boundaries stable across frame rates.

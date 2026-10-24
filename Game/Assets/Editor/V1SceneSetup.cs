@@ -6,7 +6,7 @@ using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
 using Boki.Player;
-using Boki.Progression;
+using Boki.Upgrades;
 using Boki.Routes;
 using Boki.UI;
 using UnityEditor;
@@ -33,8 +33,7 @@ namespace Boki.Editor
         }
         [Serializable] private sealed class FeriMarker { public string name, type, owner; public float[] position, size; }
         [Serializable] private sealed class FeriMarkers { public FeriMarker[] markers; }
-        private static Material gateMaterial, portalMaterial, chargeMaterial, emptyMaterial, xpMaterial;
-        private static GameObject xpPrefab;
+        private static Material gateMaterial, portalMaterial, chargeMaterial, emptyMaterial;
         private static InputActionReference pauseAction, interactAction;
         private static InputActionReference upgradeNavigate, upgradeSubmit;
         private static readonly InputActionReference[] upgradeChoices = new InputActionReference[3];
@@ -47,7 +46,7 @@ namespace Boki.Editor
             try
             {
                 if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets", "V1");
-                Materials(); Controls(); CreateXP();
+                Materials(); Controls();
                 for (int i = 0; i < Scenes.Length; i++) BuildLevel((RouteLevel)i, Scenes[i]);
                 var entries = new List<EditorBuildSettingsScene>();
                 foreach (string path in Scenes) entries.Add(new EditorBuildSettingsScene(path, true));
@@ -103,6 +102,9 @@ namespace Boki.Editor
             foreach (var old in All<PohorjeHudPreview>(scene)) Object.DestroyImmediate(old.gameObject);
             foreach (var old in All<CombatSession>(scene)) Object.DestroyImmediate(old);
             foreach (var old in All<PlayerGameplayFeedback>(scene)) Object.DestroyImmediate(old);
+            foreach (var old in All<PlayerTestArena>(scene)) Object.DestroyImmediate(old);
+            foreach (var old in All<UpgradeManager>(scene)) Object.DestroyImmediate(old);
+            foreach (var old in All<UpgradeScreen>(scene)) Object.DestroyImmediate(old.gameObject);
             foreach (var root in scene.GetRootGameObjects())
                 if (root.name == "MovementHUD" || root.name == "Model Test Controls") root.SetActive(false);
             var runtime = new GameObject("V1 Gameplay");
@@ -132,7 +134,7 @@ namespace Boki.Editor
             Int(manager, "level", (int)level); Ref(manager, "player", health); Ref(manager, "status", ui.Status);
             Bool(manager, "playerFacingStatus", true);
             var guilt = CreateGuilt(runtime.transform, health, markers);
-            Ref(hud, "guilt", guilt); Ref(ui.Flow, "guilt", guilt);
+            Ref(hud, "guilt", guilt); Ref(ui.Flow, "guilt", guilt); Ref(player, "guilt", guilt);
             var feedback = player.gameObject.AddComponent<PlayerGameplayFeedback>();
             Ref(feedback, "movement", player); Ref(feedback, "health", health); Ref(feedback, "effects", player.GetComponent<BokiPlayerEffects>());
             Ref(feedback, "battery", battery); Ref(feedback, "presentation", player.GetComponent<ScooterPresentation>());
@@ -338,7 +340,6 @@ namespace Boki.Editor
             template.transform.SetParent(parent, false); template.transform.position = position;
             if (template.TryGetComponent<MeleeEnemy>(out var melee)) Ref(melee, "target", player);
             if (template.TryGetComponent<RangedEnemy>(out var ranged)) Ref(ranged, "target", player);
-            if (reward) Ref(template.AddComponent<EnemyReward>(), "xpPrefab", xpPrefab);
             template.SetActive(false);
             return template;
         }
@@ -444,7 +445,6 @@ namespace Boki.Editor
             portalMaterial = Material("Portal", new Color(0.2f, 1f, 0.85f));
             chargeMaterial = Material("Battery Available", new Color(0.3f, 1f, 0.25f));
             emptyMaterial = Material("Battery Depleted", new Color(0.2f, 0.25f, 0.2f));
-            xpMaterial = Material("XP", new Color(1f, 0.72f, 0.12f));
         }
         private static Material Material(string name, Color color)
         {
@@ -488,18 +488,6 @@ namespace Boki.Editor
                 if (reference.action.name == "UpgradeSubmit") upgradeSubmit = reference;
                 for (int i = 0; i < 3; i++) if (reference.action.name == "UpgradeChoice" + (i + 1)) upgradeChoices[i] = reference;
             }
-        }
-        private static void CreateXP()
-        {
-            string path = Folder + "/XP Pack.prefab";
-            xpPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            if (xpPrefab != null) return;
-            var obj = new GameObject("XP Pack");
-            obj.layer = 2;
-            var collider = obj.AddComponent<SphereCollider>(); collider.isTrigger = true; collider.radius = 1f;
-            var body = obj.AddComponent<Rigidbody>(); body.isKinematic = true; body.useGravity = false;
-            Sphere(obj.transform, "XP Glow", Vector3.zero, 0.35f, xpMaterial);
-            obj.AddComponent<XPPickup>(); xpPrefab = PrefabUtility.SaveAsPrefabAsset(obj, path); Object.DestroyImmediate(obj);
         }
         private static void EnsureEventSystem(Scene scene)
         {

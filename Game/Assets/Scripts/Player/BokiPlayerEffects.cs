@@ -11,6 +11,57 @@ namespace Boki.Player
         [SerializeField, Min(0.01f)] private float damageFlashDuration = 0.15f;
 
         [SerializeField] private ParticleSystem pickupGlow;
+        [SerializeField] private ScooterController movement;
+        [SerializeField] private PlayerHealth health;
+        [SerializeField] private ParticleSystem ridingDirt;
+        [SerializeField] private ParticleSystem landingDust;
+        private Vector3 previousPosition;
+        private bool wasGrounded;
+        private float dirtRemainder;
+
+        private void OnEnable()
+        {
+            previousPosition = transform.position;
+            wasGrounded = movement != null && movement.IsGrounded;
+            dirtRemainder = 0f;
+            if (ridingDirt != null) ridingDirt.Pause(false);
+            if (landingDust != null) landingDust.Pause(false);
+        }
+
+        private void LateUpdate()
+        {
+            Vector3 travel = transform.position - previousPosition;
+            previousPosition = transform.position;
+            if (movement == null || health == null || ridingDirt == null || landingDust == null) return;
+            float dt = Time.deltaTime;
+            if (dt <= 0f || (Boki.Core.RunSession.Instance != null
+                && !Boki.Core.RunSession.Instance.IsGameplayActive)) return;
+            bool grounded = movement.IsGrounded;
+            if (movement.isActiveAndEnabled && health.IsAlive && travel.sqrMagnitude < 25f)
+            {
+                float speed = new Vector2(travel.x, travel.z).magnitude / dt;
+                if (grounded && speed > 0.7f)
+                {
+                    dirtRemainder += dt * Mathf.Lerp(8f, 48f, Mathf.Clamp01(speed / movement.BoostSpeed));
+                    int count = Mathf.FloorToInt(dirtRemainder);
+                    dirtRemainder -= count;
+                    if (count > 0)
+                    {
+                        ridingDirt.Emit(count);
+                        ridingDirt.Pause(false);
+                    }
+                }
+                else dirtRemainder = 0f;
+                if (!wasGrounded && grounded)
+                {
+                    landingDust.Emit(18);
+                    landingDust.Pause(false);
+                }
+            }
+            wasGrounded = grounded;
+            ridingDirt.Simulate(dt, false, false, false);
+            landingDust.Simulate(dt, false, false, false);
+        }
 
         public void PlayPickupGlow(bool batteryEnergy)
         {
@@ -136,6 +187,8 @@ namespace Boki.Player
         private void OnDisable()
         {
             StopTrails();
+            if (ridingDirt != null) ridingDirt.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            if (landingDust != null) landingDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             if (pickupGlow != null) pickupGlow.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             RestoreColors();
         }

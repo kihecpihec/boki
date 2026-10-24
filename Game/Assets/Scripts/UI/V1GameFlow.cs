@@ -3,7 +3,7 @@ using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
 using Boki.Player;
-using Boki.Progression;
+using Boki.Upgrades;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -26,8 +26,8 @@ namespace Boki.UI
         [SerializeField] private UpgradeScreen upgrades;
         [SerializeField] private InputActionReference pauseAction;
         private readonly System.Random random = new System.Random();
-        private readonly GuiltMovementAdvantage advantage = new GuiltMovementAdvantage();
-        private UpgradeKind[] offer;
+        private UpgradeId[] offer;
+        private int offerVersion;
         private RunSession session;
         private bool terminal, paused, choosing;
         private bool ownsPause;
@@ -54,7 +54,7 @@ namespace Boki.UI
             if (ownsPause) pauseAction.action.Enable();
             panel.SetActive(false);
         }
-        private void Start() => RefreshModifiers();
+        private void Start() => movement.BindGuilt(guilt);
         private void OnDisable()
         {
             if (health != null) health.Died -= Died;
@@ -70,13 +70,8 @@ namespace Boki.UI
         private void Update()
         {
             if (terminal || session == null) return;
-            if (!paused && !choosing && session.State.Progression.NeedsSelection) ShowUpgrade();
+            if (!paused && !choosing && session.State.Progression.HasPendingSelection) ShowUpgrade();
             if (!session.IsGameplayActive) return;
-            bool near = guilt != null && guilt.Pressure.IsActive && !guilt.Pressure.AwaitingPlacement
-                && guilt.Phase == GuiltPhase.Chase && (guilt.transform.position - health.transform.position).sqrMagnitude <= 100f;
-            advantage.Tick(Time.deltaTime, near);
-            movement.SetRidingSpeedBonus(session.State.Progression.RidingBonus + advantage.Bonus);
-            movement.PanicBoostReady = near && session.State.Progression.PanicMode;
             if (health.transform.position.y < -30f) health.TakeDamage(health.Current);
         }
         public void SetObjective(string message) { if (objective != null && objective.text != message) objective.text = message; }
@@ -90,12 +85,13 @@ namespace Boki.UI
                 ShowPanel("PAUSED", "Ride, fight, collect XP, and reach the next portal.", true);
             }
         }
-        private void Suspend(bool value)
+        private void Suspend(bool value, PauseReason reason = PauseReason.Menu)
         {
-            session.SetPaused(value);
-            followCamera.enabled = !value;
-            Cursor.lockState = value ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = value;
+            session.SetPaused(reason, value);
+            bool suspended = session.State.Pause.IsPaused;
+            followCamera.enabled = !suspended;
+            Cursor.lockState = suspended ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = suspended;
         }
         private void ShowPanel(string heading, string message, bool canResume)
         {
@@ -127,57 +123,52 @@ namespace Boki.UI
         private void ShowUpgrade()
         {
             var state = session.State;
-            offer = state.Progression.Offer(random, health.Current < health.Maximum, state.Battery < state.LightBattery.Capacity);
+            if (!state.Progression.CreateOffer(random)) return;
+            offerVersion = state.Progression.OfferVersion;
+            offer = new UpgradeId[state.Progression.OfferCount];
+            for (int i = 0; i < offer.Length; i++) offer[i] = state.Progression.Offer(i);
             if (offer.Length == 0) { Debug.LogError("Expected at least one eligible V1 upgrade.", this); return; }
             choosing = true;
-            Suspend(true);
-            upgrades.SetOfferSize(offer.Length);
+            Suspend(true, PauseReason.Upgrade);
             for (int i = 0; i < offer.Length; i++)
             {
                 var kind = offer[i];
-                bool recovery = kind == UpgradeKind.EmergencySnack || kind == UpgradeKind.BatteryCharge;
+                bool recovery = kind == UpgradeId.EmergencySnack || kind == UpgradeId.BatteryCharge;
                 upgrades.SetCard(i, Name(kind), Description(kind), recovery ? "RECOVERY" : "UPGRADE", recovery);
             }
-            upgrades.ShowOffer();
+            upgrades.ShowOffer(offer.Length);
         }
         public void Choose(int index)
         {
-            if (!choosing || index < 0 || index >= offer.Length || !session.State.ChooseUpgrade(offer[index])) return;
+            if (!choosing || index < 0 || index >= offer.Length || !session.State.Progression.TrySelect(index, offerVersion)) return;
             upgrades.Hide();
             choosing = false;
-            RefreshModifiers();
-            if (session.State.Progression.NeedsSelection) ShowUpgrade();
-            else Suspend(false);
+            if (session.State.Progression.HasPendingSelection) ShowUpgrade();
+            else Suspend(false, PauseReason.Upgrade);
         }
-        private void RefreshModifiers()
-        {
-            laser.DamageMultiplier = session.State.Progression.DamageMultiplier;
-            laser.DoubleHit = session.State.Progression.DoubleTrouble;
-            movement.SetRidingSpeedBonus(session.State.Progression.RidingBonus);
-        }
-        private static string Name(UpgradeKind kind)
+        private static string Name(UpgradeId kind)
         {
             switch (kind)
             {
-                case UpgradeKind.RaveOverdrive: return "RAVE OVERDRIVE";
-                case UpgradeKind.TurboSkiro: return "TURBO SKIRO";
-                case UpgradeKind.BiggerBattery: return "BIGGER BATTERY";
-                case UpgradeKind.DoubleTrouble: return "DOUBLE TROUBLE";
-                case UpgradeKind.PanicMode: return "PANIC MODE";
-                case UpgradeKind.EmergencySnack: return "EMERGENCY SNACK";
+                case UpgradeId.RaveOverdrive: return "RAVE OVERDRIVE";
+                case UpgradeId.TurboSkiro: return "TURBO SKIRO";
+                case UpgradeId.BiggerBattery: return "BIGGER BATTERY";
+                case UpgradeId.DoubleTrouble: return "DOUBLE TROUBLE";
+                case UpgradeId.PanicMode: return "PANIC MODE";
+                case UpgradeId.EmergencySnack: return "EMERGENCY SNACK";
                 default: return "BATTERY CHARGE";
             }
         }
-        private static string Description(UpgradeKind kind)
+        private static string Description(UpgradeId kind)
         {
             switch (kind)
             {
-                case UpgradeKind.RaveOverdrive: return "+30% original laser damage. Stacks up to three times.";
-                case UpgradeKind.TurboSkiro: return "+20% original riding speed. Boost speed stays the same.";
-                case UpgradeKind.BiggerBattery: return "+40 battery capacity. Keeps the current charge percentage.";
-                case UpgradeKind.DoubleTrouble: return "A second full-damage laser hit each firing cycle.";
-                case UpgradeKind.PanicMode: return "Boost near chasing Guilt: +25% boost speed and +50% duration.";
-                case UpgradeKind.EmergencySnack: return "Restore 30 HP.";
+                case UpgradeId.RaveOverdrive: return "+30% original laser damage. Stacks up to three times.";
+                case UpgradeId.TurboSkiro: return "+20% original riding speed. Boost speed stays the same.";
+                case UpgradeId.BiggerBattery: return "+40 battery capacity. Keeps the current charge percentage.";
+                case UpgradeId.DoubleTrouble: return "A second full-damage laser hit each firing cycle.";
+                case UpgradeId.PanicMode: return "Boost near chasing Guilt: +25% boost speed and +50% duration.";
+                case UpgradeId.EmergencySnack: return "Restore 30 HP.";
                 default: return "Restore 25 battery charge.";
             }
         }

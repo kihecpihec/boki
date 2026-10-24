@@ -9,6 +9,8 @@ namespace Boki.Battery
     {
         [SerializeField] private PlayerHealth player;
         [SerializeField] private Light surroundingLight;
+        [SerializeField] private Transform headlightMount;
+        [SerializeField] private bool strongGuiltWarning;
         [SerializeField, Min(0f)] private float intensity = 5f;
         [SerializeField] private Vector3 headlightPosition = new Vector3(0f, 0.65f, 0.85f);
         [SerializeField, Range(0f, 45f)] private float headlightDownwardAngle = 15f;
@@ -36,8 +38,8 @@ namespace Boki.Battery
             session = RunSession.Ensure();
             if (!session.BindLight(this)) { enabled = false; return; }
             // Keep the existing serialized light reference so authored scenes need no rewiring.
-            surroundingLight.transform.SetParent(transform, false);
-            surroundingLight.transform.localPosition = headlightPosition;
+            surroundingLight.transform.SetParent(headlightMount != null ? headlightMount : transform, false);
+            surroundingLight.transform.localPosition = headlightMount != null ? Vector3.zero : headlightPosition;
             surroundingLight.transform.localRotation = Quaternion.Euler(headlightDownwardAngle, 0f, 0f);
             surroundingLight.type = LightType.Spot;
             surroundingLight.range = headlightRange;
@@ -48,10 +50,11 @@ namespace Boki.Battery
             if (nearbyFill == null)
             {
                 var fillObject = new GameObject("Scooter Nearby Fill");
-                fillObject.transform.SetParent(transform, false);
                 nearbyFill = fillObject.AddComponent<Light>();
             }
-            nearbyFill.transform.localPosition = new Vector3(0f, 0.45f, 0.65f);
+            nearbyFill.transform.SetParent(headlightMount != null ? headlightMount : transform, false);
+            nearbyFill.transform.localPosition = headlightMount != null ? new Vector3(0f, -0.25f, -0.08f)
+                : new Vector3(0f, 0.45f, 0.65f);
             nearbyFill.type = LightType.Point;
             nearbyFill.color = surroundingLight.color;
             nearbyFill.range = fillRange;
@@ -66,8 +69,16 @@ namespace Boki.Battery
             surroundingLight.enabled = player.IsAlive && State.Current > 0f;
             if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
             float fraction = Mathf.Clamp01(State.Current / State.Capacity);
+            float warning = Mathf.Clamp01(WarningStrength);
+            float pulse = warningTime < 0.16f || (warningTime > 0.28f && warningTime < 0.44f) ? 1f : 0f;
+            float alarm = strongGuiltWarning ? warning : 0f;
+            Color lampColor = Color.Lerp(new Color(0.82f, 0.94f, 1f),
+                new Color(1f, 0.035f, 0.015f), alarm * (0.65f + pulse * 0.35f));
+            surroundingLight.color = nearbyFill.color = lampColor;
             float flicker = 1f - Mathf.Clamp01(WarningStrength) * 0.45f
                 * Mathf.Pow(Mathf.Sin(warningTime * Mathf.PI * 7f), 8f);
+            if (strongGuiltWarning) flicker = Mathf.Lerp(1f, 0.25f + pulse * 1.75f, warning);
+            nearbyFill.range = fillRange * Mathf.Lerp(1f, 1.5f, alarm);
             surroundingLight.intensity = intensity * Mathf.Lerp(0.15f, 1f, fraction) * flicker;
             nearbyFill.intensity = fillIntensity * Mathf.Lerp(0.15f, 1f, fraction) * flicker;
             nearbyFill.enabled = surroundingLight.enabled;
