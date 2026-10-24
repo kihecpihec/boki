@@ -12,6 +12,7 @@ namespace Boki.UI
 {
     public sealed class V1GameFlow : MonoBehaviour
     {
+        [SerializeField] private MenuScreen menu;
         [SerializeField] private PlayerHealth health;
         [SerializeField] private ScooterController movement;
         [SerializeField] private ThirdPersonCamera followCamera;
@@ -49,14 +50,35 @@ namespace Boki.UI
             resume.onClick.AddListener(Resume);
             retry.onClick.AddListener(Retry);
             upgrades.ChoiceRequested.AddListener(Choose);
-            pauseAction.action.performed += Pause;
-            ownsPause = !pauseAction.action.enabled;
-            if (ownsPause) pauseAction.action.Enable();
+            if (menu != null)
+            {
+                menu.PauseRequested.AddListener(PauseMenu);
+                menu.ResumeRequested.AddListener(Resume);
+                menu.RestartRequested.AddListener(Retry);
+                menu.NewRunRequested.AddListener(Retry);
+                menu.MainMenuRequested.AddListener(MainMenu);
+                menu.QuitRequested.AddListener(Quit);
+            }
+            else
+            {
+                pauseAction.action.performed += Pause;
+                ownsPause = !pauseAction.action.enabled;
+                if (ownsPause) pauseAction.action.Enable();
+            }
             panel.SetActive(false);
         }
         private void Start() => movement.BindGuilt(guilt);
         private void OnDisable()
         {
+            if (menu != null)
+            {
+                menu.PauseRequested.RemoveListener(PauseMenu);
+                menu.ResumeRequested.RemoveListener(Resume);
+                menu.RestartRequested.RemoveListener(Retry);
+                menu.NewRunRequested.RemoveListener(Retry);
+                menu.MainMenuRequested.RemoveListener(MainMenu);
+                menu.QuitRequested.RemoveListener(Quit);
+            }
             if (health != null) health.Died -= Died;
             if (resume != null) resume.onClick.RemoveListener(Resume);
             if (retry != null) retry.onClick.RemoveListener(Retry);
@@ -75,14 +97,22 @@ namespace Boki.UI
             if (health.transform.position.y < -30f) health.TakeDamage(health.Current);
         }
         public void SetObjective(string message) { if (objective != null && objective.text != message) objective.text = message; }
-        private void Pause(InputAction.CallbackContext context)
+        private void Pause(InputAction.CallbackContext context) => PauseMenu();
+        private void PauseMenu()
         {
             if (terminal || choosing || session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
             if (paused) Resume();
             else
             {
                 paused = true;
-                ShowPanel("PAUSED", "Ride, fight, collect XP, and reach the next portal.", true);
+                if (menu == null) ShowPanel("PAUSED", "Ride, fight, collect XP, and reach the next portal.", true);
+                else
+                {
+                    Suspend(true);
+                    var state = session.State;
+                    menu.SetRunSummary($"HP  {health.Current:0}\nBATTERY  {state.LightBattery.Current:0}\nXP  {state.XP}\n\nUPGRADES  {state.Progression.Selections}\nKILLS  {state.KillCount}");
+                    menu.ShowPauseMenu();
+                }
             }
         }
         private void Suspend(bool value, PauseReason reason = PauseReason.Menu)
@@ -105,9 +135,18 @@ namespace Boki.UI
         {
             if (terminal || choosing) return;
             paused = false;
+            if (menu != null) menu.Hide();
             panel.SetActive(false);
             Suspend(false);
         }
+        private void MainMenu()
+        {
+            if (terminal || choosing) return;
+            paused = true;
+            Suspend(true);
+            menu.ShowMainMenu();
+        }
+        private void Quit() => Application.Quit();
         public void Retry() { if (session != null) session.Retry(); }
         private void Died()
         {

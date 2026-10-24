@@ -10,6 +10,7 @@ namespace Boki.UI
     [DisallowMultipleComponent]
     public sealed class MenuScreen : MonoBehaviour
     {
+        [SerializeField] private bool startHidden;
         [SerializeField] private GameObject panel;
         [SerializeField] private GameObject effects;
         [SerializeField] private Text location;
@@ -33,6 +34,8 @@ namespace Boki.UI
         private bool settings;
         private bool unlocks;
         private int selected;
+        private EventSystem menuEvents;
+        private bool previousNavigationEvents;
         private string runSummary = "HP  --\nBATTERY  --\nXP  --\n\nUPGRADES\n--";
 
         public bool IsMainMenuVisible => visible && !paused;
@@ -72,11 +75,12 @@ namespace Boki.UI
             navigate.action.Enable();
             submit.action.Enable();
             back.action.Enable();
-            ShowMainMenu();
+            if (startHidden) Hide(); else ShowMainMenu();
         }
 
         private void OnDisable()
         {
+            RestoreNavigation();
             if (navigate != null) { navigate.action.performed -= Navigate; navigate.action.Disable(); }
             if (submit != null) { submit.action.performed -= Submit; submit.action.Disable(); }
             if (back != null) { back.action.performed -= Back; back.action.Disable(); }
@@ -84,7 +88,19 @@ namespace Boki.UI
 
         public void ShowMainMenu() { paused = false; Show(); }
         public void ShowPauseMenu() { paused = true; Show(); PauseShown?.Invoke(); }
-        public void Hide() { visible = false; panel.SetActive(false); }
+        public void Hide()
+        {
+            visible = false;
+            panel.SetActive(false);
+            RestoreNavigation();
+        }
+
+        private void RestoreNavigation()
+        {
+            if (menuEvents == null) return;
+            menuEvents.sendNavigationEvents = previousNavigationEvents;
+            menuEvents = null;
+        }
         public void SetRunSummary(string summary)
         {
             runSummary = summary;
@@ -93,6 +109,13 @@ namespace Boki.UI
 
         private void Show()
         {
+            if (!visible && EventSystem.current != null)
+            {
+                menuEvents = EventSystem.current;
+                previousNavigationEvents = menuEvents.sendNavigationEvents;
+                // Dedicated menu actions already process navigation and submit.
+                menuEvents.sendNavigationEvents = false;
+            }
             visible = true;
             settings = unlocks = false;
             panel.SetActive(true);
