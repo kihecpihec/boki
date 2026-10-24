@@ -34,6 +34,7 @@ namespace Boki.UI
         private int selected;
         private string runSummary = "HP  --\nBATTERY  --\nXP  --\n\nUPGRADES\n--";
 
+        public bool IsMainMenuVisible => visible && !paused;
         public UnityEvent NewRunRequested => newRunRequested;
         public UnityEvent ResumeRequested => resumeRequested;
         public UnityEvent RestartRequested => restartRequested;
