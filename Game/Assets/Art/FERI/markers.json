@@ -1,0 +1,1140 @@
+{
+  "coordinates": "Blender XYZ meters; Z up",
+  "markers": [
+    {
+      "name": "Seal_A_Front",
+      "type": "Seal",
+      "position": [
+        -42,
+        8,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Gate_A",
+      "type": "Gate",
+      "position": [
+        -42,
+        8,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Trigger_A",
+      "type": "Trigger",
+      "position": [
+        -42,
+        9,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A",
+      "size": [
+        4,
+        1,
+        3.5
+      ]
+    },
+    {
+      "name": "Seal_A_Rear",
+      "type": "Seal",
+      "position": [
+        -42,
+        66,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Charge_A_1",
+      "type": "Charge",
+      "position": [
+        -52.8,
+        27.11111111111111,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Charge_A_2",
+      "type": "Charge",
+      "position": [
+        -31.2,
+        27.11111111111111,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Charge_A_3",
+      "type": "Charge",
+      "position": [
+        -42.0,
+        44.888888888888886,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Spawn_A_1",
+      "type": "Spawn",
+      "position": [
+        -58.2,
+        21.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Spawn_A_2",
+      "type": "Spawn",
+      "position": [
+        -25.799999999999997,
+        21.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Spawn_A_3",
+      "type": "Spawn",
+      "position": [
+        -58.2,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Spawn_A_4",
+      "type": "Spawn",
+      "position": [
+        -25.799999999999997,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Spawn_A_5",
+      "type": "Spawn",
+      "position": [
+        -58.2,
+        50.22222222222222,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Spawn_A_6",
+      "type": "Spawn",
+      "position": [
+        -25.799999999999997,
+        50.22222222222222,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Guilt_Anchor_A_1",
+      "type": "Guilt",
+      "position": [
+        -42.0,
+        23.555555555555557,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Guilt_Anchor_A_2",
+      "type": "Guilt",
+      "position": [
+        -36.6,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Guilt_Anchor_A_3",
+      "type": "Guilt",
+      "position": [
+        -42.0,
+        48.44444444444444,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Occupancy_A",
+      "type": "Occupancy",
+      "position": [
+        -42,
+        36.0,
+        2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A",
+      "size": [
+        36,
+        32,
+        4
+      ]
+    },
+    {
+      "name": "Seal_B_Front",
+      "type": "Seal",
+      "position": [
+        0,
+        8,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Gate_B",
+      "type": "Gate",
+      "position": [
+        0,
+        8,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Trigger_B",
+      "type": "Trigger",
+      "position": [
+        0,
+        9,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B",
+      "size": [
+        4,
+        1,
+        3.5
+      ]
+    },
+    {
+      "name": "Seal_B_Rear",
+      "type": "Seal",
+      "position": [
+        0,
+        66,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Charge_B_1",
+      "type": "Charge",
+      "position": [
+        -10.8,
+        27.11111111111111,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Charge_B_2",
+      "type": "Charge",
+      "position": [
+        10.8,
+        27.11111111111111,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Charge_B_3",
+      "type": "Charge",
+      "position": [
+        0.0,
+        44.888888888888886,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Spawn_B_1",
+      "type": "Spawn",
+      "position": [
+        -16.2,
+        21.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Spawn_B_2",
+      "type": "Spawn",
+      "position": [
+        16.200000000000003,
+        21.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Spawn_B_3",
+      "type": "Spawn",
+      "position": [
+        -16.2,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Spawn_B_4",
+      "type": "Spawn",
+      "position": [
+        16.200000000000003,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Spawn_B_5",
+      "type": "Spawn",
+      "position": [
+        -16.2,
+        50.22222222222222,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Spawn_B_6",
+      "type": "Spawn",
+      "position": [
+        16.200000000000003,
+        50.22222222222222,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Guilt_Anchor_B_1",
+      "type": "Guilt",
+      "position": [
+        0.0,
+        23.555555555555557,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Guilt_Anchor_B_2",
+      "type": "Guilt",
+      "position": [
+        5.399999999999999,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Guilt_Anchor_B_3",
+      "type": "Guilt",
+      "position": [
+        0.0,
+        48.44444444444444,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Occupancy_B",
+      "type": "Occupancy",
+      "position": [
+        0,
+        36.0,
+        2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B",
+      "size": [
+        36,
+        32,
+        4
+      ]
+    },
+    {
+      "name": "Seal_C_Front",
+      "type": "Seal",
+      "position": [
+        42,
+        8,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Gate_C",
+      "type": "Gate",
+      "position": [
+        42,
+        8,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Trigger_C",
+      "type": "Trigger",
+      "position": [
+        42,
+        9,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        4,
+        1,
+        3.5
+      ]
+    },
+    {
+      "name": "Seal_C_Rear",
+      "type": "Seal",
+      "position": [
+        42,
+        66,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Charge_C_1",
+      "type": "Charge",
+      "position": [
+        31.2,
+        27.11111111111111,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Charge_C_2",
+      "type": "Charge",
+      "position": [
+        52.8,
+        27.11111111111111,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Charge_C_3",
+      "type": "Charge",
+      "position": [
+        42.0,
+        44.888888888888886,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Spawn_C_1",
+      "type": "Spawn",
+      "position": [
+        25.8,
+        21.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Spawn_C_2",
+      "type": "Spawn",
+      "position": [
+        58.2,
+        21.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Spawn_C_3",
+      "type": "Spawn",
+      "position": [
+        25.8,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Spawn_C_4",
+      "type": "Spawn",
+      "position": [
+        58.2,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Spawn_C_5",
+      "type": "Spawn",
+      "position": [
+        25.8,
+        50.22222222222222,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Spawn_C_6",
+      "type": "Spawn",
+      "position": [
+        58.2,
+        50.22222222222222,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Guilt_Anchor_C_1",
+      "type": "Guilt",
+      "position": [
+        42.0,
+        23.555555555555557,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Guilt_Anchor_C_2",
+      "type": "Guilt",
+      "position": [
+        47.4,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Guilt_Anchor_C_3",
+      "type": "Guilt",
+      "position": [
+        42.0,
+        48.44444444444444,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Occupancy_C",
+      "type": "Occupancy",
+      "position": [
+        42,
+        36.0,
+        2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        36,
+        32,
+        4
+      ]
+    },
+    {
+      "name": "Event_FloorTrap_1",
+      "type": "Event",
+      "position": [
+        42,
+        12,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        1.8,
+        1.8,
+        0.1
+      ]
+    },
+    {
+      "name": "Event_FloorTrap_2",
+      "type": "Event",
+      "position": [
+        42,
+        17,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C",
+      "size": [
+        1.8,
+        1.8,
+        0.1
+      ]
+    },
+    {
+      "name": "Event_PowerOffInteract",
+      "type": "Event",
+      "position": [
+        58.9,
+        45.16666666666667,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_C"
+    },
+    {
+      "name": "Event_A_MeleeGroup_1",
+      "type": "Event",
+      "position": [
+        -42,
+        16,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Event_A_MeleeGroup_2",
+      "type": "Event",
+      "position": [
+        -42.0,
+        37.77777777777778,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_A"
+    },
+    {
+      "name": "Event_B_Ambush",
+      "type": "Event",
+      "position": [
+        0,
+        36.0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Route_B"
+    },
+    {
+      "name": "Start_Player",
+      "type": "Start",
+      "position": [
+        0,
+        4,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Shared_Arrival"
+    },
+    {
+      "name": "Event_FinalGuilt",
+      "type": "Event",
+      "position": [
+        0,
+        71,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Shared_Landing"
+    },
+    {
+      "name": "Event_ArenaEntry",
+      "type": "Event",
+      "position": [
+        0,
+        77,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom",
+      "size": [
+        4,
+        1,
+        3.5
+      ]
+    },
+    {
+      "name": "Seal_Classroom",
+      "type": "Seal",
+      "position": [
+        0,
+        75,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom",
+      "size": [
+        4,
+        0.25,
+        4
+      ]
+    },
+    {
+      "name": "Spawn_Professor",
+      "type": "Spawn",
+      "position": [
+        0,
+        94,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    },
+    {
+      "name": "Event_GuiltBackdrop",
+      "type": "Event",
+      "position": [
+        0,
+        95.5,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    },
+    {
+      "name": "Occupancy_Classroom",
+      "type": "Occupancy",
+      "position": [
+        0,
+        86,
+        2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom",
+      "size": [
+        24,
+        20,
+        4
+      ]
+    },
+    {
+      "name": "Exit_FERI",
+      "type": "VictoryEvent",
+      "position": [
+        0,
+        93,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    },
+    {
+      "name": "Charge_Classroom_1",
+      "type": "Charge",
+      "position": [
+        -8,
+        84,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    },
+    {
+      "name": "Spawn_Classroom_Add_1",
+      "type": "Spawn",
+      "position": [
+        -8,
+        92,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    },
+    {
+      "name": "Charge_Classroom_2",
+      "type": "Charge",
+      "position": [
+        8,
+        84,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    },
+    {
+      "name": "Spawn_Classroom_Add_2",
+      "type": "Spawn",
+      "position": [
+        8,
+        92,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "owner": "Arena_Classroom"
+    }
+  ]
+}

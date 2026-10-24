@@ -9,6 +9,39 @@ namespace Boki.Tests
         private static readonly RouteChoice[] Routes = { RouteChoice.A, RouteChoice.B, RouteChoice.C };
         private static UnlockSnapshot All => new UnlockSnapshot { ForestC = true, CityC = true, FeriC = true };
 
+        [Test]
+        public void NextLevelResetsGuiltButRejectedAdvanceDoesNot()
+        {
+            var run = new RunState(All, 0);
+            run.Guilt.SetCombatSpaceOccupied(1, true);
+            run.Guilt.Tick(22f);
+            Assert.That(run.TryAdvance(RouteLevel.Forest), Is.False);
+            Assert.That(run.Guilt.AccumulatedCombatSeconds, Is.EqualTo(22f));
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            Assert.That(run.TryAdvance(RouteLevel.Forest), Is.True);
+            Assert.That(run.Guilt.AccumulatedCombatSeconds, Is.Zero);
+            Assert.That(run.Guilt.IsActive, Is.False);
+        }
+
+        [Test]
+        public void NewRunClearsGuiltBossAndSuspensionState()
+        {
+            var run = new RunState(All, 0);
+            run.Guilt.SetCombatSpaceOccupied(1, true);
+            run.Guilt.Tick(22f);
+            run.Guilt.GameplaySuspended = true;
+            run.Guilt.ScriptedSequenceActive = true;
+            run.Guilt.IsLoading = true;
+            run.Guilt.EndForBoss();
+            run.NewRun(All, 1);
+            Assert.That(run.Guilt.AccumulatedCombatSeconds, Is.Zero);
+            Assert.That(run.Guilt.BossEntered, Is.False);
+            Assert.That(run.Guilt.GameplaySuspended, Is.False);
+            Assert.That(run.Guilt.ScriptedSequenceActive, Is.False);
+            Assert.That(run.Guilt.IsLoading, Is.False);
+            Assert.That(run.Guilt.IsActive, Is.False);
+        }
+
         [TestCase(RouteLevel.City, RouteChoice.A, "AB")]
         [TestCase(RouteLevel.City, RouteChoice.B, "AC")]
         [TestCase(RouteLevel.City, RouteChoice.C, "BC")]
