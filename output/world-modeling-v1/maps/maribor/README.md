@@ -1,4 +1,6 @@
-# Maribor — lit diorama pass, horror and overlap revision
+# Maribor — archived v1 model
+
+The current production art delivery is [Maribor v3](../../../world-modeling-v3/maps/maribor/README.md). This v1 model was subsequently imported into `Game/Assets/Art/Maribor` and `Maribor_Map_Test`; statements below about pending import describe the original delivery and are historical. Use the v3 source, collision contract, validation and Unity preview for new integration work.
 
 **Third pass.** This revision removes overlapping geometry and gives the city the dread the Story asks for. See [Overlap fixes](#overlap-fixes) and [Horror pass](#horror-pass). The sections below describe the layout, which is unchanged except where noted.
 

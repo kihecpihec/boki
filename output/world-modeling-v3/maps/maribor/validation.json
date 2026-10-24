@@ -1,0 +1,26 @@
+{
+  "scene": "Maribor_Production",
+  "render_triangles": 86854,
+  "render_objects": 266,
+  "materials": [
+    "Maribor_Ashlar",
+    "Maribor_Asphalt",
+    "Maribor_Cobble",
+    "Maribor_Concrete",
+    "Maribor_Details",
+    "Maribor_Emission",
+    "Maribor_Grass",
+    "Maribor_Rock",
+    "Maribor_Slab",
+    "Maribor_Terracotta",
+    "Maribor_Water"
+  ],
+  "floor_rectangles": 107,
+  "collision_shapes": {
+    "Box": 549,
+    "Capsule": 87
+  },
+  "normal_repairs": 0,
+  "markers": 64,
+  "errors": []
+}
