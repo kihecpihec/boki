@@ -87,18 +87,18 @@ namespace Boki.Editor
             var battery = movement.GetComponent<LightBattery>();
             var lightSettings = new SerializedObject(battery);
             lightSettings.FindProperty("headlightMount").objectReferenceValue = mount;
-            lightSettings.FindProperty("headlightAngle").floatValue = 65f;
-            lightSettings.FindProperty("headlightDownwardAngle").floatValue = 12f;
+            lightSettings.FindProperty("headlightAngle").floatValue = 125f;
+            lightSettings.FindProperty("headlightDownwardAngle").floatValue = 24f;
             lightSettings.ApplyModifiedPropertiesWithoutUndo();
             var lamp = (Light)lightSettings.FindProperty("surroundingLight").objectReferenceValue;
             // Keep the prefab hierarchy intact in Edit Mode; LightBattery attaches it on enable.
-            lamp.transform.position = mount.position;
-            lamp.transform.rotation = mount.rotation * Quaternion.Euler(12f, 0f, 0f);
+            lamp.transform.position = mount.position + movement.transform.up * 1.2f;
+            lamp.transform.rotation = mount.rotation * Quaternion.Euler(24f, 0f, 0f);
             lamp.type = LightType.Spot;
-            lamp.spotAngle = 65f;
-            lamp.innerSpotAngle = 29.25f;
-            lamp.range = 15f;
-            lamp.color = new Color(0.82f, 0.94f, 1f);
+            lamp.spotAngle = 125f;
+            lamp.innerSpotAngle = 56.25f;
+            lamp.range = 8f;
+            lamp.color = Color.white;
             lamp.shadows = LightShadows.None;
             foreach (Object changed in new Object[] { origin, beam, mount, battery, lamp, lamp.transform })
                 PrefabUtility.RecordPrefabInstancePropertyModifications(changed);

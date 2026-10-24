@@ -43,13 +43,13 @@ namespace Boki.UI
             overlay.enabled = darknessEnabled;
             if (!darknessEnabled) return;
             Vector3 lightCenter = battery.transform.position + Vector3.up
-                + battery.transform.forward * forwardOffset;
+                + battery.transform.forward * (forwardOffset * battery.Visibility);
             Vector3 center = worldCamera.WorldToViewportPoint(lightCenter);
             Vector3 edge = worldCamera.WorldToViewportPoint(lightCenter + worldCamera.transform.up * (lightRadius * radiusScale));
             float radius = Mathf.Clamp(Mathf.Abs(edge.y - center.y), 0.15f, 1.5f);
             material.SetVector(Center, new Vector4(center.x, center.y, 0f, 0f));
             float visibility = battery.Visibility;
-            material.SetFloat(Radius, radius * Mathf.Lerp(0.25f, chargedRadiusMultiplier, visibility));
+            material.SetFloat(Radius, radius * Mathf.Lerp(0.4f, chargedRadiusMultiplier, visibility));
             material.SetFloat(Aspect, (float)worldCamera.pixelWidth / Mathf.Max(1, worldCamera.pixelHeight));
             material.SetFloat(Opacity, Mathf.Min(0.8f, darknessOpacity + extraDarkness)
                 * Mathf.Lerp(1f, chargedOpacityMultiplier, visibility));
