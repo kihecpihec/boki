@@ -179,11 +179,6 @@ namespace Boki.Editor
                 foreach (var m in manifest.markers)
                     markers.Add(new Marker { Name = m.name, Kind = m.kind, Owner = m.owner, Position = MapProductionTools.Vector(m.position),
                         Size = MapProductionTools.Vector(m.size), Forward = MapProductionTools.Vector(m.forward) });
-                RenderSettings.fogColor = level == RouteLevel.Forest ? new Color(0.14f, 0.20f, 0.24f) : new Color(0.18f, 0.12f, 0.11f);
-                RenderSettings.fogMode = FogMode.Linear; RenderSettings.fogStartDistance = 35; RenderSettings.fogEndDistance = 180;
-                RenderSettings.ambientMode = AmbientMode.Flat;
-                RenderSettings.ambientLight = level == RouteLevel.Forest ? new Color(0.52f, 0.59f, 0.63f) : new Color(0.58f, 0.49f, 0.46f);
-                var probe = new SphericalHarmonicsL2(); probe.AddAmbientLight(RenderSettings.ambientLight); RenderSettings.ambientProbe = probe;
                 foreach (var m in markers)
                 {
                     if (m.Kind != "light_violet" && m.Kind != "light_warm") continue;
@@ -212,12 +207,8 @@ namespace Boki.Editor
                     markers.Add(new Marker { Name = m.name, Kind = kind, Owner = owner, Position = FeriMapTestBuilder.Unity(m.position),
                         Size = m.size == null ? Vector3.zero : FeriMapTestBuilder.Unity(m.size) });
                 }
-                RenderSettings.fogMode = FogMode.ExponentialSquared; RenderSettings.fogDensity = 0.015f;
-                RenderSettings.fogColor = new Color(0.03f, 0.07f, 0.05f);
-                RenderSettings.ambientMode = AmbientMode.Trilight; RenderSettings.ambientSkyColor = new Color(0.30f, 0.42f, 0.36f);
-                RenderSettings.ambientEquatorColor = new Color(0.18f, 0.26f, 0.22f); RenderSettings.ambientGroundColor = new Color(0.05f, 0.08f, 0.06f);
             }
-            RenderSettings.skybox = null; RenderSettings.fog = true;
+            ScooterLightSetup.ConfigureLighting(destination);
             return map;
         }
 

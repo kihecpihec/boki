@@ -45,7 +45,7 @@ namespace Boki.Battery
             surroundingLight.range = headlightRange;
             surroundingLight.spotAngle = headlightAngle;
             surroundingLight.innerSpotAngle = headlightAngle * 0.45f;
-            surroundingLight.color = new Color(0.82f, 0.94f, 1f);
+            surroundingLight.color = new Color(1f, 0.94f, 0.82f);
             surroundingLight.shadows = LightShadows.None;
             if (nearbyFill == null)
             {
@@ -72,7 +72,7 @@ namespace Boki.Battery
             float warning = Mathf.Clamp01(WarningStrength);
             float pulse = warningTime < 0.16f || (warningTime > 0.28f && warningTime < 0.44f) ? 1f : 0f;
             float alarm = strongGuiltWarning ? warning : 0f;
-            Color lampColor = Color.Lerp(new Color(0.82f, 0.94f, 1f),
+            Color lampColor = Color.Lerp(new Color(1f, 0.94f, 0.82f),
                 new Color(1f, 0.035f, 0.015f), alarm * (0.65f + pulse * 0.35f));
             surroundingLight.color = nearbyFill.color = lampColor;
             float flicker = 1f - Mathf.Clamp01(WarningStrength) * 0.45f

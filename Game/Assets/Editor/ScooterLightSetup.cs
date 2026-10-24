@@ -85,6 +85,31 @@ namespace Boki.Editor
             Debug.Log("SCOOTER_LIGHT_SETUP_APPLIED");
         }
 
+        [MenuItem("Boki/Light Battery/Apply Darkness to V1 and Model Test")]
+        public static void ApplyDarkness()
+        {
+            RequireClean();
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string path in new[] { ModelScene, "Assets/Scenes/V1_Pohorje.unity",
+                    "Assets/Scenes/V1_Maribor.unity", "Assets/Scenes/V1_FERI.unity" })
+                {
+                    Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    ConfigureLighting(scene);
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    EditorSceneManager.SaveScene(scene);
+                }
+            }
+            finally
+            {
+                if (setup.Length > 0 && !string.IsNullOrEmpty(setup[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+            Debug.Log("V1_DARKNESS_APPLIED");
+        }
+
         private static LightBattery ConfigurePlayer(GameObject player)
         {
             PlayerHealth health = player.GetComponent<PlayerHealth>();
@@ -102,7 +127,7 @@ namespace Boki.Editor
             light.type = LightType.Point;
             light.range = 9f;
             light.intensity = 5f;
-            light.color = new Color(0.55f, 0.9f, 1f);
+            light.color = new Color(1f, 0.94f, 0.82f);
             light.shadows = LightShadows.None;
             light.renderMode = LightRenderMode.ForcePixel;
             LightBattery battery = player.GetComponent<LightBattery>();
@@ -112,28 +137,39 @@ namespace Boki.Editor
             return battery;
         }
 
-        private static void ConfigureLighting(Scene scene)
+        internal static void ConfigureLighting(Scene scene)
         {
             RenderSettings.skybox = null;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.07f, 0.09f, 0.13f);
-            RenderSettings.ambientEquatorColor = new Color(0.045f, 0.055f, 0.085f);
-            RenderSettings.ambientGroundColor = new Color(0.025f, 0.03f, 0.045f);
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.006f, 0.006f, 0.006f);
+            RenderSettings.ambientSkyColor = RenderSettings.ambientLight;
+            RenderSettings.ambientEquatorColor = RenderSettings.ambientLight;
+            RenderSettings.ambientGroundColor = RenderSettings.ambientLight;
+            RenderSettings.reflectionIntensity = 0f;
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogColor = new Color(0.015f, 0.02f, 0.04f);
-            RenderSettings.fogDensity = 0.035f;
+            RenderSettings.fogColor = Color.black;
+            RenderSettings.fogDensity = 0.045f;
             var probe = new UnityEngine.Rendering.SphericalHarmonicsL2();
-            probe.AddAmbientLight(RenderSettings.ambientEquatorColor);
+            probe.AddAmbientLight(RenderSettings.ambientLight);
             RenderSettings.ambientProbe = probe;
             foreach (ThirdPersonCamera follow in FindAll<ThirdPersonCamera>(scene))
             {
                 Camera camera = follow.GetComponent<Camera>();
                 camera.clearFlags = CameraClearFlags.SolidColor;
-                camera.backgroundColor = RenderSettings.fogColor;
+                camera.backgroundColor = Color.black;
             }
             foreach (Light light in FindAll<Light>(scene))
-                if (light.type == LightType.Directional) light.intensity = Mathf.Min(light.intensity, 0.18f);
+            {
+                if (light.type == LightType.Directional) light.intensity = 0f;
+                // Keep landmarks local; they must not illuminate an entire encounter without battery.
+                else if (light.GetComponentInParent<LightBattery>() == null)
+                {
+                    light.range = Mathf.Min(light.range, 3f);
+                    light.intensity = Mathf.Min(light.intensity, 0.35f);
+                    light.shadows = LightShadows.None;
+                }
+            }
         }
 
         private static void ConfigureUI(Scene scene, LightBattery battery)
