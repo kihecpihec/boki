@@ -50,7 +50,7 @@ Code:
 - Prefer serialized references over `Find*`/`GetComponent` in `Update`. Cache in `Awake`. Validate required references in `OnEnable`, `Debug.LogError(..., this)`, then `enabled = false` (see `RouteGate`).
 - Gameplay reads `Time.deltaTime` only inside adapters, and passes the delta into rules. No `Time.timeScale` writes outside the pause authority.
 - Input System only, through serialized `InputActionReference`s. Whoever enables an action disables it. No legacy `Input.*`.
-- Enemy caps 8/12/8, simple colliders, no ragdolls, no per-frame allocation (no LINQ, no string building, no `new` collections in `Update`; use `*NonAlloc` physics). No pooling or abstraction layers without a profile or concrete requirement.
+- Uncapped regular arena spawns per Gameplay §5, simple colliders, no ragdolls, no per-frame allocation (no LINQ, no string building, no `new` collections in `Update`; use `*NonAlloc` physics). No pooling or abstraction layers without a profile or concrete requirement.
 - No new packages, no ScriptableObject event buses, no service locators, no DI framework, no generic `Manager` or `Singleton<T>` base class. Existing `RunSession.Ensure()` is the one sanctioned global; do not copy that pattern for a second one without agreement.
 - Use identifiers, comments and new UI strings in English. Preserve Slovenian names and quoted text verbatim (`Izgubljeni meščan`, `Podzemni prehod`, `POWER OFF`) and keep `boost`.
 

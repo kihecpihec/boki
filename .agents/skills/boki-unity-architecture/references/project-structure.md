@@ -68,7 +68,7 @@ Check the "Revised Loop Integration Requirements" in Architecture §6 before tou
 - Active input handling: Input System package only.
 - URP Forward, one main light, minimal shadow-casting lights, simple fog, render scale 0.75–0.9 when needed. VHS/glitch effects must be switchable.
 - Player: Windows x86_64, 1280×720, Low quality. Record FPS on the 5600G in a Windows player build; Linux Editor numbers do not count (Architecture §7).
-- Enemy caps 8/12/8; simple colliders; no ragdolls.
+- Uncapped regular arena populations per Gameplay §5; simple colliders; no ragdolls.
 
 ## Adding a script, asmdef, or asset without the Editor
 

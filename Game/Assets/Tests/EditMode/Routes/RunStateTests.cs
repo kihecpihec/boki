@@ -149,7 +149,7 @@ namespace Boki.Tests
             Assert.That(run.TryAdvance(RouteLevel.City), Is.False);
             run.TrySelect(RouteLevel.City, RouteChoice.B);
             run.Health.TakeDamage(27);
-            run.Battery = 23; run.Progression.AddXp(4); run.KillCount = 2; run.Progression.CreateOffer(new FirstOfferRandom());
+            run.Battery = 23; run.Progression.AddXp(20); run.KillCount = 2; run.Progression.CreateOffer(new FirstOfferRandom());
             for (int i = 0; i < 3; i++)
                 if (run.Progression.Offer(i) == Boki.Upgrades.UpgradeId.RaveOverdrive)
                 { run.Progression.TrySelect(i, run.Progression.OfferVersion); break; }
@@ -158,7 +158,7 @@ namespace Boki.Tests
             Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Feri));
             Assert.That(run.Health.Current, Is.EqualTo(73));
             Assert.That(run.Battery, Is.EqualTo(23));
-            Assert.That(run.XP, Is.EqualTo(4));
+            Assert.That(run.XP, Is.EqualTo(20));
             Assert.That(run.KillCount, Is.EqualTo(2));
             Assert.That(run.Upgrades.Count, Is.EqualTo(1));
             Assert.That(run.StartedAt, Is.EqualTo(5));

@@ -32,7 +32,7 @@ In the M1 test arena, Escape releases the cursor and a left click recaptures it.
 
 ### M2 Combat Baseline
 
-The automatic laser fires instantaneous pulses at the nearest visible living regular enemy within 10 m of the beam origin. Each pulse deals 20 damage, with a 0.4 s interval. Environment geometry blocks the beam; an occluded nearest enemy is skipped in favor of the nearest visible enemy. A brief beam visual shows each shot; there is no projectile travel or fire button.
+The automatic laser fires instantaneous pulses at the nearest visible living regular enemy within 10 m of the beam origin. Each pulse deals 10 damage, with a 0.4 s interval. Environment geometry blocks the beam; an occluded nearest enemy is skipped in favor of the nearest visible enemy. A brief beam visual shows each shot; there is no projectile travel or fire button.
 
 The initial melee prototype has 60 HP and moves at 3 m/s. Contact attacks deal 10 damage with a 0.75 s interval per enemy; damage is not applied every rendered frame. The initial contact distance is 0.9 m between controller centers, measured in 3D so jumping can avoid contact. Walls block contact damage. These Inspector values are a prototype baseline for playtesting.
 
@@ -264,17 +264,11 @@ Frequency, base speed, and damage stop escalating at the last row. Upgrade selec
 
 ### Enemy Replenishment and Exits
 
-Use predefined spawn points on the selected route. Replenish only during active gameplay while Boki occupies its combat space, below the desired count, and never above the total level cap (including authored groups and boss reinforcements).
+Use predefined spawn points on the selected route. On first active occupation, populate the combat space with 15 regular enemies, retrying unavailable positions during active gameplay until the opening group is placed. Reentry does not grant another opening group. Opening enemies may be visible; place them on valid, collision-free ground at least 8 m from Boki and spread them around the markers.
 
-| Level | Desired active regular enemies | Maximum active regular enemies | Replenishment cadence |
-|---|---:|---:|---|
-| Pohorje | 4 | 8 | One every 4 s → 2 s |
-| Maribor | 6 | 12 | One every 3 s → 1.5 s |
-| FERI | 4 | 8 | One every 4 s → 2 s |
+There is no desired population or maximum active enemy count. Continue spawning one enemy every 4 seconds in Pohorje/FERI and every 3 seconds in Maribor regardless of how many survive. Intervals decrease linearly over the first 120 accumulated active combat-space seconds to 2 seconds and 1.5 seconds respectively, then remain there. Missed attempts never accumulate. Regular enemies snapshot +25% original health and +15% original damage per accumulated combat minute when spawned, with continuous linear scaling and no strength cap; existing enemies keep their spawn stats. This applies to melee contact and ranged projectile damage, not the professor or Guilt.
 
-Replenishment intervals decrease linearly over the first 120 accumulated active combat-space seconds, then remain at half the starting interval. Use the same per-level combat clock as Guilt pressure: leaving a space retains progress, overlapping spaces do not double-count, pause/upgrade selection/loading/scripted sequences freeze progress, and the next level or New Run resets it. Each scheduled attempt uses the current interval; missed attempts never accumulate.
-
-Authored ambushes may exceed the desired count, never the cap. Spawn outside the camera view, at least 8 m from Boki, on valid collision-free ground within the chosen space. If no valid point exists, wait; never accumulate a burst of missed spawns. Death does not trigger an immediate replacement. Stop replenishment on leaving the space, scene transition, arena entry, or terminal outcome. Pause and upgrade selection freeze spawn timers. Preserve route-specific melee/ranged compositions and rewards.
+Use the same per-level combat clock as Guilt pressure: leaving a space retains progress, overlapping spaces do not double-count, pause/upgrade selection/loading/scripted sequences freeze progress, and the next level or New Run resets it. Replenishment requires active occupation; later spawns must also be outside camera view. If no safe point exists, wait. Death does not trigger immediate replacement. Stop replenishment on leaving the space, scene transition, boss entry, or terminal outcome. Preserve route-specific melee/ranged compositions. The player must manage the growing population by killing and dodging enemies and choosing upgrades.
 
 Exits have no kill quota or forced wave clear. Leaving early sacrifices potential upgrades. Preserve authored traversal requirements, including City C's side-door escape. Boss entry remains a commitment with the existing physical entrance seal.
 
@@ -333,7 +327,7 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 - **Renderer:** URP Forward; lower render scale if needed, e.g. 0.75–0.9. Do not use HDRP or volumetric fog.
 - **Lights:** approximately 1 main directional light and only a few active local lights in view. Disable real-time shadows on additional lights. The scooter light uses one unshadowed Point Light plus a restrained rider-only fill, without expensive shadow casting.
 - **Visibility:** local fog and limited geometry; do not render entire streets behind fog. Reuse prefab models.
-- **Enemies:** cap at 8 / 12 / 8. Use simple colliders, no ragdolls, no expensive physics scripts per enemy, and small spawn batches.
+- **Enemies:** uncapped regular arena population; validate growing hordes on target hardware. Use simple colliders, no ragdolls, no expensive physics scripts per enemy, and small spawn batches.
 - **Effects:** low-resolution textures, particles only on hits, restrained grain/glitch effects, and toggles where needed.
 - **Measurement:** make a Windows build and test on the target Radeon graphics early. Record FPS during the Maribor horde, boss fight, and scene with the most lights.
 
@@ -362,7 +356,7 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 ## 10. Acceptance Tests (Manual Checks)
 
 - [ ] A chosen path leads into a combat space with room to fight, dodge, and collect rewards before continuing toward the level exit.
-- [ ] Staying provides further XP and upgrade opportunities through enemy replenishment without exceeding the level's active-enemy cap.
+- [ ] Staying provides further XP and upgrade opportunities through enemy replenishment without an active-enemy cap.
 - [ ] Longer lingering makes Guilt appear more often, move faster, and deal more damage according to the agreed tuning; warnings remain readable and Guilt stays invulnerable.
 - [ ] Upgrade selection and pause freeze combat, pressure, spawn timers, battery drain, and charge recharge timers.
 - [ ] Verify grace, tier boundaries/caps, warning-time snapshots, same-level pressure retention, next-level reset, and no scripted/ambient overlap.

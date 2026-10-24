@@ -15,7 +15,7 @@ namespace Boki.Combat
         [Tooltip("Environment only. Exclude player and enemy geometry.")]
         [SerializeField] private LayerMask obstructionMask = 1;
         [SerializeField, Min(0.01f)] private float range = 10f;
-        [SerializeField, Min(1)] private int damage = 20;
+        [SerializeField, Min(1)] private int damage = 10;
         [SerializeField, Min(0.01f)] private float fireInterval = 0.4f;
         [SerializeField, Min(0.01f)] private float beamDuration = 0.08f;
         private float cooldown;

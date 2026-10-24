@@ -350,7 +350,7 @@ namespace Boki.Editor
             }
             var encounter = parent.gameObject.AddComponent<RouteEncounter>(); Ref(encounter, "space", space); Ref(encounter, "player", player); Ref(encounter, "viewCamera", camera);
             ArrayRef(encounter, "templates", templates.ToArray()); ArrayRef(encounter, "spawnPoints", points.ToArray());
-            Int(encounter, "desiredCount", level == RouteLevel.City ? 6 : 4); Int(encounter, "maximumCount", level == RouteLevel.City ? 12 : 8);
+            Int(encounter, "initialCount", 15);
             Float(encounter, "cadence", level == RouteLevel.City ? 3f : 4f);
         }
 
