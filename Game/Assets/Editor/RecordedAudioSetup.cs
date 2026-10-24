@@ -19,6 +19,48 @@ namespace Boki.Editor
         private const string AudioPath = "Assets/Audio/Sfx/Recorded/";
         private static readonly string[] Scenes = { "Player_Model_Test", "V1_Pohorje", "V1_Maribor", "V1_FERI" };
 
+        [MenuItem("Boki/Audio/Wire V1 FERI Boss Music")]
+        public static void WireBossMusic()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Exit Play Mode first.");
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                if (SceneManager.GetSceneAt(i).isDirty)
+                    throw new InvalidOperationException("Save dirty scenes first.");
+            var clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/boss_fight.mp3");
+            if (clip == null) throw new InvalidOperationException("Import boss_fight.mp3 first.");
+            SceneSetup[] previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                Scene scene = EditorSceneManager.OpenScene("Assets/Scenes/V1_FERI.unity");
+                var arenas = All<V1BossArena>(scene);
+                if (arenas.Length != 1) throw new InvalidOperationException("Expected one V1 FERI boss arena.");
+                Transform child = arenas[0].transform.Find("Boss Fight Music");
+                if (child == null)
+                {
+                    child = new GameObject("Boss Fight Music").transform;
+                    child.SetParent(arenas[0].transform, false);
+                }
+                var source = child.GetComponent<AudioSource>();
+                if (source == null) source = child.gameObject.AddComponent<AudioSource>();
+                source.clip = clip;
+                source.playOnAwake = false;
+                source.loop = true;
+                source.spatialBlend = 0f;
+                source.volume = 0f;
+                var binding = new SerializedObject(arenas[0]);
+                Set(binding, "bossMusic", source);
+                Save(binding);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log("V1_FERI_BOSS_MUSIC_WIRED");
+            }
+            finally
+            {
+                if (previous.Length > 0) EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
         [MenuItem("Boki/Audio/Apply Recorded Sounds")]
         public static void Apply()
         {

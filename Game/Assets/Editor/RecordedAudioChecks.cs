@@ -102,13 +102,19 @@ namespace Boki.Editor
         {
             if (!SessionState.GetBool(Key, false) || !EditorApplication.isPlaying) return;
             if (failure != null) { EditorApplication.ExitPlaymode(); return; }
-            if (EditorApplication.timeSinceStartup - started > 45) { Fail("Timeout at stage " + stage); return; }
+            if (EditorApplication.timeSinceStartup - started > 45) { Fail("Timeout at stage " + stage + " alive=" + RunSession.Instance.State.Health.IsAlive
+                    + " menu=" + RunSession.Instance.State.Pause.Contains(PauseReason.Menu)
+                    + " upgrade=" + RunSession.Instance.State.Pause.Contains(PauseReason.Upgrade)
+                    + " scripted=" + RunSession.Instance.State.Pause.Contains(PauseReason.ScriptedSequence)
+                    + " active=" + RunSession.Instance.IsGameplayActive
+                    + " focused=" + Application.isFocused); return; }
             if (EditorApplication.timeSinceStartup < nextTick) return;
             nextTick = EditorApplication.timeSinceStartup + 0.06;
             try
             {
                 var session = RunSession.Instance;
                 if (output != null) output.SendMessage("OnApplicationFocus", true);
+                if (arena != null) arena.SendMessage("OnApplicationFocus", true);
                 if (player != null) player.GetComponent<PlayerAudio>().SendMessage("OnApplicationFocus", true);
                 switch (stage)
                 {
@@ -163,7 +169,11 @@ namespace Boki.Editor
                         Check(death.isPlaying, "Death tail resumes");
                         for (int i = 0; i < 20; i++) output.PlayEnemyDeath(player.transform.position);
                         Check(output.GetComponentsInChildren<AudioSource>().Length == 7, "Voice limit creates no new sources");
-                        arena.SendMessage("OnTriggerEnter", player.GetComponent<CharacterController>());
+                        var controller = player.GetComponent<CharacterController>();
+                        controller.enabled = false;
+                        player.transform.position = arena.transform.position;
+                        controller.enabled = true;
+                        arena.SendMessage("OnTriggerEnter", controller);
                         professor = (ProfessorBoss)new SerializedObject(arena).FindProperty("professor").objectReferenceValue;
                         Check(session.HasEnteredBossArena && professor.IsFighting, "Actual arena begins fight once");
                         Check(session.State.Pause.Contains(PauseReason.ScriptedSequence) && dialogue.clip.name == "professor_question", "Opening question owns scripted pause");
@@ -171,6 +181,14 @@ namespace Boki.Editor
                         break;
                     case 5:
                         if (dialogue.clip.name != "skoraj_pravocasno") return;
+                        var music = (AudioSource)new SerializedObject(arena).FindProperty("bossMusic").objectReferenceValue;
+                        Check(music != null && music.clip.name == "boss_fight" && !music.isPlaying,
+                            "Boss music is assigned and silent during opening");
+                        var seal = (GameObject)new SerializedObject(arena).FindProperty("entranceSeal").objectReferenceValue;
+                        Vector3 intoArena = professor.transform.position - seal.transform.position;
+                        intoArena.y = 0f;
+                        Check(Vector3.Dot(Camera.main.transform.position - seal.transform.position, intoArena) > 0f,
+                            "Dialogue camera is inside the sealed arena");
                         Check(session.State.Pause.Contains(PauseReason.ScriptedSequence), "Reply retains combat pause");
                         session.SetPaused(PauseReason.Menu, true);
                         stage++;
@@ -186,8 +204,12 @@ namespace Boki.Editor
                         stage++;
                         break;
                     case 8:
-                        if (session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
+                        if (session.State.Pause.Contains(PauseReason.ScriptedSequence) || !session.IsGameplayActive) return;
                         Check(session.IsGameplayActive, "Opening returns control after both lines");
+                        var fightMusic = (AudioSource)new SerializedObject(arena).FindProperty("bossMusic").objectReferenceValue;
+                        if (!fightMusic.isPlaying) return;
+                        Check(fightMusic.loop && fightMusic.volume > 0f && fightMusic.volume <= 0.22f,
+                            "Boss track loops with a quiet fade after dialogue");
                         EnemyHealth boss = professor.GetComponent<EnemyHealth>();
                         boss.TakeDamage(boss.Current);
                         Check(flow.IsTerminal && dialogue.clip.name == "professor_saturday" && dialogue.isPlaying, "Victory plays Saturday line behind terminal screen");

@@ -26,6 +26,8 @@ namespace Boki.UI
         [SerializeField] private AudioClip bokiReply;
         [SerializeField] private AudioClip professorSaturday;
         [SerializeField] private AudioClip[] bokiReaction;
+        public bool IsBossOpening => dialogueStage == 1 || dialogueStage == 2;
+
         private bool focused, worldPaused, dialoguePaused, greeted, ownsPause;
         private int lastDamage = -1, lastDeath = -1, lastTeleport = -1, lastReaction = -1;
         private int dialogueStage;
