@@ -1,5 +1,5 @@
 {
   "name": "Boki.Run.Rules",
-  "references": ["Boki.Combat.Rules", "Boki.Enemies.Rules"],
+  "references": ["Boki.Battery.Rules", "Boki.Combat.Rules", "Boki.Enemies.Rules"],
   "noEngineReferences": true
 }

@@ -1,4 +1,5 @@
 using System;
+using Boki.Battery;
 using Boki.Combat;
 using Boki.Player;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace Boki.Enemies
         private CharacterController controller;
         private EnemyHealth health;
         private CharacterController targetController;
+        private LightBattery targetLight;
         private float verticalSpeed;
         private float cooldown;
         public event Action Attacked;
@@ -33,6 +35,7 @@ namespace Boki.Enemies
                 return;
             }
             targetController = target.GetComponent<CharacterController>();
+            targetLight = target.GetComponent<LightBattery>();
             cooldown = verticalSpeed = 0f;
         }
 
@@ -40,6 +43,7 @@ namespace Boki.Enemies
         {
             if (!health.IsAlive || !health.isActiveAndEnabled || target == null
                 || !target.isActiveAndEnabled || !target.IsAlive || !controller.enabled) return;
+            if (targetLight != null && !targetLight.IsGameplayActive) return;
             float dt = Time.deltaTime;
             cooldown = Mathf.Max(0f, cooldown - dt);
             Vector3 delta = target.transform.position - transform.position;
@@ -47,7 +51,7 @@ namespace Boki.Enemies
             Vector3 direction = horizontal.normalized;
             if (controller.isGrounded && verticalSpeed < 0f) verticalSpeed = -2f;
             verticalSpeed -= 25f * dt;
-            CollisionFlags collision = controller.Move((direction * speed + Vector3.up * verticalSpeed) * dt);
+            CollisionFlags collision = controller.Move((direction * (speed * (targetLight != null ? targetLight.EnemySpeedMultiplier : 1f)) + Vector3.up * verticalSpeed) * dt);
             if ((collision & CollisionFlags.Below) != 0) verticalSpeed = -2f;
             if ((collision & CollisionFlags.Above) != 0 && verticalSpeed > 0f) verticalSpeed = 0f;
             IsMoving = horizontal.sqrMagnitude > 0.001f;

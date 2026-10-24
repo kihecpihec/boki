@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Boki.Combat;
+using Boki.Battery;
 using Boki.Enemies;
 
 namespace Boki.Routes
@@ -24,7 +25,8 @@ namespace Boki.Routes
         private readonly RouteChoice[] choices = new RouteChoice[3];
         public GuiltState Guilt { get; } = new GuiltState();
         public HealthState Health { get; private set; }
-        public int Battery { get; set; }
+        public LightBatteryState LightBattery { get; } = new LightBatteryState();
+        public float Battery { get => LightBattery.Current; set => LightBattery.Current = value; }
         public int XP { get; set; }
         public List<string> Upgrades { get; } = new List<string>();
         public int KillCount { get; set; }
@@ -39,7 +41,7 @@ namespace Boki.Routes
         {
             Guilt.Reset();
             Health = new HealthState(100);
-            Battery = 100;
+            LightBattery.Reset();
             XP = KillCount = 0;
             Upgrades.Clear();
             Array.Clear(choices, 0, choices.Length);
