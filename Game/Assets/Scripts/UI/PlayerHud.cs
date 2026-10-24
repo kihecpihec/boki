@@ -32,6 +32,7 @@ namespace Boki.UI
         private int lastHealth = -1, lastMaximum = -1, lastCharge = -1, lastCapacity = -1, lastXp = -1;
         private RouteLevel? lastLevel;
         public bool ScreenEffectsEnabled { get => screenEffectsEnabled; set => screenEffectsEnabled = value; }
+        public void BindGuilt(GuiltChaser chaser) => guilt = chaser;
 
         private void OnEnable()
         {

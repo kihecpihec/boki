@@ -30,6 +30,13 @@ namespace Boki.Player
         private bool skipLookFrame;
         private readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
 
+        public void SnapHeading(float heading)
+        {
+            yaw = Mathf.Repeat(heading, 360f);
+            currentDistance = followDistance;
+            skipLookFrame = true;
+        }
+
         private void OnEnable()
         {
             if (followPivot == null || lookAction == null || lookAction.action == null)
