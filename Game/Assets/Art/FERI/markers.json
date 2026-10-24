@@ -5,7 +5,7 @@
       "name": "Seal_A_Front",
       "type": "Seal",
       "position": [
-        -24,
+        -42,
         8,
         0
       ],
@@ -25,7 +25,7 @@
       "name": "Gate_A",
       "type": "Gate",
       "position": [
-        -24,
+        -42,
         8,
         0
       ],
@@ -45,7 +45,7 @@
       "name": "Trigger_A",
       "type": "Trigger",
       "position": [
-        -24,
+        -42,
         9,
         0
       ],
@@ -65,8 +65,8 @@
       "name": "Seal_A_Rear",
       "type": "Seal",
       "position": [
-        -24,
-        52,
+        -42,
+        66,
         0
       ],
       "rotation": [
@@ -85,8 +85,8 @@
       "name": "Charge_A_1",
       "type": "Charge",
       "position": [
-        -30,
-        26,
+        -52.8,
+        27.11111111111111,
         0
       ],
       "rotation": [
@@ -100,8 +100,8 @@
       "name": "Charge_A_2",
       "type": "Charge",
       "position": [
-        -18,
-        26,
+        -31.2,
+        27.11111111111111,
         0
       ],
       "rotation": [
@@ -115,8 +115,8 @@
       "name": "Charge_A_3",
       "type": "Charge",
       "position": [
-        -24,
-        35,
+        -42.0,
+        44.888888888888886,
         0
       ],
       "rotation": [
@@ -130,8 +130,8 @@
       "name": "Spawn_A_1",
       "type": "Spawn",
       "position": [
-        -32,
-        21,
+        -58.2,
+        21.77777777777778,
         0
       ],
       "rotation": [
@@ -145,8 +145,8 @@
       "name": "Spawn_A_2",
       "type": "Spawn",
       "position": [
-        -16,
-        21,
+        -25.799999999999997,
+        21.77777777777778,
         0
       ],
       "rotation": [
@@ -160,8 +160,8 @@
       "name": "Spawn_A_3",
       "type": "Spawn",
       "position": [
-        -32,
-        29,
+        -58.2,
+        36.0,
         0
       ],
       "rotation": [
@@ -175,8 +175,8 @@
       "name": "Spawn_A_4",
       "type": "Spawn",
       "position": [
-        -16,
-        29,
+        -25.799999999999997,
+        36.0,
         0
       ],
       "rotation": [
@@ -190,8 +190,8 @@
       "name": "Spawn_A_5",
       "type": "Spawn",
       "position": [
-        -30,
-        36,
+        -58.2,
+        50.22222222222222,
         0
       ],
       "rotation": [
@@ -205,8 +205,8 @@
       "name": "Spawn_A_6",
       "type": "Spawn",
       "position": [
-        -18,
-        36,
+        -25.799999999999997,
+        50.22222222222222,
         0
       ],
       "rotation": [
@@ -220,8 +220,8 @@
       "name": "Guilt_Anchor_A_1",
       "type": "Guilt",
       "position": [
-        -32,
-        25,
+        -42.0,
+        23.555555555555557,
         0
       ],
       "rotation": [
@@ -235,8 +235,8 @@
       "name": "Guilt_Anchor_A_2",
       "type": "Guilt",
       "position": [
-        -16,
-        32,
+        -36.6,
+        36.0,
         0
       ],
       "rotation": [
@@ -250,8 +250,8 @@
       "name": "Guilt_Anchor_A_3",
       "type": "Guilt",
       "position": [
-        -24,
-        21,
+        -42.0,
+        48.44444444444444,
         0
       ],
       "rotation": [
@@ -265,8 +265,8 @@
       "name": "Occupancy_A",
       "type": "Occupancy",
       "position": [
-        -24,
-        29,
+        -42,
+        36.0,
         2
       ],
       "rotation": [
@@ -276,8 +276,8 @@
       ],
       "owner": "Route_A",
       "size": [
-        20,
-        18,
+        36,
+        32,
         4
       ]
     },
@@ -346,7 +346,7 @@
       "type": "Seal",
       "position": [
         0,
-        52,
+        66,
         0
       ],
       "rotation": [
@@ -365,8 +365,8 @@
       "name": "Charge_B_1",
       "type": "Charge",
       "position": [
-        -6,
-        26,
+        -10.8,
+        27.11111111111111,
         0
       ],
       "rotation": [
@@ -380,8 +380,8 @@
       "name": "Charge_B_2",
       "type": "Charge",
       "position": [
-        6,
-        26,
+        10.8,
+        27.11111111111111,
         0
       ],
       "rotation": [
@@ -395,8 +395,8 @@
       "name": "Charge_B_3",
       "type": "Charge",
       "position": [
-        0,
-        35,
+        0.0,
+        44.888888888888886,
         0
       ],
       "rotation": [
@@ -410,8 +410,8 @@
       "name": "Spawn_B_1",
       "type": "Spawn",
       "position": [
-        -8,
-        21,
+        -16.2,
+        21.77777777777778,
         0
       ],
       "rotation": [
@@ -425,8 +425,8 @@
       "name": "Spawn_B_2",
       "type": "Spawn",
       "position": [
-        8,
-        21,
+        16.200000000000003,
+        21.77777777777778,
         0
       ],
       "rotation": [
@@ -440,8 +440,8 @@
       "name": "Spawn_B_3",
       "type": "Spawn",
       "position": [
-        -8,
-        29,
+        -16.2,
+        36.0,
         0
       ],
       "rotation": [
@@ -455,8 +455,8 @@
       "name": "Spawn_B_4",
       "type": "Spawn",
       "position": [
-        8,
-        29,
+        16.200000000000003,
+        36.0,
         0
       ],
       "rotation": [
@@ -470,8 +470,8 @@
       "name": "Spawn_B_5",
       "type": "Spawn",
       "position": [
-        -6,
-        36,
+        -16.2,
+        50.22222222222222,
         0
       ],
       "rotation": [
@@ -485,8 +485,8 @@
       "name": "Spawn_B_6",
       "type": "Spawn",
       "position": [
-        6,
-        36,
+        16.200000000000003,
+        50.22222222222222,
         0
       ],
       "rotation": [
@@ -500,8 +500,8 @@
       "name": "Guilt_Anchor_B_1",
       "type": "Guilt",
       "position": [
-        -8,
-        25,
+        0.0,
+        23.555555555555557,
         0
       ],
       "rotation": [
@@ -515,8 +515,8 @@
       "name": "Guilt_Anchor_B_2",
       "type": "Guilt",
       "position": [
-        8,
-        32,
+        5.399999999999999,
+        36.0,
         0
       ],
       "rotation": [
@@ -530,8 +530,8 @@
       "name": "Guilt_Anchor_B_3",
       "type": "Guilt",
       "position": [
-        0,
-        21,
+        0.0,
+        48.44444444444444,
         0
       ],
       "rotation": [
@@ -546,7 +546,7 @@
       "type": "Occupancy",
       "position": [
         0,
-        29,
+        36.0,
         2
       ],
       "rotation": [
@@ -556,8 +556,8 @@
       ],
       "owner": "Route_B",
       "size": [
-        20,
-        18,
+        36,
+        32,
         4
       ]
     },
@@ -565,7 +565,7 @@
       "name": "Seal_C_Front",
       "type": "Seal",
       "position": [
-        24,
+        42,
         8,
         0
       ],
@@ -585,7 +585,7 @@
       "name": "Gate_C",
       "type": "Gate",
       "position": [
-        24,
+        42,
         8,
         0
       ],
@@ -605,7 +605,7 @@
       "name": "Trigger_C",
       "type": "Trigger",
       "position": [
-        24,
+        42,
         9,
         0
       ],
@@ -625,8 +625,8 @@
       "name": "Seal_C_Rear",
       "type": "Seal",
       "position": [
-        24,
-        52,
+        42,
+        66,
         0
       ],
       "rotation": [
@@ -645,8 +645,8 @@
       "name": "Charge_C_1",
       "type": "Charge",
       "position": [
-        18,
-        26,
+        31.2,
+        27.11111111111111,
         0
       ],
       "rotation": [
@@ -660,8 +660,8 @@
       "name": "Charge_C_2",
       "type": "Charge",
       "position": [
-        30,
-        26,
+        52.8,
+        27.11111111111111,
         0
       ],
       "rotation": [
@@ -675,8 +675,8 @@
       "name": "Charge_C_3",
       "type": "Charge",
       "position": [
-        24,
-        35,
+        42.0,
+        44.888888888888886,
         0
       ],
       "rotation": [
@@ -690,8 +690,8 @@
       "name": "Spawn_C_1",
       "type": "Spawn",
       "position": [
-        16,
-        21,
+        25.8,
+        21.77777777777778,
         0
       ],
       "rotation": [
@@ -705,8 +705,8 @@
       "name": "Spawn_C_2",
       "type": "Spawn",
       "position": [
-        32,
-        21,
+        58.2,
+        21.77777777777778,
         0
       ],
       "rotation": [
@@ -720,8 +720,8 @@
       "name": "Spawn_C_3",
       "type": "Spawn",
       "position": [
-        16,
-        29,
+        25.8,
+        36.0,
         0
       ],
       "rotation": [
@@ -735,8 +735,8 @@
       "name": "Spawn_C_4",
       "type": "Spawn",
       "position": [
-        32,
-        29,
+        58.2,
+        36.0,
         0
       ],
       "rotation": [
@@ -750,8 +750,8 @@
       "name": "Spawn_C_5",
       "type": "Spawn",
       "position": [
-        18,
-        36,
+        25.8,
+        50.22222222222222,
         0
       ],
       "rotation": [
@@ -765,8 +765,8 @@
       "name": "Spawn_C_6",
       "type": "Spawn",
       "position": [
-        30,
-        36,
+        58.2,
+        50.22222222222222,
         0
       ],
       "rotation": [
@@ -780,8 +780,8 @@
       "name": "Guilt_Anchor_C_1",
       "type": "Guilt",
       "position": [
-        16,
-        25,
+        42.0,
+        23.555555555555557,
         0
       ],
       "rotation": [
@@ -795,8 +795,8 @@
       "name": "Guilt_Anchor_C_2",
       "type": "Guilt",
       "position": [
-        32,
-        32,
+        47.4,
+        36.0,
         0
       ],
       "rotation": [
@@ -810,8 +810,8 @@
       "name": "Guilt_Anchor_C_3",
       "type": "Guilt",
       "position": [
-        24,
-        21,
+        42.0,
+        48.44444444444444,
         0
       ],
       "rotation": [
@@ -825,8 +825,8 @@
       "name": "Occupancy_C",
       "type": "Occupancy",
       "position": [
-        24,
-        29,
+        42,
+        36.0,
         2
       ],
       "rotation": [
@@ -836,8 +836,8 @@
       ],
       "owner": "Route_C",
       "size": [
-        20,
-        18,
+        36,
+        32,
         4
       ]
     },
@@ -845,7 +845,7 @@
       "name": "Event_FloorTrap_1",
       "type": "Event",
       "position": [
-        24,
+        42,
         12,
         0
       ],
@@ -865,7 +865,7 @@
       "name": "Event_FloorTrap_2",
       "type": "Event",
       "position": [
-        24,
+        42,
         17,
         0
       ],
@@ -885,8 +885,8 @@
       "name": "Event_PowerOffInteract",
       "type": "Event",
       "position": [
-        32.9,
-        33.5,
+        58.9,
+        45.16666666666667,
         0
       ],
       "rotation": [
@@ -900,7 +900,7 @@
       "name": "Event_A_MeleeGroup_1",
       "type": "Event",
       "position": [
-        -24,
+        -42,
         16,
         0
       ],
@@ -915,8 +915,8 @@
       "name": "Event_A_MeleeGroup_2",
       "type": "Event",
       "position": [
-        -24,
-        30,
+        -42.0,
+        37.77777777777778,
         0
       ],
       "rotation": [
@@ -931,7 +931,7 @@
       "type": "Event",
       "position": [
         0,
-        29,
+        36.0,
         0
       ],
       "rotation": [
@@ -961,7 +961,7 @@
       "type": "Event",
       "position": [
         0,
-        57,
+        71,
         0
       ],
       "rotation": [
@@ -976,7 +976,7 @@
       "type": "Event",
       "position": [
         0,
-        63,
+        77,
         0
       ],
       "rotation": [
@@ -996,7 +996,7 @@
       "type": "Seal",
       "position": [
         0,
-        61,
+        75,
         0
       ],
       "rotation": [
@@ -1016,7 +1016,7 @@
       "type": "Spawn",
       "position": [
         0,
-        80,
+        94,
         0
       ],
       "rotation": [
@@ -1031,7 +1031,7 @@
       "type": "Event",
       "position": [
         0,
-        81.5,
+        95.5,
         0
       ],
       "rotation": [
@@ -1046,7 +1046,7 @@
       "type": "Occupancy",
       "position": [
         0,
-        72,
+        86,
         2
       ],
       "rotation": [
@@ -1066,7 +1066,7 @@
       "type": "VictoryEvent",
       "position": [
         0,
-        79,
+        93,
         0
       ],
       "rotation": [
@@ -1081,7 +1081,7 @@
       "type": "Charge",
       "position": [
         -8,
-        70,
+        84,
         0
       ],
       "rotation": [
@@ -1096,7 +1096,7 @@
       "type": "Spawn",
       "position": [
         -8,
-        78,
+        92,
         0
       ],
       "rotation": [
@@ -1111,7 +1111,7 @@
       "type": "Charge",
       "position": [
         8,
-        70,
+        84,
         0
       ],
       "rotation": [
@@ -1126,7 +1126,7 @@
       "type": "Spawn",
       "position": [
         8,
-        78,
+        92,
         0
       ],
       "rotation": [

@@ -3,11 +3,14 @@ import bpy, json, runpy, sys, math
 from pathlib import Path
 from mathutils import Vector
 from collections import deque
-OUT=Path(__file__).resolve().parent; ROOT=OUT.parents[2]
+OUT=Path(__file__).resolve().parent; ROOT=OUT.parents[3]
 validator=ROOT/'.agents/skills/boki-map-model-maker/scripts/validate_map.py'
 sys.argv=['validate_map.py','--','--json',str(OUT/'validation.json'),'--max-tris','150000']
 runpy.run_path(str(validator),run_name='__main__')
 layout=json.loads((OUT/'layout.json').read_text()); cells={(c['x'],c['y']):c['owner'] for c in layout['cells']}
+ramp=layout['ramp']
+def ramp_height(x,y):
+    return max(0,ramp['rise']-abs(y-ramp['center_y'])*ramp['rise']/ramp['run']) if abs(x-ramp['x'])<=2 and abs(y-ramp['center_y'])<=ramp['run'] else 0
 checks={};errors=[]
 for route in 'ABC':
     allowed={'Shared_Arrival','Shared_Landing','Arena_Classroom','Route_'+route}; seen={(0,4)};q=deque(seen)
@@ -15,7 +18,7 @@ for route in 'ABC':
         x,y=q.popleft()
         for p in [(x+2,y),(x-2,y),(x,y+2),(x,y-2)]:
             if p not in seen and cells.get(p) in allowed:seen.add(p);q.append(p)
-    checks['route_'+route+'_reaches_classroom']=(0,72) in seen
+    checks['route_'+route+'_reaches_classroom']=tuple(layout['classroom_probe']) in seen
     if not checks['route_'+route+'_reaches_classroom']:errors.append('Disconnected '+route)
 # Raycast actual floor geometry and check candidate marker supports.
 floors=[o for o in bpy.context.scene.objects if o.name.startswith('PL_') and o.name.endswith('_Floor')]
@@ -27,7 +30,7 @@ def floor_at(x,y):
 sampled=0
 for x,y in cells:
     z=floor_at(x+1,y+1);sampled+=1
-    expected=max(0,.5-abs(y+1-44)*.125) if -2<=x+1<=2 and 40<=y+1<=48 else 0
+    expected=ramp_height(x+1,y+1)
     if z is None or abs(z-expected)>.001:errors.append(f'Floor support {(x,y)}: {z}')
 markers=json.loads((OUT/'markers.json').read_text())['markers']
 for m in markers:

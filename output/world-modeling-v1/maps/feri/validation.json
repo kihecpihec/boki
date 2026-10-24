@@ -1,6 +1,6 @@
 {
-  "meshes": 439,
-  "triangles": 37748,
+  "meshes": 174,
+  "triangles": 10956,
   "materials": [
     "M_FERI_Concrete",
     "M_FERI_Danger",
@@ -42,6 +42,12 @@
     "Light 'Preview_Fluorescent.024' will not export (preview only)",
     "Light 'Preview_Fluorescent.025' will not export (preview only)",
     "Light 'Preview_Fluorescent.026' will not export (preview only)",
+    "Light 'Preview_Fluorescent.027' will not export (preview only)",
+    "Light 'Preview_Fluorescent.028' will not export (preview only)",
+    "Light 'Preview_Fluorescent.029' will not export (preview only)",
+    "Light 'Preview_Fluorescent.030' will not export (preview only)",
+    "Light 'Preview_Fluorescent.031' will not export (preview only)",
+    "Light 'Preview_Fluorescent.032' will not export (preview only)",
     "Light 'Preview_Moon' will not export (preview only)",
     "Camera '01-overview' will not export (preview only)",
     "Camera '02-classroom' will not export (preview only)",

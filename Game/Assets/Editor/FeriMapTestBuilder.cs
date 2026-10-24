@@ -9,8 +9,9 @@ namespace Boki.Editor
     /// <summary>
     /// Builds FERI_Map_Test from Assets/Art/FERI around the existing Boki test player. Collision boxes come from the
     /// axis-aligned COL_ guide meshes; Route B's floor also gets a MeshCollider because the guides leave its ramps
-    /// uncovered (README step 2). Seals and their guides stay open: this scene has no RouteGate logic. Never edits
-    /// Level3_FERI or any other existing scene.
+    /// uncovered (README step 2). Seals and their guides stay open: this scene has no RouteGate logic. Every indoor
+    /// path and room is roofed, and the roof guides stop the third-person camera from rising above the ceiling.
+    /// Never edits Level3_FERI or any other existing scene.
     /// </summary>
     public static class FeriMapTestBuilder
     {
@@ -61,8 +62,11 @@ namespace Boki.Editor
                         renderer.gameObject.AddComponent<MeshCollider>().sharedMesh = renderer.GetComponent<MeshFilter>().sharedMesh;
                 }
             }
-            // Roofs are presentation geometry; keep them off so the camera sees in, enable to test camera clearance.
-            Instantiate("FERI_Removable_Roofs", map.transform).SetActive(false);
+            // Indoor paths and rooms are closed above. Their COL_Roof guides hold the camera spring arm under the ceiling,
+            // and the roof does not cast shadows so the single dim sun still lights the interior like the open cutaway.
+            var roofs = Instantiate("FERI_Removable_Roofs", map.transform);
+            foreach (var renderer in roofs.GetComponentsInChildren<Renderer>(true))
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             int boxes = BuildColliders(map.transform);
             foreach (var t in map.GetComponentsInChildren<Transform>(true)) t.gameObject.isStatic = true;
 
