@@ -26,6 +26,13 @@ namespace Boki.Player
         private string previousStatus;
         public EnemyTestStation ActiveStation => active;
 
+        private bool CanInteract => player.IsAlive && RunSession.Instance != null && RunSession.Instance.IsGameplayActive;
+        private void BindGuilt(GuiltChaser chaser)
+        {
+            movement.BindGuilt(chaser);
+            hud.BindGuilt(chaser);
+        }
+
         private void Awake() => controller = player.GetComponent<CharacterController>();
 
         private void OnEnable()
@@ -66,28 +73,28 @@ namespace Boki.Player
 
         public void Visit(EnemyTestStation station)
         {
-            if (!player.IsAlive) return;
+            if (!CanInteract) return;
             Teleport(station.Entry);
             Activate(station);
         }
 
         public void ReturnToHub()
         {
-            if (!player.IsAlive) return;
+            if (!CanInteract) return;
             Activate(null);
             Teleport(hub);
         }
 
         public void ReturnToMovement()
         {
-            if (!player.IsAlive) return;
+            if (!CanInteract) return;
             Activate(null);
             Teleport(movementEntry);
         }
 
         public void ResetEncounter()
         {
-            if (active == null || !player.IsAlive) return;
+            if (active == null || !CanInteract) return;
             var station = active;
             Activate(null);
             Teleport(station.Entry);
@@ -96,6 +103,7 @@ namespace Boki.Player
 
         public void ToggleLaser()
         {
+            if (!CanInteract) return;
             laser.enabled = !laser.enabled;
             laserLabel.text = laser.enabled ? "Laser: ON" : "Laser: OFF (observe attacks)";
         }
@@ -112,7 +120,7 @@ namespace Boki.Player
             RunSession.Ensure().State.Guilt.Reset();
             active = station;
             if (active != null) active.Begin();
-            hud.BindGuilt(active != null ? active.Enemy.GetComponent<GuiltChaser>() : null);
+            BindGuilt(active != null ? active.Enemy.GetComponent<GuiltChaser>() : null);
         }
 
         private void Teleport(Transform destination)
@@ -145,6 +153,7 @@ namespace Boki.Player
         {
             if (player != null) player.Died -= OnPlayerDied;
             if (active != null) active.End();
+            if (movement != null && hud != null) BindGuilt(null);
         }
     }
 }

@@ -5,6 +5,7 @@ using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
 using Boki.Player;
+using Boki.Upgrades;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -32,7 +33,12 @@ namespace Boki.Editor
         }
 
         [MenuItem("Boki/Player Model/Run Arena Checks")]
-        public static void Run()
+        public static void Run() => RunScene(BokiModelTestSetup.ScenePath);
+
+        [MenuItem("Boki/Enemies/Run Combat Lab Checks")]
+        public static void RunCombatLab() => RunScene(EnemyCombatLab.ScenePath);
+
+        private static void RunScene(string scenePath)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             var setup = EditorSceneManager.GetSceneManagerSetup();
@@ -45,7 +51,8 @@ namespace Boki.Editor
                 loaded = setup.Select(s => s.isLoaded).ToArray(),
                 active = setup.Select(s => s.isActive).ToArray()
             }));
-            EditorSceneManager.OpenScene(BokiModelTestSetup.ScenePath);
+            SessionState.SetBool(Key + ".CombatLab", scenePath == EnemyCombatLab.ScenePath);
+            EditorSceneManager.OpenScene(scenePath);
             SessionState.SetBool(Key, true);
             EditorApplication.EnterPlaymode();
         }
@@ -106,13 +113,13 @@ namespace Boki.Editor
                         stations = Object.FindObjectsByType<EnemyTestStation>(FindObjectsSortMode.None).OrderBy(s => s.name).ToArray();
                         Require(arena.enabled && stations.Length == 8, "Eight wired stations must be present.");
                         Require(player.transform.Find("Visuals").GetComponentInChildren<Animator>() != null, "The original rigged Boki must remain.");
-                        Require(Object.FindObjectsByType<BatteryCharge>(FindObjectsSortMode.None).Length == 27, "Expected 24 station charges and three original charges.");
+                        Require(Object.FindObjectsByType<BatteryCharge>(FindObjectsSortMode.None).Length == (SessionState.GetBool(Key + ".CombatLab", false) ? 24 : 27), "Expected three charges per station, plus original charges only in the model scene.");
                         Require(EnemyHealth.Active.Count == 0, "Hub must be safe before station selection.");
                         Capture("/tmp/boki-arena-hub.png");
                         var buttons = arena.GetComponentsInChildren<Button>();
-                        Require(buttons.Length == 13 && buttons.All(b => b.onClick.GetPersistentEventCount() == 1
+                        Require(buttons.Length == (SessionState.GetBool(Key + ".CombatLab", false) ? 12 : 13) && buttons.All(b => b.onClick.GetPersistentEventCount() == 1
                             && b.onClick.GetPersistentTarget(0) != null), "All test panel buttons must have live callbacks.");
-                        arena.ToggleLaser();
+                        if (player.GetComponent<AutoLaser>().enabled) arena.ToggleLaser();
                         arena.Visit(stations[stationIndex]);
                         Next(1);
                         break;
@@ -125,17 +132,17 @@ namespace Boki.Editor
                         if (++stationIndex < stations.Length) { arena.Visit(stations[stationIndex]); Next(1); break; }
                         arena.Visit(stations[0]);
                         xpBefore = RunSession.Instance.State.XP;
-                        packsBefore = Object.FindObjectsByType<ArenaXpPickup>(FindObjectsSortMode.None).Length;
+                        packsBefore = Object.FindObjectsByType<XpPickup>(FindObjectsSortMode.None).Length;
                         arena.ActiveStation.Enemy.GetComponent<EnemyHealth>().TakeDamage(10000);
                         Next(2);
                         break;
                     case 2:
                         if (elapsed < 0.15) return;
-                        Require(Object.FindObjectsByType<ArenaXpPickup>(FindObjectsSortMode.None).Length == packsBefore + 1,
+                        Require(Object.FindObjectsByType<XpPickup>(FindObjectsSortMode.None).Length == packsBefore + 1,
                             "Regular kill must leave exactly one XP pack.");
                         Require(RunSession.Instance.State.KillCount == 1 && RunSession.Instance.State.XP == xpBefore,
                             "Kill counts once, XP waits for contact.");
-                        var pack = Object.FindObjectsByType<ArenaXpPickup>(FindObjectsSortMode.None)
+                        var pack = Object.FindObjectsByType<XpPickup>(FindObjectsSortMode.None)
                             .First(p => stations[0].Contains(p.transform.position));
                         Move(pack.transform.position - Vector3.up * 0.6f);
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
@@ -196,6 +203,12 @@ namespace Boki.Editor
                         if (sheets < 3 || slams < 1) return;
                         Require(player.IsAlive, "Boss test must remain playable.");
                         Capture("/tmp/boki-arena-professor.png");
+                        int bossPacks = Object.FindObjectsByType<XpPickup>().Length;
+                        int bossKills = RunSession.Instance.State.KillCount;
+                        arena.ActiveStation.Enemy.GetComponent<EnemyHealth>().TakeDamage(100000);
+                        Require(Object.FindObjectsByType<XpPickup>().Length == bossPacks
+                            && RunSession.Instance.State.KillCount == bossKills + 1,
+                            "Boss death counts once and never creates a regular-enemy XP reward.");
                         arena.Visit(stations[6]);
                         Next(10);
                         break;
@@ -205,10 +218,17 @@ namespace Boki.Editor
                         Require(guilt.enabled && guilt.Pressure == RunSession.Instance.State.Guilt && guilt.Pressure.IsActive,
                             "Guilt must use shared occupancy and warning state.");
                         Require(guilt.GetComponent<EnemyHealth>() == null, "Guilt stays invulnerable.");
+                        Require(player.GetComponent<ScooterController>().BoundGuilt == guilt,
+                            "Panic Mode must follow the active arena clone.");
+                        Require(Object.FindObjectsByType<GuiltChaser>().Count(g => g.isActiveAndEnabled) == 1,
+                            "Exactly one live Guilt driver may advance the shared pressure clock.");
                         if (guilt.Phase != GuiltPhase.Chase || guilt.Pressure.AwaitingPlacement) return;
                         Require(player.GetComponent<LightBattery>().WarningStrength > 0f,
                             "A safely placed Guilt chase must drive the player's warning effects.");
                         arena.ReturnToHub();
+                        Require(player.GetComponent<ScooterController>().BoundGuilt == null
+                            && Object.FindObjectsByType<GuiltChaser>().All(g => !g.isActiveAndEnabled),
+                            "Leaving the Guilt station clears player bindings and stops its driver.");
                         player.TakeDamage(10000);
                         Require(!player.IsAlive && !player.GetComponent<ScooterController>().enabled, "Death stops riding.");
                         arena.RestartSandbox();

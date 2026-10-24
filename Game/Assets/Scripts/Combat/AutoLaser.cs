@@ -1,4 +1,5 @@
 using Boki.Player;
+using Boki.Core;
 using UnityEngine;
 
 namespace Boki.Combat
@@ -42,7 +43,9 @@ namespace Boki.Combat
             cooldown = beamRemaining = 0f;
         }
 
-        public EnemyHealth FindTarget()
+        public EnemyHealth FindTarget() => FindTargetExcept(null);
+
+        private EnemyHealth FindTargetExcept(EnemyHealth excluded)
         {
             if (beamOrigin == null) return null;
             EnemyHealth nearest = null;
@@ -51,7 +54,7 @@ namespace Boki.Combat
             for (int i = 0; i < enemies.Count; i++)
             {
                 var candidate = enemies[i];
-                if (candidate == null || !candidate.isActiveAndEnabled || !candidate.IsAlive) continue;
+                if (candidate == excluded || candidate == null || !candidate.isActiveAndEnabled || !candidate.IsAlive) continue;
                 float distance = (candidate.AimPosition - beamOrigin.position).sqrMagnitude;
                 if (distance > nearestDistance || !Visible(candidate)) continue;
                 // Equal-distance targets keep their registration order.
@@ -82,16 +85,37 @@ namespace Boki.Combat
             cooldown = Mathf.Max(0f, cooldown - dt);
             beamRemaining = Mathf.Max(0f, beamRemaining - dt);
             if (beamRemaining <= 0f) beam.enabled = false;
+
             if (cooldown > 0f) return;
             EnemyHealth target = FindTarget();
             if (target == null) return;
             cooldown = Mathf.Max(0.01f, fireInterval);
+            beam.positionCount = 2;
             impactPosition = target.AimPosition;
             beamRemaining = beamDuration;
             beam.SetPosition(0, beamOrigin.position);
             beam.SetPosition(1, impactPosition);
             beam.enabled = true;
-            target.TakeDamage(damage);
+            var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
+            int hitDamage = Mathf.RoundToInt(damage * (upgrades != null ? upgrades.DamageMultiplier : 1f));
+            target.TakeDamage(hitDamage);
+            if (upgrades != null && upgrades.HasDoubleTrouble)
+            {
+                EnemyHealth second = FindTargetExcept(target);
+                if (second == null && target != null && target.isActiveAndEnabled && target.IsAlive
+                    && (target.AimPosition - beamOrigin.position).sqrMagnitude <= range * range && Visible(target)) second = target;
+                if (second != null)
+                {
+                    impactPosition = second.AimPosition;
+                    // One renderer presents both instantaneous hits as a joined pulse.
+                    beam.positionCount = 4;
+                    beam.SetPosition(0, beamOrigin.position);
+                    beam.SetPosition(1, target != null ? target.AimPosition : impactPosition);
+                    beam.SetPosition(2, beamOrigin.position);
+                    beam.SetPosition(3, impactPosition);
+                    second.TakeDamage(hitDamage);
+                }
+            }
             if (impactBurst != null)
             {
                 impactBurst.transform.position = impactPosition;
@@ -106,7 +130,8 @@ namespace Boki.Combat
             // Presentation can lean the scooter after combat updates its shot timers.
             if (beam == null || !beam.enabled || beamOrigin == null) return;
             beam.SetPosition(0, beamOrigin.position);
-            beam.SetPosition(1, impactPosition);
+            if (beam.positionCount == 4) beam.SetPosition(2, beamOrigin.position);
+            beam.SetPosition(beam.positionCount - 1, impactPosition);
         }
     }
 }

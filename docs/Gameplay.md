@@ -238,6 +238,8 @@ flowchart TD
     E -- Move onward --> H[Continue chosen route to level exit]
 ```
 
+Upgrade eligibility, stacking and the two-card exception when only two rewards remain are specified in [Story §5](Story.md#5-upgrades-and-replay-motivation).
+
 ### Guilt Pressure While Lingering
 
 Guilt is an immortal pressure system. As Boki spends longer lingering in a combat space, Guilt's appearances become more frequent, its chase movement speed increases, and its damage increases. Boki gains strength through XP and upgrade choices; Guilt grows more dangerous with time spent lingering. Its escalation is time-driven, not triggered by selecting an upgrade.

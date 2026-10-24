@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Boki.Upgrades;
+using Boki.Core;
 using Boki.Combat;
 using Boki.Battery;
 using Boki.Enemies;
@@ -27,8 +29,10 @@ namespace Boki.Routes
         public HealthState Health { get; private set; }
         public LightBatteryState LightBattery { get; } = new LightBatteryState();
         public float Battery { get => LightBattery.Current; set => LightBattery.Current = value; }
-        public int XP { get; set; }
-        public List<string> Upgrades { get; } = new List<string>();
+        public PauseState Pause { get; } = new PauseState();
+        public UpgradeState Progression { get; private set; }
+        public int XP => Progression.XP;
+        public IReadOnlyList<UpgradeId> Upgrades => Progression.Accepted;
         public int KillCount { get; set; }
         public double StartedAt { get; private set; }
         public UnlockSnapshot AvailableUnlocks { get; private set; }
@@ -42,14 +46,19 @@ namespace Boki.Routes
             Guilt.Reset();
             Health = new HealthState(100);
             LightBattery.Reset();
-            XP = KillCount = 0;
-            Upgrades.Clear();
+            if (Progression != null) Progression.Changed -= NotifyChanged;
+            Progression = new UpgradeState(Health, LightBattery);
+            Progression.Changed += NotifyChanged;
+            KillCount = 0;
+            Pause.Reset();
             Array.Clear(choices, 0, choices.Length);
             ActiveLevel = RouteLevel.Forest;
             StartedAt = startedAt;
             AvailableUnlocks = unlocks;
             Changed?.Invoke();
         }
+
+        private void NotifyChanged() => Changed?.Invoke();
 
         public RouteChoice Choice(RouteLevel level) => ValidLevel(level) ? choices[(int)level] : RouteChoice.None;
         public static bool ValidLevel(RouteLevel level) => level >= RouteLevel.Forest && level <= RouteLevel.Feri;

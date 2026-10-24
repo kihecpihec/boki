@@ -166,7 +166,7 @@ namespace Boki.Editor
                         RunSession.Instance.State.Guilt.GameplaySuspended = false;
                         charge.gameObject.SetActive(false);
                         glow.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                        RunSession.Instance.State.XP++;
+                        RunSession.Instance.State.Progression.AddXp();
                         Next();
                         break;
                     case 6:
