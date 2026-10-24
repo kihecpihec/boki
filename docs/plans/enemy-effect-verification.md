@@ -1,6 +1,15 @@
 # Enemy effect verification
 
-Implements initial enemy hit/death presentation from [Gameplay §5](../Gameplay.md#battery-charges-and-action-feedback), with the readability and performance limits in [Story §6](../Story.md#6-visual-and-audio-direction). No maps, scenes, prefabs, model imports, project settings or packages are edited.
+Implements initial enemy hit/death presentation from [Gameplay §5](../Gameplay.md#battery-charges-and-action-feedback), with the readability and performance limits in [Story §6](../Story.md#6-visual-and-audio-direction). Enemy model and effect demonstrations belong in `Enemy_Test`; the scene upgrade changes only this authorized scene, leaving shared prefabs, maps, project settings and packages intact.
+
+## Enemy_Test scene integration
+
+**Boki → Enemy Models → Upgrade Test Models and Effects** opens and saves the existing `Assets/Scenes/Enemy_Test.unity`, refuses Play Mode and dirty scenes, and restores the previous scene setup. Repeating the command reuses the visual hierarchy and feedback components. It refuses a missing scene rather than creating a replacement.
+
+- Boki's placeholder body, deck and forward marker are disabled by scene overrides. `Visuals` copies the imported character and scooter from `Boki_Rigged_Test`, including the atlas, Generic Animator and `Boki_RideIdle` pose. Existing player health, controller, collision, camera, HUD and combat references remain on their original objects. `AutoLaser.Beam Origin` points at `Visuals`' scooter `Socket_LaserMuzzle`.
+- All three melee variants, both Watchers and the professor have an explicit enabled `EnemyFeedback` alongside `EnemyHealth`. Their existing animation, hover, eye, orb, paper and slam-ring assets remain connected. Death particles are emitted on demand; no continuously running particle systems are needed.
+- Guilt retains its warning/chase animation and visibility lifecycle, with no damageable health or hit/death feedback. This upgrade adds no new audio or light-flicker system.
+- No manual Inspector assignments are required. Boki's dedicated movement/effect demonstrations remain in `Player_Model_Test`, which already uses the same imported rigged model.
 
 ## Behavior and setup
 
@@ -21,11 +30,19 @@ Use Unity `6000.6.7f1`.
 
 ## Manual verification still required
 
-Use the existing `Enemy_Test` scene read-only in Play Mode, coordinated with its owner; no setup changes or saves are needed. Select a melee enemy or Watcher and let the existing auto-laser hit it. Confirm the short warm flash is visible in the level lighting, fades smoothly, and leaves no changed material after stopping Play Mode. Kill both types and confirm a small burst at their aim position; the melee death animation should finish independently. Check the professor too: its ground warnings must remain more prominent than these effects. Verify pause/resume mid-flash and mid-burst, rapid kills, scene transition during a burst, and no new Console messages. There is no sound layer in this first effect pass.
+Open `Enemy_Test` and enter Play Mode. Confirm the rigged Boki sits on the scooter and the laser fires from its muzzle. Select a melee enemy or Watcher and let the existing auto-laser hit it. Confirm the short warm flash is visible in the level lighting, fades smoothly, and leaves no changed material after stopping Play Mode. Kill both types and confirm a small burst at their aim position; the melee death animation should finish independently. Check the professor too: its ground warnings must remain more prominent than these effects. Verify Guilt's warning/chase cycle, pause/resume mid-flash and mid-burst, rapid kills, scene transition during a burst, and no new Console messages. There is no sound layer in this first effect pass.
 
 Graphical review on Low and a Windows x86_64 player run on the Ryzen 5600G at 1280×720 remain required. Headless Linux checks do not establish visual quality, shader rendering, Windows compatibility or target frame rate.
 
-## Recorded checks (2026-10-24)
+## Recorded scene integration checks (2026-10-24)
+
+- Unity `6000.6.7f1` imported and compiled the checkout and saved the upgrade to `Enemy_Test`. Running the upgrade twice produced the same scene SHA-256 before whitespace cleanup; no duplicate visuals or feedback components were added.
+- `EnemySmokeChecks.Run` passed the rigged-model, disabled-placeholder, Animator, muzzle and feedback wiring checks, then exercised melee contact, Watcher shots, professor barrage/telegraph/slam, and Guilt placement/lifecycle/strikes (`/tmp/boki-enemy-scene-smoke.log`, `ENEMY_SMOKE_PASSED`).
+- `EnemyFeedbackChecks.Run` passed accepted/rejected hit, property-block restoration, burst cap, pause and cleanup checks (`/tmp/boki-enemy-scene-feedback.log`, `ENEMY_FEEDBACK_PASSED`).
+- Architecture audit: no failures; existing warnings remain. `git diff --check` passes after removing whitespace introduced by Unity serialization. Only `Enemy_Test` is changed among scenes; no prefab, model, package or project-settings changes.
+- Deterministic rules were unchanged, so the EditMode suite was not rerun for this scene integration. Graphical Play Mode review and Windows/5600G checks remain pending; no additional import or Inspector wiring is needed.
+
+## Recorded initial feedback checks (2026-10-24)
 
 - Pinned Linux Editor imported all new assets and generated their `.meta` files.
 - EditMode: 117/117 passed, none skipped (`/tmp/boki-enemy-effect-editmode.xml`).

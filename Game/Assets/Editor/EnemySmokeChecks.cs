@@ -108,6 +108,24 @@ namespace Boki.Editor
             boss = Object.FindFirstObjectByType<ProfessorBoss>();
             Check(melee.Length == 3 && ranged.Length == 2 && guilt != null && boss != null, "Expected 3 melee, 2 ranged, Guilt and the boss.");
             if (failed) return;
+            Transform visuals = player.transform.Find("Visuals");
+            Check(visuals != null && visuals.GetComponentInChildren<SkinnedMeshRenderer>() != null,
+                "Enemy_Test must use the rigged Boki model.");
+            if (failed) return;
+            foreach (string name in new[] { "Boki placeholder", "Scooter deck", "Forward marker" })
+                Check(!player.transform.Find(name).gameObject.activeSelf, "Player placeholder still visible: " + name);
+            var animator = visuals.GetComponentInChildren<Animator>();
+            Check(animator != null && animator.runtimeAnimatorController != null && !animator.applyRootMotion,
+                "Boki must retain the riding animation without root motion.");
+            var laserSettings = new SerializedObject(player.GetComponent<AutoLaser>());
+            Check(laserSettings.FindProperty("beamOrigin").objectReferenceValue is Transform muzzle
+                && muzzle.name == "Socket_LaserMuzzle" && muzzle.IsChildOf(visuals),
+                "Laser must originate at the new scooter muzzle.");
+            foreach (EnemyHealth enemy in Object.FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None))
+                Check(enemy.GetComponent<EnemyFeedback>() != null && enemy.GetComponent<EnemyFeedback>().enabled,
+                    "Missing enabled hit/death feedback on " + enemy.name);
+            Check(guilt.GetComponent<EnemyHealth>() == null, "Guilt must remain invulnerable.");
+            if (failed) return;
             foreach (MeleeEnemy enemy in melee) enemy.Attacked += () => meleeHits++;
             foreach (RangedEnemy enemy in ranged) enemy.Fired += () => shots++;
             guilt.PhaseChanged += phase =>
