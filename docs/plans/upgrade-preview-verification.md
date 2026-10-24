@@ -70,7 +70,8 @@ shared gameplay pause and production scene wiring remain separate work.
   The new isolated preview is deliberately absent from shared build settings
   and produces the same audit warning as the other preview scenes.
 - Setup idempotency: passed; a second run preserved every saved scene and
-  presentation asset byte-for-byte. `git diff --check`: passed.
+  presentation asset byte-for-byte. Source/document whitespace checks passed;
+  Unity-generated YAML retains the Editor's trailing spaces on empty values.
 - Interactive visual/input checks above: pending.
 - Windows player/5600G performance: not run; Linux import does not verify it.
 - No deterministic gameplay rules changed, so no new EditMode rule tests.
