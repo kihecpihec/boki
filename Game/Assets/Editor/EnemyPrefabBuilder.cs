@@ -99,6 +99,72 @@ namespace Boki.Editor
 
         // ---- prefab builders ----
 
+        [MenuItem("Boki/Enemy Models/Upgrade Test Models and Effects")]
+        public static void UpgradeTestScene()
+        {
+            RequireClean();
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null)
+                throw new InvalidOperationException("Enemy_Test is missing; refusing to create a replacement.");
+            var template = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Player/Boki_Rigged_Test.prefab");
+            if (template == null || template.transform.Find("Visuals") == null)
+                throw new InvalidOperationException("The rigged Boki test prefab is missing its Visuals.");
+            SceneSetup[] previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+                var player = UnityEngine.Object.FindFirstObjectByType<ScooterController>();
+                if (player == null) throw new InvalidOperationException("Enemy_Test has no player.");
+                Transform visuals = player.transform.Find("Visuals");
+                if (visuals == null)
+                {
+                    // Copy only the presentation; retain the arena's player, combat, input and camera references.
+                    visuals = UnityEngine.Object.Instantiate(template.transform.Find("Visuals"), player.transform, false);
+                    visuals.name = "Visuals";
+                }
+                foreach (string name in new[] { "Boki placeholder", "Scooter deck", "Forward marker" })
+                {
+                    Transform placeholder = player.transform.Find(name);
+                    if (placeholder == null) throw new InvalidOperationException("Missing placeholder: " + name);
+                    placeholder.gameObject.SetActive(false);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(placeholder.gameObject);
+                }
+                Animator animator = visuals.GetComponentInChildren<Animator>(true);
+                if (animator == null || animator.runtimeAnimatorController == null)
+                    throw new InvalidOperationException("The riding model has no configured Animator.");
+                animator.applyRootMotion = false;
+                foreach (AnimationClip clip in animator.runtimeAnimatorController.animationClips)
+                    if (clip.name == "Boki_RideIdle") clip.SampleAnimation(animator.gameObject, 0f);
+
+                var laser = player.GetComponent<AutoLaser>();
+                Transform muzzle = FindDeep(visuals, "Socket_LaserMuzzle");
+                if (laser == null || muzzle == null)
+                    throw new InvalidOperationException("The existing laser or scooter muzzle is missing.");
+                SetObject(laser, "beamOrigin", muzzle);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(laser);
+
+                var enemies = UnityEngine.Object.FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None);
+                if (enemies.Length != 6)
+                    throw new InvalidOperationException("Expected three melee enemies, two Watchers and the professor.");
+                foreach (EnemyHealth health in enemies)
+                {
+                    if (health.GetComponent<EnemyFeedback>() == null) health.gameObject.AddComponent<EnemyFeedback>();
+                    var serialized = new SerializedObject(health);
+                    serialized.FindProperty("showCombatFeedback").boolValue = true;
+                    serialized.ApplyModifiedPropertiesWithoutUndo();
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(health);
+                }
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log("ENEMY_TEST_UPGRADED: rigged Boki and scooter, muzzle-mounted laser, six hit/death feedback components; existing enemy animations, Guilt, projectiles and slam warning retained.");
+            }
+            finally
+            {
+                if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
         private static void BuildMelee(string name, Material skin, bool jacket, bool backpack)
         {
             GameObject root = NewRoot(name);
