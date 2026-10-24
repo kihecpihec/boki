@@ -92,6 +92,7 @@ namespace Boki.Editor
             foreach (string name in Clips)
                 Set(serialized, name, AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Sfx/Player/" + name + ".wav"));
             serialized.ApplyModifiedPropertiesWithoutUndo();
+            RecordedAudioSetup.ConfigurePlayer(movement);
             EditorUtility.SetDirty(audio);
             if (PrefabUtility.IsPartOfPrefabInstance(audio)) PrefabUtility.RecordPrefabInstancePropertyModifications(audio);
         }

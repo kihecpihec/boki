@@ -17,6 +17,7 @@ namespace Boki.Routes
         [SerializeField] private GameObject[] approachEncounters;
         [SerializeField] private GameObject[] reinforcementTemplates;
         [SerializeField] private Text bossStatus;
+        [SerializeField] private RecordedGameAudio recordedAudio;
         private bool entered, reinforced;
         private void OnEnable()
         {
@@ -43,6 +44,7 @@ namespace Boki.Routes
             if (RunSession.Instance.State.PowerOff) bossHealth.TakeDamage(Mathf.RoundToInt(bossHealth.Maximum * 0.15f));
             professor.BeginFight();
             flow.SetObjective("Defeat the professor. Dodge the papers and leave the warning circle.");
+            if (recordedAudio != null) recordedAudio.PlayBossOpening();
             Damaged();
         }
         private void Damaged()
@@ -58,6 +60,11 @@ namespace Boki.Routes
                 enemy.SetActive(true);
             }
         }
-        private void Won() { bossStatus.text = ""; flow.Victory(); }
+        private void Won()
+        {
+            bossStatus.text = "";
+            flow.Victory();
+            if (recordedAudio != null) recordedAudio.PlayBossVictory();
+        }
     }
 }

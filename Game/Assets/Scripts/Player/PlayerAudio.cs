@@ -27,6 +27,12 @@ namespace Boki.Player
         [SerializeField] private AudioClip batteryLow;
         [SerializeField] private AudioClip batteryEmpty;
         [SerializeField] private AudioClip guiltHeartbeat;
+        [Header("Recorded voices (optional on legacy scenes)")]
+        [SerializeField] private AudioClip[] damageVariations;
+        [SerializeField] private AudioClip[] shotVariations;
+        [SerializeField] private AudioClip[] guiltVariations;
+        [SerializeField] private AudioClip guiltReaction;
+        [SerializeField] private AudioClip snack;
         [SerializeField, Range(0f, 1f)] private float volume = 0.65f;
         private int previousHealth;
         private int batteryBand;
@@ -38,6 +44,9 @@ namespace Boki.Player
         private bool rewardsPaused;
         private int lastXpFrame = -1;
         private bool focused = true;
+        private int lastDamage = -1, lastShot = -1, lastGuilt = -1;
+        private float guiltVoiceCooldown;
+        private bool reactedToGuilt;
 
         private void OnEnable()
         {
@@ -55,6 +64,8 @@ namespace Boki.Player
             previousHealth = health.Current;
             batteryBand = BatteryBand();
             warningCooldown = airTime = impactCooldown = 0f;
+            guiltVoiceCooldown = 0f;
+            reactedToGuilt = false;
             paused = false;
             rewardsPaused = false;
             lastXpFrame = -1;
@@ -127,10 +138,26 @@ namespace Boki.Player
             if (band < batteryBand) Play(actionSource, band == 0 ? batteryEmpty : batteryLow, 0.7f);
             batteryBand = band;
             warningCooldown = Mathf.Max(0f, warningCooldown - Time.deltaTime);
+            guiltVoiceCooldown = Mathf.Max(0f, guiltVoiceCooldown - Time.deltaTime);
             if (battery.WarningStrength > 0.1f && warningCooldown <= 0f)
             {
                 Play(actionSource, guiltHeartbeat, 0.7f);
                 warningCooldown = 1.2f;
+            }
+            if (battery.WarningStrength > 0.1f && !reactedToGuilt && guiltReaction != null)
+            {
+                reactedToGuilt = true;
+                Play(rewardSource, guiltReaction, 0.9f);
+                guiltVoiceCooldown = guiltReaction.length + 0.2f;
+            }
+            if (battery.WarningStrength > 0.1f && guiltVoiceCooldown <= 0f)
+            {
+                AudioClip voice = AudioVariations.Next(null, guiltVariations, ref lastGuilt);
+                if (voice != null)
+                {
+                    Play(actionSource, voice, 0.9f);
+                    guiltVoiceCooldown = voice.length + 1.5f;
+                }
             }
         }
 
@@ -147,7 +174,7 @@ namespace Boki.Player
             if (airTime >= 0.1f) Play(actionSource, landing, Mathf.Clamp(airTime, 0.3f, 1f));
             airTime = 0f;
         }
-        private void PlayShot() => Play(actionSource, shot, 0.45f);
+        private void PlayShot() => Play(actionSource, AudioVariations.Next(shot, shotVariations, ref lastShot), 0.45f);
         private void PlayWallImpact(float speed)
         {
             if (impactCooldown > 0f) return;
@@ -165,8 +192,9 @@ namespace Boki.Player
                     rewardSource.Stop();
                     Play(actionSource, death);
                 }
-                else Play(actionSource, damage, 0.8f);
+                else Play(actionSource, AudioVariations.Next(damage, damageVariations, ref lastDamage), 0.8f);
             }
+            else if (health.Current > previousHealth && snack != null) Play(rewardSource, snack, 0.8f);
             previousHealth = health.Current;
         }
         public void PlayBatteryCollection() => Play(rewardSource, batteryPickup, 0.8f);

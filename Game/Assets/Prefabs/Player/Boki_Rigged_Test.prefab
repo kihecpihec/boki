@@ -976,7 +976,7 @@ MonoBehaviour:
   motorSource: {fileID: 4307319386166558640}
   actionSource: {fileID: 6602636174960434824}
   rewardSource: {fileID: 2121356462076534949}
-  motor: {fileID: 8300000, guid: f25a4ac1078784e8aa02937f6b29f059, type: 3}
+  motor: {fileID: 8300000, guid: a24c1c6ec320341329b41ddb49320354, type: 3}
   jump: {fileID: 8300000, guid: 6325748dcd22a7fb3b5a037a7ee7b81f, type: 3}
   landing: {fileID: 8300000, guid: 2045fb31b68fdbd7291d48f53c0e255f, type: 3}
   boost: {fileID: 8300000, guid: 509c4251779947cc8be57aa6f2d2d5fd, type: 3}
@@ -988,6 +988,25 @@ MonoBehaviour:
   batteryLow: {fileID: 8300000, guid: b2b75392b0bdade6ba61fbd40cde5ce6, type: 3}
   batteryEmpty: {fileID: 8300000, guid: 75b01822b0550054dbe673897b314c30, type: 3}
   guiltHeartbeat: {fileID: 8300000, guid: 7369a77a3d9a412c282d6ce2052affba, type: 3}
+  damageVariations:
+  - {fileID: 8300000, guid: 9abeaadd5059045b1baea8c19927e666, type: 3}
+  - {fileID: 8300000, guid: 79623c9492995409b8e2387e1867de9a, type: 3}
+  - {fileID: 8300000, guid: b53167b49d29b47ec8207a1c64d303af, type: 3}
+  shotVariations:
+  - {fileID: 8300000, guid: 236fd29457a464407a04e970af306401, type: 3}
+  - {fileID: 8300000, guid: e352f555182ff4da19f9dfaa51bc6052, type: 3}
+  - {fileID: 8300000, guid: 7b8cf6052e8cf41789958db963c63c8b, type: 3}
+  - {fileID: 8300000, guid: 52b80c59cb36540e49769558f9dfbcb6, type: 3}
+  - {fileID: 8300000, guid: 964663de47eb94871ad65a79bcf05c92, type: 3}
+  - {fileID: 8300000, guid: 1e4365105087342c59d38032790d4d3e, type: 3}
+  - {fileID: 8300000, guid: c1689600012a34708a26e68d85d46ee1, type: 3}
+  - {fileID: 8300000, guid: bb2f23e8744054691aa0a76a592a1e67, type: 3}
+  - {fileID: 8300000, guid: d02cce2d09f2e4a1384c240b127435e5, type: 3}
+  guiltVariations:
+  - {fileID: 8300000, guid: c1029487b5298485bb0072ba53c699bb, type: 3}
+  - {fileID: 8300000, guid: 5c7ebd03e3f024f67b5fe464b90656be, type: 3}
+  guiltReaction: {fileID: 8300000, guid: d00a3ff6047f64b32a4a617702a3f923, type: 3}
+  snack: {fileID: 8300000, guid: bcc3d203551154d73a224bd24163a210, type: 3}
   volume: 0.65
 --- !u!114 &6783409772840860504 stripped
 MonoBehaviour:
