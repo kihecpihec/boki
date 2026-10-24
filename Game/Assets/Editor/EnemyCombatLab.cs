@@ -99,6 +99,66 @@ namespace Boki.Editor
             }
         }
 
+        [MenuItem("Boki/Enemies/Simplify Combat Test Stages")]
+        public static void SimplifyStages()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Exit Play Mode first.");
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                if (SceneManager.GetSceneAt(i).isDirty)
+                    throw new InvalidOperationException("Save dirty scenes first.");
+            var previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+                var arena = Find<PlayerTestArena>(scene).Single();
+                var stages = Find<EnemyTestStation>(scene);
+                if (stages.Length != 8) throw new InvalidOperationException("Expected eight enemy stages.");
+                foreach (var root in scene.GetRootGameObjects())
+                    if (root.name == "MovementHUD" || CourseRoots.Contains(root.name))
+                        Object.DestroyImmediate(root);
+                var packs = arena.transform.Find("XP Packs");
+                if (packs != null) Object.DestroyImmediate(packs.gameObject);
+                foreach (var charge in Find<BatteryCharge>(scene)) Object.DestroyImmediate(charge.gameObject);
+                foreach (var space in Find<BatteryCombatSpace>(scene)) Object.DestroyImmediate(space.gameObject);
+                foreach (var effects in Find<BokiModelTestEffects>(scene)) Object.DestroyImmediate(effects);
+                foreach (var text in Find<Text>(scene))
+                {
+                    if (text.name == "Model Test Controls") Object.DestroyImmediate(text.gameObject);
+                    else if (text.name == "Sandbox Controls")
+                        text.text = "ENEMY STAGES | WASD: ride | Mouse: look | Space: jump | Shift: boost\n"
+                            + "Choose an enemy. Esc: use buttons. Reset enemy: try again.\n"
+                            + "Laser OFF: observe attacks. Laser ON: fight.\n"
+                            + "Restart restores health. Guilt is invulnerable.";
+                }
+                var player = Find<PlayerHealth>(scene).Single();
+                var settings = new SerializedObject(arena);
+                var hub = (Transform)settings.FindProperty("hub").objectReferenceValue;
+                settings.FindProperty("movementEntry").objectReferenceValue = hub;
+                settings.ApplyModifiedPropertiesWithoutUndo();
+                player.transform.SetPositionAndRotation(hub.position, hub.rotation);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(player.transform);
+                // Keep the shared player and HUD wiring required by the encounter controls.
+                foreach (var stage in stages)
+                {
+                    var stageSettings = new SerializedObject(stage);
+                    if (stageSettings.FindProperty("entry").objectReferenceValue == null
+                        || stageSettings.FindProperty("enemyTemplate").objectReferenceValue == null
+                        || stageSettings.FindProperty("volume").objectReferenceValue == null)
+                        throw new InvalidOperationException("Incomplete enemy stage: " + stage.name);
+                }
+                EditorSceneManager.MarkSceneDirty(scene);
+                if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Could not save enemy stages.");
+                Debug.Log("ENEMY_STAGES_SIMPLIFIED: eight wired stages; model controls, sample XP and battery stations removed.");
+            }
+            finally
+            {
+                if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
         private static T[] Find<T>(Scene scene) where T : Component => scene.GetRootGameObjects()
             .SelectMany(r => r.GetComponentsInChildren<T>(true)).ToArray();
 

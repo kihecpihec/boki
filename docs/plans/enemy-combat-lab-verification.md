@@ -1,6 +1,6 @@
 # Enemy combat test scene
 
-Open `Game/Assets/Scenes/Enemy_Combat_Test.unity` in Unity 6000.6.7f1 and enter Play Mode. This task owns the new scene. It is a separate copy of the eight enemy stations in `Player_Model_Test`, with the movement course removed. The original scene and shared prefabs remain unchanged. Boki remains the controllable combat target; the laser starts disabled so enemies can attack without being killed automatically.
+Open `Game/Assets/Scenes/Enemy_Combat_Test.unity` in Unity 6000.6.7f1 and enter Play Mode. This task owns the new scene. It is a separate copy of the eight enemy stations in `Player_Model_Test`, with the movement course, model preview controls, movement HUD, sample XP packs and battery stations removed. Each stage keeps its walls, enemy and any ranged cover. Enemy death rewards and the basic combat HUD remain. The original scene and shared prefabs remain unchanged. Boki remains the controllable combat target; the laser starts disabled so enemies can attack without being killed automatically.
 
 Use the scene panel to select Forest shadow, Izgubljeni meščan, Student shadow, Forest Watcher, City Watcher, Floating exam paper, Guilt, or Professor. Only the selected encounter runs. Esc releases the pointer; click the world to resume riding. Reset enemy respawns the selected encounter; Restart sandbox restores player health, battery and XP.
 
@@ -12,7 +12,7 @@ Death testing exposes existing behavior; this change does not replace animation 
 
 ## Verification
 
-- **Boki > Enemies > Run Combat Lab Checks** reuses the existing arena smoke checks for all eight spawns, reference acceptance, enemy isolation, kill/XP contact, battery collection, reset, melee damage, ranged projectiles, Professor attacks, Guilt warning/chase and restart. It restores the previous scene setup.
+- **Boki > Enemies > Run Combat Lab Checks** reuses the existing arena smoke checks for all eight spawns, reference acceptance, enemy isolation, kill/XP contact, reset, melee damage, ranged projectiles, Professor attacks, Guilt warning/chase and restart. It restores the previous scene setup.
 - Manually observe each enemy's attacks with the laser off. For melee, compare one small hit with a lethal hit, watch the full detached death model, then reset and repeat. Check ranged cover/impacts, Professor barrage and slam, and Guilt invulnerability. Inspect speed and damage changes on the active instance, then confirm reset restores template values.
 - Check Console for new errors. Visually verify death clips and effects with graphics enabled; batch checks cannot establish animation quality.
 - The new scene is intentionally absent from shared Build Settings. Editor restart supports its path. A standalone test build needs explicit scene registration first. Windows build and Ryzen 5600G performance remain unverified.
@@ -27,3 +27,11 @@ The scene was refreshed against the latest `dev` XP/upgrade wiring before integr
 - Combat lab encounter checks: `PLAYER_TEST_ARENA_PASSED` in `/tmp/boki-enemy-lab-integration-checks.log`, covering the new scene through the shared checker. Unity also logged a Search database startup `ArgumentOutOfRangeException`; the encounter checks completed successfully despite it.
 - Repository architecture audit: no FAILs; existing warnings remain. `git diff --check`: passed.
 - Visual animation review, interactive use of the Editor controls, and Windows player/performance checks: not run. No deterministic gameplay rules changed, so EditMode rule tests were not rerun.
+
+## Simplified stages
+
+**Boki > Enemies > Simplify Combat Test Stages** cleans only the existing combat scene, is safe to repeat, and refuses Play Mode or dirty scenes. No Inspector assignments are needed. The shared model scene and prefabs are preserved.
+
+Manual check: select each of the eight enemies; confirm only that encounter runs. Toggle laser to fight, reset to respawn, return to Safe hub to clear the encounter, and restart after death. Check ranged cover, Professor attacks and Guilt chase; confirm there are no model preview controls or preplaced pickups and no new Console errors. Model preview hotkeys H/T/G/X/B are removed from this scene.
+
+Validation for the simplification: Unity 6000.6.7f1 imported, compiled and saved the scene successfully (`ENEMY_STAGES_SIMPLIFIED`, `/tmp/boki-simplify-enemies.log`). The adjusted encounter checks passed (`PLAYER_TEST_ARENA_PASSED`, `/tmp/boki-simple-enemy-checks.log`), including all eight spawns, isolation, kill/contact XP, reset, melee, projectiles, Professor, Guilt and restart. The existing Unity Search database startup exception also appeared during this check. Repository audit: no FAILs; diff whitespace check passed. Interactive visual review and Windows player/performance checks remain pending.
