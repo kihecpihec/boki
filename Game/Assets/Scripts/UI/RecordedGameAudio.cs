@@ -21,6 +21,7 @@ namespace Boki.UI
         [SerializeField] private AudioClip[] enemyDeath;
         [SerializeField] private AudioClip enemyGreeting;
         [SerializeField] private AudioClip[] teleport;
+        [SerializeField, Min(0f)] private float portalVoiceDistance = 8f;
         [SerializeField] private AudioClip professorQuestion;
         [SerializeField] private AudioClip bokiReply;
         [SerializeField] private AudioClip professorSaturday;
@@ -31,6 +32,9 @@ namespace Boki.UI
         private float remaining;
         private RunSession sequenceSession;
         private string previousSubtitle;
+        private LevelPortal[] portals;
+        private BoxCollider[] portalColliders;
+        private bool[] portalVoicesPlayed;
 
         private void OnEnable()
         {
@@ -48,8 +52,29 @@ namespace Boki.UI
 
         private void Start()
         {
-            if (routes != null && routes.Level != RouteLevel.Forest && routes.IsReady)
-                PlayDialogue(AudioVariations.Next(null, teleport, ref lastTeleport));
+            portals = FindObjectsByType<LevelPortal>(FindObjectsSortMode.None);
+            portalColliders = new BoxCollider[portals.Length];
+            portalVoicesPlayed = new bool[portals.Length];
+            for (int i = 0; i < portals.Length; i++)
+                portalColliders[i] = portals[i].GetComponent<BoxCollider>();
+        }
+
+        private void PlayNearbyPortalVoice()
+        {
+            if (!CanPlayWorld || dialogueStage != 0 || dialogueSource.isPlaying || portals == null) return;
+            for (int i = 0; i < portals.Length; i++)
+            {
+                if (portalVoicesPlayed[i] || portals[i] == null || !portals[i].isActiveAndEnabled
+                    || portals[i].gameObject.scene != gameObject.scene
+                    || portalColliders[i] == null || !portalColliders[i].enabled) continue;
+                Vector3 nearest = portalColliders[i].ClosestPoint(player.transform.position);
+                if ((nearest - player.transform.position).sqrMagnitude > portalVoiceDistance * portalVoiceDistance) continue;
+                AudioClip clip = AudioVariations.Next(null, teleport, ref lastTeleport);
+                if (clip == null) return;
+                portalVoicesPlayed[i] = true;
+                PlayDialogue(clip);
+                return;
+            }
         }
 
         private void OnApplicationFocus(bool value) => focused = value;
@@ -122,6 +147,7 @@ namespace Boki.UI
 
         private void Update()
         {
+            PlayNearbyPortalVoice();
             bool terminal = !player.IsAlive || (flow != null && flow.IsTerminal);
             bool pauseWorld = !focused || terminal
                 || (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive);
