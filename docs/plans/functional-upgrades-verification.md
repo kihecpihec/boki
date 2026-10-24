@@ -49,12 +49,12 @@ Recorded checks (Unity `6000.6.7f1`, Linux):
 - Architecture audit: **no FAILs**. Existing backlog warnings remain; it also reports time-scale writes in `RunSession`, which is now the documented pause authority.
 - Interactive visual/input playtest and Windows x86_64 player/FPS validation: **not run**. Follow the manual checklist above; batch Play Mode does not establish either.
 
-Production map wiring remains intentionally with the other developer. No commits or pushes were made.
+Production map wiring remains intentionally with the other developer. The initial implementation was validated before the user requested Git delivery.
 
 
 ## Arena reconciliation
 
-The newer eight-station scene from commit `05772e2` was used as the baseline, preserving the other developer's arena instead of combining conflicting scene YAML. Shared camera/HUD additions were retained alongside upgrade behavior. No Git merge, commit or push was performed.
+The newer eight-station scene from commit `05772e2` was used as the baseline, preserving the other developer's arena instead of combining conflicting scene YAML. Shared camera/HUD additions were retained alongside upgrade behavior. That initial reconciliation copied the relevant arena changes without a Git merge; the subsequent user-requested delivery synchronized the latest `dev`.
 
 The scene's preplaced XP components were migrated in Unity to `XpPickup`, preserving gold visuals, positions and trigger shapes. The obsolete collector/script metadata were removed together. Stations no longer subscribe to death or award rewards; `EnemyHealth` counts kills and drops one regular-enemy pack, with no XP from professor deaths. The arena binds movement and HUD to its active Guilt clone and clears bindings on exit. Its station controls reject gameplay changes during upgrade pause, and the upgrade screen draws above the test panel.
 
@@ -67,3 +67,5 @@ Combined-scene checks passed in Unity `6000.6.7f1`:
 - Reapplying **Wire Player Model Test** succeeded without adding another manager/HUD/EventSystem or removing arena content.
 
 Interactive keyboard/mouse feel, rendered visual review and Windows player validation remain manual. Production maps and shared prefabs/settings remain untouched.
+
+Final delivery check after syncing `dev` (including the intro cutscene): **139 EditMode tests passed**, 0 failed, 0 skipped (`/tmp/boki-pr-editmode.xml`).

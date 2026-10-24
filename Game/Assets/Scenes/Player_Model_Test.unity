@@ -1169,7 +1169,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
   m_SendPointerHoverToParent: 1
   m_MoveRepeatDelay: 0.5
@@ -1902,7 +1902,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c6f476c1a2cfab4f957710e872011b1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ThirdPersonCamera
   followPivot: {fileID: 1469523660}
   lookAction: {fileID: 11400000, guid: 196a4ed7846cb1f7a93e2d6f9bfd61fd, type: 2}
@@ -2545,7 +2545,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.12, g: 0.13, b: 0.13, a: 0.95}
@@ -3006,7 +3006,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.035, g: 0.055, b: 0.085, a: 0.96}
@@ -4160,7 +4160,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bee7550499d732648427bf3b766870e, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Enemies.ProfessorAttackView
   visual: {fileID: 1221349718}
   warning: {fileID: 356834996}
@@ -4397,7 +4397,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64f75931cceb472df8d5c7ae9ebe073f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Battery.BatteryCharge
   space: {fileID: 754613240}
   player: {fileID: 1369858379}
@@ -39452,7 +39452,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6783409772840860504, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: movementCamera
-      value: 
+      value:
       objectReference: {fileID: 110662114}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39501,7 +39501,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89e934151d2f0ca86ad9cff437e0e8b8, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ScooterController
 --- !u!4 &7868977143442150402 stripped
 Transform:
@@ -39533,7 +39533,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf71834f6353a495abb18fabd4192675, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ScooterPresentation
   movement: {fileID: 7868977143442150401}
   visualRoot: {fileID: 7868977143442150404}
@@ -39559,7 +39559,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e640a9ffc0820a9d48fed021db70303b, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.BokiModelTestEffects
   movement: {fileID: 7868977143442150401}
   health: {fileID: 1369858379}
@@ -39605,7 +39605,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56254648da44e7323be4467b5bf192c1, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Combat.AutoLaser
   playerHealth: {fileID: 1369858379}
   beamOrigin: {fileID: 911010609}
@@ -39628,7 +39628,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2e178f34691ec0d29b4798825d61f12, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.BokiPlayerEffects
   boostTrails:
   - {fileID: 1951874473}
