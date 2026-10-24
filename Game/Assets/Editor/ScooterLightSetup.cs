@@ -110,6 +110,103 @@ namespace Boki.Editor
             Debug.Log("V1_DARKNESS_APPLIED");
         }
 
+        [MenuItem("Boki/Light Battery/Apply Wide White Light to V1")]
+        public static void ApplyV1Headlights()
+        {
+            RequireClean();
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string path in V1SceneSetup.Scenes)
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+                        throw new InvalidOperationException("Missing V1 scene: " + path);
+                foreach (string path in V1SceneSetup.Scenes)
+                {
+                    Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    ConfigureWideWhiteLight(scene);
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    EditorSceneManager.SaveScene(scene);
+                    Debug.Log("V1_WIDE_WHITE_LIGHT_SAVED " + path);
+                }
+            }
+            finally
+            {
+                if (setup.Length > 0 && !string.IsNullOrEmpty(setup[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
+        internal static void ConfigureWideWhiteLight(Scene scene)
+        {
+            LightBattery battery = Find<LightBattery>(scene);
+            ScooterDarkness darkness = Find<ScooterDarkness>(scene);
+            if (battery == null || darkness == null)
+                throw new InvalidOperationException("Missing scooter light or darkness overlay in " + scene.path);
+            var settings = new SerializedObject(battery);
+            var lamp = settings.FindProperty("surroundingLight").objectReferenceValue as Light;
+            var mount = settings.FindProperty("headlightMount").objectReferenceValue as Transform;
+            if (mount == null)
+                foreach (Transform child in battery.GetComponentsInChildren<Transform>(true))
+                    if (child.name == "Socket_Headlight") { mount = child; break; }
+            if (lamp == null || mount == null)
+                throw new InvalidOperationException("Assign the scooter lamp and headlight socket in " + scene.path);
+            settings.FindProperty("headlightMount").objectReferenceValue = mount;
+            settings.FindProperty("intensity").floatValue = 5f;
+            settings.FindProperty("headlightRange").floatValue = 24f;
+            settings.FindProperty("headlightAngle").floatValue = 140f;
+            settings.FindProperty("headlightDownwardAngle").floatValue = 18f;
+            settings.FindProperty("headlightHeightOffset").floatValue = 0.65f;
+            settings.FindProperty("headlightBrightnessMultiplier").floatValue = 24f;
+            settings.FindProperty("fillIntensity").floatValue = 0.55f;
+            settings.FindProperty("fillRange").floatValue = 2.5f;
+            settings.FindProperty("nearbyBrightnessMultiplier").floatValue = 1.3f;
+            settings.FindProperty("nearbyRangeMultiplier").floatValue = 1.4f;
+            settings.FindProperty("riderFillPosition").vector3Value = new Vector3(0f, 1.6f, -0.9f);
+            settings.FindProperty("emptyFillIntensity").floatValue = 0.12f;
+            settings.FindProperty("emptyFillRange").floatValue = 2.2f;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+            // Pin presentation values even when they currently equal inherited script defaults.
+            if (PrefabUtility.IsPartOfPrefabInstance(battery))
+            {
+                Object source = PrefabUtility.GetCorrespondingObjectFromSource(battery);
+                var overrides = new System.Collections.Generic.List<PropertyModification>(
+                    PrefabUtility.GetPropertyModifications(battery));
+                SerializedProperty property = settings.GetIterator();
+                while (property.NextVisible(true))
+                {
+                    if (property.propertyType != SerializedPropertyType.Float) continue;
+                    string path = property.propertyPath;
+                    overrides.RemoveAll(item => item.target == source && item.propertyPath == path);
+                    overrides.Add(new PropertyModification { target = source, propertyPath = path,
+                        value = property.floatValue.ToString(System.Globalization.CultureInfo.InvariantCulture) });
+                }
+                PrefabUtility.SetPropertyModifications(battery, overrides.ToArray());
+            }
+            lamp.type = LightType.Spot;
+            lamp.color = Color.white;
+            lamp.useColorTemperature = false;
+            lamp.range = 24f;
+            lamp.spotAngle = 140f;
+            lamp.innerSpotAngle = 63f;
+            lamp.intensity = 120f;
+            lamp.shadows = LightShadows.None;
+            lamp.transform.position = mount.position + battery.transform.up * 0.65f;
+            lamp.transform.rotation = battery.transform.rotation * Quaternion.Euler(18f, 0f, 0f);
+            var overlay = new SerializedObject(darkness);
+            overlay.FindProperty("lightRadius").floatValue = 7f;
+            overlay.FindProperty("darknessOpacity").floatValue = 0.3f;
+            overlay.FindProperty("forwardOffset").floatValue = 2f;
+            overlay.FindProperty("radiusScale").floatValue = 0.75f;
+            overlay.FindProperty("extraDarkness").floatValue = 0.03f;
+            overlay.FindProperty("chargedRadiusMultiplier").floatValue = 2.4f;
+            overlay.FindProperty("chargedOpacityMultiplier").floatValue = 0.65f;
+            overlay.ApplyModifiedPropertiesWithoutUndo();
+            foreach (Object changed in new Object[] { battery, lamp, lamp.transform, darkness })
+                if (PrefabUtility.IsPartOfPrefabInstance(changed))
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(changed);
+        }
+
         private static LightBattery ConfigurePlayer(GameObject player)
         {
             PlayerHealth health = player.GetComponent<PlayerHealth>();

@@ -6303,10 +6303,12 @@ MonoBehaviour:
   darknessShader: {fileID: 4800000, guid: 636bb630103a10d37ae269f6bef7d00b, type: 3}
   darknessEnabled: 1
   lightRadius: 7
-  darknessOpacity: 0.65
+  darknessOpacity: 0.3
   forwardOffset: 2
   radiusScale: 0.75
-  extraDarkness: 0.08
+  extraDarkness: 0.03
+  chargedRadiusMultiplier: 2.4
+  chargedOpacityMultiplier: 0.65
 --- !u!223 &1161102926
 Canvas:
   m_ObjectHideFlags: 0
@@ -16582,6 +16584,134 @@ PrefabInstance:
       propertyPath: laser
       value:
       objectReference: {fileID: 7868977143442150408}
+    - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.49999988
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.98768836
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.15643448
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: fillRange
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: intensity
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: fillIntensity
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: emptyFillRange
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightAngle
+      value: 140
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightMount
+      value:
+      objectReference: {fileID: 821562641}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightRange
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: emptyFillIntensity
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightPosition.y
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightPosition.z
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: riderFillPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: riderFillPosition.y
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: riderFillPosition.z
+      value: -0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightHeightOffset
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: nearbyRangeMultiplier
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightDownwardAngle
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: nearbyBrightnessMultiplier
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: headlightBrightnessMultiplier
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_Range
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_Intensity
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_SpotAngle
+      value: 140
+      objectReference: {fileID: 0}
+    - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 63
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -19320,6 +19450,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1844921244}
   m_Mesh: {fileID: 2394460649263136577, guid: 0a783ead62a31c389918b14b61840584, type: 3}
+--- !u!4 &821562641 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1543002107188275261, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+  m_PrefabInstance: {fileID: 7868977143442150400}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
