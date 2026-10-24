@@ -113,6 +113,8 @@ The functional upgrade slice adds contact-collected XP packs from regular deaths
 
 V1 uses the shared engine-free `Boki.Upgrades.Rules` composed by `RunState`. `V1GameFlow` connects the UI and input, while `RunSession.SetPaused` owns shared suspension and `Time.timeScale`. `RouteEncounter`, shared `EnemyHealth`/`XpPickup`, `V1RouteEvent` and `V1BossArena` adapt scene events to the existing run rules. `PlayerGameplayFeedback` supplies the model scene's effects without its test shortcuts. V1 input references and materials are isolated in `Assets/V1/`; XP uses the shared `Boki.Upgrades.XpPickup` adapter; scene-local overrides repair missing upgrade-prefab input references without changing the shared prefab. See [V1 setup and verification](plans/version-one-verification.md) for controls, scope and remaining platform/playtest work.
 
+The three V1 scenes use the actual Menu_Preview presentation for pause, with V1GameFlow binding resume, restart, main menu and quit to the shared run authority. Death and victory retain their existing terminal panel. See [V1 pause menu verification](plans/v1-pause-menu-verification.md).
+
 ## 4. Runtime State
 
 ### 4.1 `PersistentUnlocks` (Survives Application Restarts)
