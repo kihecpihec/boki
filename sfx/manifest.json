@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "original_recordings": [
+    {
+      "file": "A.mp3",
+      "sha256": "99e2668349e5871383cc9a6ac6c37170b178f7f1890124f66522ccc5c5a2a225"
+    },
+    {
+      "file": "ayo_lilbro.mp3",
+      "sha256": "ec59d4b0ec14f5eba1483c4128729126f6a3104b27d2f62d28c1ec0b8198dd31"
+    },
+    {
+      "file": "boki_damaged.mp3",
+      "sha256": "fbaf813d5063754c6880182ebbc622114c9589f9515a41a6b9e2a9bf4bc126de"
+    },
+    {
+      "file": "boki_kolikojeura-boki_danesjesobota.qt",
+      "sha256": "01e8f365f8f67ac417707de8c9a18f04565a9e8c42ae3d8a257493099d52748c"
+    },
+    {
+      "file": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "sha256": "2d54c4bccb9f98b1d108c192ba2d1f9c94cd4a82f2dbf4f12a42fb33c8f92427"
+    },
+    {
+      "file": "fak_nespet.mp3",
+      "sha256": "a5f333ee2689730b1fc316e979e1f486639a59bad223f407fe0317b4cccf183c"
+    },
+    {
+      "file": "guilt_sounds.qt",
+      "sha256": "5a0e34667cc51e460473ffc948b0b7d10e0fa78d7d048d44762db0affdad4a27"
+    },
+    {
+      "file": "kaj_je_to_blo.mp3",
+      "sha256": "fdf1c1b0f8df5e36c16b0b1835a4cd8d56e6825919904d9b7af85078b379d7a8"
+    },
+    {
+      "file": "kebab.mp3",
+      "sha256": "7bfe4933411322c25bab109a7ec7ed418d1e48d5565aed48742513a44e587a86"
+    },
+    {
+      "file": "laser_sounds.qt",
+      "sha256": "f518d260c41994135592e38d1c5027db593a918b2489613c0e98f93e651ec0fa"
+    },
+    {
+      "file": "sKooterFast.mp3",
+      "sha256": "433b8943fecd3b43335e11918b9f0c92861a4d683277b04caf24cfcc6a167340"
+    },
+    {
+      "file": "skor_pravocasno.mp3",
+      "sha256": "64fec1842a3240574844f90eddb7d405b6c79c796e3d2271f1f784348311cb13"
+    },
+    {
+      "file": "teleport.mp3",
+      "sha256": "c6c7c6ac2e408d05f55e6d8df7d5ec666115cac98bc0b78b4adcb5e29b25ef4c"
+    }
+  ],
+  "conversions": [
+    {
+      "source": "boki_kolikojeura-boki_danesjesobota.qt",
+      "file": "boki_kolikojeura-boki_danesjesobota.mp3"
+    },
+    {
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "file": "enemy_dmg_sounds-enemy_deatchsounds.mp3"
+    },
+    {
+      "source": "guilt_sounds.qt",
+      "file": "guilt_sounds.mp3"
+    },
+    {
+      "source": "laser_sounds.qt",
+      "file": "laser_sounds.mp3"
+    }
+  ],
+  "processing": {
+    "encoder": "libmp3lame",
+    "quality": 2,
+    "gain": "Unchanged except Boki damage (-7.4 dB) and teleport (-2.1 dB), attenuated consistently per recording to leave MP3 decoding headroom. Per-clip gains are recorded below.",
+    "sample_rate_and_channels": "preserved from source",
+    "trim_fade_in_seconds": 0.003,
+    "trim_fade_out_seconds": 0.008,
+    "notes": "Clips are encoded directly from original recordings. Internal pauses are retained. Very brief isolated handling clicks are excluded. No pitch effects, upward normalization or denoising applied. Attenuation prevents export overshoot; it does not repair any distortion already in an original recording."
+  },
+  "clips": [
+    {
+      "file": "dialogue/boki_danes_je_sobota.mp3",
+      "source": "boki_kolikojeura-boki_danesjesobota.qt",
+      "source_start_seconds": 8.03,
+      "source_end_seconds": 10.26,
+      "script_line": "Boki ... danes je sobota.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "dialogue/boki_koliko_je_ura.mp3",
+      "source": "boki_kolikojeura-boki_danesjesobota.qt",
+      "source_start_seconds": 3.3,
+      "source_end_seconds": 5.82,
+      "script_line": "Boki. Koliko je ura?",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/boki_damage/boki_damage_01.mp3",
+      "source": "boki_damaged.mp3",
+      "source_start_seconds": 0.15,
+      "source_end_seconds": 0.91,
+      "output_gain_db": -7.4
+    },
+    {
+      "file": "variations/boki_damage/boki_damage_02.mp3",
+      "source": "boki_damaged.mp3",
+      "source_start_seconds": 0.91,
+      "source_end_seconds": 1.79,
+      "output_gain_db": -7.4
+    },
+    {
+      "file": "variations/boki_damage/boki_damage_03.mp3",
+      "source": "boki_damaged.mp3",
+      "source_start_seconds": 1.79,
+      "source_end_seconds": 2.87,
+      "output_gain_db": -7.4
+    },
+    {
+      "file": "variations/boki_reaction/boki_reaction_01.mp3",
+      "source": "A.mp3",
+      "source_start_seconds": 0.08,
+      "source_end_seconds": 2.42,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/boki_reaction/boki_reaction_02.mp3",
+      "source": "A.mp3",
+      "source_start_seconds": 3.61,
+      "source_end_seconds": 5.62,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_01.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 1,
+      "source_start_seconds": 1.26,
+      "source_end_seconds": 2.38,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_02.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 2,
+      "source_start_seconds": 3.3,
+      "source_end_seconds": 3.81,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_03.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 3,
+      "source_start_seconds": 4.6,
+      "source_end_seconds": 5.23,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_04.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 4,
+      "source_start_seconds": 6.0,
+      "source_end_seconds": 6.58,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_05.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 5,
+      "source_start_seconds": 7.08,
+      "source_end_seconds": 8.4,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_06.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 6,
+      "source_start_seconds": 9.39,
+      "source_end_seconds": 10.38,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_07.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 8,
+      "source_start_seconds": 14.01,
+      "source_end_seconds": 14.56,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_08.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 9,
+      "source_start_seconds": 15.07,
+      "source_end_seconds": 16.09,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_09.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 10,
+      "source_start_seconds": 16.84,
+      "source_end_seconds": 17.65,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_damage/enemy_damage_10.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 11,
+      "source_start_seconds": 18.05,
+      "source_end_seconds": 19.07,
+      "suggested_use": "enemy_damage",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_death/enemy_death_01.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 7,
+      "source_start_seconds": 11.87,
+      "source_end_seconds": 13.06,
+      "suggested_use": "enemy_death",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_death/enemy_death_02.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 12,
+      "source_start_seconds": 20.08,
+      "source_end_seconds": 21.37,
+      "suggested_use": "enemy_death",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_death/enemy_death_03.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 13,
+      "source_start_seconds": 22.01,
+      "source_end_seconds": 23.61,
+      "suggested_use": "enemy_death",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/enemy_death/enemy_death_04.mp3",
+      "source": "enemy_dmg_sounds-enemy_deatchsounds.qt",
+      "source_take": 14,
+      "source_start_seconds": 24.18,
+      "source_end_seconds": 25.41,
+      "suggested_use": "enemy_death",
+      "classification": "User-approved duration grouping: shorter grunts as damage, longer groans as death; category is an editorial suggestion.",
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/guilt/guilt_01.mp3",
+      "source": "guilt_sounds.qt",
+      "source_start_seconds": 3.83,
+      "source_end_seconds": 5.38,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/guilt/guilt_02.mp3",
+      "source": "guilt_sounds.qt",
+      "source_start_seconds": 7.92,
+      "source_end_seconds": 10.65,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_01.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 1.76,
+      "source_end_seconds": 2.7,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_02.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 2.7,
+      "source_end_seconds": 3.28,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_03.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 3.84,
+      "source_end_seconds": 4.46,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_04.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 4.92,
+      "source_end_seconds": 5.64,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_05.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 5.94,
+      "source_end_seconds": 6.6,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_06.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 7.52,
+      "source_end_seconds": 8.08,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_07.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 10.25,
+      "source_end_seconds": 10.77,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_08.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 10.77,
+      "source_end_seconds": 11.46,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/laser/laser_09.mp3",
+      "source": "laser_sounds.qt",
+      "source_start_seconds": 12.57,
+      "source_end_seconds": 13.26,
+      "output_gain_db": 0.0
+    },
+    {
+      "file": "variations/teleport/teleport_01.mp3",
+      "source": "teleport.mp3",
+      "source_start_seconds": 0.0,
+      "source_end_seconds": 2.73,
+      "output_gain_db": -2.1
+    },
+    {
+      "file": "variations/teleport/teleport_02.mp3",
+      "source": "teleport.mp3",
+      "source_start_seconds": 3.02,
+      "source_end_seconds": 4.91,
+      "output_gain_db": -2.1
+    }
+  ]
+}
