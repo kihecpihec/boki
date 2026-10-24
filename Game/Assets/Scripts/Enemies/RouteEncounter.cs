@@ -33,7 +33,7 @@ namespace Boki.Enemies
             if (session == null || !session.IsGameplayActive || session.HasEnteredBossArena || !space.State.Occupied) return;
             timer -= Time.deltaTime;
             if (timer > 0f) return;
-            timer = cadence;
+            timer = EncounterCadence.Evaluate(cadence, session.State.Guilt.AccumulatedCombatSeconds);
             int active = 0;
             foreach (var enemy in EnemyHealth.Active)
                 if (enemy != null && enemy.IsAlive && enemy.GetComponent<ProfessorBoss>() == null) active++;

@@ -268,9 +268,11 @@ Use predefined spawn points on the selected route. Replenish only during active 
 
 | Level | Desired active regular enemies | Maximum active regular enemies | Replenishment cadence |
 |---|---:|---:|---|
-| Pohorje | 4 | 8 | One every 4 s |
-| Maribor | 6 | 12 | One every 3 s |
-| FERI | 4 | 8 | One every 4 s |
+| Pohorje | 4 | 8 | One every 4 s → 2 s |
+| Maribor | 6 | 12 | One every 3 s → 1.5 s |
+| FERI | 4 | 8 | One every 4 s → 2 s |
+
+Replenishment intervals decrease linearly over the first 120 accumulated active combat-space seconds, then remain at half the starting interval. Use the same per-level combat clock as Guilt pressure: leaving a space retains progress, overlapping spaces do not double-count, pause/upgrade selection/loading/scripted sequences freeze progress, and the next level or New Run resets it. Each scheduled attempt uses the current interval; missed attempts never accumulate.
 
 Authored ambushes may exceed the desired count, never the cap. Spawn outside the camera view, at least 8 m from Boki, on valid collision-free ground within the chosen space. If no valid point exists, wait; never accumulate a burst of missed spawns. Death does not trigger an immediate replacement. Stop replenishment on leaving the space, scene transition, arena entry, or terminal outcome. Pause and upgrade selection freeze spawn timers. Preserve route-specific melee/ranged compositions and rewards.
 
