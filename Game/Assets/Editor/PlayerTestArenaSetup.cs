@@ -4,6 +4,7 @@ using Boki.Battery;
 using Boki.Combat;
 using Boki.Enemies;
 using Boki.Player;
+using Boki.Upgrades;
 using UnityEditor;
 using UnityEditor.Events;
 using UnityEditor.SceneManagement;
@@ -153,7 +154,7 @@ namespace Boki.Editor
                         SetArray(guilt, "spawnPoints", markers);
                     }
                     Set(station, "arena", arena); Set(station, "volume", volume); Set(station, "entry", entry);
-                    Set(station, "enemyTemplate", enemy); Set(station, "xpTemplate", xp); Set(station, "pickupRoot", pickupRoot);
+                    Set(station, "enemyTemplate", enemy);
                     SetString(station, "description", Descriptions[i]);
                     ConfigureCharges(stationRoot, player, center, i, charges);
                     for (int n = 0; n < 2; n++)
@@ -173,7 +174,7 @@ namespace Boki.Editor
                 BuildPanel(root.transform, arena, stations);
                 var instructions = Find<Text>(scene).FirstOrDefault(t => t.name == "Model Test Controls");
                 if (instructions != null)
-                    instructions.text = "ENEMY SANDBOX | WASD: ride | Space: jump | Shift: boost | Esc: use test panel\nH: take damage | B: drain 25 battery | Gold: XP | Green: battery +25\nOnly your current station is active. XP tests collection only; upgrade selection is not implemented.";
+                    instructions.text = "ENEMY SANDBOX | WASD: ride | Space: jump | Shift: boost | Esc: use test panel\nH: take damage | B: drain 25 battery | Gold: XP | Green: battery +25\nOnly your current station is active. XP awards real upgrades at the documented thresholds.";
                 player.transform.SetPositionAndRotation(hub.position, hub.rotation);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(player.transform);
                 // The sandbox is deliberately brighter than the atmospheric route scenes.
@@ -190,6 +191,7 @@ namespace Boki.Editor
                     if (light.type == LightType.Directional) light.intensity = 0.65f;
                 AssetDatabase.SaveAssets();
                 EditorSceneManager.MarkSceneDirty(scene);
+                UpgradeGameplaySetup.Wire(scene);
                 EditorSceneManager.SaveScene(scene);
                 Debug.Log("PLAYER_TEST_ARENA_READY: eight isolated stations, rigged Boki, contact XP, batteries and test controls.");
             }
@@ -237,15 +239,14 @@ namespace Boki.Editor
             }
         }
 
-        private static ArenaXpPickup CreateXp(Transform parent, PlayerHealth player, Material material)
+        private static XpPickup CreateXp(Transform parent, PlayerHealth player, Material material)
         {
             var root = Child(parent, "Gold XP Pack");
             root.gameObject.layer = 2;
             var trigger = root.gameObject.AddComponent<SphereCollider>();
             trigger.isTrigger = true;
             trigger.radius = 0.85f;
-            var pickup = root.gameObject.AddComponent<ArenaXpPickup>();
-            Set(pickup, "player", player);
+            var pickup = root.gameObject.AddComponent<XpPickup>();
             var mesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
             mesh.name = "Gold XP";
             mesh.transform.SetParent(root, false);
@@ -278,7 +279,7 @@ namespace Boki.Editor
                 "ENEMY SANDBOX | WASD: ride | Mouse: look | Space: jump | Shift: boost\n"
                 + "H: take damage | B: drain 25 battery | Gold: XP +1 | Green: battery +25\n"
                 + "Choose a station, then click the world to ride. Only that enemy is active.\n"
-                + "XP tests collection and HUD feedback; upgrade selection is not implemented.",
+                + "XP awards real upgrades; choose a card when the run pauses.",
                 new Vector2(24f, -60f), new Vector2(900f, 110f), 16);
             Label(ui.transform, "Panel Hint", "Esc: release mouse to use buttons", new Vector2(965f, -20f), new Vector2(300f, 35f), 16);
             for (int i = 0; i < stations.Length; i++)

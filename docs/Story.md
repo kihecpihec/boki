@@ -162,7 +162,7 @@ Within a run, staying longer in a combat space escalates Guilt pressure. Difficu
 
 Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **3 → 7 → 12 → 18 → 25 → 33**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
 
-Crossing a threshold pauses gameplay and offers three distinct random eligible options. Select exactly one before resuming; if multiple thresholds are crossed, resolve choices sequentially without unpausing combat. Bonuses add percentages of the original base stat rather than multiplying previous upgrades.
+Crossing a threshold pauses gameplay and offers three distinct random eligible options, or two when only two eligible rewards remain. Select exactly one before resuming; if multiple thresholds are crossed, resolve choices sequentially without unpausing combat. Bonuses add percentages of the original base stat rather than multiplying previous upgrades.
 
 | Upgrade | Exact effect | Selection cap per run |
 |---|---|---:|
@@ -173,7 +173,7 @@ Crossing a threshold pauses gameplay and offers three distinct random eligible o
 | **Panic Mode** | Boost modification described below. | 1 |
 | **Emergency Snack** | Restore 30 HP, capped at maximum; eligible only while injured. | Repeatable |
 
-Remove capped or ineligible options from the offer pool. If needed to maintain three choices, add distinct recovery rewards: **Battery Charge** (+25 current battery, clamped to capacity) and **Emergency Snack** (+30 HP). Label recovery cards `RECOVERY`; never show Emergency Snack twice as both an upgrade and a fallback. Battery Charge is eligible only below battery capacity. Each selected recovery consumes one of the six selections. With the caps above and six selections, sufficient uncapped stat upgrades remain to fill an offer even if healing is ineligible; do not duplicate cards.
+Remove capped or ineligible options from the offer pool. If needed to maintain three choices, add distinct recovery rewards: **Battery Charge** (+25 current battery, clamped to capacity) and **Emergency Snack** (+30 HP). Label recovery cards `RECOVERY`; never show Emergency Snack twice as both an upgrade and a fallback. Battery Charge is eligible only below battery capacity. Each selected recovery consumes one of the six selections. If only two eligible rewards remain after applying caps and recovery eligibility, show those two cards and disable the unused third slot; do not duplicate cards or offer recovery at full health/charge.
 
 Turbo Skiro and the existing Guilt movement advantage add: one Turbo selection plus panic gives +45% original base movement speed; two give +65%. Apply this movement bonus to ordinary riding, not boost speed. Preserve the approved [M1 baseline](Gameplay.md#m1-movement-baseline); this does not approve the separate proposed movement overhaul.
 

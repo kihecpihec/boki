@@ -5,6 +5,7 @@ using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
 using Boki.Player;
+using Boki.Upgrades;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -131,17 +132,17 @@ namespace Boki.Editor
                         if (++stationIndex < stations.Length) { arena.Visit(stations[stationIndex]); Next(1); break; }
                         arena.Visit(stations[0]);
                         xpBefore = RunSession.Instance.State.XP;
-                        packsBefore = Object.FindObjectsByType<ArenaXpPickup>(FindObjectsSortMode.None).Length;
+                        packsBefore = Object.FindObjectsByType<XpPickup>(FindObjectsSortMode.None).Length;
                         arena.ActiveStation.Enemy.GetComponent<EnemyHealth>().TakeDamage(10000);
                         Next(2);
                         break;
                     case 2:
                         if (elapsed < 0.15) return;
-                        Require(Object.FindObjectsByType<ArenaXpPickup>(FindObjectsSortMode.None).Length == packsBefore + 1,
+                        Require(Object.FindObjectsByType<XpPickup>(FindObjectsSortMode.None).Length == packsBefore + 1,
                             "Regular kill must leave exactly one XP pack.");
                         Require(RunSession.Instance.State.KillCount == 1 && RunSession.Instance.State.XP == xpBefore,
                             "Kill counts once, XP waits for contact.");
-                        var pack = Object.FindObjectsByType<ArenaXpPickup>(FindObjectsSortMode.None)
+                        var pack = Object.FindObjectsByType<XpPickup>(FindObjectsSortMode.None)
                             .First(p => stations[0].Contains(p.transform.position));
                         Move(pack.transform.position - Vector3.up * 0.6f);
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
@@ -202,6 +203,12 @@ namespace Boki.Editor
                         if (sheets < 3 || slams < 1) return;
                         Require(player.IsAlive, "Boss test must remain playable.");
                         Capture("/tmp/boki-arena-professor.png");
+                        int bossPacks = Object.FindObjectsByType<XpPickup>().Length;
+                        int bossKills = RunSession.Instance.State.KillCount;
+                        arena.ActiveStation.Enemy.GetComponent<EnemyHealth>().TakeDamage(100000);
+                        Require(Object.FindObjectsByType<XpPickup>().Length == bossPacks
+                            && RunSession.Instance.State.KillCount == bossKills + 1,
+                            "Boss death counts once and never creates a regular-enemy XP reward.");
                         arena.Visit(stations[6]);
                         Next(10);
                         break;
@@ -211,10 +218,17 @@ namespace Boki.Editor
                         Require(guilt.enabled && guilt.Pressure == RunSession.Instance.State.Guilt && guilt.Pressure.IsActive,
                             "Guilt must use shared occupancy and warning state.");
                         Require(guilt.GetComponent<EnemyHealth>() == null, "Guilt stays invulnerable.");
+                        Require(player.GetComponent<ScooterController>().BoundGuilt == guilt,
+                            "Panic Mode must follow the active arena clone.");
+                        Require(Object.FindObjectsByType<GuiltChaser>().Count(g => g.isActiveAndEnabled) == 1,
+                            "Exactly one live Guilt driver may advance the shared pressure clock.");
                         if (guilt.Phase != GuiltPhase.Chase || guilt.Pressure.AwaitingPlacement) return;
                         Require(player.GetComponent<LightBattery>().WarningStrength > 0f,
                             "A safely placed Guilt chase must drive the player's warning effects.");
                         arena.ReturnToHub();
+                        Require(player.GetComponent<ScooterController>().BoundGuilt == null
+                            && Object.FindObjectsByType<GuiltChaser>().All(g => !g.isActiveAndEnabled),
+                            "Leaving the Guilt station clears player bindings and stops its driver.");
                         player.TakeDamage(10000);
                         Require(!player.IsAlive && !player.GetComponent<ScooterController>().enabled, "Death stops riding.");
                         arena.RestartSandbox();
