@@ -291,8 +291,51 @@ namespace Boki.Editor
             controller.enabled = false; player.transform.position = point; controller.enabled = true;
             Physics.SyncTransforms(); controller.Move(Vector3.forward * 0.01f);
         }
+        internal static void ValidateEnemyEffects(Scene scene)
+        {
+            int templateRoots = 0;
+            foreach (var transform in V1SceneSetup.All<Transform>(scene))
+                if (transform.name == "Enemy Attack Templates")
+                {
+                    templateRoots++;
+                    Check(!transform.gameObject.activeSelf, "Attack templates remain inactive");
+                }
+            Check(templateRoots == 1, "Exactly one enemy attack template root");
+            foreach (var health in V1SceneSetup.All<EnemyHealth>(scene))
+                Check(new SerializedObject(health).FindProperty("showCombatFeedback").boolValue
+                    || (health.TryGetComponent<EnemyFeedback>(out var feedback) && feedback.enabled),
+                    "Hit and death feedback enabled: " + health.name);
+            foreach (var ranged in V1SceneSetup.All<RangedEnemy>(scene))
+            {
+                var projectile = (EnemyProjectile)new SerializedObject(ranged).FindProperty("projectilePrefab").objectReferenceValue;
+                ValidateProjectileEffect(projectile, scene);
+                Check(projectile.name == (ranged.name.StartsWith("ExamPaper", StringComparison.Ordinal)
+                    ? "Proj_ExamPaper" : "Proj_WatcherOrb"), "Correct projectile visual: " + ranged.name);
+            }
+            foreach (var boss in V1SceneSetup.All<ProfessorBoss>(scene))
+            {
+                ValidateProjectileEffect((EnemyProjectile)new SerializedObject(boss).FindProperty("sheetPrefab").objectReferenceValue, scene);
+                var view = boss.GetComponent<ProfessorAttackView>();
+                Check(view != null && view.enabled, "Professor attack view enabled");
+                var serialized = new SerializedObject(view);
+                foreach (string field in new[] { "visual", "warning", "countdown", "shockwave", "castPulse" })
+                    Check(serialized.FindProperty(field).objectReferenceValue != null, "Professor effect assignment: " + field);
+            }
+            Debug.Log("V1_ENEMY_EFFECTS_VALIDATED " + scene.path);
+        }
+
+        private static void ValidateProjectileEffect(EnemyProjectile projectile, Scene scene)
+        {
+            Check(projectile != null && projectile.gameObject.scene == scene, "Scene-local projectile template");
+            Check(!projectile.gameObject.activeInHierarchy, "Projectile template cannot fire or update");
+            var serialized = new SerializedObject(projectile);
+            Check(serialized.FindProperty("trailMaterial").objectReferenceValue != null, "Projectile trail/impact material assigned");
+            Check(serialized.FindProperty("trailWidth").floatValue > 0f, "Visible projectile trail width");
+        }
+
         private static void Validate(Scene scene)
         {
+            ValidateEnemyEffects(scene);
             Check(V1SceneSetup.All<RouteGate>(scene).Count == 3, "Exactly three route gates");
             Check(V1SceneSetup.All<PlayerHud>(scene).Count == 1, "One real HUD");
             Check(V1SceneSetup.All<PlayerGameplayFeedback>(scene).Count == 1, "One production feedback bridge");

@@ -65,6 +65,34 @@ namespace Boki.Editor
             }
         }
 
+        [MenuItem("Boki/Version 1/Upgrade Enemy Effects")]
+        public static void UpgradeEnemyEffects()
+        {
+            RequireCleanEditor();
+            var previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string path in Scenes)
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+                        throw new InvalidOperationException("Missing V1 scene: " + path);
+                foreach (string path in Scenes)
+                {
+                    Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    EnemyPrefabBuilder.UpgradeAttacks(scene);
+                    V1SceneChecks.ValidateEnemyEffects(scene);
+                    EditorSceneManager.SaveScene(scene);
+                    Debug.Log("V1_ENEMY_EFFECTS_SAVED " + path);
+                }
+            }
+            finally
+            {
+                bool restore = previous.Length > 0;
+                foreach (var item in previous) restore &= !string.IsNullOrEmpty(item.path);
+                if (restore) EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
         [MenuItem("Boki/Version 1/Open Pohorje")]
         public static void Open()
         {
@@ -158,7 +186,7 @@ namespace Boki.Editor
                 if (level == RouteLevel.City) CreateCityEscape(runtime.transform, markers, manager, ui.Flow);
             }
             else CreateBoss(runtime.transform, markers, manager, health, battery, guilt, ui, branches.ToArray(), charges);
-            if (level == RouteLevel.Feri) EnemyPrefabBuilder.UpgradeAttacks(scene);
+            EnemyPrefabBuilder.UpgradeAttacks(scene);
             foreach (var root in scene.GetRootGameObjects()) if (root.name == "Enemy Attack Templates") root.transform.SetParent(runtime.transform, true);
             ArrayRef(feedback, "charges", charges.ToArray());
             EnsureEventSystem(scene);

@@ -179,7 +179,8 @@ namespace Boki.Editor
             }
             Transform templates = null;
             foreach (GameObject root in scene.GetRootGameObjects())
-                if (root.name == "Enemy Attack Templates") templates = root.transform;
+                foreach (Transform candidate in root.GetComponentsInChildren<Transform>(true))
+                    if (candidate.name == "Enemy Attack Templates") templates = candidate;
             if (templates == null) templates = new GameObject("Enemy Attack Templates").transform;
             templates.gameObject.SetActive(false);
             EnemyProjectile paper = AttackTemplate(templates, "Proj_ExamPaper", material,
@@ -195,7 +196,7 @@ namespace Boki.Editor
             ProfessorBoss boss = null;
             foreach (GameObject root in scene.GetRootGameObjects())
                 if (root.GetComponentInChildren<ProfessorBoss>(true) is ProfessorBoss foundBoss) boss = foundBoss;
-            if (boss == null) throw new InvalidOperationException("Enemy_Test has no professor.");
+            if (boss == null) return;
             SetObject(boss, "sheetPrefab", paper);
             PrefabUtility.RecordPrefabInstancePropertyModifications(boss);
             // Replace the textured model with an exact world-space radius, retaining the boss's marker reference.
