@@ -17,6 +17,8 @@ namespace Boki.Core
         [SerializeField] private string forestDestination = ForestScene;
         [SerializeField] private string cityDestination = CityScene;
         [SerializeField] private string feriDestination = "";
+        [SerializeField] private bool persistentProgress;
+        public bool HasEnteredBossArena => hasEnteredBossArena;
         private PersistentUnlocks unlocks;
         private LightBattery lightDriver;
         private bool hasEnteredBossArena;
@@ -106,7 +108,7 @@ namespace Boki.Core
 
         // Production routing owns persistence. A scene cached before M5 must not
         // silently disable saving because it lacks a newly serialized checkbox.
-        private bool UsesPersistentUnlocks => forestDestination == PohorjeScene;
+        private bool UsesPersistentUnlocks => persistentProgress || forestDestination == PohorjeScene;
         private UnlockSnapshot ReadNewRunUnlocks() => UsesPersistentUnlocks ? unlocks.Read() : NextRunUnlocks;
 
         public bool EnterBossArena()

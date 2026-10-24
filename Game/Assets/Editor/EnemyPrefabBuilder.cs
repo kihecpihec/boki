@@ -166,7 +166,7 @@ namespace Boki.Editor
             }
         }
 
-        private static void UpgradeAttacks(Scene scene)
+        internal static void UpgradeAttacks(Scene scene)
         {
             const string materialPath = Art + "M_EnemyAttackFX.mat";
             Material material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -186,12 +186,15 @@ namespace Boki.Editor
                 new Color(1f, 0.65f, 0.12f), 0.16f);
             EnemyProjectile orb = AttackTemplate(templates, "Proj_WatcherOrb", material,
                 new Color(1f, 0.1f, 0.05f), 0.2f);
-            foreach (RangedEnemy ranged in UnityEngine.Object.FindObjectsByType<RangedEnemy>())
+            foreach (GameObject root in scene.GetRootGameObjects())
+            foreach (RangedEnemy ranged in root.GetComponentsInChildren<RangedEnemy>(true))
             {
-                SetObject(ranged, "projectilePrefab", orb);
+                SetObject(ranged, "projectilePrefab", ranged.name.StartsWith("ExamPaper", StringComparison.Ordinal) ? paper : orb);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(ranged);
             }
-            var boss = UnityEngine.Object.FindAnyObjectByType<ProfessorBoss>();
+            ProfessorBoss boss = null;
+            foreach (GameObject root in scene.GetRootGameObjects())
+                if (root.GetComponentInChildren<ProfessorBoss>(true) is ProfessorBoss foundBoss) boss = foundBoss;
             if (boss == null) throw new InvalidOperationException("Enemy_Test has no professor.");
             SetObject(boss, "sheetPrefab", paper);
             PrefabUtility.RecordPrefabInstancePropertyModifications(boss);

@@ -25,6 +25,7 @@ namespace Boki.UI
         private bool ready;
         private bool submitting;
         private int offerCount = 3;
+        private int submittedFrame = -1;
 
         public bool IsVisible => ready && panel.activeSelf;
         public UnityEvent<int> ChoiceRequested => choiceRequested;
@@ -116,8 +117,9 @@ namespace Boki.UI
 
         public void RequestChoice(int index)
         {
-            if (!IsVisible || submitting || index < 0 || index >= offerCount) return;
+            if (!IsVisible || submitting || submittedFrame == Time.frameCount || index < 0 || index >= offerCount) return;
             Select(index);
+            submittedFrame = Time.frameCount;
             submitting = true;
             try { choiceRequested.Invoke(index); }
             finally { submitting = false; }

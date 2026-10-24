@@ -107,6 +107,12 @@ M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `Melee
 
 The functional upgrade slice adds contact-collected XP packs from regular deaths, typed accepted upgrades and additive stat modifiers. `RunState` composes progression with the same health and battery instances consumed by adapters. `AutoLaser` applies damage and Double Trouble; `ScooterMotion` snapshots Panic Mode boost values and keeps ordinary riding bonuses separate from boost speed. `PlayerHud` reads progression thresholds and selection count. Story §5 owns offer caps, recovery eligibility and the two-card exception. See [functional upgrade verification](plans/functional-upgrades-verification.md).
 
+### Version 1 integration
+
+`V1_Pohorje`, `V1_Maribor`, and `V1_FERI` combine the authored maps with the rigged player, actual player HUD, selected-route encounters, rechargeable arena batteries, shared Guilt pressure, contact-collected XP, eligible upgrade offers, death/retry and the professor ending. `LevelPortal` advances through the existing `RouteManager` and `RunSession`; it cannot bypass route selection or City C's side escape. V1 begins directly in Pohorje and preserves the original grayboxes and preview scenes.
+
+V1 uses the shared engine-free `Boki.Upgrades.Rules` composed by `RunState`. `V1GameFlow` connects the UI and input, while `RunSession.SetPaused` owns shared suspension and `Time.timeScale`. `RouteEncounter`, shared `EnemyHealth`/`XpPickup`, `V1RouteEvent` and `V1BossArena` adapt scene events to the existing run rules. `PlayerGameplayFeedback` supplies the model scene's effects without its test shortcuts. V1 input references and materials are isolated in `Assets/V1/`; XP uses the shared `Boki.Upgrades.XpPickup` adapter; scene-local overrides repair missing upgrade-prefab input references without changing the shared prefab. See [V1 setup and verification](plans/version-one-verification.md) for controls, scope and remaining platform/playtest work.
+
 ## 4. Runtime State
 
 ### 4.1 `PersistentUnlocks` (Survives Application Restarts)

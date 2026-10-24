@@ -1,0 +1,279 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8316505281131432561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UpgradeNavigate
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 09633908-cf25-4e61-93d2-fdb1174e23e7
+--- !u!114 &-4868333674855546308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UpgradeSubmit
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: cdb3e212-2560-4e13-8018-b5609ed25ab5
+--- !u!114 &-416053247056102114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UpgradeChoice1
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 97b0c782-a15c-477d-939f-27ab137be42d
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39fa3d8997a24136984ca6e2c99902bc, type: 3}
+  m_Name: Controls
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionAsset
+  m_ActionMaps:
+  - m_Name: V1
+    m_Id: fdeef40a-e052-4924-8e92-6fb5ece46786
+    m_Asset: {fileID: 11400000}
+    m_Actions:
+    - m_Name: Pause
+      m_Type: 1
+      m_ExpectedControlType:
+      m_Id: 5d0b47d5-197f-4f41-b0bb-eac71ad21e43
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: Interact
+      m_Type: 1
+      m_ExpectedControlType:
+      m_Id: be145b61-0dcd-4529-a1a3-fe0f99334f93
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: UpgradeNavigate
+      m_Type: 0
+      m_ExpectedControlType:
+      m_Id: 09633908-cf25-4e61-93d2-fdb1174e23e7
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: UpgradeSubmit
+      m_Type: 1
+      m_ExpectedControlType:
+      m_Id: cdb3e212-2560-4e13-8018-b5609ed25ab5
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: UpgradeChoice1
+      m_Type: 1
+      m_ExpectedControlType:
+      m_Id: 97b0c782-a15c-477d-939f-27ab137be42d
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: UpgradeChoice2
+      m_Type: 1
+      m_ExpectedControlType:
+      m_Id: 4a91e60d-cd25-478b-af0f-291060cb1e9f
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    - m_Name: UpgradeChoice3
+      m_Type: 1
+      m_ExpectedControlType:
+      m_Id: 38906bbd-2ff3-4e8a-840a-62bb8044df11
+      m_Processors:
+      m_Interactions:
+      m_SingletonActionBindings: []
+      m_Flags: 0
+      m_Priority: 0
+    m_Bindings:
+    - m_Name:
+      m_Id: 07049e6b-1f97-461f-a0d8-d2b6e8812249
+      m_Path: <Keyboard>/escape
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: Pause
+      m_Flags: 0
+    - m_Name:
+      m_Id: b9004980-8ee1-4e75-8b7c-853582feb894
+      m_Path: <Keyboard>/e
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: Interact
+      m_Flags: 0
+    - m_Name: 1DAxis
+      m_Id: 6dc39703-b4ba-4da0-9ea7-38af34ebc889
+      m_Path: 1DAxis
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeNavigate
+      m_Flags: 4
+    - m_Name: Negative
+      m_Id: 8cc0dffd-d137-4be7-a3d0-eea2ccee593e
+      m_Path: <Keyboard>/a
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeNavigate
+      m_Flags: 8
+    - m_Name: Positive
+      m_Id: 5cd622fd-cebf-4b94-a319-44dc857b12b4
+      m_Path: <Keyboard>/d
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeNavigate
+      m_Flags: 8
+    - m_Name: 1DAxis
+      m_Id: 9f614b6e-8673-45d5-8d3c-bb42cf10e59a
+      m_Path: 1DAxis
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeNavigate
+      m_Flags: 4
+    - m_Name: Negative
+      m_Id: 1f8668f7-f304-4e60-bd7a-2fff578716c3
+      m_Path: <Keyboard>/leftArrow
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeNavigate
+      m_Flags: 8
+    - m_Name: Positive
+      m_Id: 3dc1f375-7dd6-46de-a56e-aef3dc82bc1a
+      m_Path: <Keyboard>/rightArrow
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeNavigate
+      m_Flags: 8
+    - m_Name:
+      m_Id: d171e53f-c2fc-4655-859c-3c13592d42d6
+      m_Path: <Keyboard>/enter
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeSubmit
+      m_Flags: 0
+    - m_Name:
+      m_Id: 0844c341-27c2-4b8a-a760-f08c3fb9ecef
+      m_Path: <Keyboard>/1
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeChoice1
+      m_Flags: 0
+    - m_Name:
+      m_Id: cab3a28d-d862-4a65-877b-5715de02f591
+      m_Path: <Keyboard>/2
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeChoice2
+      m_Flags: 0
+    - m_Name:
+      m_Id: 8f3e8be4-50ad-4cb8-b62f-4dcb88693b1b
+      m_Path: <Keyboard>/3
+      m_Interactions:
+      m_Processors:
+      m_Groups:
+      m_Action: UpgradeChoice3
+      m_Flags: 0
+  m_ControlSchemes: []
+  m_IsProjectWide: 0
+--- !u!114 &3648629446019047921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UpgradeChoice3
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 38906bbd-2ff3-4e8a-840a-62bb8044df11
+--- !u!114 &4000618747143899602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Interact
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: be145b61-0dcd-4529-a1a3-fe0f99334f93
+--- !u!114 &4960608386916233249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Pause
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 5d0b47d5-197f-4f41-b0bb-eac71ad21e43
+--- !u!114 &7176211897690191661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: UpgradeChoice2
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: 11400000}
+  m_ActionId: 4a91e60d-cd25-478b-af0f-291060cb1e9f

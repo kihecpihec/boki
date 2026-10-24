@@ -33,6 +33,9 @@ namespace Boki.Routes
         public UpgradeState Progression { get; private set; }
         public int XP => Progression.XP;
         public IReadOnlyList<UpgradeId> Upgrades => Progression.Accepted;
+        public bool CitySideEscapeCompleted { get; private set; }
+        public bool CityRetreatStarted { get; private set; }
+        public bool PowerOff { get; private set; }
         public int KillCount { get; set; }
         public double StartedAt { get; private set; }
         public UnlockSnapshot AvailableUnlocks { get; private set; }
@@ -51,6 +54,7 @@ namespace Boki.Routes
             Progression.Changed += NotifyChanged;
             KillCount = 0;
             Pause.Reset();
+            CityRetreatStarted = CitySideEscapeCompleted = PowerOff = false;
             Array.Clear(choices, 0, choices.Length);
             ActiveLevel = RouteLevel.Forest;
             StartedAt = startedAt;
@@ -108,6 +112,31 @@ namespace Boki.Routes
 
         public bool CanAdvance(RouteLevel level) => ValidLevel(level) && level == ActiveLevel
             && level != RouteLevel.Feri && Health.IsAlive && Choice(level) != RouteChoice.None;
+
+        public bool CompleteCityEscape()
+        {
+            if (ActiveLevel != RouteLevel.City || Choice(RouteLevel.City) != RouteChoice.C || !Health.IsAlive || !CityRetreatStarted) return false;
+            CitySideEscapeCompleted = true;
+            Guilt.ScriptedSequenceActive = false;
+            Changed?.Invoke();
+            return true;
+        }
+
+        public bool BeginCityRetreat()
+        {
+            if (CityRetreatStarted || ActiveLevel != RouteLevel.City || Choice(RouteLevel.City) != RouteChoice.C || !Health.IsAlive) return false;
+            CityRetreatStarted = true;
+            Guilt.ScriptedSequenceActive = true;
+            return true;
+        }
+
+        public bool SwitchPowerOff()
+        {
+            if (ActiveLevel != RouteLevel.Feri || Choice(RouteLevel.Feri) != RouteChoice.C || !Health.IsAlive) return false;
+            PowerOff = true;
+            Changed?.Invoke();
+            return true;
+        }
 
         public bool TryAdvance(RouteLevel level)
         {
