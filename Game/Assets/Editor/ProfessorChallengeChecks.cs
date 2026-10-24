@@ -111,6 +111,16 @@ namespace Boki.Editor
             foreach (var laser in Object.FindObjectsByType<AutoLaser>()) laser.enabled = false;
             foreach (var chaser in Object.FindObjectsByType<GuiltChaser>()) chaser.gameObject.SetActive(false);
 
+            Require(boss.GetComponents<ProfessorAttackAudio>().Length == 1,
+                "Expected one automatically attached attack audio component.");
+            int projectileCount = Object.FindObjectsByType<EnemyProjectile>(FindObjectsSortMode.None).Length;
+            boss.SendMessage("FirePaperRing");
+            Require(Object.FindObjectsByType<EnemyProjectile>(FindObjectsSortMode.None).Length == projectileCount + 12,
+                "Radial volley must spawn exactly twelve papers.");
+            var audio = boss.GetComponent<ProfessorAttackAudio>();
+            Require(audio.GetComponent<AudioSource>() != null,
+                "Attack sound playback must have an audio source.");
+
             // Isolate contact above world geometry, using the actual model-test colliders and controller.
             boss.transform.SetPositionAndRotation(new Vector3(0f, 100f, 0f), Quaternion.identity);
             var controller = player.GetComponent<CharacterController>();
@@ -144,8 +154,10 @@ namespace Boki.Editor
             var fill = hud.transform.Find("Deadline Panel/Health Frame/Health Track/Health");
             Require(Mathf.Abs(fill.localScale.x - (float)health.Current / health.Maximum) < 0.001f,
                 "Health bar must match actual professor health.");
-            Require(hud.transform.Find("Deadline Panel/Phase").GetComponent<Text>().text == "08:00 / DEADLINE",
-                "Half health must display the deadline phase.");
+            Require(hud.transform.Find("Deadline Panel/Title").GetComponent<Text>().text == "THE PROFESSOR",
+                "Boss title must contain only THE PROFESSOR.");
+            Require(hud.GetComponentsInChildren<Text>().Length == 2,
+                "Boss HUD must show only the title and health value.");
             boss.enabled = false;
             hud.SendMessage("LateUpdate");
             Require(!canvas.enabled, "Disabling the boss must hide its HUD.");
@@ -156,7 +168,7 @@ namespace Boki.Editor
             health.TakeDamage(health.Maximum);
             hud.SendMessage("LateUpdate");
             Require(!canvas.enabled, "Boss death must hide the boss HUD.");
-            Debug.Log("PROFESSOR_CHALLENGE: model-test wiring, contact, knockback, cooldown, wall, pause, HP display, phase and terminal visibility checked.");
+            Debug.Log("PROFESSOR_CHALLENGE: model-test wiring, contact, knockback, cooldown, wall, pause, simplified HP display, radial volley, audio wiring and terminal visibility checked.");
         }
 
         private static void CaptureHud(ProfessorBoss boss, Canvas canvas)

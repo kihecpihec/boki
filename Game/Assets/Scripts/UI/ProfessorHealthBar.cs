@@ -17,7 +17,6 @@ namespace Boki.UI
         private Image fill;
         private Image damageTrail;
         private Text value;
-        private Text phase;
         private int lastHealth = -1;
         private int lastMaximum = -1;
         private float trailFraction = 1f;
@@ -46,9 +45,7 @@ namespace Boki.UI
                 new Vector2(0f, -235f), new Vector2(760f, 110f), new Color(0.035f, 0.025f, 0.045f, 0.96f));
             Box("Warning Stripe", panel, new Vector2(0f, 0.5f), new Vector2(5f, 0f), new Vector2(6f, 102f), red);
             Label("Title", panel, new Vector2(0f, 1f), new Vector2(24f, -14f),
-                new Vector2(480f, 28f), "THE PROFESSOR // THE DEADLINE", 22, cream, TextAnchor.MiddleLeft);
-            phase = Label("Phase", panel, new Vector2(1f, 1f), new Vector2(-24f, -14f),
-                new Vector2(230f, 28f), "07:59 / FINAL LECTURE", 17, cream, TextAnchor.MiddleRight);
+                new Vector2(480f, 28f), "THE PROFESSOR", 22, cream, TextAnchor.MiddleLeft);
             var frame = Box("Health Frame", panel, new Vector2(0.5f, 0.5f), new Vector2(0f, -3f),
                 new Vector2(712f, 23f), cream);
             var track = Box("Health Track", frame, new Vector2(0.5f, 0.5f), Vector2.zero,
@@ -60,8 +57,6 @@ namespace Boki.UI
                     new Vector2(2f, 17f), new Color(0.035f, 0.025f, 0.045f, 0.65f));
             value = Label("Health Value", panel, new Vector2(1f, 0f), new Vector2(-24f, 12f),
                 new Vector2(230f, 20f), "", 15, cream, TextAnchor.MiddleRight);
-            Label("Signal", panel, new Vector2(0f, 0f), new Vector2(24f, 12f),
-                new Vector2(420f, 20f), "REC  >  FERI / EXAM IN PROGRESS", 14, cream, TextAnchor.MiddleLeft);
             canvas.enabled = false;
         }
 
@@ -80,9 +75,6 @@ namespace Boki.UI
             lastHealth = health.Current;
             lastMaximum = health.Maximum;
             value.text = $"HP {lastHealth:0000} / {lastMaximum:0000}";
-            bool enraged = fraction <= 0.5f;
-            phase.text = enraged ? "08:00 / DEADLINE" : "07:59 / FINAL LECTURE";
-            phase.color = enraged ? red : cream;
         }
 
         private void OnDisable()
