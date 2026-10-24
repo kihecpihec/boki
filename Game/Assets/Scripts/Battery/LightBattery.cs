@@ -18,11 +18,13 @@ namespace Boki.Battery
         [SerializeField, Range(1f, 179f)] private float headlightAngle = 85f;
         [SerializeField, Min(0f)] private float fillIntensity = 0.55f;
         [SerializeField, Min(0.1f)] private float fillRange = 4.5f;
-        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 2f;
-        [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 6f;
+        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 4f;
+        [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 12f;
         [SerializeField, Min(1f)] private float nearbyRangeMultiplier = 1.8f;
         public float ChargeFraction => Mathf.Clamp01(State.Current / State.Capacity);
         public float WarningStrength { get; set; }
+        public float Visibility { get; private set; }
+        private static readonly Color LampColor = new Color(1f, 0.94f, 0.86f);
         private float warningTime;
         private Light nearbyFill;
         private RunSession session;
@@ -49,7 +51,7 @@ namespace Boki.Battery
             surroundingLight.range = headlightRange;
             surroundingLight.spotAngle = headlightAngle;
             surroundingLight.innerSpotAngle = headlightAngle * 0.45f;
-            surroundingLight.color = new Color(1f, 0.94f, 0.82f);
+            surroundingLight.color = LampColor;
             surroundingLight.shadows = LightShadows.None;
             if (nearbyFill == null)
             {
@@ -57,36 +59,42 @@ namespace Boki.Battery
                 nearbyFill = fillObject.AddComponent<Light>();
             }
             nearbyFill.transform.SetParent(headlightMount != null ? headlightMount : transform, false);
-            nearbyFill.transform.localPosition = headlightMount != null ? new Vector3(0f, -0.25f, -0.08f)
-                : new Vector3(0f, 0.45f, 0.65f);
-            nearbyFill.type = LightType.Point;
+            // Keep the broad pool in front of the lamp; a point light spills back onto the rider.
+            nearbyFill.transform.localPosition = headlightMount != null ? Vector3.zero : headlightPosition;
+            nearbyFill.transform.localRotation = Quaternion.Euler(38f, 0f, 0f);
+            nearbyFill.type = LightType.Spot;
+            nearbyFill.spotAngle = 100f;
+            nearbyFill.innerSpotAngle = 55f;
             nearbyFill.color = surroundingLight.color;
             nearbyFill.range = fillRange;
             nearbyFill.intensity = fillIntensity;
             nearbyFill.shadows = LightShadows.None;
+            Visibility = Mathf.SmoothStep(0f, 1f, ChargeFraction);
             Refresh();
         }
 
         private void LateUpdate() => Refresh();
         private void Refresh()
         {
+            // Imported model sockets can have a rotated basis; aim in the riding frame.
+            surroundingLight.transform.rotation = transform.rotation * Quaternion.Euler(headlightDownwardAngle, 0f, 0f);
+            nearbyFill.transform.rotation = transform.rotation * Quaternion.Euler(38f, 0f, 0f);
             surroundingLight.enabled = player.IsAlive && State.Current > 0f;
             if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
             float fraction = ChargeFraction;
-            float visibility = Mathf.SmoothStep(0f, 1f, fraction);
+            float targetVisibility = Mathf.SmoothStep(0f, 1f, fraction);
+            Visibility = Mathf.Lerp(Visibility, targetVisibility, 1f - Mathf.Exp(-Time.deltaTime * 5f));
+            if (fraction <= 0f) Visibility = 0f;
+            float visibility = Visibility;
             float warning = Mathf.Clamp01(WarningStrength);
-            float pulse = warningTime < 0.16f || (warningTime > 0.28f && warningTime < 0.44f) ? 1f : 0f;
-            float alarm = strongGuiltWarning ? warning : 0f;
-            Color lampColor = Color.Lerp(new Color(1f, 0.94f, 0.82f),
-                new Color(1f, 0.035f, 0.015f), alarm * (0.65f + pulse * 0.35f));
-            surroundingLight.color = nearbyFill.color = lampColor;
-            float flicker = 1f - Mathf.Clamp01(WarningStrength) * 0.45f
-                * Mathf.Pow(Mathf.Sin(warningTime * Mathf.PI * 7f), 8f);
-            if (strongGuiltWarning) flicker = Mathf.Lerp(1f, 0.25f + pulse * 1.75f, warning);
+            surroundingLight.color = nearbyFill.color = LampColor;
+            // Warnings modulate brightness gently without changing the road's color.
+            float warningDip = strongGuiltWarning ? 0.18f : 0.1f;
+            float flicker = 1f - warning * warningDip
+                * (0.5f + 0.5f * Mathf.Sin(warningTime * Mathf.PI * 4f));
             // Fade reach as well as brightness so low charge leaves only the immediate riding area.
             surroundingLight.range = headlightRange * Mathf.Lerp(0.25f, 1f, visibility);
-            nearbyFill.range = fillRange * nearbyRangeMultiplier * Mathf.Lerp(0.25f, 1f, visibility)
-                * Mathf.Lerp(1f, 1.5f, alarm);
+            nearbyFill.range = fillRange * nearbyRangeMultiplier * Mathf.Lerp(0.25f, 1f, visibility);
             surroundingLight.intensity = intensity * headlightBrightnessMultiplier * visibility * flicker;
             nearbyFill.intensity = fillIntensity * nearbyBrightnessMultiplier * visibility * flicker;
             nearbyFill.enabled = surroundingLight.enabled;
