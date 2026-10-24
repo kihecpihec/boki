@@ -1,6 +1,6 @@
 # FERI — first environment pass
 
-Blender map built in this folder from the repository's Figma SVG handoff. This is an authored art/layout delivery; Unity integration and movement testing are pending. Nothing in `Game/`, Maribor, or another developer's scene has been changed.
+Blender map built in this folder from the repository's Figma SVG handoff. This is an authored art/layout delivery. Its FBX, PNG and JSON files are imported into `Game/Assets/Art/FERI/` (see the Unity handoff below); no scene or prefab has been assembled and movement testing is pending. No Maribor, Pohorje or other developer's scene was changed.
 
 Open `Source/FERI.blend` or browse the [preview gallery](index.html). The saved scene shows a roofless cutaway; enable `Removable_Roofs` for an interior view. Presentation cameras and lights are preview-only. Gates and the classroom entry seal are closed by default and must be bound to gameplay before playing.
 
@@ -39,9 +39,15 @@ The builder refuses to overwrite the source. Preserve manual artist edits before
 
 ## Unity handoff and remaining work
 
-Import is pending. No Unity `.meta` files have been created; these assets are **not integration-ready** until imported in the pinned Unity 6000.6.7f1 Editor and tested. Do not copy a hand-authored GUID or modify another developer's scene.
+Imported into `Game/Assets/Art/FERI/` with the pinned Unity 6000.6.7f1 Editor, which generated the `.meta` files. Never hand-author a GUID. The map is **not integration-ready** until the steps below are wired and tested in a scene. Do not modify another developer's scene: `Level3_FERI` already holds a graybox over the same area (x ±18, z −20…94), so replace it rather than adding this map beside it.
 
-1. Import FBXs and PNGs into an agreed art folder using the pinned Editor. Use scale one, Convert Units, imported normals, no generated colliders, no animation, mesh compression off. Create opaque URP materials; texture wrap Repeat, Point filtering, initial compression None. Recreate `Tube` and `Danger` emission. All surfaces have thickness; no double-sided materials or vertex-color shader required.
+`Assets/Scenes/FERI_Map_Test.unity` (`Boki ▸ FERI ▸ Build Map Test Scene`, `FeriMapTestBuilder.cs`) places the map around the Boki test player with colliders from the guides, every gate and seal open, roofs off, and no RouteGate logic. `Boki ▸ FERI ▸ Run Walk Check` walks A, B and C from the start into the classroom. It never edits `Level3_FERI`.
+
+After replacing an FBX or PNG, run `Boki ▸ FERI ▸ Configure Import`, then `Boki ▸ FERI ▸ Run Import Checks` (`Assets/Editor/FeriImportSetup.cs`, `FeriImportChecks.cs`). The checks passed on import: triangle and object counts equal `export-manifest.json`, all 386 guides and 69 markers match their JSON, no inside-out solids, and every material and texture resolves inside `Art/FERI`. The only coplanar overlaps between chunks are down-facing wall-base and wall-cap faces buried in floors and wall tops at the 0.19 m seams, so z-fighting is not expected to be visible (geometry check only; not confirmed in a rendered view).
+
+1. Done by `FeriImportSetup`: scale one, Convert Units, imported normals, no generated colliders, no animation, mesh compression off; opaque URP materials in `Art/FERI/Materials`; textures Repeat, Point, uncompressed; `Tube` and `Danger` emission recreated. `FERI_CollisionGuides.fbx` has no material, so its boxes show Unity's default until their renderers are removed. All surfaces have thickness; no double-sided materials or vertex-color shader required.
+
+   **Axes:** Unity imports Blender (x, y, z) as (−x, z, −y), a 180° turn about Y. Parent all FERI chunks under one root rotated (0, 180, 0), as `MariborMapTestBuilder` does, so +Y runs toward +Z and `markers.json` / `collision-guides.json` (Blender XYZ) convert as (x, z, y).
 2. Use `COL_*` boxes as BoxCollider proposals; remove their renderers. Merge neighboring floor guides where convenient. Only B's sloped floor portions need special handling: use aligned primitive boxes or isolate the ramp faces for collision; do not add a MeshCollider to an entire decorative route chunk. The source ramp floor has no flat collider hiding its slope.
 3. Bind the front/rear seals and selection trigger volumes to route logic using the canonical connection matrix, lock priority and run-start unlock snapshot. Renderers are grouped by route. Roof geometry is in a shared collection in this first pass; split roof groups per route before runtime visibility wiring. Keep seals visible when hiding interiors.
 4. Markers identify three charges, six regular spawn candidates, three Guilt candidates and an occupancy volume per approach pocket. Spawn systems must still enforce offscreen/8 m distance and the total FERI regular-enemy cap. Bind the two C traps to their 1.8 m square footprints and the optional panel interaction; no damage behavior or puzzle is implemented in the art.

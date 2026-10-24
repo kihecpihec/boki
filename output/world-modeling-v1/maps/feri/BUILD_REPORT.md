@@ -12,7 +12,7 @@ Built and checked with Blender 4.4.3 on Linux.
 - 694 floor-center raycasts match expected elevations; spawn, Guilt, charge and start markers pass floor-support and proposed standing-box clearance checks.
 - Exactly two floor-trap footprints and two classroom charge markers.
 
-These checks do not exercise Unity gameplay, navigation, camera motion, gate opening, physical collision, jump bypasses, or target hardware. Windows Ryzen 5600G performance is **unverified**. Unity import and generated `.meta` files are pending; this first-pass art is not integration-ready.
+These checks do not exercise Unity gameplay, navigation, camera motion, gate opening, physical collision, jump bypasses, or target hardware. Windows Ryzen 5600G performance is **unverified**. The Unity import is done (see the README); scene wiring, collision binding and movement tests are pending, so this first-pass art is not integration-ready.
 
 The block construction intentionally retains internal adjoining slab/wall faces; it is inexpensive but not a fully optimized shell. The floor graph and sampled raycasts do not establish continuous controller clearance or eliminate all decorative intersections. Source roofs are removable presentation geometry; split their ownership by route before gameplay visibility wiring. No reusable standalone module library or complete exterior dressing is delivered yet.
 
