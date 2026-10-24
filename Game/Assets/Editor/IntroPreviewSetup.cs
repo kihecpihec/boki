@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Boki.Battery;
@@ -16,8 +17,8 @@ using Object = UnityEngine.Object;
 
 namespace Boki.Editor
 {
-    // The intro is a self-contained prefab (stage, overlay, audio, IntroCutscene). Intro_Preview is its own sound stage;
-    // no map asset is used. A map adopts the prefab later through "Add Intro To Open Scene".
+    // The intro is a self-contained prefab (stage, Boki Intro, overlay, audio, IntroCutscene). Intro_Preview is its own
+    // set; no map asset is used. A map adopts the prefab later through "Add Intro To Open Scene".
     public static class IntroPreviewSetup
     {
         private const string Folder = "Assets/Cutscenes/Intro";
@@ -26,45 +27,39 @@ namespace Boki.Editor
         private const string PlayerPrefab = "Assets/Prefabs/Player/Boki_Rigged_Test.prefab";
         private const string AtlasPath = "Assets/Art/Player/Boki_Atlas.mat";
         private const string BeepPath = "Assets/Audio/Sfx/intro_phone_beep.wav";
+        private const string EyePopPath = "Assets/Audio/Sfx/intro_eye_pop.wav";
+        private const string DashPath = "Assets/Audio/Sfx/intro_dash.wav";
         private const string CutsceneName = "Intro Cutscene";
-        // The player's start sits here in stage space: where the fallen scooter lies, so Boki mounts it.
-        private static readonly Vector3 RideSpot = new Vector3(-1.15f, 0.05f, 0.3f);
+        private const string FramesVariable = "BOKI_INTRO_FRAMES";
         private static readonly Color Paper = new Color(0.91f, 0.89f, 0.86f);
         private static readonly Color Lcd = new Color(0.62f, 0.72f, 0.3f);
 
-        [MenuItem("Boki/Intro/Create Intro Preview")]
+        // Regenerates the prefabs and Intro_Preview from scratch, keeping every asset path and GUID. Unity assigns new internal
+        // ids on each save, so a scene that already uses the prefab would lose its overrides: that case is refused.
+        [MenuItem("Boki/Intro/Rebuild Intro Preview")]
         public static void Create()
         {
             RequireIdle();
-            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null)
-            {
-                Debug.Log("Intro preview already exists; open " + ScenePath + ". Existing edits were preserved.");
-                return;
-            }
+            RequireNotAdopted();
             var previous = EditorSceneManager.GetSceneManagerSetup();
             try
             {
                 EnsureAssets();
+                IntroBokiBuilder.Build();
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 EnsurePrefab();
-                ConfigureDawn();
                 var sun = new GameObject("Directional Light").AddComponent<Light>();
-                sun.type = LightType.Directional;
-                sun.color = new Color(0.95f, 0.72f, 0.62f);
-                sun.intensity = 1.3f;
-                sun.shadows = LightShadows.Soft;
-                sun.transform.rotation = Quaternion.Euler(14f, 205f, 0f);
+                ConfigureDawn(sun);
                 BuildSet();
 
                 var player = (GameObject)PrefabUtility.InstantiatePrefab(Load<GameObject>(PlayerPrefab));
-                player.transform.SetPositionAndRotation(new Vector3(0f, RideSpot.y, 0f), Quaternion.identity);
+                player.transform.SetPositionAndRotation(new Vector3(0f, IntroActing.ScooterSpot.y, 0f), Quaternion.identity);
                 var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener), typeof(ThirdPersonCamera));
                 cameraObject.tag = "MainCamera";
                 var camera = cameraObject.GetComponent<Camera>();
                 camera.nearClipPlane = 0.1f;
                 camera.farClipPlane = 400f;
-                camera.clearFlags = CameraClearFlags.SolidColor;
-                camera.backgroundColor = RenderSettings.fogColor;
+                camera.clearFlags = CameraClearFlags.Skybox;
                 var follow = cameraObject.GetComponent<ThirdPersonCamera>();
                 Set(follow, "followPivot", player.transform.Find("CameraPivot"));
                 Set(follow, "lookAction", Load<InputActionReference>("Assets/Input/M1/Look.asset"));
@@ -77,7 +72,7 @@ namespace Boki.Editor
                 Adopt(movement, follow, true);
                 EditorSceneManager.SaveScene(scene, ScenePath);
                 AssetDatabase.SaveAssets();
-                Debug.Log("INTRO_PREVIEW_CREATED: open " + ScenePath + ". No map, gameplay scene or build setting used or changed.");
+                Debug.Log("INTRO_PREVIEW_REBUILT: open " + ScenePath + ". No map, gameplay scene or build setting used or changed.");
             }
             finally
             {
@@ -90,7 +85,7 @@ namespace Boki.Editor
         {
             RequireIdle();
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) == null)
-                throw new InvalidOperationException("Create the intro preview first.");
+                throw new InvalidOperationException("Rebuild the intro preview first.");
             EditorSceneManager.OpenScene(ScenePath);
         }
 
@@ -115,7 +110,7 @@ namespace Boki.Editor
                 + "The stage sits at the player's start; move 'Intro Cutscene/Intro Stage' if the ground there is uneven.");
         }
 
-        // Renders review frames of every shot into output/intro-preview/frames; the scene is not saved.
+        // Renders review frames of every beat into output/intro-preview/frames (or $BOKI_INTRO_FRAMES); the scene is not saved.
         [MenuItem("Boki/Intro/Capture Preview Frames")]
         public static void CaptureFrames()
         {
@@ -127,7 +122,9 @@ namespace Boki.Editor
                 var cutscene = Object.FindFirstObjectByType<IntroCutscene>();
                 var camera = Object.FindFirstObjectByType<ThirdPersonCamera>().GetComponent<Camera>();
                 var canvas = Object.FindFirstObjectByType<IntroOverlay>().GetComponent<Canvas>();
-                string folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../output/intro-preview/frames"));
+                string folder = Environment.GetEnvironmentVariable(FramesVariable);
+                if (string.IsNullOrEmpty(folder))
+                    folder = Path.GetFullPath(Path.Combine(Application.dataPath, "../../output/intro-preview/frames"));
                 Directory.CreateDirectory(folder);
                 // Edit Mode leaves the player's serialized lights on; at runtime LightBattery keeps them off until the mount shot.
                 foreach (Light light in Object.FindFirstObjectByType<ScooterController>().GetComponentsInChildren<Light>())
@@ -140,8 +137,12 @@ namespace Boki.Editor
                 camera.targetTexture = texture;
                 var frames = new (int shot, float progress)[]
                 {
-                    (0, 0.05f), (0, 0.5f), (0, 1f), (1, 0.5f), (1, 1f), (2, 0.6f),
-                    (3, 0.5f), (4, 0.2f), (4, 0.95f), (5, 0.1f), (5, 0.6f), (5, 1f),
+                    (0, 0.05f), (0, 0.5f), (0, 0.97f), (1, 0.6f), (1, 1f), (2, 0.7f),
+                    (3, 0.15f), (3, 0.34f), (3, 0.5f), (3, 0.95f),
+                    (4, 0.1f), (4, 0.3f), (4, 0.5f), (4, 0.9f),
+                    (5, 0.2f), (5, 0.6f), (5, 0.9f),
+                    (6, 0.06f), (6, 0.17f), (6, 0.28f), (6, 0.4f), (6, 0.55f), (6, 0.75f), (6, 0.9f), (6, 1f),
+                    (7, 0.05f), (7, 0.6f), (7, 1f),
                 };
                 cutscene.ShowFrame(frames[0].shot, frames[0].progress);
                 camera.Render(); // warm-up: the first render after load lacks textures and lights
@@ -180,8 +181,8 @@ namespace Boki.Editor
 
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(Load<GameObject>(IntroPrefab));
             SceneManager.MoveGameObjectToScene(instance, movement.gameObject.scene);
-            var yaw =Quaternion.Euler(0f, movement.transform.eulerAngles.y, 0f);
-            instance.transform.SetPositionAndRotation(movement.transform.position - yaw * RideSpot, yaw);
+            var yaw = Quaternion.Euler(0f, movement.transform.eulerAngles.y, 0f);
+            instance.transform.SetPositionAndRotation(movement.transform.position - yaw * IntroActing.ScooterSpot, yaw);
             var so = new SerializedObject(instance.GetComponent<IntroCutscene>());
             so.FindProperty("shotCamera").objectReferenceValue = follow.GetComponent<Camera>();
             so.FindProperty("rider").objectReferenceValue = visuals.gameObject;
@@ -197,9 +198,9 @@ namespace Boki.Editor
         }
 
         // The prefab holds everything that belongs to the intro. Scene-side references (camera, player) stay empty.
+        // An existing prefab is rewritten in place, so its GUID and any scene that uses it keep working.
         private static void EnsurePrefab()
         {
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(IntroPrefab) != null) return;
             var atlas = Load<Material>(AtlasPath);
             var root = new GameObject(CutsceneName, typeof(AudioSource), typeof(IntroCutscene));
             var source = root.GetComponent<AudioSource>();
@@ -212,36 +213,24 @@ namespace Boki.Editor
             var wake = new GameObject("Wake Actors").transform;
             wake.SetParent(stage, false);
 
-            var lying = new GameObject("Boki Lying").transform;
-            lying.SetParent(wake, false);
-            lying.localPosition = new Vector3(0f, 0.14f, 0.86f);
-            lying.localRotation = Quaternion.Euler(-90f, 0f, 0f);
-            GameObject boki = AddModel("CHR_Boki", lying, atlas);
-            var animator = boki.GetComponent<Animator>();
-            if (animator != null) animator.enabled = false;
+            var boki = (GameObject)PrefabUtility.InstantiatePrefab(Load<GameObject>(IntroBokiBuilder.PrefabPath), wake);
 
             var scooter = new GameObject("Fallen Scooter").transform;
             scooter.SetParent(wake, false);
-            scooter.localPosition = new Vector3(RideSpot.x, 0.12f, 0.2f);
+            scooter.localPosition = new Vector3(IntroActing.ScooterSpot.x, 0.12f, 0.2f);
             scooter.localRotation = Quaternion.Euler(0f, 20f, 90f);
             AddModel("PROP_Scooter", scooter, atlas);
 
-            var bottle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            bottle.name = "Plastic Bottle";
-            Object.DestroyImmediate(bottle.GetComponent<Collider>());
-            bottle.transform.SetParent(wake, false);
-            bottle.transform.localPosition = new Vector3(0.55f, 0.07f, -1.25f);
-            bottle.transform.localRotation = Quaternion.Euler(0f, 25f, 90f);
-            bottle.transform.localScale = new Vector3(0.07f, 0.11f, 0.07f);
-            bottle.GetComponent<Renderer>().sharedMaterial = Load<Material>(Folder + "/Bottle.mat");
+            Transform bottle = BuildBottle(wake);
+            BuildLeftovers(wake);
 
             var light = new GameObject("Stage Light").AddComponent<Light>();
             light.transform.SetParent(wake, false);
             light.transform.localPosition = new Vector3(0.6f, 2.4f, -0.4f);
             light.type = LightType.Point;
-            light.color = new Color(0.65f, 0.72f, 0.9f);
-            light.intensity = 6f;
-            light.range = 12f;
+            light.color = new Color(0.7f, 0.76f, 0.95f);
+            light.intensity = 9f;
+            light.range = 14f;
             light.shadows = LightShadows.None;
 
             IntroOverlay overlay = BuildOverlay(root.transform);
@@ -250,12 +239,13 @@ namespace Boki.Editor
             so.FindProperty("stage").objectReferenceValue = stage;
             so.FindProperty("overlay").objectReferenceValue = overlay;
             so.FindProperty("wakeActors").objectReferenceValue = wake.gameObject;
-            so.FindProperty("head").objectReferenceValue = Bone(boki, "head");
-            so.FindProperty("leftUpperArm").objectReferenceValue = Bone(boki, "upper_arm.L");
-            so.FindProperty("leftLowerArm").objectReferenceValue = Bone(boki, "lower_arm.L");
-            so.FindProperty("leftHand").objectReferenceValue = Bone(boki, "hand.L");
+            so.FindProperty("boki").objectReferenceValue = boki.GetComponent<IntroBoki>();
+            so.FindProperty("fallenScooter").objectReferenceValue = scooter;
+            so.FindProperty("bottle").objectReferenceValue = bottle;
             so.FindProperty("audioSource").objectReferenceValue = source;
             so.FindProperty("phoneBeep").objectReferenceValue = Load<AudioClip>(BeepPath);
+            so.FindProperty("eyePop").objectReferenceValue = Load<AudioClip>(EyePopPath);
+            so.FindProperty("dashWhoosh").objectReferenceValue = Load<AudioClip>(DashPath);
             so.FindProperty("skipAction").objectReferenceValue = input.Single(r => r.name == "Skip");
             so.FindProperty("replayAction").objectReferenceValue = input.Single(r => r.name == "Replay");
             so.FindProperty("playOnStart").boolValue = false;
@@ -266,44 +256,142 @@ namespace Boki.Editor
             Object.DestroyImmediate(root);
         }
 
-        // A neutral sound stage: flat ground, a skyline toward +Z (the city Boki cannot reach yet) and a few dead trees.
+        // Body, neck and cap, lying where Boki's sit-up will hit it.
+        private static Transform BuildBottle(Transform parent)
+        {
+            var bottle = new GameObject("Plastic Bottle").transform;
+            bottle.SetParent(parent, false);
+            bottle.localPosition = new Vector3(0.78f, 0.04f, -0.5f);
+            bottle.localRotation = Quaternion.Euler(0f, 25f, 90f);
+            Shape(bottle, PrimitiveType.Cylinder, "Body", new Vector3(0f, 0f, 0f), new Vector3(0.07f, 0.1f, 0.07f), "Bottle");
+            Shape(bottle, PrimitiveType.Cylinder, "Neck", new Vector3(0f, 0.125f, 0f), new Vector3(0.028f, 0.025f, 0.028f), "Bottle");
+            Shape(bottle, PrimitiveType.Cylinder, "Cap", new Vector3(0f, 0.158f, 0f), new Vector3(0.033f, 0.008f, 0.033f), "BottleCap");
+            return bottle;
+        }
+
+        // The morning after: glow sticks and a cup in the grass beside him. Story §3 PROLOGUE shot 1.
+        private static void BuildLeftovers(Transform parent)
+        {
+            var leftovers = new GameObject("Rave Leftovers").transform;
+            leftovers.SetParent(parent, false);
+            Shape(leftovers, PrimitiveType.Cylinder, "Glow Stick Lime", new Vector3(-0.62f, 0.014f, -0.25f), new Vector3(0.022f, 0.11f, 0.022f), "GlowLime", Quaternion.Euler(0f, 70f, 90f));
+            Shape(leftovers, PrimitiveType.Cylinder, "Glow Stick Pink", new Vector3(-0.78f, 0.014f, 0.05f), new Vector3(0.022f, 0.11f, 0.022f), "GlowPink", Quaternion.Euler(0f, -20f, 90f));
+            Shape(leftovers, PrimitiveType.Cylinder, "Glow Stick Cyan", new Vector3(0.7f, 0.014f, 0.5f), new Vector3(0.022f, 0.11f, 0.022f), "GlowCyan", Quaternion.Euler(0f, 115f, 90f));
+            Shape(leftovers, PrimitiveType.Cylinder, "Party Cup", new Vector3(0.95f, 0.03f, 0.1f), new Vector3(0.075f, 0.03f, 0.075f), "Cup", Quaternion.Euler(0f, 0f, 78f));
+        }
+
+        // A neutral set: dawn sky, flat meadow, a skyline toward +Z (the city Boki cannot reach yet), pines at the sides.
         private static void BuildSet()
         {
-            var set = new GameObject("Sound Stage").transform;
-            Primitive(set, PrimitiveType.Cube, "Ground", new Vector3(0f, -0.1f, 0f), new Vector3(200f, 0.2f, 200f), "Ground.mat");
+            var set = new GameObject("Bellevue Set").transform;
+            Mesh cone = IntroBokiBuilder.EnsureMesh("LowPolyCone", BuildCone(8));
+            Mesh sphere = AssetDatabase.LoadAssetAtPath<Mesh>("Assets/Art/Intro/Meshes/LowPolySphere.asset");
+
+            Backdrop(Shape(set, PrimitiveType.Cube, "Ground", new Vector3(0f, -0.1f, 0f), new Vector3(240f, 0.2f, 240f), "Ground"));
+            Shape(set, PrimitiveType.Cylinder, "Dirt Patch", new Vector3(0.9f, 0.004f, 0.3f), new Vector3(5.6f, 0.0012f, 4.4f), "Dirt").GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+
             var random = new System.Random(1998);
-            for (int i = 0; i < 28; i++)
+            float[] rowDepth = { 88f, 118f, 152f };
+            string[] rowMaterial = { "Silhouette", "SkylineMid", "SkylineFar" };
+            for (int row = 0; row < rowDepth.Length; row++)
             {
-                float width = 6f + random.Next(0, 9);
-                float height = 8f + random.Next(0, 28);
-                float x = Mathf.Lerp(-95f, 95f, i / 27f) + random.Next(-3, 4);
-                Primitive(set, PrimitiveType.Cube, "Skyline " + i, new Vector3(x, height / 2f, 70f + random.Next(0, 40)),
-                    new Vector3(width, height, width * 0.8f), "Silhouette.mat");
+                int count = 20 - row * 2;
+                for (int i = 0; i < count; i++)
+                {
+                    float width = 4f + random.Next(0, 7);
+                    float height = (7f + row * 3f) + random.Next(0, 17);
+                    float x = Mathf.Lerp(-120f, 120f, i / (float)(count - 1)) + random.Next(-4, 5);
+                    Backdrop(Shape(set, PrimitiveType.Cube, $"Skyline {row}.{i}", new Vector3(x, height / 2f, rowDepth[row] + random.Next(-6, 7)),
+                        new Vector3(width, height, width * 0.8f), rowMaterial[row]));
+                }
             }
-            for (int i = 0; i < 36; i++)
+
+            // Pines in two stands left and right, leaving the +Z corridor clear. Trunk plus three stacked cones.
+            for (int i = 0; i < 26; i++)
             {
-                float angle = i * 10f * Mathf.Deg2Rad;
-                float radius = 22f + random.Next(0, 25);
-                // Keep the view down the +Z corridor clear of trunks.
-                if (Mathf.Abs(Mathf.Sin(angle)) < 0.55f && Mathf.Cos(angle) > 0f) continue;
-                float trunk = 3f + random.Next(0, 3);
-                Primitive(set, PrimitiveType.Cylinder, "Dead Tree " + i,
-                    new Vector3(Mathf.Sin(angle) * radius, trunk, Mathf.Cos(angle) * radius), new Vector3(0.5f, trunk, 0.5f), "Silhouette.mat");
+                float side = i % 2 == 0 ? -1f : 1f;
+                float x = side * (16f + random.Next(0, 30));
+                float z = -12f + random.Next(0, 70);
+                float scale = 0.85f + random.Next(0, 10) * 0.07f;
+                var pine = new GameObject("Pine " + i).transform;
+                pine.SetParent(set, false);
+                pine.localPosition = new Vector3(x, 0f, z);
+                Shape(pine, PrimitiveType.Cylinder, "Trunk", new Vector3(0f, 0.9f * scale, 0f), new Vector3(0.45f, 0.9f, 0.45f) * scale, "Trunk");
+                Tier(pine, cone, 1.6f * scale, 4.4f * scale, 3.4f * scale);
+                Tier(pine, cone, 3.1f * scale, 3.6f * scale, 3.0f * scale);
+                Tier(pine, cone, 4.5f * scale, 2.8f * scale, 2.6f * scale);
+            }
+
+            // Grass tufts and a few rocks around the dirt patch, so the ground reads as a meadow and not a slab.
+            for (int i = 0; i < 48; i++)
+            {
+                float angle = (float)(random.NextDouble() * Math.PI * 2.0);
+                float radius = 3.4f + (float)random.NextDouble() * 9f;
+                var tuft = Part(set, cone, "Grass " + i, "Grass");
+                tuft.localPosition = new Vector3(0.9f + Mathf.Cos(angle) * radius * 1.2f, 0.07f, 0.3f + Mathf.Sin(angle) * radius);
+                tuft.localScale = new Vector3(0.16f, 0.18f + random.Next(0, 4) * 0.05f, 0.16f);
+                tuft.localRotation = Quaternion.Euler(random.Next(-8, 9), random.Next(0, 360), random.Next(-8, 9));
+                tuft.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+            }
+            Vector3[] rocks = { new Vector3(-3.4f, 0.25f, 4.2f), new Vector3(4.6f, 0.3f, 1.4f), new Vector3(-5.8f, 0.2f, -2.2f), new Vector3(2.9f, 0.18f, -4.1f), new Vector3(6.2f, 0.28f, 6.8f) };
+            for (int i = 0; i < rocks.Length; i++)
+            {
+                var rock = Part(set, sphere, "Rock " + i, "Rock");
+                rock.localPosition = rocks[i];
+                rock.localScale = new Vector3(0.9f + i * 0.15f, 0.55f + (i % 2) * 0.15f, 0.7f + i * 0.1f);
+                rock.localRotation = Quaternion.Euler(0f, i * 57f, 0f);
             }
         }
 
-        private static void Primitive(Transform parent, PrimitiveType type, string name, Vector3 position, Vector3 scale, string material)
+        private static void Tier(Transform parent, Mesh cone, float y, float height, float diameter)
+        {
+            var tier = Part(parent, cone, "Needles", "Pine");
+            tier.localPosition = new Vector3(0f, y, 0f);
+            tier.localScale = new Vector3(diameter, height, diameter);
+        }
+
+        // Backdrop only: long skyline shadows would streak across the stage.
+        private static void Backdrop(Transform shape) => shape.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+
+        private static Transform Shape(Transform parent, PrimitiveType type, string name, Vector3 position, Vector3 scale, string material)
+            => Shape(parent, type, name, position, scale, material, Quaternion.identity);
+
+        private static Transform Shape(Transform parent, PrimitiveType type, string name, Vector3 position, Vector3 scale, string material, Quaternion rotation)
         {
             var shape = GameObject.CreatePrimitive(type);
             shape.name = name;
             Object.DestroyImmediate(shape.GetComponent<Collider>());
             shape.transform.SetParent(parent, false);
-            shape.transform.localPosition = position;
+            shape.transform.SetLocalPositionAndRotation(position, rotation);
             shape.transform.localScale = scale;
-            var renderer = shape.GetComponent<Renderer>();
-            renderer.sharedMaterial = Load<Material>(Folder + "/" + material);
-            // Backdrop only: long skyline shadows would streak across the stage.
-            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            shape.GetComponent<Renderer>().sharedMaterial = Load<Material>(Folder + "/" + material + ".mat");
+            return shape.transform;
+        }
+
+        private static Transform Part(Transform parent, Mesh mesh, string name, string material)
+        {
+            var part = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
+            part.transform.SetParent(parent, false);
+            part.GetComponent<MeshFilter>().sharedMesh = mesh;
+            part.GetComponent<MeshRenderer>().sharedMaterial = Load<Material>(Folder + "/" + material + ".mat");
+            return part.transform;
+        }
+
+        // Unit cone: base diameter 1 at y = 0, apex at y = 1.
+        private static Mesh BuildCone(int sides)
+        {
+            var triangles = new List<Vector3>();
+            var apex = new Vector3(0f, 1f, 0f);
+            for (int i = 0; i < sides; i++)
+            {
+                float a = 2f * Mathf.PI * i / sides;
+                float b = 2f * Mathf.PI * (i + 1) / sides;
+                var p0 = 0.5f * new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) ;
+                var p1 = 0.5f * new Vector3(Mathf.Cos(b), 0f, Mathf.Sin(b));
+                IntroBokiBuilder.AddTriangle(triangles, p0, p1, apex, new Vector3(p0.x + p1.x, 0.5f, p0.z + p1.z));
+                IntroBokiBuilder.AddTriangle(triangles, p0, p1, Vector3.zero, Vector3.down);
+            }
+            return IntroBokiBuilder.FlatMesh(triangles);
         }
 
         private static GameObject AddModel(string name, Transform parent, Material material)
@@ -318,13 +406,6 @@ namespace Boki.Editor
                 renderer.sharedMaterials = materials;
             }
             return model;
-        }
-
-        private static Transform Bone(GameObject model, string name)
-        {
-            var bone = model.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == name);
-            if (bone == null) throw new InvalidOperationException("CHR_Boki has no bone named " + name + ".");
-            return bone;
         }
 
         private static IntroOverlay BuildOverlay(Transform parent)
@@ -353,6 +434,8 @@ namespace Boki.Editor
             Fill(Rect(letterbox, "Top", new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 110f)), Color.black);
             Fill(Rect(letterbox, "Bottom", new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), Vector2.zero, new Vector2(0f, 110f)), Color.black);
 
+            // A soft band behind the subtitle keeps it readable over the bright closeups.
+            var backing = Fill(Rect(root, "Subtitle Backing", new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 120f), new Vector2(0f, 96f)), new Color(0f, 0f, 0f, 0.5f));
             var subtitle = Label(Rect(root, "Subtitle", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 135f), new Vector2(1400f, 120f)),
                 "Text", string.Empty, 38, Paper, TextAnchor.LowerCenter);
             subtitle.gameObject.AddComponent<Outline>().effectDistance = new Vector2(2f, -2f);
@@ -365,13 +448,16 @@ namespace Boki.Editor
             var hint = Label(Rect(root, "Skip Hint", new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-48f, 40f), new Vector2(400f, 36f)),
                 "Text", "ENTER: SKIP", 22, new Color(Paper.r, Paper.g, Paper.b, 0.7f), TextAnchor.LowerRight);
 
+            var flash = Fill(Rect(root, "Flash", Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero), new Color(1f, 1f, 1f, 0f));
             var fade = Fill(Rect(root, "Fade", Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero), Color.black);
 
             var overlay = canvasObject.AddComponent<IntroOverlay>();
             var so = new SerializedObject(overlay);
             so.FindProperty("fade").objectReferenceValue = fade;
+            so.FindProperty("flash").objectReferenceValue = flash;
             so.FindProperty("letterbox").objectReferenceValue = letterbox.gameObject;
             so.FindProperty("subtitle").objectReferenceValue = subtitle;
+            so.FindProperty("subtitleBacking").objectReferenceValue = backing.gameObject;
             so.FindProperty("watchReadout").objectReferenceValue = group;
             so.FindProperty("objective").objectReferenceValue = objective.transform.parent.gameObject;
             so.FindProperty("skipHint").objectReferenceValue = hint.transform.parent.gameObject;
@@ -415,18 +501,47 @@ namespace Boki.Editor
             return text;
         }
 
-        // Gray dawn fog with a sickly red tint: Story §3 "something wrong with the sky's color".
-        private static void ConfigureDawn()
+        // Dawn behind the city with a sickly red cast: Story §3 "something wrong with the sky's color".
+        private static void ConfigureDawn(Light sun)
         {
-            RenderSettings.skybox = null;
+            sun.type = LightType.Directional;
+            sun.color = new Color(1f, 0.7f, 0.55f);
+            sun.intensity = 1.5f;
+            sun.shadows = LightShadows.Soft;
+            sun.transform.rotation = Quaternion.Euler(12f, 205f, 0f);
+
+            var sky = EnsureMaterial("DawnSky", "Skybox/Procedural", new Color(0.55f, 0.5f, 0.55f));
+            sky.SetFloat("_SunSize", 0.06f);
+            sky.SetFloat("_AtmosphereThickness", 1.5f);
+            sky.SetFloat("_Exposure", 1f);
+            sky.SetColor("_GroundColor", new Color(0.33f, 0.27f, 0.29f));
+            EditorUtility.SetDirty(sky);
+
+            RenderSettings.skybox = sky;
+            RenderSettings.sun = sun;
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.42f, 0.36f, 0.38f);
-            RenderSettings.ambientEquatorColor = new Color(0.27f, 0.24f, 0.26f);
-            RenderSettings.ambientGroundColor = new Color(0.08f, 0.07f, 0.08f);
+            RenderSettings.ambientSkyColor = new Color(0.52f, 0.46f, 0.5f);
+            RenderSettings.ambientEquatorColor = new Color(0.36f, 0.32f, 0.33f);
+            RenderSettings.ambientGroundColor = new Color(0.1f, 0.09f, 0.1f);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogColor = new Color(0.36f, 0.3f, 0.31f);
-            RenderSettings.fogDensity = 0.012f;
+            RenderSettings.fogColor = new Color(0.58f, 0.45f, 0.46f);
+            RenderSettings.fogDensity = 0.0065f;
+        }
+
+        private static Material EnsureMaterial(string name, string shaderName, Color tint)
+        {
+            string path = Folder + "/" + name + ".mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                Shader shader = Shader.Find(shaderName);
+                if (shader == null) throw new InvalidOperationException(shaderName + " is unavailable.");
+                material = new Material(shader) { name = name };
+                AssetDatabase.CreateAsset(material, path);
+            }
+            material.SetColor("_SkyTint", tint);
+            return material;
         }
 
         private static void EnsureAssets()
@@ -434,9 +549,22 @@ namespace Boki.Editor
             if (!AssetDatabase.IsValidFolder("Assets/Cutscenes")) AssetDatabase.CreateFolder("Assets", "Cutscenes");
             if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets/Cutscenes", "Intro");
 
-            EnsureMaterial("Bottle", new Color(0.72f, 0.84f, 0.88f), 0.7f);
-            EnsureMaterial("Ground", new Color(0.2f, 0.15f, 0.13f), 0.1f);
-            EnsureMaterial("Silhouette", new Color(0.07f, 0.06f, 0.07f), 0f);
+            // Set pieces, tinted for a cold dawn. Existing materials are updated in place so their GUIDs stay.
+            Stage("Bottle", new Color(0.72f, 0.84f, 0.88f), 0.7f);
+            Stage("BottleCap", new Color(0.86f, 0.2f, 0.18f), 0.4f);
+            Stage("Cup", new Color(0.94f, 0.38f, 0.29f), 0.3f);
+            Stage("Ground", new Color(0.2f, 0.27f, 0.2f), 0.05f);
+            Stage("Dirt", new Color(0.38f, 0.32f, 0.24f), 0.05f);
+            Stage("Grass", new Color(0.26f, 0.34f, 0.22f), 0.05f);
+            Stage("Rock", new Color(0.33f, 0.33f, 0.35f), 0.1f);
+            Stage("Trunk", new Color(0.16f, 0.12f, 0.1f), 0f);
+            Stage("Pine", new Color(0.1f, 0.18f, 0.17f), 0f);
+            Stage("Silhouette", new Color(0.14f, 0.12f, 0.17f), 0f);
+            Stage("SkylineMid", new Color(0.21f, 0.17f, 0.22f), 0f);
+            Stage("SkylineFar", new Color(0.3f, 0.24f, 0.29f), 0f);
+            IntroBokiBuilder.EnsureMaterial(Folder, "GlowLime", new Color32(0xCF, 0xEF, 0x75, 0xFF), 0f, true);
+            IntroBokiBuilder.EnsureMaterial(Folder, "GlowPink", new Color(1f, 0.35f, 0.7f), 0f, true);
+            IntroBokiBuilder.EnsureMaterial(Folder, "GlowCyan", new Color(0.3f, 0.9f, 1f), 0f, true);
 
             if (AssetDatabase.LoadAssetAtPath<InputActionAsset>(Folder + "/IntroInput.asset") == null)
             {
@@ -453,9 +581,18 @@ namespace Boki.Editor
                 }
             }
 
-            AssetDatabase.ImportAsset(BeepPath);
-            var importer = AssetImporter.GetAtPath(BeepPath) as AudioImporter;
-            if (importer == null) throw new InvalidOperationException("Missing " + BeepPath + "; run music/generate_intro_sfx.py.");
+            foreach (string path in new[] { BeepPath, EyePopPath, DashPath }) ConfigureClip(path);
+            AssetDatabase.SaveAssets();
+        }
+
+        private static void Stage(string name, Color color, float smoothness)
+            => IntroBokiBuilder.EnsureMaterial(Folder, name, color, smoothness, false);
+
+        private static void ConfigureClip(string path)
+        {
+            AssetDatabase.ImportAsset(path);
+            var importer = AssetImporter.GetAtPath(path) as AudioImporter;
+            if (importer == null) throw new InvalidOperationException("Missing " + path + "; run music/generate_intro_sfx.py.");
             // Short clip: decode once on load so playback has no streaming latency.
             var settings = importer.defaultSampleSettings;
             settings.loadType = AudioClipLoadType.DecompressOnLoad;
@@ -465,18 +602,6 @@ namespace Boki.Editor
             importer.forceToMono = true;
             importer.loadInBackground = false;
             importer.SaveAndReimport();
-            AssetDatabase.SaveAssets();
-        }
-
-        private static void EnsureMaterial(string name, Color color, float smoothness)
-        {
-            string path = Folder + "/" + name + ".mat";
-            if (AssetDatabase.LoadAssetAtPath<Material>(path) != null) return;
-            var shader = Shader.Find("Universal Render Pipeline/Lit");
-            if (shader == null) throw new InvalidOperationException("URP Lit shader is unavailable.");
-            var material = new Material(shader) { name = name, color = color };
-            material.SetFloat("_Smoothness", smoothness);
-            AssetDatabase.CreateAsset(material, path);
         }
 
         private static T Load<T>(string path) where T : Object
@@ -491,6 +616,17 @@ namespace Boki.Editor
             var serialized = new SerializedObject(target);
             serialized.FindProperty(field).objectReferenceValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void RequireNotAdopted()
+        {
+            foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { "Assets" }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path != ScenePath && AssetDatabase.GetDependencies(path, false).Contains(IntroPrefab))
+                    throw new InvalidOperationException(path + " already uses " + IntroPrefab
+                        + "; a rebuild would break its overrides. Edit the prefab directly instead.");
+            }
         }
 
         private static void RequireIdle()

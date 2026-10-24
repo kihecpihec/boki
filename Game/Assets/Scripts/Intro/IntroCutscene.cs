@@ -4,18 +4,12 @@ using UnityEngine.InputSystem;
 
 namespace Boki.Intro
 {
-    // Story §3 PROLOGUE, minimum slice: shot 1 (wake-up), shot 2 (watch, 07:58) and shot 4 (scooter).
+    // Story §3 PROLOGUE, minimum slice: shot 1 (wake-up), shot 2 (watch, 07:58, the lecture) and shot 4 (scooter),
+    // played for laughs: Boki's eyes pop out twice, then he scrambles onto the scooter.
     // Shot 3 (VHS glitch and the black figure) is not built. Skipping jumps to the same end state as playing through.
     [DisallowMultipleComponent]
     public sealed class IntroCutscene : MonoBehaviour
     {
-        private const int Wake = 0;
-        private const int ArmRaise = 1;
-        private const int WatchClose = 2;
-        private const int Message = 3;
-        private const int Line = 4;
-        private const int Mount = 5;
-        private static readonly float[] ShotSeconds = { 5f, 1.8f, 1.7f, 2.2f, 2f, 3f };
         private static readonly Color Paper = new Color(0.91f, 0.89f, 0.86f);
         private static readonly Color Lcd = new Color(0.62f, 0.72f, 0.3f);
         private const string PhoneMessage = "»PREDAVANJE — 08:00 / FERI«";
@@ -27,10 +21,9 @@ namespace Boki.Intro
         [SerializeField] private Transform stage;
         [SerializeField] private IntroOverlay overlay;
         [SerializeField] private GameObject wakeActors;
-        [SerializeField] private Transform head;
-        [SerializeField] private Transform leftUpperArm;
-        [SerializeField] private Transform leftLowerArm;
-        [SerializeField] private Transform leftHand;
+        [SerializeField] private IntroBoki boki;
+        [SerializeField] private Transform fallenScooter;
+        [SerializeField] private Transform bottle;
 
         [Header("Handoff to gameplay")]
         [SerializeField] private GameObject rider;
@@ -45,31 +38,33 @@ namespace Boki.Intro
         [Header("Audio and input")]
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip phoneBeep;
+        [SerializeField] private AudioClip eyePop;
+        [SerializeField] private AudioClip dashWhoosh;
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart = true;
 
         private IntroTimeline timeline;
         private bool restCaptured;
-        private Quaternion upperRest;
-        private Quaternion lowerRest;
-        private Quaternion upperRaise;
-        private Quaternion lowerRaise;
-        private Vector3 side;
-        private Vector3 armCameraPosition;
-        private Vector3 armCameraTarget;
+        private float baseFieldOfView;
+        private Vector3 scooterRestPosition;
+        private Quaternion scooterRestRotation;
+        private Vector3 bottleRestPosition;
+        private Quaternion bottleRestRotation;
+        private float lastElapsed;
         private float objectiveRemaining;
         private bool ownsSkip;
         private bool ownsReplay;
 
-        public static int ShotCount => ShotSeconds.Length;
+        public static int ShotCount => IntroActing.ShotSeconds.Length;
 
         private void OnEnable()
         {
-            if (shotCamera == null || stage == null || overlay == null || wakeActors == null || head == null
-                || leftUpperArm == null || leftLowerArm == null || leftHand == null || rider == null
+            if (shotCamera == null || stage == null || overlay == null || wakeActors == null || boki == null
+                || !boki.IsWired || fallenScooter == null || bottle == null || rider == null
                 || riderRoot == null || followPivot == null || headlight == null || controls == null
-                || audioSource == null || phoneBeep == null || skipAction == null || skipAction.action == null
+                || audioSource == null || phoneBeep == null || eyePop == null || dashWhoosh == null
+                || skipAction == null || skipAction.action == null
                 || System.Array.IndexOf(controls, null) >= 0)
             {
                 Debug.LogError("Assign every IntroCutscene reference.", this);
@@ -107,11 +102,12 @@ namespace Boki.Intro
             foreach (Behaviour control in controls) control.enabled = false;
             headlight.enabled = false;
             objectiveRemaining = 0f;
-            timeline = new IntroTimeline(ShotSeconds);
+            lastElapsed = 0f;
+            timeline = new IntroTimeline(IntroActing.ShotSeconds);
             timeline.ShotStarted += OnShotStarted;
             timeline.Finished += OnFinished;
             timeline.Begin();
-            ShowFrame(Wake, 0f);
+            ShowFrame(IntroActing.Wake, 0f);
         }
 
         private void Unsubscribe(IntroTimeline target)
@@ -134,6 +130,10 @@ namespace Boki.Intro
             {
                 // A long first frame after a scene load must not swallow the opening shot.
                 timeline.Advance(Mathf.Min(Time.deltaTime, 0.1f));
+                // Finishing already showed the end state; another frame would bring the letterbox back.
+                if (timeline.IsFinished) return;
+                PlayCues(lastElapsed, timeline.Elapsed);
+                lastElapsed = timeline.Elapsed;
                 ShowFrame(timeline.ShotIndex, timeline.ShotProgress);
             }
         }
@@ -147,15 +147,29 @@ namespace Boki.Intro
 
         private void OnShotStarted(int shot)
         {
-            if (shot == Message) audioSource.PlayOneShot(phoneBeep);
-            if (shot == Mount) headlight.enabled = true;
+            if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep);
+            if (shot == IntroActing.Mount) headlight.enabled = true;
         }
+
+        // Sounds that fall inside a shot are placed on the same clock as the poses in IntroActing.
+        private void PlayCues(float from, float to)
+        {
+            if (Crossed(from, to, IntroActing.StartOf(IntroActing.DoubleTake) + IntroActing.FirstPopAt))
+                audioSource.PlayOneShot(eyePop, 0.8f);
+            if (Crossed(from, to, IntroActing.StartOf(IntroActing.Message) + IntroActing.SecondPopAt))
+                audioSource.PlayOneShot(eyePop);
+            if (Crossed(from, to, IntroActing.StartOf(IntroActing.Scramble) + IntroActing.DashAt))
+                audioSource.PlayOneShot(dashWhoosh);
+        }
+
+        private static bool Crossed(float from, float to, float at) => from < at && at <= to;
 
         private void OnFinished()
         {
             audioSource.Stop();
-            ShowFrame(Mount, 1f);
+            ShowFrame(IntroActing.Mount, 1f);
             overlay.SetFade(0f);
+            overlay.SetFlash(0f);
             overlay.SetLetterbox(false);
             overlay.SetSkipHint(false);
             overlay.SetObjective(true);
@@ -169,64 +183,129 @@ namespace Boki.Intro
         public void ShowFrame(int shot, float progress)
         {
             CaptureRest();
-            shot = Mathf.Clamp(shot, 0, ShotSeconds.Length - 1);
+            shot = Mathf.Clamp(shot, 0, IntroActing.ShotSeconds.Length - 1);
             float p = Mathf.Clamp01(progress);
+            float seconds = p * IntroActing.ShotSeconds[shot];
             float e = Mathf.SmoothStep(0f, 1f, p);
-            bool riding = shot >= Mount;
+            bool riding = shot == IntroActing.Mount;
             wakeActors.SetActive(!riding);
             rider.SetActive(riding);
-            RaiseArm(shot < ArmRaise ? 0f : shot == ArmRaise ? e : 1f);
 
-            Vector3 close = leftHand.position + Vector3.up * 0.4f - side * 0.1f;
-            switch (shot)
-            {
-                case Wake:
-                    PlaceCamera(Vector3.Lerp(Local(0.45f, 0.16f, -1.9f), Local(0.9f, 1.5f, -3.3f), e),
-                        Vector3.Lerp(Local(0f, 0.35f, 0.9f), Local(0f, 0.7f, 14f), e));
-                    break;
-                case ArmRaise:
-                    PlaceCamera(armCameraPosition, armCameraTarget);
-                    break;
-                case WatchClose:
-                    PlaceCamera(Vector3.Lerp(armCameraPosition, close, e), Vector3.Lerp(armCameraTarget, leftHand.position, e));
-                    break;
-                case Message:
-                    PlaceCamera(close, leftHand.position);
-                    break;
-                case Line:
-                    PlaceCamera(Vector3.Lerp(close, head.position + Vector3.up * 0.85f + stage.forward * 0.25f, e),
-                        Vector3.Lerp(leftHand.position, head.position, e));
-                    break;
-                default:
-                    PlaceOrbit(e);
-                    break;
-            }
+            IntroActing.Beat beat = IntroActing.Sample(shot, seconds);
+            PoseActors(beat);
+            PlaceCamera(shot, seconds, p, e, beat);
+            boki.ShowCues(beat.Pose, shotCamera.transform.rotation);
 
-            float fade = shot == Wake ? 1f - Ramp(p, 0f, 0.25f)
-                : shot == Line ? Ramp(p, 0.75f, 1f)
-                : shot == Mount ? 1f - Ramp(p, 0f, 0.25f)
+            float fade = shot == IntroActing.Wake ? 1f - Ramp(p, 0f, 0.2f)
+                : shot == IntroActing.Line ? Ramp(p, 0.78f, 1f)
+                : shot == IntroActing.Scramble ? 1f - Ramp(seconds, 0f, 0.25f)
                 : 0f;
-            float readout = shot == WatchClose ? Ramp(p, 0.15f, 0.9f)
-                : shot == Message ? 1f
-                : shot == Line ? 1f - Ramp(p, 0f, 0.35f)
-                : 0f;
+            float flash = riding ? 0.7f * IntroMotion.Impact(seconds, 12f) : beat.Flash;
+            float readout = shot == IntroActing.Watch ? Ramp(p, 0.15f, 0.9f) : 0f;
             overlay.SetFade(fade);
+            overlay.SetFlash(flash);
             overlay.SetWatchReadout(readout);
             overlay.SetLetterbox(true);
             overlay.SetSkipHint(true);
             overlay.SetObjective(riding);
-            if (shot == Message) overlay.SetSubtitle(PhoneMessage, Lcd);
-            else if (shot == Line) overlay.SetSubtitle(BokiLine, Paper);
+            if (shot == IntroActing.Message) overlay.SetSubtitle(PhoneMessage, Lcd);
+            else if (shot == IntroActing.Line) overlay.SetSubtitle(BokiLine, Paper);
             else overlay.SetSubtitle(string.Empty, Paper);
         }
 
+        private void PoseActors(IntroActing.Beat beat)
+        {
+            boki.transform.SetPositionAndRotation(stage.TransformPoint(beat.Position),
+                stage.rotation * Quaternion.Euler(-90f * beat.Lie, beat.Yaw, 0f));
+            boki.Apply(beat.Pose);
+
+            float upright = beat.ScooterUpright;
+            Vector3 standing = new Vector3(IntroActing.ScooterSpot.x, 0f, IntroActing.ScooterSpot.z);
+            fallenScooter.localPosition = Vector3.LerpUnclamped(scooterRestPosition, standing, upright);
+            fallenScooter.localRotation = Quaternion.SlerpUnclamped(scooterRestRotation, Quaternion.identity, upright);
+
+            float kick = beat.BottleKick;
+            if (kick <= 0f)
+            {
+                bottle.SetLocalPositionAndRotation(bottleRestPosition, bottleRestRotation);
+                return;
+            }
+            // Ballistic hop away from the sit-up, then it rolls to rest on the ground.
+            Vector3 velocity = new Vector3(2.2f, 3.4f, 0.8f);
+            float t = Mathf.Min(kick, 1.4f);
+            Vector3 position = bottleRestPosition + velocity * t + Vector3.down * (4.9f * t * t);
+            position.y = Mathf.Max(position.y, bottleRestPosition.y);
+            bottle.SetLocalPositionAndRotation(position, bottleRestRotation * Quaternion.Euler(0f, 540f * t, 300f * t));
+        }
+
+        private void PlaceCamera(int shot, float seconds, float p, float e, IntroActing.Beat beat)
+        {
+            Vector3 face = boki.Face.position;
+            Vector3 hand = boki.Hand.position;
+            Vector3 position;
+            Vector3 target;
+            switch (shot)
+            {
+                case IntroActing.Wake:
+                    // Starts low at Boki's side, in the grass, then rises and pulls back to the skyline.
+                    position = Vector3.Lerp(Local(1.5f, 0.2f, -0.6f), Local(1.25f, 1.1f, -2.8f), e);
+                    target = Vector3.Lerp(Local(-0.2f, 0.3f, 0.5f), Local(0f, 0.55f, 8f), e);
+                    break;
+                case IntroActing.Stir:
+                    position = Vector3.Lerp(Local(1.25f, 1.1f, -2.8f), face + Axes(-1f, 0.65f, 0.6f), e);
+                    // The view drops from the skyline to Boki early, so the arm raise is on screen.
+                    target = Vector3.Lerp(Local(0f, 0.55f, 8f), Vector3.Lerp(face, hand, 0.5f), Ramp(p, 0f, 0.5f));
+                    break;
+                case IntroActing.Watch:
+                    position = Vector3.Lerp(face + Axes(-1f, 0.65f, 0.6f), hand + Axes(-0.3f, 0.38f, 0.1f), e);
+                    target = Vector3.Lerp(Vector3.Lerp(face, hand, 0.5f), hand, e);
+                    break;
+                case IntroActing.DoubleTake:
+                    FaceShot(face, Mathf.Lerp(0.78f, 0.66f, e), out position, out target);
+                    break;
+                case IntroActing.Message:
+                    FaceShot(face, Mathf.Lerp(0.66f, 0.56f, e), out position, out target);
+                    break;
+                case IntroActing.Line:
+                    FaceShot(face, Mathf.Lerp(0.56f, 0.42f, e), out position, out target);
+                    break;
+                case IntroActing.Scramble:
+                    position = Local(3.6f, 1.3f, 0.2f);
+                    target = Vector3.Lerp(Local(-0.2f, 0.9f, 1.3f), stage.TransformPoint(beat.Position + Vector3.up * 0.9f), 0.55f);
+                    break;
+                default:
+                    PlaceOrbit(e);
+                    ApplyPunch(0f, seconds);
+                    return;
+            }
+            shotCamera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(target - position, Vector3.up));
+            ApplyPunch(beat.Punch, seconds);
+        }
+
+        // Boki lies face up, so the face is seen from above and from the feet side, the right way up on screen.
+        private void FaceShot(Vector3 face, float distance, out Vector3 position, out Vector3 target)
+        {
+            position = face + stage.forward * (0.5f * distance) + Vector3.up * (0.8f * distance);
+            target = face - stage.forward * 0.1f + Vector3.up * 0.03f;
+        }
+
+        // A hit squeezes the view in and rattles it, then both die away.
+        private void ApplyPunch(float punch, float seconds)
+        {
+            Transform view = shotCamera.transform;
+            if (punch > 0f)
+            {
+                float rattle = 0.012f * punch;
+                view.position += view.right * (rattle * Mathf.Sin(seconds * 71f)) + view.up * (rattle * Mathf.Sin(seconds * 83f));
+            }
+            shotCamera.fieldOfView = baseFieldOfView * (1f - 0.22f * punch);
+        }
+
         private Vector3 Local(float x, float y, float z) => stage.TransformPoint(x, y, z);
+        private Vector3 Axes(float x, float y, float z) => stage.TransformVector(x, y, z);
 
         private static float Ramp(float value, float from, float to)
             => Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(from, to, value));
-
-        private void PlaceCamera(Vector3 position, Vector3 lookAt)
-            => shotCamera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
 
         // Swing from in front of Boki to the follow pose behind him, ending exactly on ThirdPersonCamera's rest pose.
         private void PlaceOrbit(float e)
@@ -236,40 +315,16 @@ namespace Boki.Intro
                 followPivot.position + look * Vector3.back * Mathf.Lerp(3.4f, followDistance, e), look);
         }
 
-        // Rest rotations are read once, while the actors still hold their authored pose.
+        // Rest poses are read once, while the actors still hold their authored placement.
         private void CaptureRest()
         {
             if (restCaptured) return;
             restCaptured = true;
-            upperRest = leftUpperArm.rotation;
-            lowerRest = leftLowerArm.rotation;
-            Vector3 shoulder = leftUpperArm.position;
-            Vector3 elbow = leftLowerArm.position;
-            Vector3 wrist = leftHand.position;
-
-            // Sideways direction from the body axis to the watch arm.
-            Vector3 offset = shoulder - Local(0f, 0.15f, 0f);
-            offset = Vector3.ProjectOnPlane(offset, stage.forward);
-            offset.y = 0f;
-            side = offset.sqrMagnitude > 1e-4f ? offset.normalized : stage.right;
-
-            // World-space targets: elbow up and slightly out, forearm across the face (Boki lies face up).
-            Vector3 towardHead = -stage.forward;
-            Vector3 upperTarget = (Vector3.up * 0.85f + towardHead * 0.2f + side * 0.45f).normalized;
-            Vector3 forearmTarget = (towardHead * 0.55f + Vector3.up * 0.35f - side * 0.75f).normalized;
-            upperRaise = Quaternion.FromToRotation((elbow - shoulder).normalized, upperTarget);
-            lowerRaise = Quaternion.FromToRotation(upperRaise * (wrist - elbow).normalized, forearmTarget);
-
-            armCameraTarget = head.position + stage.forward * 0.3f + Vector3.up * 0.1f;
-            armCameraPosition = armCameraTarget + side * 1.7f + Vector3.up * 0.6f + stage.forward * 0.5f;
-        }
-
-        private void RaiseArm(float amount)
-        {
-            Quaternion upper = Quaternion.Slerp(Quaternion.identity, upperRaise, amount);
-            Quaternion lower = Quaternion.Slerp(Quaternion.identity, lowerRaise, amount);
-            leftUpperArm.rotation = upper * upperRest;
-            leftLowerArm.rotation = lower * upper * lowerRest;
+            baseFieldOfView = shotCamera.fieldOfView;
+            scooterRestPosition = fallenScooter.localPosition;
+            scooterRestRotation = fallenScooter.localRotation;
+            bottleRestPosition = bottle.localPosition;
+            bottleRestRotation = bottle.localRotation;
         }
     }
 }

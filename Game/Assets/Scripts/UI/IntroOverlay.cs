@@ -8,15 +8,17 @@ namespace Boki.UI
     public sealed class IntroOverlay : MonoBehaviour
     {
         [SerializeField] private Image fade;
+        [SerializeField] private Image flash;
         [SerializeField] private GameObject letterbox;
         [SerializeField] private Text subtitle;
+        [SerializeField] private GameObject subtitleBacking;
         [SerializeField] private CanvasGroup watchReadout;
         [SerializeField] private GameObject objective;
         [SerializeField] private GameObject skipHint;
 
         private void OnEnable()
         {
-            if (fade == null || letterbox == null || subtitle == null || watchReadout == null
+            if (fade == null || flash == null || letterbox == null || subtitle == null || subtitleBacking == null || watchReadout == null
                 || objective == null || skipHint == null)
             {
                 Debug.LogError("Assign every IntroOverlay reference.", this);
@@ -31,12 +33,21 @@ namespace Boki.UI
             fade.color = color;
         }
 
+        // Brief white frame on a hit; fully transparent when zero.
+        public void SetFlash(float alpha)
+        {
+            Color color = flash.color;
+            color.a = Mathf.Clamp01(alpha);
+            flash.color = color;
+        }
+
         public void SetLetterbox(bool visible) => letterbox.SetActive(visible);
 
         public void SetSubtitle(string line, Color color)
         {
             subtitle.text = line;
             subtitle.color = color;
+            subtitleBacking.SetActive(!string.IsNullOrEmpty(line));
         }
 
         public void SetWatchReadout(float alpha) => watchReadout.alpha = Mathf.Clamp01(alpha);

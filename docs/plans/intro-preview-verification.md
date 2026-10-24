@@ -1,48 +1,75 @@
 # Bellevue prologue: minimum slice
 
 Implements [Story.md §3 PROLOGUE](../Story.md#prologue--the-morning-after-2030-seconds-skippable)
-shots 1, 2 and 4 as a skippable ~16 s sequence. Shot 3 (the VHS glitch with the
-overturned cars and the black figure) is **not built**; neither is the bass-to-wind
-audio. The full prologue stays M10 in [Architecture.md](../Architecture.md#completion-of-the-documented-game).
+shots 1, 2 and 4 as a skippable ~19 s sequence, played for laughs: Boki's eyes pop out
+twice and he scrambles onto the scooter. Shot 3 (the VHS glitch with the overturned
+cars and the black figure) is **not built**; neither is the bass-to-wind audio. The
+full prologue stays M10 in [Architecture.md](../Architecture.md#completion-of-the-documented-game).
 
 | Beat | Shot | Seconds | What plays |
 |---|---|---:|---|
-| Wake | 1 | 5.0 | Fade in from black. The camera starts low beside Boki, his scooter and a bottle, then rises and pulls back to a foggy skyline. |
-| Arm raise | 2 | 1.8 | Boki raises his left arm. |
-| Watch | 2 | 1.7 | The camera closes on the watch; the LCD fills the screen with **07:58**. |
-| Message | 2 | 2.2 | Phone beep, subtitle »PREDAVANJE — 08:00 / FERI«. |
-| Line | 2 | 2.0 | Subtitle »Fak ... ne spet.« over a close shot of Boki's face, then fade to black. |
-| Mount | 4 | 3.0 | Boki is on the scooter, the headlight turns on, `OBJECTIVE: GET TO FERI` / `DON'T LOOK BACK`, the camera swings behind him. |
+| Wake | 1 | 4.5 | Fade in. The camera starts low at Boki's side in the grass, then rises and pulls back to the sunrise skyline. Boki lies sprawled, breathing with his mouth slack, beside a bottle, glow sticks, a party cup and the fallen scooter. |
+| Stir | 2 | 1.8 | His left arm rises toward his face; the eyes crack open into tired slits. |
+| Watch | 2 | 1.6 | The camera closes on the watch; the LCD fills the screen with **07:58**. |
+| Double take | 2 | 1.7 | Cut to his face. A blank stare, then the eyes pop out (first pop) with a `!`, sweat drops, raised brows, a gaping mouth, a camera punch and a flash. The arm drops. |
+| Message | 2 | 2.4 | Phone beep, subtitle »PREDAVANJE — 08:00 / FERI«. The bigger second pop: eyes on stalks, mouth wide, shaking, harder punch. |
+| Line | 2 | 2.0 | Subtitle »Fak ... ne spet.« The eyes sag back, the brows turn worried, the head droops; then fade to black. |
+| Scramble | 4 | 2.4 | From black: Boki sits bolt upright and knocks the bottle away, springs up, sprints the wrong way, skids, turns back (the scooter flips upright) and leaps onto it. |
+| Mount | 4 | 3.0 | Rider on the scooter, headlight on, `OBJECTIVE: GET TO FERI` / `DON'T LOOK BACK`, the camera swings behind him. |
 
 Enter skips. Playing to the end and skipping reach the same end state: rider
-visible, headlight on, camera on the `ThirdPersonCamera` rest pose, then
-`ScooterController` and `ThirdPersonCamera` are re-enabled. The objective stays
-on screen for six seconds after control returns. I replays the intro.
+visible, headlight on, camera on the `ThirdPersonCamera` rest pose, letterbox and skip
+hint gone, then `ScooterController` and `ThirdPersonCamera` are re-enabled. The
+objective stays on screen for six seconds after control returns. I replays the intro.
 
 ## Ownership and isolation
 
-Everything here is new; no existing file was edited, and no map is involved.
+Everything here is new or belongs to the intro; no map is involved.
 
-- `Assets/Scenes/Intro_Preview.unity`: the intro's own scene. It is a neutral
-  sound stage built from primitives (flat ground, a fogged skyline of dark blocks,
-  a few dead trees, dawn fog and light). It uses **no** Pohorje, Maribor or FERI
-  asset and none of the level or map-test scenes. It is not in the build list,
-  like the other previews.
-- `Assets/Cutscenes/Intro/`: `IntroCutscene.prefab` (the whole intro),
-  `IntroInput.asset` (`Skip` = Enter, `Replay` = I) and three small materials.
-- It does depend on the Boki player (`Boki_Rigged_Test.prefab`, the Boki and
-  scooter models and atlas) and on the shared movement input assets, because the
-  intro hands control to that player. It does not modify them.
+- `Assets/Scenes/Intro_Preview.unity`: the intro's own scene. A neutral set built from
+  primitives and low-poly meshes: a dawn sky with a low sun, a meadow with a dirt
+  patch, pines in two stands, three rows of skyline blocks, rocks and grass. It uses
+  **no** Pohorje, Maribor or FERI asset and none of the level or map-test scenes. It is
+  not in the build list, like the other previews.
+- `Assets/Cutscenes/Intro/`: `IntroCutscene.prefab` (the whole intro), `IntroInput.asset`
+  (`Skip` = Enter, `Replay` = I) and the set's small materials.
+- `Assets/Art/Intro/`: `Boki_Intro.prefab`, the intro-only Boki (below), its bind-pose
+  rig copy, atlas, face materials and low-poly meshes.
+- It does depend on the Boki player (`Boki_Rigged_Test.prefab`, `CHR_Boki`, the scooter
+  model and atlas) and on the shared movement input assets, because the intro hands
+  control to that player and reuses its scooter prop. It does not modify them.
 - `Player_Model_Test.unity` is deliberately **not** touched: the intro is kept out
-  of shared and map scenes so it cannot collide with other work.
+  of shared and map scenes so it cannot collide with other work. The intro Boki is a
+  separate model, so the player-model demo scene is unaffected.
+
+## The intro Boki
+
+`Boki_Intro.prefab` is a separate Boki built only for the intro, so it can be bent and
+customised without touching the player. It is the player model's neutral **bind-pose**
+rig (`CHR_Boki_BindPose.fbx`, same 22 bones) with:
+
+- its own atlas, `T_Boki_Intro_BaseColor.png`: the player atlas with the painted eyes,
+  eyebrows, mouth and chin line blanked (`output/intro-boki-v1/build_intro_atlas.py`);
+  bags, nose shading, stubble, jacket and watch are unchanged;
+- separate 3D face parts under a `Face` pivot on the head bone: flat eyes that swell into
+  balls on skin-coloured stalks, pupils, brows, a mouth, closed-eye lash lines;
+- cues above the head that face the camera: a `!` mark and sweat drops.
+
+`IntroBoki` takes a `Pose` (rig angles about character-frame axes, plus lids, pop,
+gaze, brows, mouth, shake, alert, sweat) and writes transforms. It owns no timing.
+`IntroActing` is the whole script of the intro as a pure function of (shot, seconds), so
+playing, skipping and the frame capture show identical poses. To change a gag, edit
+`IntroActing` (timings, pose presets) or the face layout constants in `IntroBoki`; neither
+needs the prefab rebuilt. `IntroMotion` (engine-free, tested) holds the cartoon curves:
+`Pop` (rush, overshoot, settle), `Impact` and `Tremor`.
 
 ## The prefab
 
-`IntroCutscene.prefab` is self-contained: `Intro Stage` (lying Boki, fallen
-scooter, bottle, a cold stage light), `Intro Overlay` (letterbox, 07:58 LCD,
-subtitle, objective, skip hint, fade), an `AudioSource` and the `IntroCutscene`
-component with all of those already wired. It carries no ground and no map
-reference, so it sits on whatever floor the host scene has.
+`IntroCutscene.prefab` is self-contained: `Intro Stage` (the `Boki Intro` instance,
+fallen scooter, bottle, leftovers, a cold stage light), `Intro Overlay` (letterbox,
+07:58 LCD, subtitle with a backing band, objective, skip hint, flash, fade), an
+`AudioSource` and the `IntroCutscene` component with all of those already wired. It
+carries no ground and no map reference, so it sits on whatever floor the host scene has.
 
 Six scene-side references are left empty on purpose and are assigned per scene:
 `shotCamera` (the camera running `ThirdPersonCamera`), `rider` (the player's
@@ -52,29 +79,35 @@ Six scene-side references are left empty on purpose and are assigned per scene:
 `playOnStart` is off in the prefab; the preview scene turns it on. Missing
 references log an error and disable the component rather than failing silently.
 
+Sounds: `intro_phone_beep.wav`, `intro_eye_pop.wav` (played at both pops) and
+`intro_dash.wav` (the sprint). All are synthesised by `python3 music/generate_intro_sfx.py`.
+
 ## Setup commands
 
-All are idempotent and refuse Play Mode and dirty scenes.
+All refuse Play Mode and dirty scenes.
 
-- **Boki > Intro > Create Intro Preview**: imports `intro_phone_beep.wav`, creates
-  the folder assets, the prefab and `Intro_Preview`. An existing scene is kept.
+- **Boki > Intro > Rebuild Intro Preview**: regenerates `Boki_Intro.prefab`,
+  `IntroCutscene.prefab`, the materials, the clip import settings and `Intro_Preview`,
+  keeping every asset path and GUID. Unity gives a rebuilt prefab new internal ids, so
+  the command **refuses once any other scene uses `IntroCutscene.prefab`**; after
+  adoption, edit the prefab directly. It discards hand edits to the preview scene.
 - **Boki > Intro > Open Intro Preview**.
 - **Boki > Intro > Add Intro To Open Scene**: the integration step, see below.
-- **Boki > Intro > Capture Preview Frames**: renders twelve review frames to
-  `output/intro-preview/frames/` without saving the scene.
-
-Regenerate the beep with `python3 music/generate_intro_sfx.py`.
+- **Boki > Intro > Capture Preview Frames**: renders 28 review frames covering every
+  beat to `output/intro-preview/frames/` (or `$BOKI_INTRO_FRAMES`) without saving the
+  scene. Run it without `-nographics`: frames need the GPU.
 
 ## Manual verification
 
 1. Open `Intro_Preview`, enter Play Mode, click the Game view. The sequence starts
-   on its own. Check each beat in the table, the subtitle text (diacritics and
-   »« intact), the beep, and the legibility of the 07:58 LCD.
+   on its own. Check each beat in the table: the eyes pop at 07:58 and again on the
+   beep, the subtitle text (diacritics and »« intact), the pop and sprint sounds, and
+   the legibility of the 07:58 LCD.
 2. Let it finish. Boki rides; WASD, Space and Shift work; the camera follows with
-   no jump at the handoff; the headlight is lit.
-3. Play again and press Enter mid-way (once in the wake-up, once in the watch
-   shot). The end state must be identical to playing through, with the beep
-   silenced if it was playing. Pressing Enter after the end does nothing.
+   no jump at the handoff; the headlight is lit; no letterbox or skip hint remains.
+3. Play again and press Enter mid-way (once in the wake-up, once during the message).
+   The end state must be identical to playing through, with the beep silenced if it
+   was playing. Pressing Enter after the end does nothing.
 4. Press I after the end: it replays and the player controls are locked meanwhile.
 5. Exit Play Mode; the cursor state is restored. The Console shows no new errors
    or warnings from the intro. Enter Play Mode twice without a domain reload: no
@@ -98,50 +131,60 @@ and its follow camera:
    07:58 or Skip*). The intro owns no run state, routes or unlocks and leaves them
    untouched. A scene without a `LightBattery` on the player cannot adopt it.
 5. Add the scene to the build list during integration, not here. Re-check the fog
-   and lighting in that map: the intro's wake-up shots assume the scene's own.
+   and lighting in that map: the wake-up and face shots assume light from above and a
+   few metres of clear ground; the face shots use the stage light inside the prefab.
 
 By hand the same thing is: drag the prefab in, move it, and fill the references
-listed under "The prefab".
+listed under "The prefab". The preview's sky, meadow, pines and skyline are the
+preview's own set and are not part of the prefab.
 
 ## Verification record
 
 Unity `6000.6.7f1`, run headless on Linux (AMD Radeon 780M for rendering).
 
-- Compile and EditMode tests: scripts compile with no errors; 125 of 125 tests
-  pass, including eight `IntroTimeline` tests (one-shot begin, progress, a delta
-  spanning several shots, finishing once, skip finishing once and stopping later
-  shots, skip before begin, invalid deltas, constructor limits).
-- Setup: the Editor generated every `.meta`. A second **Create Intro Preview**
-  left the scene and prefab byte-identical. A dependency scan of the scene and the
-  prefab found no map, level or map-test asset.
-- Play Mode (headless, temporary driver that has been removed): the intro locked
-  the controls at the start; Enter mid wake-up reached the full end state (rider,
-  headlight, objective, clear overlay); I relocked and restarted it; played to the
-  natural end the camera sat exactly on the `ThirdPersonCamera` rest pose (gap
-  0.00 m) and the beep source was playing during the message shot; no console
-  errors, exceptions or warnings.
-- Adoption path (temporary scratch scene, since deleted): **Add Intro To Open
-  Scene** assigned every reference, placed the stage from a player standing at a
-  rotated position, left `playOnStart` off, left the scene modified, and a second
-  call did not add a duplicate. It was not run on any real scene.
-- Frames: the twelve captured frames were reviewed and read correctly (wake-up,
-  raised arm, LCD, both subtitles, face shot, mount, follow pose). They are Edit
-  Mode renders with the player's lights off, so they do not show the headlight.
-- Architecture audit: no failures; the one warning is `Intro_Preview` missing from
-  the build list, as for the other previews.
-- Git: no tracked file is modified. Hand-written files are free of trailing
-  whitespace; Unity-generated YAML keeps the Editor's trailing spaces on empty
-  values.
+- Compile and EditMode tests: scripts compile with no errors; 148 of 148 tests pass,
+  including 17 intro tests: the timeline (now with `ShotStart`, `Elapsed` and
+  `TotalSeconds`) and `IntroMotion` (`Pop` is 0 before and exactly 1 after its duration
+  and overshoots in between; `Impact` only falls; `Tremor` stays inside its envelope;
+  invalid parameters rejected).
+- Setup: the Editor generated every `.meta`. Existing materials and prefabs were
+  rewritten in place and kept their GUIDs. A dependency scan of the scene and both
+  prefabs found no map, level, route or enemy asset; the only shared assets are the
+  player test prefab and its models, atlas and input.
+- Play Mode (headless, temporary driver that has been removed; keyboard input was
+  injected with background and focus filtering turned off): controls locked at the
+  start with the eyes flat; the first pop bulged the eyes and played its sound; the
+  beep played with the subtitle shown; the second pop pushed the eyes further than the
+  first; the line subtitle and the sprint sound fired; played to the natural end
+  the rider, headlight, controls and objective were on, letterbox gone, and the
+  camera sat exactly on the follow rest distance (gap 0.00 m); Enter after the end
+  changed nothing; I replayed and relocked the controls; Enter during the wake and
+  during the message reached the same end state, and the message skip silenced the
+  sound; a second replay and skip also worked. No console errors from the intro; one exception
+from Unity's own search indexer at Editor start-up appeared in the log and was ignored.
+- That run found and fixed a bug in the earlier intro: after a natural finish the
+  frame update ran once more and brought the letterbox and skip hint back, so playing
+  through and skipping did not end identically.
+- Frames: the 28 captured frames were reviewed (wake, stir, double take, both pops, the
+  deflate, sit-up, sprint, skid, leap, ride-off, follow pose). They are Edit Mode
+  renders with the player's lights off, so they do not show the headlight.
+- Sound: the new clips were checked numerically (48 kHz mono, 0.5 peak, no DC offset,
+  silent at both ends); the phone beep is byte-identical after regeneration.
+- Architecture audit: no failures; the one new-scene warning is `Intro_Preview`
+  missing from the build list, as for the other previews.
 
-Not verified: interactive mouse and keyboard play, audible playback and level of
-the beep, anything on Windows or the 5600G, and the intro inside a real map.
-Known rough edges: the imported rig only has the riding pose, so lying Boki keeps
-bent knees and raised hands; the watch readout is a UI overlay, not the 3D watch;
-the bottle is a cylinder; the sound stage is deliberately plain.
+Not verified: how the new sounds actually sound or how loud they are, interactive
+mouse and keyboard play, anything on Windows or the 5600G, and the intro inside a real
+map. The total length is 19.4 s, a little under Story §2's 20–30 s budget; lengthen
+`IntroActing.ShotSeconds` if that matters. Known rough edges: the 07:58 readout is a UI
+overlay, not the 3D watch (going by the model's build script, the watch face points back
+along the forearm, so it cannot face the camera while the arm is raised); the mouth is a flat box, not a jaw;
+the set uses a procedural sky and primitive meshes. The preview sky is a clean sunrise,
+calmer than Story §3's "something wrong with the sky's color"; tint `DawnSky.mat`
+and the fog in the scene if the map should look sicker.
 
 ## Deferred
 
 Shot 3 (VHS glitch, cars, black figure), distant techno bass fading into wind, a
-real get-up and mount animation (poses are bone rotations, not authored clips),
-a Guilt silhouette, the objective as part of the real HUD, wiring into
-`Level1_Pohorje`, a Windows build check.
+Guilt silhouette, the objective as part of the real HUD, wiring into `Level1_Pohorje`,
+a Windows build check, authored animation clips in place of pose code if the gags grow.
