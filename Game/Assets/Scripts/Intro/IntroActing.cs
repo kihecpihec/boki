@@ -16,7 +16,7 @@ namespace Boki.Intro
         public const int Scramble = 6;
         public const int Mount = 7;
 
-        public static readonly float[] ShotSeconds = { 4.5f, 1.8f, 1.6f, 1.7f, 2.4f, 2f, 2.4f, 3f };
+        public static readonly float[] ShotSeconds = { 4.5f, 1.8f, 1.6f, 1.7f, 2.4f, 3.1f, 2.4f, 3f };
 
         // Seconds into their shot. The pop sounds and the pop curves share these.
         public const float FirstPopAt = 0.45f;

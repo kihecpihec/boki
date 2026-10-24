@@ -1340,6 +1340,7 @@ MonoBehaviour:
   phoneBeep: {fileID: 8300000, guid: 2ae4df0fab4f12b0dbaaaf0c99f73d76, type: 3}
   eyePop: {fileID: 8300000, guid: 91c622999f5620cdc8ce3d145722e6c8, type: 3}
   dashWhoosh: {fileID: 8300000, guid: 9adf63bcbb7a8508ba68b7145be1585e, type: 3}
+  bokiLine: {fileID: 8300000, guid: bd2c28c58a663c45fb98ebbf67dcd4db, type: 3}
   skipAction: {fileID: 2156066471589202878, guid: 5b1cfe52c78ee2f70aeba985cdbdda84, type: 2}
   replayAction: {fileID: -8861882190143886245, guid: 5b1cfe52c78ee2f70aeba985cdbdda84, type: 2}
   playOnStart: 0
