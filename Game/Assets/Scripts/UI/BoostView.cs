@@ -22,7 +22,7 @@ namespace Boki.UI
         {
             bool active = movement.BoostRemaining > 0f;
             bool recharging = movement.CooldownRemaining > 0f;
-            string status = active ? "BOOST ACTIVE" : recharging ? "BOOST RECHARGING" : "BOOST READY · LEFT SHIFT";
+            string status = active ? "BOOST ACTIVE" : recharging ? "BOOST RECHARGING" : movement.PanicReady ? "PANIC READY · LEFT SHIFT" : "BOOST READY · LEFT SHIFT";
             if (statusText.text != status) statusText.text = status;
             progress.fillAmount = active
                 ? movement.BoostRemaining / Mathf.Max(0.001f, movement.BoostDuration)

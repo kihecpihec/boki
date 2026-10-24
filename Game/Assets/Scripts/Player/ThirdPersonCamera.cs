@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Boki.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -81,6 +82,8 @@ namespace Boki.Player
 
         private void Update()
         {
+            if (RunSession.Instance != null && RunSession.Instance.State.Pause.IsPaused)
+            { skipLookFrame = true; return; }
             if (!hasFocus)
                 return;
 
@@ -108,7 +111,7 @@ namespace Boki.Player
 
         private void LateUpdate()
         {
-            if (followPivot == null)
+            if (followPivot == null || (RunSession.Instance != null && RunSession.Instance.State.Pause.IsPaused))
                 return;
 
             if (hasFocus && Cursor.lockState == CursorLockMode.Locked && !skipLookFrame)

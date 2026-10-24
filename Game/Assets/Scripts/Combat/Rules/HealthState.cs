@@ -17,6 +17,14 @@ namespace Boki.Combat
             Maximum = Current = maximum;
         }
 
+        public bool TryHeal(int amount)
+        {
+            if (amount <= 0 || !IsAlive || Current == Maximum) return false;
+            Current = (int)Math.Min(Maximum, (long)Current + amount);
+            Changed?.Invoke();
+            return true;
+        }
+
         public void TakeDamage(int damage)
         {
             if (damage <= 0 || !IsAlive) return;

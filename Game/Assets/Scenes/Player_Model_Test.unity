@@ -1203,7 +1203,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 10
 --- !u!1 &71843511
 GameObject:
@@ -1215,7 +1215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 71843512}
   - component: {fileID: 71843514}
-  - component: {fileID: 71843513}
+  - component: {fileID: 71843515}
   m_Layer: 2
   m_Name: Forest shadow XP sample 1
   m_TagString: Untagged
@@ -1239,19 +1239,6 @@ Transform:
   - {fileID: 1345846855}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &71843513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71843511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &71843514
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1273,6 +1260,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &71843515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71843511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &77255379
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,7 +2440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 146649879}
   - component: {fileID: 146649881}
-  - component: {fileID: 146649880}
+  - component: {fileID: 146649882}
   m_Layer: 2
   m_Name: Student shadow XP sample 1
   m_TagString: Untagged
@@ -2465,19 +2464,6 @@ Transform:
   - {fileID: 2113053195}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &146649880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 146649878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &146649881
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2499,6 +2485,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &146649882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146649878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &152371579
 GameObject:
   m_ObjectHideFlags: 0
@@ -3808,8 +3806,6 @@ MonoBehaviour:
   volume: {fileID: 276419885}
   entry: {fileID: 1617601115}
   enemyTemplate: {fileID: 1442560968}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "FOREST SHADOW \u2014 Pursuit and contact damage. Jump to evade; kill and collect its gold XP pack."
 --- !u!1 &285578802
 GameObject:
@@ -6293,11 +6289,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'ENEMY SANDBOX | WASD: ride | Space: jump | Shift: boost | Esc: use test panel
+  m_Text: 'ENEMY SANDBOX | WASD: ride | Space: jump | Shift: boost | Esc: test panel
 
-    H: take damage | B: drain 25 battery | Gold: XP | Green: battery +25
+    H: damage | B: drain battery | Gold: XP | Green: battery +25
 
-    Only your current station is active. XP tests collection only; upgrade selection is not implemented.'
+    XP thresholds: 3 / 7 / 12 / 18 / 25 / 33 | Upgrade: 1/2/3 or arrows + Enter'
 --- !u!222 &396673616
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7952,8 +7948,6 @@ MonoBehaviour:
   volume: {fileID: 507744320}
   entry: {fileID: 1485100734}
   enemyTemplate: {fileID: 1944246843}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "CITY WATCHER \u2014 City ranged variant. Test orb trails, impact, line of sight and XP collection."
 --- !u!1 &508494467
 GameObject:
@@ -8381,8 +8375,6 @@ MonoBehaviour:
   volume: {fileID: 523566897}
   entry: {fileID: 223920817}
   enemyTemplate: {fileID: 9158972}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "FOREST WATCHER \u2014 Slow red orbs. Switch laser OFF to observe, use cover, then kill for XP."
 --- !u!1 &533611321
 GameObject:
@@ -8703,7 +8695,7 @@ GameObject:
   m_Component:
   - component: {fileID: 555389959}
   - component: {fileID: 555389961}
-  - component: {fileID: 555389960}
+  - component: {fileID: 555389962}
   m_Layer: 2
   m_Name: Forest Watcher XP sample 1
   m_TagString: Untagged
@@ -8727,19 +8719,6 @@ Transform:
   - {fileID: 1474990606}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &555389960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 555389958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &555389961
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -8761,6 +8740,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &555389962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555389958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &558879824
 GameObject:
   m_ObjectHideFlags: 0
@@ -13622,7 +13613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 899252340}
   - component: {fileID: 899252342}
-  - component: {fileID: 899252341}
+  - component: {fileID: 899252343}
   m_Layer: 2
   m_Name: Professor XP sample 2
   m_TagString: Untagged
@@ -13646,19 +13637,6 @@ Transform:
   - {fileID: 354289961}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &899252341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 899252339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &899252342
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13680,6 +13658,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &899252343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899252339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &899426801
 GameObject:
   m_ObjectHideFlags: 0
@@ -13690,7 +13680,7 @@ GameObject:
   m_Component:
   - component: {fileID: 899426802}
   - component: {fileID: 899426804}
-  - component: {fileID: 899426803}
+  - component: {fileID: 899426805}
   m_Layer: 2
   m_Name: Forest Watcher XP sample 2
   m_TagString: Untagged
@@ -13714,19 +13704,6 @@ Transform:
   - {fileID: 384024528}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &899426803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 899426801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &899426804
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13748,6 +13725,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &899426805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899426801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &899745233
 GameObject:
   m_ObjectHideFlags: 0
@@ -14101,8 +14090,6 @@ MonoBehaviour:
   volume: {fileID: 905215875}
   entry: {fileID: 1318518010}
   enemyTemplate: {fileID: 1797699055}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "IZGUBLJENI ME\u0160\u010CAN \u2014 City melee variant. Test contact, hit/death animation and XP collection."
 --- !u!1 &905653850
 GameObject:
@@ -14644,8 +14631,6 @@ MonoBehaviour:
   volume: {fileID: 922930282}
   entry: {fileID: 96133444}
   enemyTemplate: {fileID: 1224920506}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "STUDENT SHADOW \u2014 FERI melee variant. Test pursuit, jumping over contact and XP collection."
 --- !u!1 &928259235
 GameObject:
@@ -15139,7 +15124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 940094266}
   - component: {fileID: 940094265}
-  - component: {fileID: 940094264}
+  - component: {fileID: 940094267}
   m_Layer: 2
   m_Name: Gold XP Pack
   m_TagString: Untagged
@@ -15147,19 +15132,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &940094264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940094263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &940094265
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -15197,6 +15169,18 @@ Transform:
   - {fileID: 423131346}
   m_Father: {fileID: 1597784332}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &940094267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940094263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &958061533
 GameObject:
   m_ObjectHideFlags: 0
@@ -17100,7 +17084,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1065940787}
   - component: {fileID: 1065940789}
-  - component: {fileID: 1065940788}
+  - component: {fileID: 1065940790}
   m_Layer: 2
   m_Name: Guilt XP sample 1
   m_TagString: Untagged
@@ -17124,19 +17108,6 @@ Transform:
   - {fileID: 937233142}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1065940788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1065940786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1065940789
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -17158,6 +17129,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1065940790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065940786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1066464580
 GameObject:
   m_ObjectHideFlags: 0
@@ -18361,7 +18344,7 @@ MonoBehaviour:
 
     Choose a station, then click the world to ride. Only that enemy is active.
 
-    XP tests collection and HUD feedback; upgrade selection is not implemented.'
+    XP awards real upgrades; choose a card when the run pauses.'
 --- !u!222 &1148606877
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18714,7 +18697,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1198122635}
   - component: {fileID: 1198122637}
-  - component: {fileID: 1198122636}
+  - component: {fileID: 1198122638}
   m_Layer: 2
   m_Name: Professor XP sample 1
   m_TagString: Untagged
@@ -18738,19 +18721,6 @@ Transform:
   - {fileID: 905653851}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1198122636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1198122634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1198122637
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -18772,6 +18742,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1198122638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198122634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1207766015
 GameObject:
   m_ObjectHideFlags: 0
@@ -19861,7 +19843,6 @@ MonoBehaviour:
   xpFill: {fileID: 1063761251}
   guiltEdges: {fileID: 714994048}
   screenEffectsEnabled: 1
-  xpMilestones: 03000000070000000c000000120000001900000021000000i
   guiltWarningDistance: 15
 --- !u!114 &1256973294
 MonoBehaviour:
@@ -23088,8 +23069,6 @@ MonoBehaviour:
   volume: {fileID: 1450436773}
   entry: {fileID: 1414785533}
   enemyTemplate: {fileID: 899745233}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "GUILT \u2014 Invulnerable. Stay 20 active seconds, look around for safe offscreen placement, then evade the chase."
 --- !u!1 &1461714288
 GameObject:
@@ -24152,7 +24131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1514126385}
   - component: {fileID: 1514126387}
-  - component: {fileID: 1514126386}
+  - component: {fileID: 1514126388}
   m_Layer: 2
   m_Name: Floating exam paper XP sample 2
   m_TagString: Untagged
@@ -24176,19 +24155,6 @@ Transform:
   - {fileID: 1118763782}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1514126386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514126384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1514126387
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -24210,6 +24176,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1514126388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514126384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1516164238
 GameObject:
   m_ObjectHideFlags: 0
@@ -24292,8 +24270,6 @@ MonoBehaviour:
   volume: {fileID: 1516164240}
   entry: {fileID: 997122807}
   enemyTemplate: {fileID: 1080407876}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "FLOATING EXAM PAPER \u2014 FERI ranged reskin using the existing shooter AI and paper projectile."
 --- !u!1 &1521381824
 GameObject:
@@ -24507,7 +24483,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1538815527}
   - component: {fileID: 1538815529}
-  - component: {fileID: 1538815528}
+  - component: {fileID: 1538815530}
   m_Layer: 2
   m_Name: Guilt XP sample 2
   m_TagString: Untagged
@@ -24531,19 +24507,6 @@ Transform:
   - {fileID: 576450567}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1538815528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1538815526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1538815529
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -24565,6 +24528,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1538815530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1538815526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1547475616
 GameObject:
   m_ObjectHideFlags: 0
@@ -24646,8 +24621,6 @@ MonoBehaviour:
   volume: {fileID: 1547475618}
   entry: {fileID: 17035145}
   enemyTemplate: {fileID: 295019973}
-  xpTemplate: {fileID: 940094264}
-  pickupRoot: {fileID: 1105685991}
   description: "PROFESSOR \u2014 Exam Barrage and Deadline Slam. Switch laser OFF to observe; boost out of the red circle."
 --- !u!1 &1555425623
 GameObject:
@@ -24881,7 +24854,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1574267517}
   - component: {fileID: 1574267519}
-  - component: {fileID: 1574267518}
+  - component: {fileID: 1574267520}
   m_Layer: 2
   m_Name: City Watcher XP sample 1
   m_TagString: Untagged
@@ -24905,19 +24878,6 @@ Transform:
   - {fileID: 1054579175}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1574267518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574267516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1574267519
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -24939,6 +24899,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1574267520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574267516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1587001002
 GameObject:
   m_ObjectHideFlags: 0
@@ -25245,7 +25217,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1624451246}
   - component: {fileID: 1624451248}
-  - component: {fileID: 1624451247}
+  - component: {fileID: 1624451249}
   m_Layer: 2
   m_Name: Forest shadow XP sample 2
   m_TagString: Untagged
@@ -25269,19 +25241,6 @@ Transform:
   - {fileID: 1751491058}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1624451247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1624451245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1624451248
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -25303,6 +25262,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1624451249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1624451245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1629233478
 GameObject:
   m_ObjectHideFlags: 0
@@ -26975,7 +26946,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1735260795}
   - component: {fileID: 1735260797}
-  - component: {fileID: 1735260796}
+  - component: {fileID: 1735260798}
   m_Layer: 2
   m_Name: "Izgubljeni me\u0161\u010Dan XP sample 2"
   m_TagString: Untagged
@@ -26999,19 +26970,6 @@ Transform:
   - {fileID: 1084775695}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1735260796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1735260794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1735260797
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -27033,6 +26991,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1735260798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735260794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1737400152
 GameObject:
   m_ObjectHideFlags: 0
@@ -28209,7 +28179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1780994455}
   - component: {fileID: 1780994457}
-  - component: {fileID: 1780994456}
+  - component: {fileID: 1780994458}
   m_Layer: 2
   m_Name: "Izgubljeni me\u0161\u010Dan XP sample 1"
   m_TagString: Untagged
@@ -28233,19 +28203,6 @@ Transform:
   - {fileID: 258467440}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1780994456
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1780994454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1780994457
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -28267,6 +28224,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1780994458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780994454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1781947566
 GameObject:
   m_ObjectHideFlags: 0
@@ -29170,7 +29139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1872332987}
   - component: {fileID: 1872332989}
-  - component: {fileID: 1872332988}
+  - component: {fileID: 1872332990}
   m_Layer: 2
   m_Name: City Watcher XP sample 2
   m_TagString: Untagged
@@ -29194,19 +29163,6 @@ Transform:
   - {fileID: 1214276539}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1872332988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1872332986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &1872332989
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -29228,6 +29184,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1872332990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872332986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &1875797980
 GameObject:
   m_ObjectHideFlags: 0
@@ -35097,6 +35065,138 @@ MonoBehaviour:
     - m_ControlPath: <XRController>
       m_Flags: 0
   m_IsProjectWide: 0
+--- !u!1001 &2073040466
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: submit
+      value:
+      objectReference: {fileID: -393724099084901518, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: navigate
+      value:
+      objectReference: {fileID: 1877744696431638725, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: 'quickSelect.Array.data[0]'
+      value:
+      objectReference: {fileID: 4975628869461882072, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: 'quickSelect.Array.data[1]'
+      value:
+      objectReference: {fileID: -1134488824696849258, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: 'quickSelect.Array.data[2]'
+      value:
+      objectReference: {fileID: -5856271106735619868, guid: 5936ab2b11605bc198a8e3c2a9623adc, type: 2}
+    - target: {fileID: 4598616970428654783, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_Name
+      value: UpgradeScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5973976767074958946, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7682159238172089488, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+      propertyPath: m_SortingOrder
+      value: 50
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+--- !u!114 &2073040467 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1627328192334024712, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+  m_PrefabInstance: {fileID: 2073040466}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f156e6c3046f05bfc87d3d55aa082398, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.UI.UpgradeScreen
 --- !u!1 &2076126916
 GameObject:
   m_ObjectHideFlags: 0
@@ -35475,7 +35575,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2099497417}
   - component: {fileID: 2099497419}
-  - component: {fileID: 2099497418}
+  - component: {fileID: 2099497420}
   m_Layer: 2
   m_Name: Floating exam paper XP sample 1
   m_TagString: Untagged
@@ -35499,19 +35599,6 @@ Transform:
   - {fileID: 99258145}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2099497418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2099497416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &2099497419
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -35533,6 +35620,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2099497420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099497416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &2101611733
 GameObject:
   m_ObjectHideFlags: 0
@@ -36092,7 +36191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2123050285}
   - component: {fileID: 2123050287}
-  - component: {fileID: 2123050286}
+  - component: {fileID: 2123050288}
   m_Layer: 2
   m_Name: Student shadow XP sample 2
   m_TagString: Untagged
@@ -36116,19 +36215,6 @@ Transform:
   - {fileID: 713837102}
   m_Father: {fileID: 1105685991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2123050286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2123050284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b7b651962737013880370e2382293f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Boki.Player.ArenaXpPickup
-  player: {fileID: 1369858379}
 --- !u!135 &2123050287
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -36150,6 +36236,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.85
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2123050288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123050284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f0e307c4f10f8982ade6a3c16bd0617, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.XpPickup
 --- !u!1 &2123533701
 GameObject:
   m_ObjectHideFlags: 0
@@ -39390,6 +39488,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6084012843138093686, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7868977143442150407}
+    - targetCorrespondingSourceObject: {fileID: 6084012843138093686, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7868977143442150410}
   m_SourcePrefab: {fileID: 100100000, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
 --- !u!114 &7868977143442150401 stripped
 MonoBehaviour:
@@ -39541,6 +39642,20 @@ MonoBehaviour:
   damageColor: {r: 1, g: 0.15, b: 0.25, a: 1}
   damageFlashDuration: 0.15
   pickupGlow: {fileID: 2123533702}
+--- !u!114 &7868977143442150410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7868977143442150405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27bc5c257d38cdaa9b656d8fda231ebb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Boki.Upgrades.UpgradeManager
+  screen: {fileID: 2073040467}
+  player: {fileID: 1369858379}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -39564,3 +39679,4 @@ SceneRoots:
   - {fileID: 2021262043}
   - {fileID: 1256973296}
   - {fileID: 773182249}
+  - {fileID: 2073040466}
