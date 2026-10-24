@@ -18,6 +18,10 @@ namespace Boki.Battery
         [SerializeField, Range(1f, 179f)] private float headlightAngle = 85f;
         [SerializeField, Min(0f)] private float fillIntensity = 0.55f;
         [SerializeField, Min(0.1f)] private float fillRange = 4.5f;
+        [SerializeField, Min(1f)] private float headlightBrightnessMultiplier = 2f;
+        [SerializeField, Min(1f)] private float nearbyBrightnessMultiplier = 6f;
+        [SerializeField, Min(1f)] private float nearbyRangeMultiplier = 1.8f;
+        public float ChargeFraction => Mathf.Clamp01(State.Current / State.Capacity);
         public float WarningStrength { get; set; }
         private float warningTime;
         private Light nearbyFill;
@@ -68,7 +72,8 @@ namespace Boki.Battery
         {
             surroundingLight.enabled = player.IsAlive && State.Current > 0f;
             if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
-            float fraction = Mathf.Clamp01(State.Current / State.Capacity);
+            float fraction = ChargeFraction;
+            float visibility = Mathf.SmoothStep(0f, 1f, fraction);
             float warning = Mathf.Clamp01(WarningStrength);
             float pulse = warningTime < 0.16f || (warningTime > 0.28f && warningTime < 0.44f) ? 1f : 0f;
             float alarm = strongGuiltWarning ? warning : 0f;
@@ -78,9 +83,12 @@ namespace Boki.Battery
             float flicker = 1f - Mathf.Clamp01(WarningStrength) * 0.45f
                 * Mathf.Pow(Mathf.Sin(warningTime * Mathf.PI * 7f), 8f);
             if (strongGuiltWarning) flicker = Mathf.Lerp(1f, 0.25f + pulse * 1.75f, warning);
-            nearbyFill.range = fillRange * Mathf.Lerp(1f, 1.5f, alarm);
-            surroundingLight.intensity = intensity * Mathf.Lerp(0.15f, 1f, fraction) * flicker;
-            nearbyFill.intensity = fillIntensity * Mathf.Lerp(0.15f, 1f, fraction) * flicker;
+            // Fade reach as well as brightness so low charge leaves only the immediate riding area.
+            surroundingLight.range = headlightRange * Mathf.Lerp(0.25f, 1f, visibility);
+            nearbyFill.range = fillRange * nearbyRangeMultiplier * Mathf.Lerp(0.25f, 1f, visibility)
+                * Mathf.Lerp(1f, 1.5f, alarm);
+            surroundingLight.intensity = intensity * headlightBrightnessMultiplier * visibility * flicker;
+            nearbyFill.intensity = fillIntensity * nearbyBrightnessMultiplier * visibility * flicker;
             nearbyFill.enabled = surroundingLight.enabled;
         }
 

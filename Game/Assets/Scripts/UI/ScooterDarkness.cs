@@ -17,6 +17,8 @@ namespace Boki.UI
         [SerializeField, Min(0f)] private float forwardOffset = 2f;
         [SerializeField, Range(0.1f, 1f)] private float radiusScale = 0.75f;
         [SerializeField, Range(0f, 0.2f)] private float extraDarkness = 0.08f;
+        [SerializeField, Min(1f)] private float chargedRadiusMultiplier = 1.6f;
+        [SerializeField, Range(0f, 1f)] private float chargedOpacityMultiplier = 0.65f;
         private Material material;
         private static readonly int Center = Shader.PropertyToID("_Center");
         private static readonly int Radius = Shader.PropertyToID("_Radius");
@@ -46,9 +48,11 @@ namespace Boki.UI
             Vector3 edge = worldCamera.WorldToViewportPoint(lightCenter + worldCamera.transform.up * (lightRadius * radiusScale));
             float radius = Mathf.Clamp(Mathf.Abs(edge.y - center.y), 0.15f, 1.5f);
             material.SetVector(Center, new Vector4(center.x, center.y, 0f, 0f));
-            material.SetFloat(Radius, battery.State.Current > 0f ? radius : radius * 0.3f);
+            float visibility = Mathf.SmoothStep(0f, 1f, battery.ChargeFraction);
+            material.SetFloat(Radius, radius * Mathf.Lerp(0.25f, chargedRadiusMultiplier, visibility));
             material.SetFloat(Aspect, (float)worldCamera.pixelWidth / Mathf.Max(1, worldCamera.pixelHeight));
-            material.SetFloat(Opacity, Mathf.Min(0.8f, darknessOpacity + extraDarkness));
+            material.SetFloat(Opacity, Mathf.Min(0.8f, darknessOpacity + extraDarkness)
+                * Mathf.Lerp(1f, chargedOpacityMultiplier, visibility));
         }
         private void OnDisable()
         {
