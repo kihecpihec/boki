@@ -1,42 +1,32 @@
-# Boki player effects
+# Boki model and effects test
 
-The first effects are two short cyan/magenta boost trails and a brief red damage flash. They are presentation only: they do not change speed, health, invulnerability, input, camera, or route state. They are demonstrated in an isolated preview; connecting them to the gameplay controller and health system is still pending.
+Open `Game/` in Unity **6000.6.7f1**, open `Assets/Scenes/Player_Model_Test.unity` alone, and press Play. This is the existing player model scene (the name is `Player_Model_Test`, not `Plaxer_Model_Test`). Use it for all further Boki model, animation, behavior, and effect demonstrations.
 
-## Preview
+The scene combines the rigged Boki and scooter, riding animation, movement and camera, wheel rotation and visual lean, speed FOV, boost HUD, battery headlight and darkness overlay, recharge pickups, cyan/magenta boost trails, red damage flash, and automatic laser. The shared player prefabs and other developers' map scenes are not modified by the consolidation tool.
 
-Open `Game/` in Unity **6000.6.7f1**. Open `Assets/Scenes/BokiEffectsPreview.unity` by itself and press Play. A placeholder scooter follows a circle, emits trails for 0.6 s every 4 s, and flashes every 3 s. Hold **Left Shift** for continuous trails; press **H** for an additional flash. Focus the Game view for keyboard input. These keys and automatic timings belong only to the preview.
+## Controls and manual verification
 
-If the preview has not been created, run **Boki → Effects → Create Isolated Preview** with saved scenes open (save or close any untitled scenes first). This creates a separate scene and materials without changing existing scenes, prefabs, or build settings. It refuses to overwrite an existing preview. The preview uses unlit geometry and no lights.
+Focus the Game view; click to capture the mouse if needed.
 
-## Connect to the player
+- **WASD / mouse:** ride and steer the camera. **Space:** jump. Test the ramp, airborne steering, and landing hops.
+- **Left Shift:** boost. Both short trails should emit only while the controller is actually boosting, then fade. Lean, wheels, FOV, and the HUD should follow movement.
+- **H:** take 5 actual damage. Boki and the scooter should flash red briefly and return to their original materials; the health HUD should decrease. Repeated presses restart the flash. At zero health the laser, headlight, and trails stop. Restart Play Mode for a fresh health/battery state.
+- **T:** create one stationary laser target five metres ahead, replacing any previous test target. The existing `AutoLaser` should fire at it automatically while it is in range and unobstructed. The target can be destroyed; press T to repeat. Use an open area so it spawns clear of obstacles.
+- Ride over the three battery charges to refill the headlight. Check its beam follows the scooter, the darkness overlay responds, and the battery HUD updates.
+- **Esc:** release the mouse. Test keys require a focused Game view and captured mouse.
 
-Coordinate ownership before editing the shared player prefab. Add `BokiPlayerEffects` to the player root, then assign these Inspector fields:
+Check that trails, laser, headlight, and model render without pink materials or Console errors. Check damage restoration, disable/re-enable cleanup, and that other objects retain their original colors. Windows x86_64 / Ryzen 5600G visual and performance validation remains separate from Linux Editor checks.
 
-- **Boost Trails:** two child `TrailRenderer` components near the rear of the scooter. Reuse `Assets/Effects/Boki/BoostTrail.mat`. Set Time to 0.25 s, Min Vertex Distance to 0.15, width from 0.12 to 0, and color alpha from 1 to 0. Turn off Emitting, Cast Shadows, and Receive Shadows. Use zero corner/cap vertices.
-- **Damage Renderers:** only Boki's body and scooter mesh renderers, excluding trails. Materials need `_BaseColor` (URP Lit/Unlit) or `_Color`. All supported material slots flash.
-- **Damage Color / Damage Flash Duration:** default red flash for 0.15 s. This uses scaled time, so pausing freezes the flash.
+## Scene wiring
 
-The owning gameplay scripts call:
+**Boki → Player Model → Consolidate Effects in Test Scene** refreshes the scene-local setup. Save any dirty scenes and exit Play Mode first. The command opens and saves only `Player_Model_Test`, preserves its existing arena and GUID, and reuses named objects/components on repeated runs. It does not modify build settings, map scenes, or shared prefabs.
 
-```csharp
-effects.SetBoostActive(isBoosting); // Actual controller state, including cancellation.
-effects.PlayDamageFlash();         // Only after health accepts damage.
-effects.ClearTrails();             // Immediately after teleporting or respawning.
-```
+`BokiPlayerEffects` owns two short rear `TrailRenderer`s and the model's mesh renderers. Trails reuse `Assets/Effects/Boki/BoostTrail.mat`, last 0.25 s, and cast no shadows. Damage uses per-material property blocks, without cloning shared materials. `BokiModelTestEffects` connects the controller's actual boost timer and accepted health decreases to those effects and provides the scene's H/T test controls. It does not drive the player around automatically.
 
-Call `SetBoostActive(false)` when a boost ends, on death, or when disabling just the controller. Disabling the effects component or its GameObject also clears trails and restores colors. Repeated damage restarts the flash without replacing the original color. Reused objects start with no trails and no flash; the controller must supply the current boost state again.
+`AutoLaser` uses a scene-local origin and unshadowed line renderer with the existing laser material. `PlayerHealth`, `LightBattery`, the camera, movement presentation, and HUD retain their existing scene assignments. No additional Inspector setup is required after running the command.
 
-The flash uses per-material `MaterialPropertyBlock` overrides, without cloning or changing shared materials. It restores the blocks captured before the flash, including falling back to renderer-wide overrides. Coordinate with any other system that writes those same blocks during a flash; its changes could be replaced on restoration.
+The earlier `BokiEffectsPreview` is a standalone placeholder demonstration. Its effects have been wired onto the real model here; the preview and other scenes were left intact to avoid deleting work or breaking references.
 
-## Verification
+## Validation recorded for this consolidation
 
-- In the preview, confirm short tapering trails appear during boost and fade afterward. Check both are visible and no material is pink.
-- Press H repeatedly; both body parts should flash and return to cyan. Shared materials and other objects must retain their colors.
-- Disable/re-enable `BokiPlayerEffects` during a flash and boost; colors must restore and trails must clear. Resume with the controller's next boost update.
-- Teleport during boost and call `ClearTrails()` afterward; no line should connect the old and new positions.
-- Pause with `Time.timeScale = 0`; the flash and preview movement should freeze together.
-- Check the preview and eventual gameplay player in Play Mode for Console errors. Verify the Windows player on the target Ryzen 5600G separately; Linux batch validation does not establish visual quality or Windows FPS.
-
-Only two short unlit trails are used: no particles, extra lights, post-processing, or per-frame material allocations. Gameplay effect budgets remain in [Gameplay.md §8](Gameplay.md#8-performance-target-and-unity-settings).
-
-Initial validation on Linux with Unity 6000.6.7f1: asset import and compilation passed, and a temporary batch Play Mode smoke check passed boost start/stop, trail clearing, repeated damage, disable/re-enable cleanup, timed color restoration, renderer-wide override preservation, shared-material preservation, and shader import error checks. All new assets have Editor-generated `.meta` files. Unity also logged an internal `UnityEditor.Search.SearchDatabase` indexing exception during Play Mode startup; it did not stop the smoke check. Headless checks do not verify rendered appearance, keyboard interaction, or target Windows performance; those manual checks remain pending.
+Unity 6000.6.7f1 on Linux imported and compiled the assets and generated metadata for the new scripts. Running the consolidation twice retained one effects component, one pair of trails, and the existing player/camera. A batch Play Mode smoke check passed active controller/camera and headlight, accepted-damage flash and timed restoration, trail start/disable cleanup, unchanged shared materials, and automatic laser acquisition/destruction of a spawned target. Unity logged its internal `UnityEditor.Search.SearchDatabase` indexing exception during startup; the smoke check filtered that specific Editor exception and passed. Rendered appearance, physical keyboard interaction, and Windows/Ryzen performance remain manual checks.
