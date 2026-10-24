@@ -52,6 +52,11 @@ namespace Boki.Player
         private bool ownsJump;
         private bool ownsBoost;
         private bool awaitingRelease;
+        public bool PanicBoostReady { get; set; }
+        public void SetRidingSpeedBonus(float bonus)
+        {
+            if (motion != null) motion.RidingSpeedBonus = Mathf.Max(0f, bonus);
+        }
 
         private void OnEnable()
         {
@@ -136,7 +141,7 @@ namespace Boki.Player
             motion.Tick(direction.x, direction.z, grounded,
                 canRead && jumpAction.action.WasPressedThisFrame(),
                 canRead && boostAction.action.WasPressedThisFrame(), dt, transform.forward.x, transform.forward.z,
-                canRead ? slopeAcceleration.x : 0f, canRead ? slopeAcceleration.z : 0f);
+                canRead ? slopeAcceleration.x : 0f, canRead ? slopeAcceleration.z : 0f, PanicBoostReady);
 
             Vector3 horizontal = new Vector3(motion.DisplacementX, 0f, motion.DisplacementZ);
             if (grounded && motion.VerticalSpeed <= 0f)

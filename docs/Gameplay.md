@@ -229,7 +229,7 @@ Forest C requires `run.availableUnlocks.forestC`; A and B are always open. At ea
 flowchart TD
     A[Choose path and ride to combat space] --> B[Fight enemies, collect XP and seek arena charges]
     B --> C{Enough XP to level up?}
-    C -- Yes --> D[Pause and choose 1 of 3 upgrades]
+    C -- Yes --> D[Pause and choose one eligible upgrade]
     C -- No --> E{Stay for more rewards or move onward?}
     D --> E
     E -- Stay --> F[More time lingering: Guilt appears more often and gains speed and damage]
@@ -362,7 +362,7 @@ See [README.md](../README.md#development-setup) for the target machine. Assume i
 - [ ] Verify grace, tier boundaries/caps, warning-time snapshots, same-level pressure retention, next-level reset, and no scripted/ambient overlap.
 - [ ] Exits need no kills; City C escape remains required. Spawn counts/cadence and offscreen distance constraints hold.
 - [ ] Kills never restore battery. Charges collect once, preserve charge percentage after capacity upgrades, recharge only on their active timers, and remain reachable at zero battery, including during the boss.
-- [ ] All six XP thresholds offer three distinct eligible choices, apply exactly one reward, carry between scenes, and reset on New Run. MAX LEVEL stops XP drops; stacking caps and Panic Mode snapshots hold.
+- [ ] All six XP thresholds offer up to three distinct eligible choices, apply exactly one reward, carry between scenes, and reset on New Run. Show fewer choices when fewer are eligible. MAX LEVEL stops XP drops; stacking caps and Panic Mode snapshots hold.
 
 - [ ] First run: Forest A and B open, Forest C locked.
 - [ ] Every reachable combination of previous route and permanent unlocks offers at least **one** allowed next exit, with no dead ends.

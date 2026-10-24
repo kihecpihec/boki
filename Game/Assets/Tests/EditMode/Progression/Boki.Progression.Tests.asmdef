@@ -1,0 +1,1 @@
+{"name":"Boki.Progression.Tests","references":["Boki.Progression.Rules","Boki.Run.Rules","Boki.Battery.Rules","Boki.Combat.Rules"],"includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"]}

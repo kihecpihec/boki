@@ -25,5 +25,12 @@ namespace Boki.Combat
             Changed?.Invoke();
             if (lethal) Died?.Invoke();
         }
+
+        public void Heal(int amount)
+        {
+            if (amount <= 0 || !IsAlive || Current == Maximum) return;
+            Current += Math.Min(amount, Maximum - Current);
+            Changed?.Invoke();
+        }
     }
 }

@@ -19,6 +19,8 @@ namespace Boki.Combat
         private float cooldown;
         private float beamRemaining;
         private Vector3 impactPosition;
+        public float DamageMultiplier { get; set; } = 1f;
+        public bool DoubleHit { get; set; }
 
         private void OnEnable()
         {
@@ -41,7 +43,7 @@ namespace Boki.Combat
             cooldown = beamRemaining = 0f;
         }
 
-        public EnemyHealth FindTarget()
+        public EnemyHealth FindTarget(EnemyHealth excluded = null)
         {
             if (beamOrigin == null) return null;
             EnemyHealth nearest = null;
@@ -50,7 +52,7 @@ namespace Boki.Combat
             for (int i = 0; i < enemies.Count; i++)
             {
                 var candidate = enemies[i];
-                if (candidate == null || !candidate.isActiveAndEnabled || !candidate.IsAlive) continue;
+                if (candidate == null || candidate == excluded || !candidate.isActiveAndEnabled || !candidate.IsAlive) continue;
                 float distance = (candidate.AimPosition - beamOrigin.position).sqrMagnitude;
                 if (distance > nearestDistance || !Visible(candidate)) continue;
                 // Equal-distance targets keep their registration order.
@@ -95,7 +97,13 @@ namespace Boki.Combat
             beam.SetPosition(0, beamOrigin.position);
             beam.SetPosition(1, impactPosition);
             beam.enabled = true;
-            target.TakeDamage(damage);
+            target.TakeDamage(Mathf.RoundToInt(damage * DamageMultiplier));
+            if (DoubleHit)
+            {
+                EnemyHealth second = FindTarget(target);
+                if (second == null && target != null && target.IsAlive && Visible(target)) second = target;
+                if (second != null) second.TakeDamage(Mathf.RoundToInt(damage * DamageMultiplier));
+            }
             if (impactBurst != null)
             {
                 impactBurst.transform.position = impactPosition;

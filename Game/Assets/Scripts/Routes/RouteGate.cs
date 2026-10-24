@@ -14,6 +14,7 @@ namespace Boki.Routes
         [SerializeField] private Collider exitBlocker;
         [SerializeField] private Renderer exitVisual;
         [SerializeField] private GameObject encounterRoot;
+        [SerializeField] private GameObject interiorRoot;
         private void OnEnable()
         {
             if (manager == null || blocker == null || selectionTrigger == null || sign == null)
@@ -38,6 +39,7 @@ namespace Boki.Routes
             if (exitVisual != null) exitVisual.enabled = !selected;
             if (encounterRoot != null && encounterRoot.activeSelf != selected)
                 encounterRoot.SetActive(selected);
+            if (interiorRoot != null && interiorRoot.activeSelf == locked) interiorRoot.SetActive(!locked);
             string message = state == GateState.RouteLock ? "SEALED BY YOUR PREVIOUS PATH"
                 : state == GateState.PersistentLock ? "DISCOVER ON ANOTHER RUN" : state.ToString().ToUpperInvariant();
             sign.text = choice + "\n" + message;

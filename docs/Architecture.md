@@ -57,7 +57,7 @@ Boki model, animation, behavior, and effect demonstrations share `Game/Assets/Sc
 
 Enemy model and effect demonstrations use `Game/Assets/Scenes/Enemy_Test.unity`, including the rigged Boki and scooter as the combat target. **Boki → Enemy Models → Upgrade Test Models and Effects** upgrades that existing scene without changing shared prefabs or production scenes. See [enemy effect verification](plans/enemy-effect-verification.md) for scene wiring and checks.
 
-**Code layering:** deterministic gameplay rules live in engine-free `Boki.<Domain>.Rules` assemblies (`Scripts/<Domain>/Rules/`, `noEngineReferences`) with matching EditMode test assemblies under `Assets/Tests/EditMode/`. MonoBehaviour adapters, UI, and Editor tools sit above them and never the reverse. Scenes load only through `RunSession`, and `ProjectSettings/EditorBuildSettings.asset` lists the three production scenes. The engineering rules, templates, and audit script are in the `boki-unity-architecture` skill (`.agents/skills/boki-unity-architecture/`).
+**Code layering:** deterministic gameplay rules live in engine-free `Boki.<Domain>.Rules` assemblies (`Scripts/<Domain>/Rules/`, `noEngineReferences`) with matching EditMode test assemblies under `Assets/Tests/EditMode/`. MonoBehaviour adapters, UI, and Editor tools sit above them and never the reverse. Scenes load only through `RunSession`, and `ProjectSettings/EditorBuildSettings.asset` lists the three V1 scenes first and retains the earlier production scenes. The engineering rules, templates, and audit script are in the `boki-unity-architecture` skill (`.agents/skills/boki-unity-architecture/`).
 
 **Exclude from version control:** `Game/Library/`, `Game/Temp/`, `Game/Logs/`, `Game/Obj/`, local builds, and caches. **Include:** `Game/Assets/` with `.meta` files, `Game/Packages/`, `Game/ProjectSettings/`, `docs/`, and agent configuration. These inclusion rules do not authorize an agent to commit or push.
 
@@ -74,7 +74,7 @@ Enemy model and effect demonstrations use `Game/Assets/Scenes/Enemy_Test.unity`,
 | `RangedEnemy` / `EnemyProjectile` | Targeting, slow projectiles | Player transform | Gameplay dev |
 | `GuiltChaser` | `Distant → Warning → Chase → Reposition` | Player transform | Gameplay dev |
 | `LightBattery` | Drain, recharge, effect at 0 | Enemy speeds, HUD | Gameplay dev |
-| `UpgradeManager` | XP thresholds, one of three upgrades, pause | RunSession, UI | Gameplay dev / integration |
+| `UpgradeManager` | XP thresholds, one eligible upgrade choice, pause | RunSession, UI | Gameplay dev / integration |
 | `PersistentUnlocks` | 3 permanent C flags | PlayerPrefs | Gameplay dev |
 | `RunSession` | HP, battery, upgrades, route choices, reset, scene transitions | Unity scene manager | Gameplay dev |
 | `RouteManager` | Allowed connections, locks, route selection | RunSession | Gameplay dev |
@@ -97,7 +97,13 @@ The scooter-light implementation on this branch adds engine-free `Boki.Battery.R
 
 `ProfessorAttackView` presents the boss's attack events with visual recoil, slam windup/recovery, an exact-radius boundary, countdown and impact ring. `Enemy_Test` uses scene-local projectile templates for paper/orb trails and bounded impact bursts; shared enemy prefabs are unchanged. `EnemyProjectile` checks the travelled segment against the target and respects the shared gameplay pause, as does the professor adapter. The upgrade and validation steps are in the [enemy effect verification](plans/enemy-effect-verification.md).
 
-M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. M3 adds `RunSession`, deterministic run/route rules, gate adapters, and two isolated route test scenes. `PlayerHealth` and `CombatSession` optionally bind to the session while retaining standalone M2 behavior. HP and choices carry from the Forest test scene to City; Retry starts a fresh Forest run. M4 adds three owned graybox level scenes, configured session destinations, City-to-FERI loading, and a shared classroom arrival marker. M4 Retry returns to Pohorje; the original M3 test flow retains its defaults. M5 adds permanent C unlock saving at exits and classroom entry, reads saved flags only on new runs, and opens short C lanes in the three production scenes. M6 adds regular kill/battery rewards, shared ranged projectiles, light pressure, Guilt/panic movement, a route-modified professor fight, victory/New Run, a scripted City C turn-back, and explicit branch/arena rendering isolation in the production scenes. XP upgrades and visual polish remain future work. See [M2 handoff](plans/M2-verification.md), [M3 handoff](plans/M3-verification.md), [M4 handoff](plans/M4-verification.md), [M5 handoff](plans/M5-verification.md), and [M6 handoff](plans/M6-verification.md) for setup and validation limits.
+M2 implements scene-local `PlayerHealth`, `EnemyHealth`, `AutoLaser`, and `MeleeEnemy`, with `CombatSession` and `CombatView` for HP display, death, and retry. M3 adds `RunSession`, deterministic run/route rules, gate adapters, and two isolated route test scenes. `PlayerHealth` and `CombatSession` optionally bind to the session while retaining standalone M2 behavior. HP and choices carry from the Forest test scene to City; Retry starts a fresh Forest run. M4 adds three owned graybox level scenes, configured session destinations, City-to-FERI loading, and a shared classroom arrival marker. M4 Retry returns to Pohorje; the original M3 test flow retains its defaults. M5 adds permanent C unlock saving at exits and classroom entry, reads saved flags only on new runs, and opens short C lanes in the three production scenes. M6 adds regular kill/battery rewards, shared ranged projectiles, light pressure, Guilt/panic movement, a route-modified professor fight, victory/New Run, a scripted City C turn-back, and explicit branch/arena rendering isolation in the production scenes. These milestone scenes remain separate from the integrated V1 scenes described below. See [M2 handoff](plans/M2-verification.md), [M3 handoff](plans/M3-verification.md), [M4 handoff](plans/M4-verification.md), [M5 handoff](plans/M5-verification.md), and [M6 handoff](plans/M6-verification.md) for setup and validation limits.
+
+### Version 1 integration
+
+`V1_Pohorje`, `V1_Maribor`, and `V1_FERI` combine the authored maps with the rigged player, actual player HUD, selected-route encounters, rechargeable arena batteries, shared Guilt pressure, contact-collected XP, eligible upgrade offers, death/retry and the professor ending. `LevelPortal` advances through the existing `RouteManager` and `RunSession`; it cannot bypass route selection or City C's side escape. V1 begins directly in Pohorje and preserves the original grayboxes and preview scenes.
+
+Engine-free `Boki.Progression.Rules` is composed by `RunState`. `V1GameFlow` connects the UI and input, while `RunSession.SetPaused` owns shared suspension and `Time.timeScale`. `RouteEncounter`, `EnemyReward`, `XPPickup`, `V1RouteEvent` and `V1BossArena` adapt scene events to the existing run rules. `PlayerGameplayFeedback` supplies the model scene's effects without its test shortcuts. V1 input references and XP/material assets are isolated in `Assets/V1/`; scene-local overrides repair missing upgrade-prefab input references without changing the shared prefab. See [V1 setup and verification](plans/version-one-verification.md) for controls, scope and remaining platform/playtest work.
 
 ## 4. Runtime State
 
@@ -177,8 +183,8 @@ Level1, Level2, and Level3 each have a shared opening, an A/B/C variant, and a s
 ScooterController + ThirdPersonCamera
   -> AutoLaser (nearest enemy in range)
       -> EnemyHealth.TakeDamage()
-          -> Death -> XPPickup + BatteryGain
-                -> RunSession.xp / LightBattery
+          -> Death -> EnemyReward -> contact-collected XPPickup
+                -> RunSession XP / progression
                 -> UpgradeManager (upgrade selection)
 
 MeleeEnemy / RangedEnemy / GuiltChaser / ProfessorBoss

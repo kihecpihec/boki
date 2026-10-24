@@ -23,6 +23,8 @@ namespace Boki.UI
         private int selected;
         private bool ready;
         private bool submitting;
+        private int offerCount = 3;
+        private int submittedFrame = -1;
 
         public bool IsVisible => ready && panel.activeSelf;
         public UnityEvent<int> ChoiceRequested => choiceRequested;
@@ -82,6 +84,13 @@ namespace Boki.UI
             Select(0);
         }
 
+        public void SetOfferSize(int count)
+        {
+            if (count < 1 || count > 3) throw new System.ArgumentOutOfRangeException(nameof(count));
+            offerCount = count;
+            for (int i = 0; i < buttons.Length; i++) buttons[i].gameObject.SetActive(i < count);
+        }
+
         public void Hide()
         {
             panel.SetActive(false);
@@ -93,8 +102,9 @@ namespace Boki.UI
 
         public void RequestChoice(int index)
         {
-            if (!IsVisible || submitting || index < 0 || index >= 3) return;
+            if (!IsVisible || submitting || submittedFrame == Time.frameCount || index < 0 || index >= offerCount) return;
             Select(index);
+            submittedFrame = Time.frameCount;
             submitting = true;
             try { choiceRequested.Invoke(index); }
             finally { submitting = false; }
@@ -109,7 +119,7 @@ namespace Boki.UI
 
         private void Navigate(InputAction.CallbackContext context)
         {
-            if (IsVisible) Select((selected + (context.ReadValue<float>() > 0 ? 1 : 2)) % 3);
+            if (IsVisible) Select((selected + (context.ReadValue<float>() > 0 ? 1 : offerCount - 1)) % offerCount);
         }
 
         private void Submit(InputAction.CallbackContext context)

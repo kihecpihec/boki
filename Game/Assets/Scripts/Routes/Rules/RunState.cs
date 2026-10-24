@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Boki.Combat;
 using Boki.Battery;
 using Boki.Enemies;
+using Boki.Progression;
 
 namespace Boki.Routes
 {
@@ -27,7 +28,11 @@ namespace Boki.Routes
         public HealthState Health { get; private set; }
         public LightBatteryState LightBattery { get; } = new LightBatteryState();
         public float Battery { get => LightBattery.Current; set => LightBattery.Current = value; }
-        public int XP { get; set; }
+        public RunProgression Progression { get; } = new RunProgression();
+        public int XP { get => Progression.XP; set => Progression.XP = value; }
+        public bool CitySideEscapeCompleted { get; private set; }
+        public bool CityRetreatStarted { get; private set; }
+        public bool PowerOff { get; private set; }
         public List<string> Upgrades { get; } = new List<string>();
         public int KillCount { get; set; }
         public double StartedAt { get; private set; }
@@ -42,6 +47,8 @@ namespace Boki.Routes
             Guilt.Reset();
             Health = new HealthState(100);
             LightBattery.Reset();
+            Progression.Reset();
+            CityRetreatStarted = CitySideEscapeCompleted = PowerOff = false;
             XP = KillCount = 0;
             Upgrades.Clear();
             Array.Clear(choices, 0, choices.Length);
@@ -99,6 +106,42 @@ namespace Boki.Routes
 
         public bool CanAdvance(RouteLevel level) => ValidLevel(level) && level == ActiveLevel
             && level != RouteLevel.Feri && Health.IsAlive && Choice(level) != RouteChoice.None;
+
+        public bool CompleteCityEscape()
+        {
+            if (ActiveLevel != RouteLevel.City || Choice(RouteLevel.City) != RouteChoice.C || !Health.IsAlive || !CityRetreatStarted) return false;
+            CitySideEscapeCompleted = true;
+            Guilt.ScriptedSequenceActive = false;
+            Changed?.Invoke();
+            return true;
+        }
+
+        public bool BeginCityRetreat()
+        {
+            if (CityRetreatStarted || ActiveLevel != RouteLevel.City || Choice(RouteLevel.City) != RouteChoice.C || !Health.IsAlive) return false;
+            CityRetreatStarted = true;
+            Guilt.ScriptedSequenceActive = true;
+            return true;
+        }
+
+        public bool SwitchPowerOff()
+        {
+            if (ActiveLevel != RouteLevel.Feri || Choice(RouteLevel.Feri) != RouteChoice.C || !Health.IsAlive) return false;
+            PowerOff = true;
+            Changed?.Invoke();
+            return true;
+        }
+
+        public bool ChooseUpgrade(UpgradeKind kind)
+        {
+            if (!Health.IsAlive || !Progression.Choose(kind, Health.Current < Health.Maximum, Battery < LightBattery.Capacity)) return false;
+            if (kind == UpgradeKind.BiggerBattery) LightBattery.SetCapacity(Progression.BatteryCapacity);
+            else if (kind == UpgradeKind.EmergencySnack) Health.Heal(30);
+            else if (kind == UpgradeKind.BatteryCharge) LightBattery.TryRecharge();
+            Upgrades.Add(kind.ToString());
+            Changed?.Invoke();
+            return true;
+        }
 
         public bool TryAdvance(RouteLevel level)
         {
