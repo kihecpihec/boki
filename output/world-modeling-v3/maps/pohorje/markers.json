@@ -1,0 +1,695 @@
+{
+  "coordinates": "Blender XYZ metres",
+  "markers": [
+    {
+      "name": "MK_Light_BellevueWest",
+      "owner": "Shared",
+      "kind": "light_warm",
+      "position": [
+        11.0,
+        -8.25,
+        44.16999816894531
+      ]
+    },
+    {
+      "name": "MK_Light_BellevueEast",
+      "owner": "Shared",
+      "kind": "light_warm",
+      "position": [
+        -11.0,
+        -10.25,
+        44.16999816894531
+      ]
+    },
+    {
+      "name": "MK_Start_Player",
+      "owner": "Shared",
+      "kind": "player_start",
+      "position": [
+        0.0,
+        5.0,
+        40.060001373291016
+      ]
+    },
+    {
+      "name": "MK_Intro_LowCamera",
+      "owner": "Shared",
+      "kind": "intro_camera",
+      "position": [
+        0.0,
+        10.0,
+        40.29999923706055
+      ]
+    },
+    {
+      "name": "MK_Intro_GuiltSilhouette",
+      "owner": "Shared",
+      "kind": "narrative_event",
+      "position": [
+        31.0,
+        -23.0,
+        49.74932098388672
+      ]
+    },
+    {
+      "name": "MK_Light_SafeLamp_0",
+      "owner": "Shared",
+      "kind": "light_warm",
+      "position": [
+        -7.630799770355225,
+        -22.969999313354492,
+        43.80751037597656
+      ]
+    },
+    {
+      "name": "MK_Light_SafeLamp_1",
+      "owner": "Shared",
+      "kind": "light_warm",
+      "position": [
+        -6.308382511138916,
+        -42.124595642089844,
+        41.08177947998047
+      ]
+    },
+    {
+      "name": "MK_Gate_A_Front",
+      "owner": "A",
+      "kind": "gate_front",
+      "position": [
+        26.0,
+        -60.79999923706055,
+        35.87998962402344
+      ]
+    },
+    {
+      "name": "MK_Trigger_A",
+      "owner": "A",
+      "kind": "route_selection",
+      "position": [
+        27.498126983642578,
+        -61.36179733276367,
+        37.679988861083984
+      ]
+    },
+    {
+      "name": "MK_Gate_B_Front",
+      "owner": "B",
+      "kind": "gate_front",
+      "position": [
+        0.0,
+        -67.5,
+        35.75337219238281
+      ]
+    },
+    {
+      "name": "MK_Trigger_B",
+      "owner": "B",
+      "kind": "route_selection",
+      "position": [
+        -0.0,
+        -69.0999984741211,
+        37.55337142944336
+      ]
+    },
+    {
+      "name": "MK_Gate_C_Front",
+      "owner": "C",
+      "kind": "gate_front",
+      "position": [
+        -26.0,
+        -60.79999923706055,
+        35.91111755371094
+      ]
+    },
+    {
+      "name": "MK_Trigger_C",
+      "owner": "C",
+      "kind": "route_selection",
+      "position": [
+        -27.498126983642578,
+        -61.36179733276367,
+        37.711116790771484
+      ]
+    },
+    {
+      "name": "MK_Gate_A_Rear",
+      "owner": "A",
+      "kind": "gate_rear",
+      "position": [
+        43.0,
+        -168.0,
+        18.109405517578125
+      ]
+    },
+    {
+      "name": "MK_Gate_B_Rear",
+      "owner": "B",
+      "kind": "gate_rear",
+      "position": [
+        0.0,
+        -172.0,
+        15.204620361328125
+      ]
+    },
+    {
+      "name": "MK_Gate_C_Rear",
+      "owner": "C",
+      "kind": "gate_rear",
+      "position": [
+        -48.0,
+        -173.0,
+        17.4007568359375
+      ]
+    },
+    {
+      "name": "MK_Light_ForestLamp_0",
+      "owner": "A",
+      "kind": "light_warm",
+      "position": [
+        31.464881896972656,
+        -72.26315307617188,
+        37.905303955078125
+      ]
+    },
+    {
+      "name": "MK_Light_ForestLamp_1",
+      "owner": "A",
+      "kind": "light_warm",
+      "position": [
+        53.8480339050293,
+        -88.8258285522461,
+        31.724571228027344
+      ]
+    },
+    {
+      "name": "MK_Light_ForestLamp_2",
+      "owner": "A",
+      "kind": "light_warm",
+      "position": [
+        55.62971878051758,
+        -112.9306869506836,
+        24.170000076293945
+      ]
+    },
+    {
+      "name": "MK_Light_LandingWest",
+      "owner": "A",
+      "kind": "light_warm",
+      "position": [
+        84.0,
+        -150.25,
+        24.187440872192383
+      ]
+    },
+    {
+      "name": "MK_Light_LandingEast",
+      "owner": "A",
+      "kind": "light_warm",
+      "position": [
+        49.0,
+        -118.25,
+        24.170000076293945
+      ]
+    },
+    {
+      "name": "MK_Watcher_B",
+      "owner": "B",
+      "kind": "watcher_perch",
+      "position": [
+        -10.0,
+        -88.91999816894531,
+        44.48461151123047
+      ]
+    },
+    {
+      "name": "MK_Light_YardNorth",
+      "owner": "B",
+      "kind": "light_warm",
+      "position": [
+        20.0,
+        -117.25,
+        22.170000076293945
+      ]
+    },
+    {
+      "name": "MK_Light_YardSouth",
+      "owner": "B",
+      "kind": "light_warm",
+      "position": [
+        20.0,
+        -151.25,
+        22.170000076293945
+      ]
+    },
+    {
+      "name": "MK_Light_Tunnel_0",
+      "owner": "C",
+      "kind": "light_violet",
+      "position": [
+        -44.98637390136719,
+        -89.16729736328125,
+        32.10984802246094
+      ]
+    },
+    {
+      "name": "MK_Light_Tunnel_1",
+      "owner": "C",
+      "kind": "light_violet",
+      "position": [
+        -50.430240631103516,
+        -102.00389099121094,
+        28.158977508544922
+      ]
+    },
+    {
+      "name": "MK_Event_GuiltReveal_C",
+      "owner": "C",
+      "kind": "guilt_grate_reveal",
+      "position": [
+        -52.9072380065918,
+        -87.37736511230469,
+        27.391155242919922
+      ]
+    },
+    {
+      "name": "MK_Light_Alcove",
+      "owner": "C",
+      "kind": "light_warm",
+      "position": [
+        -53.2126350402832,
+        -88.11032104492188,
+        29.971757888793945
+      ]
+    },
+    {
+      "name": "MK_Light_CisternStage",
+      "owner": "C",
+      "kind": "light_violet",
+      "position": [
+        -75.0,
+        -132.0,
+        26.5
+      ]
+    },
+    {
+      "name": "MK_GuaranteedPickup_C",
+      "owner": "C",
+      "kind": "guaranteed_pickup",
+      "position": [
+        -51.3177375793457,
+        -99.75910949707031,
+        24.269765853881836
+      ]
+    },
+    {
+      "name": "MK_StrongerEnemy_C_1",
+      "owner": "C",
+      "kind": "stronger_enemy",
+      "position": [
+        -44.79497146606445,
+        -88.70793151855469,
+        27.800853729248047
+      ]
+    },
+    {
+      "name": "MK_StrongerEnemy_C_2",
+      "owner": "C",
+      "kind": "stronger_enemy",
+      "position": [
+        -52.299095153808594,
+        -105.84819030761719,
+        22.823802947998047
+      ]
+    },
+    {
+      "name": "MK_Light_OverlookWest",
+      "owner": "Shared",
+      "kind": "light_warm",
+      "position": [
+        16.0,
+        -200.25,
+        16.170000076293945
+      ]
+    },
+    {
+      "name": "MK_Light_OverlookEast",
+      "owner": "Shared",
+      "kind": "light_warm",
+      "position": [
+        -16.0,
+        -200.25,
+        16.170000076293945
+      ]
+    },
+    {
+      "name": "MK_Exit_Forest",
+      "owner": "Shared",
+      "kind": "level_exit",
+      "position": [
+        0.0,
+        -203.0,
+        14.0
+      ]
+    },
+    {
+      "name": "MK_Occupancy_A",
+      "owner": "A",
+      "kind": "combat_occupancy",
+      "position": [
+        66.0,
+        -135.0,
+        23.0
+      ]
+    },
+    {
+      "name": "MK_Charge_A_1",
+      "owner": "A",
+      "kind": "battery_charge",
+      "position": [
+        76.80000305175781,
+        -132.8000030517578,
+        20.15022087097168
+      ]
+    },
+    {
+      "name": "MK_Charge_A_2",
+      "owner": "A",
+      "kind": "battery_charge",
+      "position": [
+        62.400001525878906,
+        -124.0,
+        20.079999923706055
+      ]
+    },
+    {
+      "name": "MK_Charge_A_3",
+      "owner": "A",
+      "kind": "battery_charge",
+      "position": [
+        62.400001525878906,
+        -147.10000610351562,
+        19.833616256713867
+      ]
+    },
+    {
+      "name": "MK_Spawn_A_1",
+      "owner": "A",
+      "kind": "enemy_spawn",
+      "position": [
+        79.19999694824219,
+        -121.80000305175781,
+        20.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_A_2",
+      "owner": "A",
+      "kind": "enemy_spawn",
+      "position": [
+        54.0,
+        -122.9000015258789,
+        20.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_A_3",
+      "owner": "A",
+      "kind": "enemy_spawn",
+      "position": [
+        78.0,
+        -148.1999969482422,
+        20.316692352294922
+      ]
+    },
+    {
+      "name": "MK_Spawn_A_4",
+      "owner": "A",
+      "kind": "enemy_spawn",
+      "position": [
+        55.20000076293945,
+        -147.10000610351562,
+        19.90865707397461
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_A_1",
+      "owner": "A",
+      "kind": "guilt_anchor",
+      "position": [
+        35.64893341064453,
+        -68.10132598876953,
+        33.91425323486328
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_A_2",
+      "owner": "A",
+      "kind": "guilt_anchor",
+      "position": [
+        48.49921417236328,
+        -93.45389556884766,
+        26.80523681640625
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_A_3",
+      "owner": "A",
+      "kind": "guilt_anchor",
+      "position": [
+        62.34626007080078,
+        -111.58907318115234,
+        20.000030517578125
+      ]
+    },
+    {
+      "name": "MK_Occupancy_B",
+      "owner": "B",
+      "kind": "combat_occupancy",
+      "position": [
+        0.0,
+        -135.0,
+        21.0
+      ]
+    },
+    {
+      "name": "MK_Charge_B_1",
+      "owner": "B",
+      "kind": "battery_charge",
+      "position": [
+        11.25,
+        -132.8000030517578,
+        18.079999923706055
+      ]
+    },
+    {
+      "name": "MK_Charge_B_2",
+      "owner": "B",
+      "kind": "battery_charge",
+      "position": [
+        -3.75,
+        -124.0,
+        18.079999923706055
+      ]
+    },
+    {
+      "name": "MK_Charge_B_3",
+      "owner": "B",
+      "kind": "battery_charge",
+      "position": [
+        -3.75,
+        -147.10000610351562,
+        18.079999923706055
+      ]
+    },
+    {
+      "name": "MK_Spawn_B_1",
+      "owner": "B",
+      "kind": "enemy_spawn",
+      "position": [
+        13.75,
+        -121.80000305175781,
+        18.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_B_2",
+      "owner": "B",
+      "kind": "enemy_spawn",
+      "position": [
+        -12.5,
+        -122.9000015258789,
+        18.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_B_3",
+      "owner": "B",
+      "kind": "enemy_spawn",
+      "position": [
+        12.5,
+        -148.1999969482422,
+        18.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_B_4",
+      "owner": "B",
+      "kind": "enemy_spawn",
+      "position": [
+        -3.75,
+        -150.39999389648438,
+        18.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_B_1",
+      "owner": "B",
+      "kind": "guilt_anchor",
+      "position": [
+        -0.0,
+        -76.72000122070312,
+        32.88145446777344
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_B_2",
+      "owner": "B",
+      "kind": "guilt_anchor",
+      "position": [
+        -0.0,
+        -99.12000274658203,
+        23.699928283691406
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_B_3",
+      "owner": "B",
+      "kind": "guilt_anchor",
+      "position": [
+        -0.0,
+        -117.04000091552734,
+        18.0
+      ]
+    },
+    {
+      "name": "MK_Occupancy_C",
+      "owner": "C",
+      "kind": "combat_occupancy",
+      "position": [
+        -64.0,
+        -132.0,
+        25.0
+      ]
+    },
+    {
+      "name": "MK_Charge_C_1",
+      "owner": "C",
+      "kind": "battery_charge",
+      "position": [
+        -54.099998474121094,
+        -130.0,
+        21.82856559753418
+      ]
+    },
+    {
+      "name": "MK_Charge_C_2",
+      "owner": "C",
+      "kind": "battery_charge",
+      "position": [
+        -67.30000305175781,
+        -122.0,
+        22.079999923706055
+      ]
+    },
+    {
+      "name": "MK_Charge_C_3",
+      "owner": "C",
+      "kind": "battery_charge",
+      "position": [
+        -67.30000305175781,
+        -143.0,
+        22.079999923706055
+      ]
+    },
+    {
+      "name": "MK_Spawn_C_1",
+      "owner": "C",
+      "kind": "enemy_spawn",
+      "position": [
+        -51.900001525878906,
+        -120.0,
+        22.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_C_2",
+      "owner": "C",
+      "kind": "enemy_spawn",
+      "position": [
+        -75.0,
+        -121.0,
+        22.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_C_3",
+      "owner": "C",
+      "kind": "enemy_spawn",
+      "position": [
+        -53.0,
+        -144.0,
+        22.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Spawn_C_4",
+      "owner": "C",
+      "kind": "enemy_spawn",
+      "position": [
+        -73.9000015258789,
+        -143.0,
+        22.049999237060547
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_C_1",
+      "owner": "C",
+      "kind": "guilt_anchor",
+      "position": [
+        -34.099544525146484,
+        -67.3561019897461,
+        34.368431091308594
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_C_2",
+      "owner": "C",
+      "kind": "guilt_anchor",
+      "position": [
+        -45.662445068359375,
+        -90.77963256835938,
+        27.099777221679688
+      ]
+    },
+    {
+      "name": "MK_Guilt_Anchor_C_3",
+      "owner": "C",
+      "kind": "guilt_anchor",
+      "position": [
+        -54.613670349121094,
+        -109.69442749023438,
+        22.216644287109375
+      ]
+    },
+    {
+      "name": "MK_Event_GuiltReveal_A",
+      "owner": "A",
+      "kind": "guilt_behind_player",
+      "position": [
+        65.0,
+        -120.0,
+        20.0
+      ]
+    }
+  ]
+}

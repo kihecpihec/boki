@@ -1,5 +1,7 @@
 # Pohorje v2
 
+The current art rebuild is [Pohorje v3](../../../world-modeling-v3/maps/pohorje/README.md). This folder and its test scene remain available as the previous version.
+
 A from-scratch rebuild of the Pohorje level (Bellevue → fork → routes A/B/C → three combat spaces → overlook). It replaces the v1 map in `output/world-modeling-v1/maps/pohorje`, which stacked floating floor sheets over a ground slab 2.5 m lower. That caused players to fall under the floor and made the pieces look disconnected. Game rules are unchanged; see [Gameplay.md §2–7](../../../../docs/Gameplay.md) and [Story.md Level 1](../../../../docs/Story.md).
 
 ## Rebuild
@@ -28,7 +30,7 @@ Then, in Unity 6000.6.7f1, run `Boki/Pohorje/Build Map Test Scene` and `Boki/Poh
 
    | Prefix | Collider |
    |---|---|
-   | `TERRAIN_*` | Mesh collider (the only mesh colliders) |
+   | `TERRAIN_*` | Non-convex mesh collider |
    | `UBX_` | Oriented box |
    | `UCP_` | Capsule |
    | `USP_` | Sphere |
@@ -57,7 +59,7 @@ Coordinates in the script are Unity metres (x right, y up, z downhill). Blender 
 
 ## Current validation
 
-- **Blender:** 0 interior holes and 0 non-manifold edges in the terrain. Floors are within 18 cm of design height (arena mounds included). 821 of 840 bank samples are steeper than 45°. About 70.6k render triangles in total (terrain 28.2k in 31 chunks).
+- **Blender:** 0 interior holes and 0 non-manifold edges in the terrain. Floors deviate by up to 18.3 cm from design height (arena mounds included). 821 of 840 bank samples are steeper than 45°. The exported render geometry has 101,758 triangles, including the backdrop and gate visuals (terrain 28,232 in 31 chunks). The generator's `validation.json` field `props.render_triangles` counts polygons before triangulation, so its value of 70,636 is not the exported triangle count.
 - **Unity (`PohorjeMapChecks`):**
   - 0 drop-throughs, 0 lane falls, 0 blocked lanes, and 0 blocked arena crossings.
   - 0 failures in 500 random rides at bunny-hop speed with jumps.

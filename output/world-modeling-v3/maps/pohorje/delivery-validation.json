@@ -1,0 +1,87 @@
+{
+  "relative_source_textures": [
+    "//../Textures/Pohorje_Concrete.png",
+    "//../Textures/Pohorje_Dark.png",
+    "//../Textures/Pohorje_Foliage.png",
+    "//../Textures/Pohorje_Ground.png",
+    "//../Textures/Pohorje_Metal.png",
+    "//../Textures/Pohorje_Rust.png",
+    "//../Textures/Pohorje_Signs.png",
+    "//../Textures/Pohorje_Snow.png",
+    "//../Textures/Pohorje_Stone.png",
+    "//../Textures/Pohorje_Timber.png",
+    "//../Textures/Pohorje_Trail.png"
+  ],
+  "canonical_validator": {
+    "errors": [],
+    "warnings": [
+      "Light 'Preview_Sun' will not export (preview only)",
+      "Light 'Preview_SkyFill' will not export (preview only)",
+      "Light 'Preview_WarmBounce' will not export (preview only)",
+      "Light 'Preview_MK_Light_Tunnel_0' will not export (preview only)",
+      "Light 'Preview_MK_Light_Tunnel_1' will not export (preview only)",
+      "Light 'Preview_MK_Light_Alcove' will not export (preview only)",
+      "Light 'Preview_MK_Light_CisternStage' will not export (preview only)",
+      "Camera 'Pohorje_ReviewCamera' will not export (preview only)"
+    ]
+  },
+  "roundtrip": [
+    {
+      "file": "Pohorje_Shared.fbx",
+      "objects": 50,
+      "triangles": 8020,
+      "max_vertex_delta_m": 1.621246337890625e-05,
+      "validator_errors": [],
+      "sha256": "5ca133c7e6acd1e26717b4159da765b4d3c0fef3024a7be9f43e330f893f987d"
+    },
+    {
+      "file": "Pohorje_Route_A.fbx",
+      "objects": 57,
+      "triangles": 10490,
+      "max_vertex_delta_m": 1.52587890625e-05,
+      "validator_errors": [],
+      "sha256": "ba06ad415ba692308113bc40c55de5185809d693a34e2e3ceb4162b44459f698"
+    },
+    {
+      "file": "Pohorje_Route_B.fbx",
+      "objects": 47,
+      "triangles": 7094,
+      "max_vertex_delta_m": 1.52587890625e-05,
+      "validator_errors": [],
+      "sha256": "63cb4bbbd2185a6aca3975cf6729223195a39cc708a056e8f6d10514b22e3946"
+    },
+    {
+      "file": "Pohorje_Route_C.fbx",
+      "objects": 47,
+      "triangles": 9158,
+      "max_vertex_delta_m": 1.52587890625e-05,
+      "validator_errors": [],
+      "sha256": "468e9cad2fdd4a885f8ab57afcd2f33e473628afa0d14a774015bdd851d3335c"
+    },
+    {
+      "file": "Pohorje_Backdrop.fbx",
+      "objects": 93,
+      "triangles": 39784,
+      "max_vertex_delta_m": 3.4332275390625e-05,
+      "validator_errors": [],
+      "sha256": "f4d2bf78e3b7e9a0c94ee4775213d6852f14bda68c65f24ae1be988414e3ba9f"
+    },
+    {
+      "file": "Pohorje_CollisionGuides.fbx",
+      "objects": 343,
+      "triangles": 5208,
+      "max_vertex_delta_m": 1.621246337890625e-05,
+      "validator_errors": [],
+      "sha256": "82dffd94f3df454b82c99c54abcde0c83deef87d7d768512c47f1b18854f70f7"
+    },
+    {
+      "file": "Pohorje_Markers.fbx",
+      "objects": 69,
+      "triangles": 0,
+      "max_vertex_delta_m": 0,
+      "validator_errors": [],
+      "sha256": "61ceb6c60e02a3811b24c139e2a374e058ceef067f9fd51d844b6250bcefb2be"
+    }
+  ],
+  "errors": []
+}
