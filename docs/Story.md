@@ -125,6 +125,8 @@ At approximately 50% HP, a short audio glitch plays and attacks become slightly 
 
 **Boki:** »... A?«
 
+**The calendar:** without a word, the professor points at a wall calendar showing **31 October**, the date circled in red. It is a Saturday, which makes his line true. The camera zooms in on the date and zooms back out: the professor now wears cat ears and whiskers and is licking his forearm. A comic `MEOW!` bursts across the screen with a meow. The last shot holds on the two of them, Boki's eyes popping out on stalks. [Ending verification](plans/ending-preview-verification.md) records the beats and timing.
+
 Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time, kill count, collected upgrades, and unlocked secret routes. `NEW RUN` lets the player try a different route combination.
 
 **Death anywhere:** the VHS screen cracks and shows `ABSENT` and `TRY AGAIN`. A new game starts at Bellevue with permanent unlocks preserved.

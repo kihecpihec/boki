@@ -1,5 +1,6 @@
 using Boki.Combat;
 using Boki.Core;
+using Boki.Ending;
 using Boki.Enemies;
 using Boki.UI;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace Boki.Routes
         [SerializeField] private GameObject[] approachEncounters;
         [SerializeField] private GameObject[] reinforcementTemplates;
         [SerializeField] private Text bossStatus;
+        [Tooltip("Optional. Plays the Story §3 victory ending before the results panel.")]
+        [SerializeField] private EndingCutscene ending;
         private bool entered, reinforced;
         private void OnEnable()
         {
@@ -57,6 +60,11 @@ namespace Boki.Routes
                 enemy.SetActive(true);
             }
         }
-        private void Won() { bossStatus.text = ""; flow.Victory(); }
+        private void Won()
+        {
+            bossStatus.text = "";
+            if (ending != null) ending.Play(flow.Victory);
+            else flow.Victory();
+        }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using Boki.Battery;
 using Boki.Combat;
 using Boki.Core;
+using Boki.Ending;
 using Boki.Enemies;
 using Boki.Player;
 using Boki.Upgrades;
@@ -65,7 +66,7 @@ namespace Boki.Editor
             if (!SessionState.GetBool(Key, false)) return;
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                stage = 0; encounterVerified = false; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
+                stage = 0; encounterVerified = false; introScene = null; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             var saved = JsonUtility.FromJson<Saved>(SessionState.GetString(Key + ".Saved", ""));
@@ -110,6 +111,15 @@ namespace Boki.Editor
                 var manager = V1SceneSetup.Find<RouteManager>(scene);
                 var flow = V1SceneSetup.Find<V1GameFlow>(scene);
                 if (session == null || player == null || manager == null || flow == null || session.IsLoading) return;
+                // V1_Pohorje opens with the Bellevue intro, which holds gameplay until it ends; skip it like a player.
+                // The intro starts a frame or so after the scene loads, so give it a second before trusting the pause state.
+                if (scene.path != introScene) { introScene = scene.path; introSceneLoaded = EditorApplication.timeSinceStartup; }
+                if (scene.path == V1SceneSetup.Scenes[0]
+                    && (session.State.Pause.Contains(PauseReason.ScriptedSequence) || EditorApplication.timeSinceStartup - introSceneLoaded < 1.0))
+                {
+                    if (session.State.Pause.Contains(PauseReason.ScriptedSequence)) SkipIntro();
+                    return;
+                }
                 player.GetComponent<ScooterController>().enabled = false;
                 switch (stage)
                 {
@@ -177,7 +187,10 @@ namespace Boki.Editor
                         Check(session.HasEnteredBossArena && boss.IsFighting, "Physical arena entry begins professor fight");
                         Check(session.State.Guilt.BossEntered, "Boss entry ends Guilt pressure");
                         boss.GetComponent<EnemyHealth>().TakeDamage(10000);
-                        Check(flow.IsTerminal && Time.timeScale == 0, "Boss defeat shows terminal victory screen");
+                        var ending = V1SceneSetup.Find<EndingCutscene>(scene);
+                        Check(ending.IsPlaying && !flow.IsTerminal, "Boss defeat plays the ending before the results panel");
+                        ending.Skip();
+                        Check(!ending.IsPlaying && flow.IsTerminal && Time.timeScale == 0, "Skipping the ending shows terminal victory screen");
                         flow.Retry(); stage++; break;
                     case 9:
                         Check(scene.path == V1SceneSetup.Scenes[0], "Victory retry returns to Pohorje");
@@ -270,6 +283,21 @@ namespace Boki.Editor
             if (!state.CreateOffer(new PickRandom(kind, state))) return false;
             for (int i = 0; i < state.OfferCount; i++) if (state.Offer(i) == kind) return state.TrySelect(i, state.OfferVersion);
             return false;
+        }
+
+        private static string introScene;
+        private static double introSceneLoaded;
+        private static bool introKeyDown;
+        // Presses and releases Enter on alternate ticks until the intro lets go of the pause.
+        private static void SkipIntro()
+        {
+            if (Keyboard.current == null) InputSystem.AddDevice<Keyboard>();
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+            InputSystem.EnableDevice(Keyboard.current);
+            introKeyDown = !introKeyDown;
+            InputSystem.QueueStateEvent(Keyboard.current, introKeyDown ? new KeyboardState(UnityEngine.InputSystem.Key.Enter) : new KeyboardState());
+            InputSystem.Update();
         }
 
         private static V1RouteEvent Event(Scene scene, V1RouteEventKind kind)
