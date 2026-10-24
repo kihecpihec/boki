@@ -1,4 +1,5 @@
 using Boki.UI;
+using Boki.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +34,8 @@ namespace Boki.Intro
         [SerializeField, Min(0.5f)] private float followDistance = 5f;
         [SerializeField] private Behaviour headlight;
         [SerializeField] private Behaviour[] controls;
+        [SerializeField] private Canvas[] gameplayCanvases = System.Array.Empty<Canvas>();
+        private bool[] canvasStates;
         [SerializeField, Min(0f)] private float objectiveSeconds = 6f;
 
         [Header("Audio and input")]
@@ -44,6 +47,8 @@ namespace Boki.Intro
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart = true;
 
+        private RunSession session;
+        private bool ownsSequencePause;
         private IntroTimeline timeline;
         private bool restCaptured;
         private float baseFieldOfView;
@@ -78,6 +83,8 @@ namespace Boki.Intro
         private void OnDisable()
         {
             if (timeline != null) Unsubscribe(timeline);
+            ReleasePause();
+            RestoreCanvases();
             if (ownsSkip) skipAction.action.Disable();
             if (ownsReplay) replayAction.action.Disable();
             ownsSkip = ownsReplay = false;
@@ -86,6 +93,11 @@ namespace Boki.Intro
         private void Start()
         {
             if (playOnStart) Play();
+            else
+            {
+                wakeActors.SetActive(false);
+                overlay.gameObject.SetActive(false);
+            }
         }
 
         private static bool EnableAction(InputActionReference reference)
@@ -99,8 +111,19 @@ namespace Boki.Intro
         {
             if (timeline != null && !timeline.IsFinished) return;
             if (timeline != null) Unsubscribe(timeline);
+            overlay.gameObject.SetActive(true);
+            session = RunSession.Ensure();
+            ownsSequencePause = !session.State.Pause.Contains(PauseReason.ScriptedSequence);
+            if (ownsSequencePause) session.SetPaused(PauseReason.ScriptedSequence, true);
             foreach (Behaviour control in controls) control.enabled = false;
             headlight.enabled = false;
+            canvasStates = new bool[gameplayCanvases.Length];
+            for (int i = 0; i < gameplayCanvases.Length; i++)
+            {
+                if (gameplayCanvases[i] == null) continue;
+                canvasStates[i] = gameplayCanvases[i].enabled;
+                gameplayCanvases[i].enabled = false;
+            }
             objectiveRemaining = 0f;
             lastElapsed = 0f;
             timeline = new IntroTimeline(IntroActing.ShotSeconds);
@@ -129,7 +152,7 @@ namespace Boki.Intro
             else
             {
                 // A long first frame after a scene load must not swallow the opening shot.
-                timeline.Advance(Mathf.Min(Time.deltaTime, 0.1f));
+                timeline.Advance(Mathf.Min(Time.unscaledDeltaTime, 0.1f));
                 // Finishing already showed the end state; another frame would bring the letterbox back.
                 if (timeline.IsFinished) return;
                 PlayCues(lastElapsed, timeline.Elapsed);
@@ -164,8 +187,24 @@ namespace Boki.Intro
 
         private static bool Crossed(float from, float to, float at) => from < at && at <= to;
 
+        private void ReleasePause()
+        {
+            if (ownsSequencePause && session != null) session.SetPaused(PauseReason.ScriptedSequence, false);
+            ownsSequencePause = false;
+        }
+
+        private void RestoreCanvases()
+        {
+            if (canvasStates == null) return;
+            for (int i = 0; i < gameplayCanvases.Length; i++)
+                if (gameplayCanvases[i] != null) gameplayCanvases[i].enabled = canvasStates[i];
+            canvasStates = null;
+        }
+
         private void OnFinished()
         {
+            ReleasePause();
+            RestoreCanvases();
             audioSource.Stop();
             ShowFrame(IntroActing.Mount, 1f);
             overlay.SetFade(0f);

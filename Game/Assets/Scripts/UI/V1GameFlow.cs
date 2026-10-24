@@ -77,7 +77,7 @@ namespace Boki.UI
         public void SetObjective(string message) { if (objective != null && objective.text != message) objective.text = message; }
         private void Pause(InputAction.CallbackContext context)
         {
-            if (terminal || choosing) return;
+            if (terminal || choosing || session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
             if (paused) Resume();
             else
             {

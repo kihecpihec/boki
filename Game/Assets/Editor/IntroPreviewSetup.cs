@@ -18,7 +18,7 @@ using Object = UnityEngine.Object;
 namespace Boki.Editor
 {
     // The intro is a self-contained prefab (stage, Boki Intro, overlay, audio, IntroCutscene). Intro_Preview is its own
-    // set; no map asset is used. A map adopts the prefab later through "Add Intro To Open Scene".
+    // set when first built. IntegratePohorje replaces that set with the actual V1 scene.
     public static class IntroPreviewSetup
     {
         private const string Folder = "Assets/Cutscenes/Intro";
@@ -110,6 +110,47 @@ namespace Boki.Editor
                 + "The stage sits at the player's start; move 'Intro Cutscene/Intro Stage' if the ground there is uneven.");
         }
 
+        // Upgrade only the requested scenes; never rebuild maps or shared prefabs.
+        [MenuItem("Boki/Intro/Integrate Pohorje Intro")]
+        public static void IntegratePohorje()
+        {
+            RequireIdle();
+            var previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                Scene scene = EditorSceneManager.OpenScene("Assets/Scenes/V1_Pohorje.unity", OpenSceneMode.Single);
+                WireSceneIntro(true);
+                EditorSceneManager.SaveScene(scene);
+                // Keep the established preview path and GUID, using the real level as its set.
+                EditorSceneManager.SaveScene(scene, ScenePath, true);
+                EditorSceneManager.OpenScene("Assets/Scenes/Player_Model_Test.unity", OpenSceneMode.Single);
+                WireSceneIntro(false);
+                EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
+                Debug.Log("POHORJE_INTRO_READY: V1_Pohorje and Intro_Preview start with the intro; Player_Model_Test has I to replay.");
+            }
+            finally { RestoreScenes(previous); }
+        }
+
+        private static void WireSceneIntro(bool autoplay)
+        {
+            var movement = Object.FindFirstObjectByType<ScooterController>();
+            var follow = Object.FindFirstObjectByType<ThirdPersonCamera>();
+            if (movement == null || follow == null) throw new InvalidOperationException("Missing player or follow camera.");
+            if (Object.FindFirstObjectByType<IntroCutscene>() == null) Adopt(movement, follow, autoplay);
+            var intro = Object.FindFirstObjectByType<IntroCutscene>();
+            var settings = new SerializedObject(intro);
+            var canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .Where(canvas => !canvas.transform.IsChildOf(intro.transform)).ToArray();
+            var canvasReferences = settings.FindProperty("gameplayCanvases");
+            canvasReferences.arraySize = canvases.Length;
+            for (int i = 0; i < canvases.Length; i++) canvasReferences.GetArrayElementAtIndex(i).objectReferenceValue = canvases[i];
+            settings.FindProperty("playOnStart").boolValue = autoplay;
+            // Match the authored follow camera instead of assuming the preview's distance.
+            settings.FindProperty("followDistance").floatValue = new SerializedObject(follow).FindProperty("followDistance").floatValue;
+            if (autoplay) settings.FindProperty("replayAction").objectReferenceValue = null;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         // Renders review frames of every beat into output/intro-preview/frames (or $BOKI_INTRO_FRAMES); the scene is not saved.
         [MenuItem("Boki/Intro/Capture Preview Frames")]
         public static void CaptureFrames()
@@ -190,9 +231,11 @@ namespace Boki.Editor
             so.FindProperty("followPivot").objectReferenceValue = pivot;
             so.FindProperty("headlight").objectReferenceValue = headlight;
             var controls = so.FindProperty("controls");
-            controls.arraySize = 2;
+            var presentation = movement.GetComponent<ScooterPresentation>();
+            controls.arraySize = presentation != null ? 3 : 2;
             controls.GetArrayElementAtIndex(0).objectReferenceValue = movement;
             controls.GetArrayElementAtIndex(1).objectReferenceValue = follow;
+            if (presentation != null) controls.GetArrayElementAtIndex(2).objectReferenceValue = presentation;
             so.FindProperty("playOnStart").boolValue = playOnStart;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
