@@ -1,0 +1,17 @@
+{
+    "floorSamples": 843,
+    "floorFailures": 0,
+    "laneRides": 72,
+    "blockedRides": 0,
+    "falls": 0,
+    "markerFailures": 0,
+    "sealChecks": 6,
+    "sealFailures": 0,
+    "wanderRuns": 233,
+    "wanderFailures": 0,
+    "terrainColliders": 74,
+    "primitiveColliders": 343,
+    "renderTriangles": 74546,
+    "renderObjects": 294,
+    "errors": []
+}
