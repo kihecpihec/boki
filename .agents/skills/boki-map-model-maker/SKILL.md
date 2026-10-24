@@ -12,7 +12,7 @@ Maps are static, so "rig" here means **engine-ready setup**: collision, gates, t
 Read first, as needed:
 - Route structure and what each space must contain: `docs/Gameplay.md` §2–5, §8 and `docs/Architecture.md` §3–7.
 - Player envelope: `docs/Movement.md` (capsule 1.8 m high, radius 0.35 m, 45° slope limit, 0.25 m step offset, boost/jump speeds).
-- Existing worked example: `output/world-modeling-v1/maps/pohorje/README.md` and `Game/Assets/Editor/PohorjeImportPostprocessor.cs`.
+- Existing worked example: `output/world-modeling-v3/maps/pohorje/README.md` (and `maribor/`), with the Unity importer in `Game/Assets/Editor/MapProductionTools.cs`.
 - Ownership: do not edit another developer's scenes/prefabs. Importing FBX/textures into `Game/Assets/Art/<Map>/` is fine; assembling a production scene needs the scene owner's agreement.
 
 ## Workflow
@@ -125,7 +125,6 @@ All markers sit on or snap to the final floor surface (raycast down to verify).
 - Materials: create/assign URP/Lit (opaque, low smoothness) per surface; emission materials recreated; texture Wrap Repeat for tiling surfaces, Clamp for atlases.
 - Static flags: Contribute GI off unless baked; Batching Static + Occluder/Occludee for world chunks.
 - Guides: attach colliders by reading guide bounds, then hide/delete the guide renderers.
-- Match the repo convention in `PohorjeImportPostprocessor` (world-space tiling UVs) if the map relies on it.
 
 ## Done means
 

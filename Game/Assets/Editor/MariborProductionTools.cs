@@ -25,8 +25,6 @@ namespace Boki.Editor
         [MenuItem("Boki/Maribor Production/Capture Review Views")]
         public static void Capture() => Delivery.Capture();
 
-        public static void CaptureBaseline() => Delivery.CaptureBaseline();
-
         public static void CaptureAndExport() => Delivery.CaptureAndExport();
     }
 }
