@@ -30,7 +30,7 @@ The three V1 scenes are first in the build scene list. The original production g
 
 WASD ride, mouse look, Space jump, Left Shift boost, Escape pause, E interact. Upgrade selection supports mouse, A/D or arrow keys, Enter, and available number keys 1–3. Click the Game view to capture input.
 
-The generated V1 scenes require no further Inspector assignments. **Boki → Version 1 → Create or Upgrade Game Scenes** regenerates their generated integration objects and rewires references. Exit Play Mode and save dirty scenes first. Preserve manual edits in a scene copy before regenerating generated gameplay content. The command leaves the original scenes, shared player/enemy/UI prefabs, packages and input assets unchanged; V1 controls, materials and XP prefab live under `Assets/V1/`.
+The generated V1 scenes require no further Inspector assignments. **Boki → Version 1 → Create or Upgrade Game Scenes** regenerates their generated integration objects and rewires references. Exit Play Mode and save dirty scenes first. Preserve manual edits in a scene copy before regenerating generated gameplay content. The command leaves the original scenes, shared player/enemy/UI prefabs, packages and input assets unchanged; V1 controls and materials live under `Assets/V1/`; regular XP drops use the shared `Boki.Upgrades.XpPickup` adapter.
 
 ## Verification commands
 
@@ -46,7 +46,7 @@ Close the Editor holding this checkout before batch verification. Integration ch
 
 ## Recorded checks
 
-Unity **6000.6.7f1 on macOS** generated all new asset metadata and the three V1 scenes. EditMode results: **126/126 passed**, none skipped (`/tmp/boki-v1-editmode.xml`). The integration check passed (`/tmp/boki-v1-smoke.log`, `V1_INTEGRATION_PASSED`), exercising physical route triggers, gate/branch isolation, actual combat-space spawning and clocks, kill/XP contact, upgrade pause, state carry through both portals, boss victory, next-run C unlocks, City C side escape, E interaction at `POWER OFF`, the 85% boss modifier, death/retry, and a two-card late offer with hidden-card rejection. Permanent unlock values and input settings were restored after the fixtures.
+Unity **6000.6.7f1 on macOS** generated all new asset metadata and the three V1 scenes. After reconciling current `dev`, EditMode results: **143/143 passed**, none skipped (`/tmp/boki-v1-merge-editmode.xml`). The reconciled V1 integration check passed (`/tmp/boki-v1-merge-smoke.log`, `V1_INTEGRATION_PASSED`), exercising physical route triggers, gate/branch isolation, actual combat-space spawning and clocks, kill/XP contact, upgrade pause, state carry through both portals, boss victory, next-run C unlocks, City C side escape, E interaction at `POWER OFF`, the 85% boss modifier, death/retry, and a two-card late offer with hidden-card rejection. Permanent unlock values and input settings were restored after the fixtures.
 
 The asset audit has no failures; existing warnings remain. Unity's existing internal `UnityEditor.Search.SearchDatabase` indexing exception was excluded by its exact stack namespace from gameplay-error collection. A subsequent graphical macOS Editor check confirmed that V1 Pohorje renders with the rigged player and real HUD, that Escape opens the pause panel, and that its Retry/New Run button reloads a fresh starting state without Console errors. Unity was left in paused Play Mode at the V1 start. Full-route riding and movement feel remain manual checks.
 
@@ -55,3 +55,9 @@ The asset audit has no failures; existing warnings remain. Unity's existing inte
 Ride every allowed route from start to end without teleporting. Confirm collider traversal, gate/sign readability, branch isolation, camera comfort indoors, enemy and charge accessibility, safe replenishment, Guilt warnings, and both visible portals. Pause during a chase, projectile flight and battery recharge; verify all resume correctly. Try each upgrade through the actual UI, including a shortened late offer, repeated thresholds, Double Trouble with one/two/occluded targets, and Panic Mode boosts near Guilt. Test death while riding, during boss attacks and after a portal transition, then Retry. Verify the City C turn-back and side door, both professor entrance modifiers, victory and a second run.
 
 A Windows x86_64 player build on the Ryzen 5600G at 1280×720 Low remains required. macOS/headless Editor checks do not establish Windows compatibility, final difficulty, the intended 7–12 minute duration or target frame rate.
+
+## Integration with current dev
+
+V1 uses the shared `Boki.Upgrades.Rules.UpgradeState`, automatic `EnemyHealth` XP drops, existing scooter modifiers and reason-based `PauseState`. The earlier V1-only progression/reward implementation was removed during reconciliation so upgrades and kills cannot be counted twice. Existing hover selection, scooter effects, isolated player/upgrade/enemy test scenes and cleanup changes from dev are preserved.
+
+The existing shared upgrade gameplay check also passed after reconciliation (`/tmp/boki-v1-merge-upgrades.log`, `UPGRADE_GAMEPLAY_PASSED`). This verifies that the preserved player-model upgrade sandbox remains compatible alongside V1.
