@@ -37,7 +37,12 @@ namespace Boki.Editor
         }
 
         [MenuItem("Boki/Upgrades/Run Gameplay Checks")]
-        public static void Run()
+        public static void Run() => RunScene("Assets/Scenes/Player_Model_Test.unity");
+
+        [MenuItem("Boki/Upgrades/Run Separate Test Scene Checks")]
+        public static void RunUpgradeTest() => RunScene(UpgradeTestLab.ScenePath);
+
+        private static void RunScene(string path)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -46,7 +51,7 @@ namespace Boki.Editor
             var saved = new SavedScenes { paths = scenes.Select(s => s.path).ToArray(),
                 loaded = scenes.Select(s => s.isLoaded).ToArray(), active = scenes.Select(s => s.isActive).ToArray() };
             SessionState.SetString(Key + ".Scenes", JsonUtility.ToJson(saved));
-            EditorSceneManager.OpenScene("Assets/Scenes/Player_Model_Test.unity", OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             SessionState.SetBool(Key, true);
             EditorApplication.EnterPlaymode();
         }
