@@ -110,17 +110,17 @@ namespace Boki.Editor
             Debug.Log("V1_DARKNESS_APPLIED");
         }
 
-        [MenuItem("Boki/Light Battery/Apply Wide White Light to V1")]
+        [MenuItem("Boki/Light Battery/Apply Surrounding Scooter Light to V1 and Model Test")]
         public static void ApplyV1Headlights()
         {
             RequireClean();
             SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
             try
             {
-                foreach (string path in V1SceneSetup.Scenes)
+                foreach (string path in new[] { ModelScene, V1SceneSetup.Scenes[0], V1SceneSetup.Scenes[1], V1SceneSetup.Scenes[2] })
                     if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
                         throw new InvalidOperationException("Missing V1 scene: " + path);
-                foreach (string path in V1SceneSetup.Scenes)
+                foreach (string path in new[] { ModelScene, V1SceneSetup.Scenes[0], V1SceneSetup.Scenes[1], V1SceneSetup.Scenes[2] })
                 {
                     Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
                     ConfigureWideWhiteLight(scene);
@@ -153,11 +153,9 @@ namespace Boki.Editor
                 throw new InvalidOperationException("Assign the scooter lamp and headlight socket in " + scene.path);
             settings.FindProperty("headlightMount").objectReferenceValue = mount;
             settings.FindProperty("intensity").floatValue = 5f;
-            settings.FindProperty("headlightRange").floatValue = 24f;
-            settings.FindProperty("headlightAngle").floatValue = 140f;
-            settings.FindProperty("headlightDownwardAngle").floatValue = 18f;
-            settings.FindProperty("headlightHeightOffset").floatValue = 0.65f;
-            settings.FindProperty("headlightBrightnessMultiplier").floatValue = 24f;
+            settings.FindProperty("headlightRange").floatValue = 28f;
+            settings.FindProperty("headlightHeightOffset").floatValue = 0.1f;
+            settings.FindProperty("headlightBrightnessMultiplier").floatValue = 12f;
             settings.FindProperty("fillIntensity").floatValue = 0.55f;
             settings.FindProperty("fillRange").floatValue = 2.5f;
             settings.FindProperty("nearbyBrightnessMultiplier").floatValue = 1.3f;
@@ -172,6 +170,8 @@ namespace Boki.Editor
                 Object source = PrefabUtility.GetCorrespondingObjectFromSource(battery);
                 var overrides = new System.Collections.Generic.List<PropertyModification>(
                     PrefabUtility.GetPropertyModifications(battery));
+                overrides.RemoveAll(item => item.target == source
+                    && (item.propertyPath == "headlightAngle" || item.propertyPath == "headlightDownwardAngle"));
                 SerializedProperty property = settings.GetIterator();
                 while (property.NextVisible(true))
                 {
@@ -183,23 +183,21 @@ namespace Boki.Editor
                 }
                 PrefabUtility.SetPropertyModifications(battery, overrides.ToArray());
             }
-            lamp.type = LightType.Spot;
+            lamp.type = LightType.Point;
             lamp.color = Color.white;
             lamp.useColorTemperature = false;
-            lamp.range = 24f;
-            lamp.spotAngle = 140f;
-            lamp.innerSpotAngle = 63f;
-            lamp.intensity = 120f;
+            lamp.range = 28f;
+            lamp.intensity = 60f;
             lamp.shadows = LightShadows.None;
-            lamp.transform.position = mount.position + battery.transform.up * 0.65f;
-            lamp.transform.rotation = battery.transform.rotation * Quaternion.Euler(18f, 0f, 0f);
+            lamp.transform.position = mount.position + battery.transform.up * 0.1f;
+            lamp.transform.rotation = battery.transform.rotation;
             var overlay = new SerializedObject(darkness);
             overlay.FindProperty("lightRadius").floatValue = 7f;
             overlay.FindProperty("darknessOpacity").floatValue = 0.3f;
-            overlay.FindProperty("forwardOffset").floatValue = 2f;
+            overlay.FindProperty("forwardOffset").floatValue = 0f;
             overlay.FindProperty("radiusScale").floatValue = 0.75f;
             overlay.FindProperty("extraDarkness").floatValue = 0.03f;
-            overlay.FindProperty("chargedRadiusMultiplier").floatValue = 2.4f;
+            overlay.FindProperty("chargedRadiusMultiplier").floatValue = 3f;
             overlay.FindProperty("chargedOpacityMultiplier").floatValue = 0.65f;
             overlay.ApplyModifiedPropertiesWithoutUndo();
             foreach (Object changed in new Object[] { battery, lamp, lamp.transform, darkness })
@@ -221,11 +219,9 @@ namespace Boki.Editor
             }
             Light light = lamp.GetComponent<Light>();
             if (light == null) light = lamp.gameObject.AddComponent<Light>();
-            light.type = LightType.Spot;
-            light.range = 24f;
-            light.spotAngle = 140f;
-            light.innerSpotAngle = 63f;
-            light.intensity = 120f;
+            light.type = LightType.Point;
+            light.range = 28f;
+            light.intensity = 60f;
             light.color = Color.white;
             light.useColorTemperature = false;
             light.shadows = LightShadows.None;

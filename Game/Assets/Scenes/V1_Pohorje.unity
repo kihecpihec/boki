@@ -7116,10 +7116,10 @@ MonoBehaviour:
   darknessEnabled: 1
   lightRadius: 7
   darknessOpacity: 0.3
-  forwardOffset: 2
+  forwardOffset: 0
   radiusScale: 0.75
   extraDarkness: 0.03
-  chargedRadiusMultiplier: 2.4
+  chargedRadiusMultiplier: 3
   chargedOpacityMultiplier: 0.65
 --- !u!223 &1161102926
 Canvas:
@@ -16295,7 +16295,7 @@ PrefabInstance:
       objectReference: {fileID: 7868977143442150408}
     - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.6599998
+      value: 1.1099968
       objectReference: {fileID: 0}
     - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -16303,11 +16303,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98768836
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15643448
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1719975179335019441, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_LocalRotation.y
@@ -16334,16 +16334,12 @@ PrefabInstance:
       value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
-      propertyPath: headlightAngle
-      value: 140
-      objectReference: {fileID: 0}
-    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightMount
       value:
       objectReference: {fileID: 2011934636}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightRange
-      value: 24
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: emptyFillIntensity
@@ -16379,15 +16375,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightHeightOffset
-      value: 0.65
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: nearbyRangeMultiplier
       value: 1.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
-      propertyPath: headlightDownwardAngle
-      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: nearbyBrightnessMultiplier
@@ -16395,15 +16387,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4795799467916711596, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: headlightBrightnessMultiplier
-      value: 24
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Type
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Range
-      value: 24
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Color.g
@@ -16415,7 +16407,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_Intensity
-      value: 120
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 7700888670374047079, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
       propertyPath: m_SpotAngle

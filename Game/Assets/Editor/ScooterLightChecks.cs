@@ -38,6 +38,7 @@ namespace Boki.Editor
         private static Light fill;
         private static Camera previewCamera;
         private static RenderTexture previewTexture;
+        private static float chargedIntensity, chargedRange;
 
         static ScooterLightChecks()
         {
@@ -125,16 +126,15 @@ namespace Boki.Editor
                         lamp = battery.GetComponentInChildren<Light>();
                         foreach (Light light in battery.GetComponentsInChildren<Light>())
                             if (light.name == "Scooter Nearby Fill") fill = light;
-                        Require(lamp.type == LightType.Spot && fill != null && fill.enabled,
+                        Require(lamp.type == LightType.Point && fill != null && fill.enabled,
                             "Charged scooter has a headlight and nearby fill.");
                         Require(battery.State.Current < 100f && lamp.enabled, "Active gameplay drains battery and keeps charged light on.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         battery.State.Current = 100f;
                         Require(fill.type == LightType.Point && fill.color == Color.white && lamp.color == Color.white
-                            && lamp.spotAngle >= 135f && lamp.range > 20f
-                            && lamp.transform.position.y > battery.transform.position.y + 0.65f
-                            && Vector3.Dot(lamp.transform.forward, battery.transform.forward) > 0.8f,
-                            "The white beam covers a wide, distant area; the point fill reveals the rider.");
+                            && lamp.range > 20f && lamp.renderingLayerMask == 1u
+                            && fill.renderingLayerMask == 2u,
+                            "The scooter casts white light all around; a separate layer keeps rider lighting subtle.");
                         Teleport(first.transform.position - Vector3.up * 0.6f);
                         Next();
                         break;
@@ -243,6 +243,14 @@ namespace Boki.Editor
                     if (EditorApplication.timeSinceStartup - stageStarted < 1.0) return;
                     foreach (Light light in battery.GetComponentsInChildren<Light>())
                         Debug.Log($"SCOOTER_PREVIEW {light.name} position={light.transform.position} forward={light.transform.forward} intensity={light.intensity} range={light.range} player={battery.transform.position}");
+                    lamp = new SerializedObject(battery).FindProperty("surroundingLight").objectReferenceValue as Light;
+                    Require(lamp != null && lamp.type == LightType.Point && lamp.range > 27f,
+                        "The model scene casts light all around from the scooter.");
+                    foreach (SkinnedMeshRenderer renderer in battery.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                        Require(renderer.renderingLayerMask == 2u && (renderer.renderingLayerMask & lamp.renderingLayerMask) == 0u,
+                            "The bright surrounding lamp cannot illuminate Boki's renderers.");
+                    chargedIntensity = lamp.intensity;
+                    chargedRange = lamp.range;
                     previewCamera.Render();
                     CaptureFrame("boki-light-charged.png");
                     Next();
@@ -253,6 +261,8 @@ namespace Boki.Editor
                     break;
                 case 3:
                     if (EditorApplication.timeSinceStartup - stageStarted < 0.8) return;
+                    Require(lamp.intensity < chargedIntensity * 0.75f && lamp.range < chargedRange * 0.75f,
+                        "Half battery dims and contracts the surrounding light.");
                     CaptureFrame("boki-light-half.png");
                     Next();
                     break;
@@ -261,10 +271,19 @@ namespace Boki.Editor
                     Next();
                     break;
                 case 5:
+                    Require(!lamp.enabled && battery.Visibility == 0f, "Empty battery extinguishes surrounding light.");
                     CaptureFrame("boki-light-empty.png");
                     Next();
                     break;
-                case 6: Finish(null); break;
+                case 6:
+                    var rider = battery.GetComponentInChildren<SkinnedMeshRenderer>();
+                    Require(rider != null, "The preview has Boki's rigged model.");
+                    battery.enabled = false;
+                    Require(rider.renderingLayerMask == 1u, "Disabling the light restores Boki's authored rendering layer.");
+                    battery.enabled = true;
+                    Require(rider.renderingLayerMask == 2u, "Re-enabling the light isolates Boki from the bright spill again.");
+                    Finish(null);
+                    break;
             }
         }
 
