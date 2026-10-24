@@ -35,6 +35,7 @@ namespace Boki.Editor
         private static CharacterController player;
         private static float pausedCharge, pausedTimer, carriedCharge;
         private static Light lamp;
+        private static Light fill;
         private static Camera previewCamera;
         private static RenderTexture previewTexture;
 
@@ -122,6 +123,10 @@ namespace Boki.Editor
                         Require(charges.Length == 3, "Only the selected branch's three charges may be active.");
                         first = charges[0];
                         lamp = battery.GetComponentInChildren<Light>();
+                        foreach (Light light in battery.GetComponentsInChildren<Light>())
+                            if (light.type == LightType.Point) fill = light;
+                        Require(lamp.type == LightType.Spot && fill != null && fill.enabled,
+                            "Charged scooter has a headlight and nearby fill.");
                         Require(battery.State.Current < 100f && lamp.enabled, "Active gameplay drains battery and keeps charged light on.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         battery.State.Current = 100f;
@@ -161,7 +166,8 @@ namespace Boki.Editor
                         Next();
                         break;
                     case 5:
-                        Require(!lamp.enabled && battery.EnemySpeedMultiplier == 1.3f, "Empty light is off and enemy movement multiplier is 1.3.");
+                        Require(!lamp.enabled && !fill.enabled && battery.EnemySpeedMultiplier == 1.3f,
+                            "Empty battery extinguishes both lights and enemy movement multiplier is 1.3.");
                         var absentSpace = first.GetComponentInParent<BatteryCombatSpace>();
                         Require(absentSpace.State.Remaining(new SerializedObject(first).FindProperty("slot").intValue) == pausedTimer,
                             "Recharge cannot advance while outside the space.");
@@ -170,7 +176,7 @@ namespace Boki.Editor
                         Next();
                         break;
                     case 6:
-                        Require(lamp.enabled && battery.State.Current > 22f && battery.EnemySpeedMultiplier == 1f,
+                        Require(lamp.enabled && fill.enabled && battery.State.Current > 22f && battery.EnemySpeedMultiplier == 1f,
                             "A reachable pickup restores the light and ordinary enemy speed from empty.");
                         carriedCharge = battery.State.Current;
                         Require(RunSession.Instance.Advance(RouteLevel.Forest), "Advance to City.");
