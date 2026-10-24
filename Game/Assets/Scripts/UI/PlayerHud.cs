@@ -20,7 +20,6 @@ namespace Boki.UI
         [SerializeField] private Text xpText;
         [SerializeField] private Text boostText;
         [SerializeField] private Text locationText;
-        [SerializeField] private Text watchText;
         [SerializeField] private Image healthFill;
         [SerializeField] private Image batteryFill;
         [SerializeField] private Image xpFill;
@@ -38,7 +37,7 @@ namespace Boki.UI
         {
             if (health == null || battery == null || movement == null || healthText == null
                 || batteryText == null || xpText == null || boostText == null || locationText == null
-                || watchText == null || healthFill == null || batteryFill == null || xpFill == null || guiltEdges == null)
+                || healthFill == null || batteryFill == null || xpFill == null || guiltEdges == null)
             {
                 Debug.LogError("Assign the player and all display references on PlayerHud. Guilt is optional.", this);
                 enabled = false;
@@ -96,8 +95,6 @@ namespace Boki.UI
             {
                 lastLevel = level;
                 locationText.text = level == RouteLevel.Forest ? "POHORJE" : level == RouteLevel.City ? "MARIBOR" : "FERI";
-                // Story §3: this watch is narrative time, not elapsed run time.
-                watchText.text = level == RouteLevel.Feri ? "07:59" : "07:58";
             }
             string boost = !health.IsAlive ? "BOOST UNAVAILABLE" : movement.BoostRemaining > 0f
                 ? "SHIFT: BOOST ACTIVE" : movement.CooldownRemaining > 0f ? "SHIFT: BOOST RECHARGING" : "SHIFT: BOOST READY";

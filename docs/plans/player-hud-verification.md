@@ -6,14 +6,15 @@ lighting, input assets, packages or project settings are intentionally changed.
 
 `PlayerHud` reads the existing player health, light battery, movement and run XP.
 HP and battery sit at bottom left, interval XP progress at bottom center, boost
-status at bottom right, location at top left and narrative watch at top right.
+status at bottom right and location at top left. The top-right watch has been
+removed at the user's request.
 Bars and text use restrained colors; the built-in Unity font is a fallback,
 not the exact pixel font in the concept image.
 
 The XP milestones are display configuration from [Story §5](../Story.md#5-upgrades-and-replay-motivation).
 This UI does not collect XP, award upgrades or pause gameplay. Those systems are
-still absent on this branch. The watch presents the level's narrative time;
-the boss introduction still owns its watch animation.
+still absent on this branch. Story watch beats remain separate narrative
+presentation work; this HUD does not display a clock.
 
 ## Wiring
 
@@ -62,3 +63,14 @@ additional lights or post-processing passes.
 - No gameplay rules changed; no new rule tests added. Interactive Play Mode
   appearance and Windows target-hardware FPS remain manual checks; Linux
   batchmode compilation does not establish either.
+
+## Why other maps differ
+
+The map test builders and production preview builder open `Player_Model_Test`
+and save a separate scene. This is a snapshot, not a shared player/HUD prefab or
+an additive gameplay scene. Existing map scenes therefore retain the setup from
+when they were generated; later player-test changes do not propagate. The HUD
+setup tool intentionally updates only the owned player test scene. Do not rebuild
+or overwrite another developer's maps to refresh their gameplay setup. Integrate
+a reusable player/presentation setup with the map owner when those scenes are
+ready for wiring.

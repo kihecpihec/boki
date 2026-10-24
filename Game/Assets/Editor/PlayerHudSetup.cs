@@ -70,9 +70,6 @@ namespace Boki.Editor
                 boost.alignment = TextAnchor.MiddleRight;
                 Set(view, "boostText", boost);
                 Set(view, "locationText", Label(hud.transform, "Location", Vector2.up, new Vector2(34, -50), new Vector2(250, 28), "POHORJE"));
-                var watch = Label(hud.transform, "Watch", Vector2.one, new Vector2(-154, -50), new Vector2(120, 28), "07:58");
-                watch.alignment = TextAnchor.MiddleRight;
-                Set(view, "watchText", watch);
                 Validate(view);
                 EditorSceneManager.SaveScene(scene);
                 Debug.Log("PLAYER_HUD_APPLIED: mockup HUD wired only in Player_Model_Test.");
@@ -89,7 +86,7 @@ namespace Boki.Editor
         {
             var serialized = new SerializedObject(view);
             foreach (string name in new[] { "health", "battery", "movement", "healthText", "batteryText", "xpText",
-                "boostText", "locationText", "watchText", "healthFill", "batteryFill", "xpFill", "guiltEdges" })
+                "boostText", "locationText", "healthFill", "batteryFill", "xpFill", "guiltEdges" })
                 if (serialized.FindProperty(name).objectReferenceValue == null)
                     throw new InvalidOperationException("HUD reference missing: " + name);
             if (view.GetComponent<Canvas>().sortingOrder <= 0)
