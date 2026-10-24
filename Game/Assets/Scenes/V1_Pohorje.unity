@@ -16338,6 +16338,10 @@ PrefabInstance:
       propertyPath: m_InnerSpotAngle
       value: 29.25
       objectReference: {fileID: 0}
+    - target: {fileID: 545227383665380783, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: laser
+      value:
+      objectReference: {fileID: 7868977143442150408}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

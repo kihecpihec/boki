@@ -21,6 +21,7 @@ namespace Boki.Combat
         private float cooldown;
         private float beamRemaining;
         private Vector3 impactPosition;
+        public event System.Action Fired;
 
         private void OnEnable()
         {
@@ -96,6 +97,7 @@ namespace Boki.Combat
             beam.SetPosition(0, beamOrigin.position);
             beam.SetPosition(1, impactPosition);
             beam.enabled = true;
+            Fired?.Invoke();
             var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
             int hitDamage = Mathf.RoundToInt(damage * (upgrades != null ? upgrades.DamageMultiplier : 1f));
             target.TakeDamage(hitDamage);
