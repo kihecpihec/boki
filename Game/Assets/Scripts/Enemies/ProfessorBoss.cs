@@ -2,6 +2,7 @@ using System;
 using Boki.Combat;
 using Boki.Core;
 using Boki.Player;
+using Boki.UI;
 using UnityEngine;
 
 namespace Boki.Enemies
@@ -27,6 +28,18 @@ namespace Boki.Enemies
         [SerializeField] private LayerMask groundMask = 1;
         [SerializeField] private BoxCollider movementFloor;
         [SerializeField, Min(0f)] private float movementSpeed = 1.5f;
+        // Story §3 Final Boss: tougher baseline applies to existing serialized encounters too.
+        [SerializeField, Min(1f)] private float combatTempo = 1.6f;
+        [SerializeField, Min(1f)] private float attackDamageMultiplier = 1.5f;
+        [SerializeField, Min(0f)] private float aimLeadSeconds = 0.35f;
+        [SerializeField, Min(1)] private int contactDamage = 20;
+        [SerializeField, Min(0.1f)] private float contactInterval = 1f;
+        [SerializeField, Min(0f)] private float knockbackSpeed = 10f;
+        private BossContactAttack contactAttack;
+        private Collider bodyCollider;
+        private ScooterController targetMovement;
+        private Vector3 previousTargetPosition;
+        private Vector3 targetVelocity;
         private int patrolCorner;
         private readonly RaycastHit[] movementHits = new RaycastHit[16];
         private EnemyHealth health;
@@ -62,7 +75,21 @@ namespace Boki.Enemies
             }
             if (sheetOrigin == null) sheetOrigin = transform;
             targetController = target.GetComponent<CharacterController>();
-            scheduler = new BossAttackScheduler(attackGap, sheetInterval, enragedSpeedUp, openingDelay);
+            targetMovement = target.GetComponent<ScooterController>();
+            bodyCollider = GetComponent<Collider>();
+            contactAttack = new BossContactAttack(contactInterval);
+            previousTargetPosition = target.transform.position;
+            targetVelocity = Vector3.zero;
+            scheduler = new BossAttackScheduler(attackGap / combatTempo, sheetInterval / combatTempo,
+                enragedSpeedUp, openingDelay);
+            var bar = GetComponentInChildren<ProfessorHealthBar>(true);
+            if (bar == null)
+            {
+                var display = new GameObject("Professor Health HUD");
+                display.transform.SetParent(transform, false);
+                bar = display.AddComponent<ProfessorHealthBar>();
+            }
+            bar.Bind(this, health, target);
             slamRing.gameObject.SetActive(false);
             fighting = startOnEnable;
         }
@@ -75,8 +102,19 @@ namespace Boki.Enemies
                 slamRing.gameObject.SetActive(false);
                 return;
             }
-            if (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive) return;
+            if (Time.deltaTime <= 0f || (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive))
+            {
+                previousTargetPosition = target.transform.position;
+                targetVelocity = Vector3.zero;
+                return;
+            }
+            targetVelocity = Vector3.ClampMagnitude(
+                (target.transform.position - previousTargetPosition) / Time.deltaTime, 18f);
+            targetVelocity.y = 0f;
+            previousTargetPosition = target.transform.position;
             MoveInArena();
+            ApplyContactAttack();
+            if (!CanAttack) return;
             float fraction = health.Maximum > 0 ? (float)health.Current / health.Maximum : 0f;
             switch (scheduler.Tick(Time.deltaTime, fraction))
             {
@@ -130,22 +168,38 @@ namespace Boki.Enemies
             if (slamRing != null) slamRing.gameObject.SetActive(false);
         }
 
+        private void ApplyContactAttack()
+        {
+            Vector3 center = TargetCenter();
+            float reach = (targetController != null ? targetController.radius + targetController.skinWidth : 0.35f) + 0.08f;
+            Vector3 closest = bodyCollider != null && bodyCollider.enabled
+                ? bodyCollider.ClosestPoint(center) : transform.position + Vector3.up * 0.9f;
+            bool touching = (closest - center).sqrMagnitude <= reach * reach;
+            if (touching && Physics.Linecast(center, closest, groundMask, QueryTriggerInteraction.Ignore)) touching = false;
+            if (!contactAttack.Tick(Time.deltaTime, touching)) return;
+            target.TakeDamage(contactDamage);
+            Vector3 away = target.transform.position - transform.position;
+            away.y = 0f;
+            if (away.sqrMagnitude < 0.001f) away = transform.forward;
+            if (targetMovement != null) targetMovement.ApplyKnockback(away, knockbackSpeed);
+        }
+
         private Vector3 TargetCenter() => targetController != null
             ? target.transform.TransformPoint(targetController.center) : target.transform.position + Vector3.up * 0.9f;
 
         private void FireSheet()
         {
             Vector3 origin = sheetOrigin.position;
-            Vector3 center = TargetCenter();
+            Vector3 center = TargetCenter() + Vector3.ClampMagnitude(targetVelocity * aimLeadSeconds, 3f);
             EnemyProjectile sheet = Instantiate(sheetPrefab, origin, Quaternion.LookRotation(center - origin));
-            sheet.Launch(target, center - origin, sheetDamage);
+            sheet.Launch(target, center - origin, Mathf.RoundToInt(sheetDamage * attackDamageMultiplier));
             BarrageSheetFired?.Invoke();
         }
 
-        // The warning marks the ground where Boki stood when it began; moving or boosting out avoids the hit.
+        // Prediction locks when the warning begins; the marked area never tracks the player.
         private void StartTelegraph()
         {
-            Vector3 feet = target.transform.position;
+            Vector3 feet = target.transform.position + Vector3.ClampMagnitude(targetVelocity * 0.25f, 2f);
             slamCenter = Physics.Raycast(feet + Vector3.up, Vector3.down, out RaycastHit hit, 5f, groundMask, QueryTriggerInteraction.Ignore)
                 ? hit.point : feet;
             slamRing.position = slamCenter + Vector3.up * 0.03f;
@@ -163,7 +217,7 @@ namespace Boki.Enemies
             // Airborne Boki clears the ring: damage only when close to the ground plane as well as inside the radius.
             bool grounded = offset.y < 1f;
             offset.y = 0f;
-            if (grounded && offset.sqrMagnitude <= slamRadius * slamRadius) target.TakeDamage(slamDamage);
+            if (grounded && offset.sqrMagnitude <= slamRadius * slamRadius) target.TakeDamage(Mathf.RoundToInt(slamDamage * attackDamageMultiplier));
             SlamLanded?.Invoke();
         }
     }

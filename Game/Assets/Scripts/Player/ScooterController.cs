@@ -210,6 +210,13 @@ namespace Boki.Player
             return distance <= controller.skinWidth + 0.03f;
         }
 
+        public void ApplyKnockback(Vector3 direction, float speed)
+        {
+            if (!isActiveAndEnabled || motion == null || playerHealth == null || !playerHealth.IsAlive
+                || (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive)) return;
+            motion.ApplyKnockback(direction.x, direction.z, speed);
+        }
+
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (motion != null && hit.normal.y < walkableNormalY && hit.normal.y > -0.9f)

@@ -47,7 +47,8 @@ namespace Boki.Routes
         }
         private void Damaged()
         {
-            bossStatus.text = $"THE PROFESSOR  {bossHealth.Current}/{bossHealth.Maximum}";
+            // ProfessorHealthBar owns the boss display; retain the scene reference for older scenes.
+            bossStatus.text = "";
             if (!entered || reinforced || bossHealth.Current > bossHealth.Maximum / 2
                 || RunSession.Instance.State.Choice(RouteLevel.Feri) != RouteChoice.B) return;
             reinforced = true;

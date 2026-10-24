@@ -48,6 +48,17 @@ namespace Boki.Player
             hasBeenAirborne = hopEligible = false;
         }
 
+        public void ApplyKnockback(float directionX, float directionZ, float speed)
+        {
+            if (float.IsNaN(speed) || float.IsInfinity(speed) || speed < 0f)
+                throw new ArgumentOutOfRangeException(nameof(speed));
+            var direction = new Vector2(directionX, directionZ);
+            if (direction.LengthSquared() < 0.000001f || speed == 0f) return;
+            horizontal = Vector2.Normalize(direction) * speed;
+            BoostRemaining = bufferRemaining = 0f;
+            hopEligible = false;
+        }
+
         public void SuspendInput()
         {
             horizontal = Vector2.Zero;
