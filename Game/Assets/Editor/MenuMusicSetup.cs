@@ -30,8 +30,15 @@ namespace Boki.Editor
                 Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
                 var screen = UnityEngine.Object.FindFirstObjectByType<MenuScreen>();
                 if (screen == null) throw new InvalidOperationException("Menu_Preview has no MenuScreen.");
-                if (UnityEngine.Object.FindFirstObjectByType<MenuMusic>() != null)
+                var existingMusic = UnityEngine.Object.FindFirstObjectByType<MenuMusic>();
+                if (existingMusic != null)
                 {
+                    if (EnsureListener(existingMusic.gameObject))
+                    {
+                        EditorSceneManager.SaveScene(scene, ScenePath);
+                        Debug.Log("MENU_MUSIC_WIRED: added the missing Audio Listener to " + ScenePath);
+                        return;
+                    }
                     Debug.Log("Main menu music is already wired; nothing changed.");
                     return;
                 }
@@ -46,6 +53,7 @@ namespace Boki.Editor
                 music.FindProperty("screen").objectReferenceValue = screen;
                 music.FindProperty("source").objectReferenceValue = source;
                 music.ApplyModifiedPropertiesWithoutUndo();
+                EnsureListener(host);
                 EditorSceneManager.SaveScene(scene, ScenePath);
                 Debug.Log("MENU_MUSIC_WIRED: added '" + ObjectName + "' to " + ScenePath);
             }
@@ -54,6 +62,17 @@ namespace Boki.Editor
                 if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
                     EditorSceneManager.RestoreSceneManagerSetup(previous);
             }
+        }
+
+        private static bool EnsureListener(GameObject host)
+        {
+            foreach (var listener in UnityEngine.Object.FindObjectsByType<AudioListener>(FindObjectsSortMode.None))
+                if (listener.isActiveAndEnabled) return false;
+
+            var menuListener = host.GetComponent<AudioListener>();
+            if (menuListener == null) menuListener = host.AddComponent<AudioListener>();
+            menuListener.enabled = true;
+            return true;
         }
 
         // Streaming keeps the 64 s loop out of memory; Vorbis loops without a gap.

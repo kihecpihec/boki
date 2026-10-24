@@ -8,8 +8,12 @@ settings are outside this change.
 The visual references are [main menu](../../output/start-screen-mock/start-screen-mock.png)
 and [pause menu](../../output/pause-screen-mock/pause-screen-mock.png).
 The first pass uses the existing background image, a built-in font, restrained
-red edges and a selected-row highlight. Exact typography, scanlines, audio and
+red edges and a selected-row highlight. Exact typography, scanlines and
 animated backgrounds remain presentation work.
+
+`Menu Music` has a 2D looping Audio Source, `MenuMusic`, and an enabled Audio
+Listener so this camera-free UI scene can play its main menu track. The music
+setup command also repairs a missing listener when music is already wired.
 
 ## Open and use
 
@@ -43,6 +47,10 @@ Manual verification:
 6. The pause summary displays `--` until supplied with real data. Quit displays
    a preview notice. Exit Play Mode normally; it must restore the previous
    cursor state. Console must show no new errors.
+7. With Game view audio unmuted, verify the main menu music fades in. New Run
+   fades it out, the pause menu stays silent, and Quit to Menu fades it back in.
+   Confirm there is exactly one enabled Audio Listener and no missing-listener
+   warning. No additional Inspector assignments are required.
 
 ## Connect later
 
@@ -70,6 +78,10 @@ settings during integration, not during preview work.
 
 ## Verification record
 
+- Audio Listener fix: Unity `6000.6.7f1` compiled the updated music setup and
+  repaired the existing scene through `MenuMusicSetup.Apply`. The saved scene
+  has one enabled listener on `Menu Music`; audible playback and fade checks
+  remain manual Play Mode checks.
 - Unity `6000.6.7f1`: scripts compiled, preview scene and presentation assets
   generated with Editor-created `.meta` files. A subsequent batch invocation
   exited successfully and preserved the existing preview scene.
