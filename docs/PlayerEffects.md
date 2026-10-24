@@ -4,6 +4,8 @@ Open `Game/` in Unity **6000.6.7f1**, open `Assets/Scenes/Player_Model_Test.unit
 
 The scene now starts in an isolated enemy-testing arena with the same player. See [enemy sandbox controls and checks](plans/player-test-arena-verification.md). Press Escape to use its panel; **Original movement area** returns to the original ramp and obstacles. The separate stations include contact-collected sandbox XP packs and battery charges. Production XP progression and upgrade selection remain separate work.
 
+For an isolated player setup, open `Assets/Scenes/Boki_Solo_Test.unity`. This separate copy keeps the rigged player, movement, camera, HUD and battery charges on a flat floor with boundary walls. It removes enemy stations and obstacles. Both scenes attach the laser and headlight to the scooter's imported sockets so the effects follow its visual motion. See [solo scene setup and verification](plans/boki-solo-verification.md).
+
 The scene combines the rigged Boki and scooter, riding animation, movement and camera, wheel rotation and visual lean, speed FOV, boost HUD, battery headlight and darkness overlay, recharge pickups, cyan/magenta boost trails, red damage flash, automatic laser with an impact burst, takeoff lean, landing squash, Guilt warning flicker/camera pulse, and pickup glows. The shared player prefabs and other developers' map scenes are not modified by the consolidation tool.
 
 ## Controls and manual verification
@@ -24,6 +26,8 @@ Check that trails, laser, headlight, and model render without pink materials or 
 ## Scene wiring
 
 **Boki → Player Model → Consolidate Effects in Test Scene** refreshes the scene-local setup. Save any dirty scenes and exit Play Mode first. The command opens and saves only `Player_Model_Test`, preserves its existing arena and GUID, and reuses named objects/components on repeated runs. It does not modify build settings, map scenes, or shared prefabs.
+
+After using that legacy consolidation command, run **Boki → Player Model → Create Solo Scene and Fix Scooter Emitters** to restore the scooter socket attachments and slimmer beam in both player scenes.
 
 `BokiPlayerEffects` owns two short rear `TrailRenderer`s and the model's mesh renderers. Trails reuse `Assets/Effects/Boki/BoostTrail.mat`, last 0.25 s, and cast no shadows. Damage uses per-material property blocks, without cloning shared materials. `BokiModelTestEffects` connects the controller's actual boost timer and accepted health decreases to those effects and provides the scene's H/T/B/G/X test controls. It subscribes to the three `BatteryCharge.Collected` events, which fire only after an accepted recharge, and observes XP gains from the shared run. It does not drive the player around automatically.
 
