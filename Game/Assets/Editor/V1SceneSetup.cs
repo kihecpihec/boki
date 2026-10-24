@@ -152,6 +152,7 @@ namespace Boki.Editor
             var laser = player.GetComponent<AutoLaser>();
             if (battery == null || laser == null) throw new InvalidOperationException("Player_Model_Test must have its current light and laser setup.");
             Ref(battery, "player", health);
+            ScooterLightSetup.ConfigureWideWhiteLight(scene);
             var hud = Find<PlayerHud>(scene);
             if (hud == null) throw new InvalidOperationException("Player_Model_Test must have Ismar's HUD.");
             Ref(hud, "health", health); Ref(hud, "movement", player); Ref(hud, "battery", battery);

@@ -336,6 +336,22 @@ namespace Boki.Editor
         private static void Validate(Scene scene)
         {
             ValidateEnemyEffects(scene);
+            var battery = new SerializedObject(V1SceneSetup.Find<LightBattery>(scene));
+            var lamp = battery.FindProperty("surroundingLight").objectReferenceValue as Light;
+            Check(battery.FindProperty("headlightAngle").floatValue == 140f
+                && battery.FindProperty("headlightRange").floatValue == 24f
+                && battery.FindProperty("headlightDownwardAngle").floatValue == 18f
+                && battery.FindProperty("headlightBrightnessMultiplier").floatValue == 24f,
+                "Wide, long-reaching V1 scooter beam is explicitly configured");
+            Check(lamp != null && lamp.color == Color.white && !lamp.useColorTemperature
+                && lamp.shadows == LightShadows.None, "V1 scooter beam stays white without additional shadows");
+            Check(battery.FindProperty("riderFillPosition").vector3Value == new Vector3(0f, 1.6f, -0.9f)
+                && battery.FindProperty("nearbyBrightnessMultiplier").floatValue == 1.3f,
+                "Restrained V1 rider fill avoids a backpack hotspot");
+            var darkness = new SerializedObject(V1SceneSetup.Find<ScooterDarkness>(scene));
+            Check(darkness.FindProperty("chargedRadiusMultiplier").floatValue == 2.4f
+                && darkness.FindProperty("darknessOpacity").floatValue == 0.3f,
+                "V1 darkness opening accommodates the wide beam");
             Check(V1SceneSetup.All<RouteGate>(scene).Count == 3, "Exactly three route gates");
             Check(V1SceneSetup.All<PlayerHud>(scene).Count == 1, "One real HUD");
             Check(V1SceneSetup.All<PlayerGameplayFeedback>(scene).Count == 1, "One production feedback bridge");
