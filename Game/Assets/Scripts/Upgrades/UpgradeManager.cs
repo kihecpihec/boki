@@ -12,6 +12,9 @@ namespace Boki.Upgrades
     {
         [SerializeField] private UpgradeScreen screen;
         [SerializeField] private PlayerHealth player;
+        [SerializeField] private GameObject[] batteryModules;
+        [SerializeField] private GameObject[] laserModules;
+        [SerializeField] private GameObject secondEmitter;
         private RunSession session;
         private readonly System.Random random = new System.Random();
         private CursorLockMode previousLock;
@@ -46,6 +49,9 @@ namespace Boki.Upgrades
         private void Refresh()
         {
             var state = session.State.Progression;
+            ApplyModules(batteryModules, state.Count(UpgradeId.BiggerBattery));
+            ApplyModules(laserModules, state.Count(UpgradeId.RaveOverdrive));
+            if (secondEmitter != null) secondEmitter.SetActive(state.HasDoubleTrouble);
             if (!player.IsAlive || !state.HasPendingSelection) { Close(); return; }
             if (!showing)
             {
@@ -68,6 +74,13 @@ namespace Boki.Upgrades
                 screen.SetCard(i, Title(id), Description(id), tag, recovery);
             }
             screen.ShowOffer(state.OfferCount);
+        }
+
+        private static void ApplyModules(GameObject[] modules, int count)
+        {
+            if (modules == null) return;
+            for (int i = 0; i < modules.Length; i++)
+                if (modules[i] != null) modules[i].SetActive(i < count);
         }
 
         private void Choose(int index)

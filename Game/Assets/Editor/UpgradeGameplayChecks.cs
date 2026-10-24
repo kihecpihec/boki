@@ -106,17 +106,38 @@ namespace Boki.Editor
                         && Object.FindObjectsByType<UnityEngine.EventSystems.EventSystem>().Length == 1,
                         "Combined scene must have one upgrade manager, HUD and EventSystem.");
                     var arena = Object.FindFirstObjectByType<PlayerTestArena>();
-                    Require(arena != null && arena.GetComponentsInChildren<Boki.Enemies.EnemyTestStation>().Length == 8,
-                        "Upgrade setup must preserve all eight arena stations.");
-                    Require(screen.GetComponent<Canvas>().sortingOrder > arena.GetComponentInChildren<Canvas>().sortingOrder,
-                        "Upgrade selection must cover the arena panel.");
+                    if (player.gameObject.scene.path == UpgradeTestLab.ScenePath)
+                    {
+                        Require(arena == null && Object.FindObjectsByType<Boki.Enemies.EnemyTestStation>().Length == 0,
+                            "Compact upgrade sandbox must contain no enemy stations.");
+                        Require(Object.FindObjectsByType<XpPickup>().Length == 40, "Compact sandbox must have 40 XP packs.");
+                    }
+                    else
+                    {
+                        Require(arena != null && arena.GetComponentsInChildren<Boki.Enemies.EnemyTestStation>().Length == 8,
+                            "Model demonstration must preserve all eight arena stations.");
+                        Require(screen.GetComponent<Canvas>().sortingOrder > arena.GetComponentInChildren<Canvas>().sortingOrder,
+                            "Upgrade selection must cover the arena panel.");
+                    }
                     laser.enabled = false;
                     player.TakeDamage(10);
                     session.State.LightBattery.Current = 50;
                     session.State.Progression.AddXp(33);
                     Require(screen.IsVisible && Time.timeScale == 0f, "Threshold must show existing mockup and pause.");
-                    arena.Visit(arena.GetComponentsInChildren<Boki.Enemies.EnemyTestStation>()[0]);
-                    Require(arena.ActiveStation == null, "Station controls must reject actions during upgrade selection.");
+                    var screenData = new SerializedObject(screen);
+                    var button = (UnityEngine.UI.Button)screenData.FindProperty("buttons").GetArrayElementAtIndex(1).objectReferenceValue;
+                    UnityEngine.EventSystems.ExecuteEvents.Execute(button.gameObject,
+                        new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current),
+                        UnityEngine.EventSystems.ExecuteEvents.pointerEnterHandler);
+                    var arrow = (RectTransform)screenData.FindProperty("selectionArrow").objectReferenceValue;
+                    Require(arrow.anchoredPosition.y == -410
+                        && UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == button.gameObject,
+                        "Mouse hover must move the red selection bar and keyboard selection together.");
+                    if (arena != null)
+                    {
+                        arena.Visit(arena.GetComponentsInChildren<Boki.Enemies.EnemyTestStation>()[0]);
+                        Require(arena.ActiveStation == null, "Station controls must reject actions during upgrade selection.");
+                    }
                     batteryBefore = session.State.Battery;
                     playerBefore = player.transform.position;
                     revision = session.State.Progression.OfferVersion;
@@ -128,6 +149,7 @@ namespace Boki.Editor
                     Require(session.State.Battery == batteryBefore && player.transform.position == playerBefore, "Battery and movement must freeze.");
                     session.SetPaused(PauseReason.Menu, true);
                     screen.RequestChoice(0);
+                    CheckHardware();
                     Require(session.State.Progression.Selections == 1 && screen.IsVisible && Time.timeScale == 0f, "Queued choice must stay paused.");
                     Require(!session.State.Progression.TrySelect(0, revision), "Stale offer must be rejected.");
                     stage++;
@@ -138,8 +160,10 @@ namespace Boki.Editor
                     if (!session.State.Progression.IsMaxLevel)
                     {
                         screen.RequestChoice(0);
+                        CheckHardware();
                         return;
                     }
+                    CheckHardware();
                     Require(!screen.IsVisible && Time.timeScale == 0f, "Completing choices must retain menu pause.");
                     session.SetPaused(PauseReason.Menu, false);
                     Require(Time.timeScale > 0f && !session.State.Progression.AddXp(), "Max level stops collection and resumes after final pause reason.");
@@ -160,6 +184,7 @@ namespace Boki.Editor
                     int index = Enumerable.Range(0, session.State.Progression.OfferCount).First(i => session.State.Progression.Offer(i) == UpgradeId.DoubleTrouble);
                     // Direct rule selection avoids the screen's deliberate same-frame input guard.
                     Require(session.State.Progression.TrySelect(index, session.State.Progression.OfferVersion), "Double Trouble must apply.");
+                    CheckHardware();
                     first = Target(player.transform.position + player.transform.forward * 4f);
                     second = Target(player.transform.position + player.transform.forward * 5f);
                     laser.enabled = true;
@@ -195,6 +220,24 @@ namespace Boki.Editor
                 stage = 99;
                 Debug.LogException(exception);
                 EditorApplication.ExitPlaymode();
+            }
+        }
+
+        private static void CheckHardware()
+        {
+            var data = new SerializedObject(player.GetComponent<UpgradeManager>());
+            CheckModules("batteryModules", session.State.Progression.Count(UpgradeId.BiggerBattery), 2);
+            CheckModules("laserModules", session.State.Progression.Count(UpgradeId.RaveOverdrive), 3);
+            Require(((GameObject)data.FindProperty("secondEmitter").objectReferenceValue).activeSelf
+                == session.State.Progression.HasDoubleTrouble, "Second emitter must match Double Trouble ownership.");
+
+            void CheckModules(string field, int count, int length)
+            {
+                var modules = data.FindProperty(field);
+                Require(modules.arraySize == length, "Hardware assignments missing: " + field);
+                for (int i = 0; i < modules.arraySize; i++)
+                    Require(((GameObject)modules.GetArrayElementAtIndex(i).objectReferenceValue).activeSelf == (i < count),
+                        "Visible hardware must match accepted upgrade stacks: " + field);
             }
         }
 

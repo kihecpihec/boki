@@ -1,27 +1,24 @@
 # Upgrade test scene
 
-Open `Game/Assets/Scenes/Upgrade_Test.unity` in Unity 6000.6.7f1 and enter Play Mode. This dedicated upgrade sandbox copies the shared model demonstration, including its movement course, eight enemy stations, HUD, XP pickups and battery charges. `Player_Model_Test`, production scenes and shared prefabs are unchanged.
+Open `Game/Assets/Scenes/Upgrade_Test.unity` in Unity 6000.6.7f1 and enter Play Mode. The compact sandbox contains Boki, a riding floor, HUD, upgrade screen and 40 contact XP packs. Copied enemy stations and movement obstacles have been removed. `Player_Model_Test` retains its full sandbox and also demonstrates the upgrade hardware. Production scenes and shared prefabs are unchanged.
 
-Open **Boki → Upgrades → Open Test Controls** for Editor-only run diagnostics. No Inspector assignments are needed. **Create Separate Test Scene** creates the scene only when missing and preserves later scene edits. The scene is intentionally not added to the shared build list; this is an Editor sandbox.
+No Inspector assignments are needed. `UpgradeManager.batteryModules`, `laserModules` and `secondEmitter` are assigned to scene-local scooter parts. **Boki → Upgrades → Simplify Test Scene** rebuilds this dedicated sandbox and wires hardware in both model scenes; it refuses Play Mode and dirty scenes. **Open Test Controls** offers real XP, recovery, independent pause and reset diagnostics. This Editor sandbox is intentionally absent from the shared build list.
 
 ## Manual checks
 
-- Add one XP or reach the next threshold. Confirm the real card screen opens, gameplay pauses, and mouse, 1/2/3 and arrows/Enter select exactly one reward. Queue all selections to exercise consecutive offers and the six-selection ceiling.
-- Observe stack counts, eligibility, laser multiplier, riding bonus and battery capacity in Test Controls. Choose different builds across sandbox resets; offers remain random and retain production eligibility. The lab does not bypass caps or grant otherwise unavailable rewards.
-- Rave Overdrive: compare hits against reset regular enemies. Turbo Skiro: compare riding along the movement course; boost speed stays unchanged. Double Trouble: use a station with multiple visible enemies and confirm two distinct targets take damage.
-- Set battery to 50%, choose Bigger Battery, and confirm the charge percentage is preserved. Empty the battery to check movement/light feedback and collect an arena charge. Damage the player before a threshold to make Emergency Snack eligible; check healing clamps at maximum. Battery Charge is a fallback reward when fewer than three ordinary rewards remain, rather than an always-offered upgrade. Follow [Story §5](../Story.md#5-upgrades-and-replay-motivation) for eligibility and caps.
-- Choose Panic Mode, visit a Guilt station from the arena panel (Esc), and boost while Guilt chases within 10 m. Check PANIC READY and the boosted speed/duration, then compare outside that condition. Use the existing stations and normal gameplay to test the effect.
-- Enable independent menu pause, finish queued choices, and confirm gameplay stays paused until the menu pause is disabled. Kill the player during a choice: cards must close. Restart the sandbox: HP/battery reset, XP/stacks clear, and controls work again.
-- Use physical XP pickups and enemy kills as well as diagnostic XP. Confirm kills never restore battery. Check that the Console has no new errors and that restarting creates no duplicate HUD, EventSystem, or upgrade manager.
+- Ride through gold XP packs. At thresholds, gameplay pauses. Hover each card: the red selection bar follows it, and Enter selects that card. Alternate hover with arrows, mouse clicks and 1/2/3. When only two rewards remain, the hidden third slot cannot be selected.
+- Choose Rave Overdrive: an amplifier appears at the laser for each stack (up to three). Double Trouble adds a second emitter. Bigger Battery adds a deck-mounted battery module for each stack (up to two); current charge percentage remains unchanged. These parts have no colliders and do not modify gameplay stats.
+- Turbo Skiro, Panic Mode and recovery rewards add no permanent model parts. Their existing movement, boost, HP and battery feedback remains. Use `Player_Model_Test` enemy stations to verify laser hits and Panic Mode near Guilt; the upgrade sandbox has no enemies.
+- Queue remaining selections in Test Controls. Finish them while independently paused and confirm gameplay stays paused until that pause is released. Kill the player during an offer: cards close. Restart the sandbox: XP/stacks clear, hardware disappears, all 40 packs return, and controls remain functional.
+- Check the Console for new errors and confirm there is one HUD, EventSystem and upgrade manager. Existing deterministic behavior follows [Story §5](../Story.md#5-upgrades-and-replay-motivation).
 
-**Boki → Upgrades → Run Separate Test Scene Checks** runs the existing integration sequence against this scene: required wiring, eight preserved stations, queued selections, independent pause, stale selection rejection, Double Trouble hits, XP contact and death cleanup. It restores the previous scene setup. EditMode upgrade rules tests cover deterministic progression behavior separately.
+**Run Separate Test Scene Checks** verifies the compact scene, 40 packs, pointer selection, queued choices, hardware counts, independent pause, stale selection rejection, Double Trouble hits, contact XP and death cleanup. **Run Gameplay Checks** exercises the shared model scene while verifying its eight enemy stations are preserved. Both restore the prior scene setup.
 
-Windows player performance remains a separate target-machine check; this Editor sandbox does not establish Windows compatibility or FPS.
+Interactive appearance and Windows player performance need manual verification; Linux batch checks do not establish Windows FPS or compatibility.
 
-## Validation in this change
+## Validation
 
-- Unity 6000.6.7f1 imported the new Editor script and generated the scene and both `.meta` files.
-- The separate-scene integration sequence completed with `UPGRADE_GAMEPLAY_PASSED` and exit code 0.
-- The architecture asset audit passed with no failures; existing warnings remain. `git diff --check` passed.
-- Unity's Quick Search startup indexer logged an `ArgumentOutOfRangeException` in `UnityEditor.Search.SearchDatabase`; it did not stop the integration sequence. No game-code exception was logged.
-- Interactive visual checks, the Editor diagnostics window, and Windows player performance have not been manually verified. Deterministic rules were unchanged; EditMode tests were not rerun.
+- Unity 6000.6.7f1 imported and saved both scenes successfully.
+- Compact sandbox and shared model scene integration checks both exited 0 with `UPGRADE_GAMEPLAY_PASSED`, including hover, hardware, XP contact and pause checks. The model scene retained its eight stations.
+- Architecture audit: no failures; existing warnings remain. `git diff --check` passed.
+- Gameplay rules were unchanged; EditMode tests were not rerun. Interactive visual review and Windows player testing remain manual.
