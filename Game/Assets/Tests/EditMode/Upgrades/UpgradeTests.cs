@@ -40,7 +40,7 @@ namespace Boki.Tests
         public void ThresholdsAreCumulativeAndChoicesResolveSequentially()
         {
             var state = new UpgradeState(new HealthState(100), new LightBatteryState());
-            int[] thresholds = { 15, 35, 60, 90, 125, 165 };
+            int[] thresholds = { 8, 18, 30, 45, 65, 90 };
             foreach (int threshold in thresholds)
             {
                 state.AddXp(threshold - state.XP - 1);
@@ -63,7 +63,7 @@ namespace Boki.Tests
         {
             var state = new UpgradeState(new HealthState(100), new LightBatteryState());
             state.AddXp(int.MaxValue);
-            Assert.That(state.XP, Is.EqualTo(165));
+            Assert.That(state.XP, Is.EqualTo(90));
             state.CreateOffer(new Random(2));
             int old = state.OfferVersion;
             Assert.That(state.TrySelect(-1, old), Is.False);
@@ -85,7 +85,7 @@ namespace Boki.Tests
         public void DamageStacksAdditivelyAndCapDisappearsFromOffers()
         {
             var state = new UpgradeState(new HealthState(100), new LightBatteryState());
-            state.AddXp(165);
+            state.AddXp(90);
             for (int i = 1; i <= 3; i++)
             {
                 Choose(state, UpgradeId.RaveOverdrive);
@@ -101,7 +101,7 @@ namespace Boki.Tests
         {
             var battery = new LightBatteryState { Current = 25f };
             var state = new UpgradeState(new HealthState(100), battery);
-            state.AddXp(165);
+            state.AddXp(90);
             Choose(state, UpgradeId.BiggerBattery);
             Assert.That(battery.Capacity, Is.EqualTo(140f).Within(.001));
             Assert.That(battery.Current, Is.EqualTo(35f).Within(.001));
@@ -125,7 +125,7 @@ namespace Boki.Tests
             Assert.That(state.Eligible(UpgradeId.EmergencySnack), Is.False);
             Assert.That(state.Eligible(UpgradeId.BatteryCharge), Is.False);
             health.TakeDamage(10);
-            state.AddXp(165);
+            state.AddXp(90);
             Choose(state, UpgradeId.EmergencySnack);
             Assert.That(health.Current, Is.EqualTo(100));
             Assert.That(state.Selections, Is.EqualTo(1));
@@ -142,7 +142,7 @@ namespace Boki.Tests
             var health = new HealthState(100);
             health.TakeDamage(60);
             var state = new UpgradeState(health, new LightBatteryState());
-            state.AddXp(15);
+            state.AddXp(8);
             state.CreateOffer(new PickRandom(UpgradeId.EmergencySnack, state));
             int version = state.OfferVersion;
             health.TryHeal(100);
@@ -158,7 +158,7 @@ namespace Boki.Tests
             var health = new HealthState(100);
             var battery = new LightBatteryState();
             var state = new UpgradeState(health, battery);
-            state.AddXp(165);
+            state.AddXp(90);
             Choose(state, UpgradeId.RaveOverdrive);
             Choose(state, UpgradeId.RaveOverdrive);
             Choose(state, UpgradeId.RaveOverdrive);
@@ -175,7 +175,7 @@ namespace Boki.Tests
         {
             var battery = new LightBatteryState { Current = 90f };
             var state = new UpgradeState(new HealthState(100), battery);
-            state.AddXp(165);
+            state.AddXp(90);
             Choose(state, UpgradeId.RaveOverdrive);
             Choose(state, UpgradeId.RaveOverdrive);
             Choose(state, UpgradeId.RaveOverdrive);
@@ -198,7 +198,7 @@ namespace Boki.Tests
                 var battery = new LightBatteryState();
                 var state = new UpgradeState(health, battery);
                 var random = new Random(seed);
-                state.AddXp(165);
+                state.AddXp(90);
                 while (!state.IsMaxLevel)
                 {
                     if (seed % 2 == 0) health.TakeDamage(1);
@@ -218,7 +218,7 @@ namespace Boki.Tests
         {
             var state = new UpgradeState(new HealthState(100), new LightBatteryState());
             Assert.That(state.PanicEligible(true, 0f), Is.False);
-            state.AddXp(165);
+            state.AddXp(90);
             Choose(state, UpgradeId.PanicMode);
             Assert.That(state.PanicEligible(true, 10f), Is.True);
             Assert.That(state.PanicEligible(true, 10.001f), Is.False);
@@ -234,7 +234,7 @@ namespace Boki.Tests
         public void RunCarriesProgressAndResetsItTogetherWithHealthAndBattery()
         {
             var run = new RunState(default, 0);
-            run.Progression.AddXp(15);
+            run.Progression.AddXp(8);
             Choose(run.Progression, UpgradeId.RaveOverdrive);
             var original = run.Progression;
             run.TrySelect(RouteLevel.Forest, RouteChoice.A);
