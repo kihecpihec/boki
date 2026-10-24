@@ -22,9 +22,9 @@ namespace Boki.Editor
         private static LightBattery battery;
         private static Light lamp;
         private static BokiPlayerEffects effects;
-        private static ParticleSystem glow, impact;
+        private static ParticleSystem glow, impact, dirt, landing;
         private static BatteryCharge charge;
-        private static float fullIntensity, pausedTime, restVisualHeight;
+        private static float fullIntensity, pausedTime, restVisualHeight, pausedDirtTime;
         private static EnemyHealth laserTarget;
         private static Vector3 colliderScale;
 
@@ -110,6 +110,10 @@ namespace Boki.Editor
                         battery = Object.FindAnyObjectByType<LightBattery>();
                         if (battery == null || elapsed < 0.2) return;
                         effects = battery.GetComponent<BokiPlayerEffects>();
+                        dirt = battery.transform.Find("Visuals/Rear Wheel Dirt").GetComponent<ParticleSystem>();
+                        landing = battery.transform.Find("Visuals/Landing Dust").GetComponent<ParticleSystem>();
+                        Require(dirt.main.maxParticles <= 64 && landing.main.maxParticles <= 24,
+                            "Riding effects must keep their particle budget.");
                         glow = battery.transform.Find("Visuals/Pickup Glow").GetComponent<ParticleSystem>();
                         impact = battery.transform.Find("Laser Impact").GetComponent<ParticleSystem>();
                         var settings = new SerializedObject(battery);
@@ -158,10 +162,14 @@ namespace Boki.Editor
                         Require(battery.State.Current > 70 && glow.particleCount > 0, "Contact recharge must produce a pickup glow.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         pausedTime = glow.time;
+                        dirt.Emit(4);
+                        dirt.Pause(false);
+                        pausedDirtTime = dirt.time;
                         Next();
                         break;
                     case 5:
                         if (elapsed < 0.2) return;
+                        Require(dirt.time == pausedDirtTime, "Shared pause must freeze riding dirt.");
                         Require(glow.time == pausedTime, "Shared pause must freeze pickup particles.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = false;
                         charge.gameObject.SetActive(false);
@@ -182,6 +190,7 @@ namespace Boki.Editor
                         Require(battery.WarningStrength == 1f
                             && battery.GetComponent<ScooterPresentation>().GuiltWarningStrength == 1f,
                             "Shared Guilt warning must drive the headlight and camera.");
+                        Require(lamp.color.r > lamp.color.b * 2f, "Guilt warning must visibly tint the lamp red.");
                         RunSession.Instance.State.Guilt.Reset();
                         battery.GetComponent<BokiModelTestEffects>().SpawnLaserTarget();
                         laserTarget = Object.FindAnyObjectByType<EnemyHealth>();
@@ -209,6 +218,7 @@ namespace Boki.Editor
                         break;
                     case 9:
                         if (battery.transform.Find("Visuals").localScale.y >= restVisualHeight * 0.98f) return;
+                        Require(landing.particleCount > 0, "Landing must emit a dust burst.");
                         Require(battery.transform.localScale == colliderScale, "Landing squash must preserve the collision root scale.");
                         Next();
                         break;
@@ -217,6 +227,7 @@ namespace Boki.Editor
                         // Batch frame rate varies; let active simulation finish the recovery.
                         if (!Mathf.Approximately(battery.transform.Find("Visuals").localScale.y, restVisualHeight)) return;
                         effects.enabled = false;
+                        Require(dirt.particleCount == 0 && landing.particleCount == 0, "Disabling effects must clear riding particles.");
                         Require(glow.particleCount == 0, "Disabling effects must clear pickup particles.");
                         stage = 99;
                         EditorApplication.ExitPlaymode();
