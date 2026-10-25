@@ -16446,6 +16446,10 @@ PrefabInstance:
       propertyPath: motor
       value:
       objectReference: {fileID: 8300000, guid: a24c1c6ec320341329b41ddb49320354, type: 3}
+    - target: {fileID: 545227383665380783, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+      propertyPath: departureLine
+      value:
+      objectReference: {fileID: 8300000, guid: 862bce312236164c191b9893b14269b0, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

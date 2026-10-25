@@ -19,6 +19,45 @@ namespace Boki.Editor
         private const string AudioPath = "Assets/Audio/Sfx/Recorded/";
         private static readonly string[] Scenes = { "Player_Model_Test", "V1_Pohorje", "V1_Maribor", "V1_FERI" };
 
+        [MenuItem("Boki/Audio/Apply Departure Voice And Repetition")]
+        public static void ApplyDepartureVoice()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("Exit Play Mode first.");
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                if (SceneManager.GetSceneAt(i).isDirty)
+                    throw new InvalidOperationException("Save dirty scenes first.");
+            AssetDatabase.Refresh();
+            var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(AudioPath + "Dialogue/profesor_will_be_mad.mp3");
+            if (clip == null) throw new InvalidOperationException("Import profesor_will_be_mad.mp3 first.");
+            var importer = (AudioImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(clip));
+            importer.forceToMono = true;
+            importer.SaveAndReimport();
+            SceneSetup[] previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string name in Scenes)
+                {
+                    Scene scene = EditorSceneManager.OpenScene("Assets/Scenes/" + name + ".unity");
+                    var players = All<PlayerAudio>(scene);
+                    if (players.Length != 1) throw new InvalidOperationException(name + " must have one PlayerAudio.");
+                    var binding = new SerializedObject(players[0]);
+                    Set(binding, "departureLine", clip);
+                    binding.FindProperty("laserSoundInterval").floatValue = 0.5f;
+                    binding.FindProperty("guiltVoiceInterval").floatValue = 3.5f;
+                    Save(binding);
+                    EditorSceneManager.SaveScene(scene);
+                }
+                Debug.Log("DEPARTURE_AUDIO_WIRED: Player_Model_Test and V1 scenes.");
+            }
+            finally
+            {
+                if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
         [MenuItem("Boki/Audio/Wire V1 FERI Boss Music")]
         public static void WireBossMusic()
         {
@@ -174,6 +213,9 @@ namespace Boki.Editor
             SetArray(binding, "guiltVariations", Clips("Guilt/voice", 2));
             Set(binding, "guiltReaction", Clip("Dialogue/kaj_je_to_blo"));
             Set(binding, "snack", Clip("Player/snack"));
+            Set(binding, "departureLine", AssetDatabase.LoadAssetAtPath<AudioClip>(AudioPath + "Dialogue/profesor_will_be_mad.mp3"));
+            binding.FindProperty("laserSoundInterval").floatValue = 0.5f;
+            binding.FindProperty("guiltVoiceInterval").floatValue = 3.5f;
             Save(binding);
         }
 
