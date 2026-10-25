@@ -4,9 +4,9 @@ The authored script and presentation requirements live in [Story §3](../Story.m
 
 ## Integration
 
-`RunState.TryConsumePhoneStory` owns once-per-level eligibility and New Run reset. `PhoneStoryTrigger` identifies the assigned player in a primitive trigger. `PhoneStoryView` presents one card and one bounded audio source, without input or camera control. It uses the shared gameplay/pause state, skips occupied combat spaces and scripted chases, and dismisses for damage, route selection, loading, death and boss entry. Optional `reaction` clips are unassigned; no new dialogue recordings were created.
+`RunState.TryConsumePhoneStory` owns once-per-level eligibility and New Run reset. `PhoneStoryTrigger` identifies the assigned player in a primitive trigger. `PhoneStoryView` presents one card and one bounded audio source, without input or camera control. The card is a phone notification (header, chat bubbles, slide in/out); the view owns all of its geometry, colours and the generated rounded sprite, so a restyle never needs the scenes re-saved. It uses the shared gameplay/pause state, skips occupied combat spaces and scripted chases, and dismisses for damage, route selection, loading, death and boss entry. Optional `reaction` clips are unassigned; no new dialogue recordings were created.
 
-`Boki/Story/Apply Phone Notifications` is an idempotent, targeted setup command for the three V1 scenes and the required `Player_Model_Test` demonstration. The level-scene edits were explicitly authorized in this task. It refuses Play Mode and dirty scenes, restores the previous scene setup, and adds a separate `Phone Story` root without rebuilding maps or changing shared prefabs/build settings. Existing notification roots retain their Inspector assignments; rerunning only corrects trigger position/size to the authored setup.
+`Boki/Story/Apply Phone Notifications` is an idempotent, targeted setup command for the three V1 scenes and the required `Player_Model_Test` demonstration. The level-scene edits were explicitly authorized in this task, and again for the notification restyle. For roots built before the restyle it adds only the missing `Icon` and two `Bubble` children and keeps every existing assignment (`message` is read into `header` through `FormerlySerializedAs`). It refuses Play Mode and dirty scenes, restores the previous scene setup, and adds a separate `Phone Story` root without rebuilding maps or changing shared prefabs/build settings. Existing notification roots retain their Inspector assignments; rerunning only corrects trigger position/size to the authored setup.
 
 | Scene | Trigger placement |
 |---|---|
@@ -17,9 +17,9 @@ The authored script and presentation requirements live in [Story §3](../Story.m
 
 Inspector bindings under each `Phone Story` root:
 
-- `PhoneStoryView`: `card` = Notification Card CanvasGroup; `message` = Message Text; `source` = root AudioSource; `notification` = existing `intro_phone_beep.wav`; optional `reaction`; `displaySeconds` = 6.
+- `PhoneStoryView`: `card` = Notification Card CanvasGroup (its `Image` is the background); `header` = Header Text; `icon` = Icon Image; `bubbles` = two entries of Bubble CanvasGroup, its Image and its child Text; `source` = root AudioSource; `notification` = existing `intro_phone_beep.wav`; optional `reaction`; `displaySeconds` = 6.
 - `PhoneStoryTrigger`: `player` = scene PlayerHealth; `view` = root PhoneStoryView; `level` = Forest/City/Feri; BoxCollider has Is Trigger enabled.
-- Canvas scales from 1280 × 720; card sits below the top-left location label. No raycasts or interactive controls.
+- Canvas scales from 1280 × 720; card sits below the top-left location label and sizes itself to its text. No raycasts or interactive controls.
 
 The FERI beep uses falling playback pitch for an unsettling tail. After the reminder has appeared, the first FERI Guilt warning recalls the same beep once at quarter-speed alongside the established warning audio. It never triggers a chase or changes pressure timing. FERI's existing fork is only a few metres past arrival: route selection dismisses the reminder, so full six-second reading time is not guaranteed. Test this before changing level geometry.
 
