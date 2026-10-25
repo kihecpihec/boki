@@ -82,3 +82,15 @@ Graphical review on Low and a Windows x86_64 player run on the Ryzen 5600G at 12
 - `EnemyFeedbackChecks.Run` passed (`/tmp/boki-v1-enemy-feedback.log`, `ENEMY_FEEDBACK_PASSED`). Unity also reported the previously recorded Editor Search startup `ArgumentOutOfRangeException`; its stack is in `UnityEditor.Search.SearchDatabase.EnumerateAll`.
 - Removed unrelated Unity object ordering, prefab override ordering, whitespace and HUD font serialization changes. FERI has no remaining scene diff; only the two missing scene integrations remain. Existing object blocks outside projectile overrides and scene roots are preserved. Scene object IDs are unique.
 - Architecture audit: no failures, existing warnings remain. `git diff --check` passes. No new assets or missing `.meta` files; no shared prefab, package or project-setting changes. Deterministic rules were unchanged, so EditMode rule tests were not rerun. Interactive Play Mode review and Windows/5600G verification remain pending.
+
+### Boss slam and low-health feedback
+
+`ProfessorAttackView` now emits a bounded 40-particle radial debris burst at the frozen slam center, using the existing impact-line material. `ThirdPersonCamera` applies a 0.28-second angular shake, attenuated between 6 and 24 metres from the impact. Camera position still follows the obstruction check. No new Inspector assignments or scene/prefab edits are required in the already-wired `V1_FERI` encounter.
+
+`PlayerHud` reuses its edge overlay for a red pulse at 30% HP or below, with stronger opacity toward zero health. The existing `ScreenEffectsEnabled` toggle covers this effect. Its pulse freezes during shared pause and clears on death; healing above the threshold fades it out. This also runs in the existing `Player_Model_Test` HUD without scene edits.
+
+Manual checks (scene assets remain with their existing owners):
+- In `V1_FERI`, start the professor encounter and dodge successive slams. Confirm debris appears at the warning's frozen center, the shockwave remains visible, nearby impacts shake gently, and distant impacts shake less.
+- Pause during an impact, resume, and end the fight. Confirm presentation freezes during pause and debris clears when combat ends.
+- In `Player_Model_Test`, reduce HP to 30 or less. Confirm pulsing red borders leave the centre clear; heal above 30%, die, and retry to check clearing/reset. Disable screen effects and confirm both edge warnings disappear.
+- Check the Windows player on the Ryzen 5600G; Linux batch compilation does not validate visual appearance or target performance.

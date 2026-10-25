@@ -23,6 +23,16 @@ namespace Boki.Player
         [Tooltip("Include environment layers; exclude the player layer.")]
         [SerializeField] private LayerMask obstructionMask = Physics.DefaultRaycastLayers;
 
+        private float shakeRemaining;
+        private float shakeStrength;
+        private const float ShakeDuration = 0.28f;
+
+        public void ShakeImpact(float strength)
+        {
+            shakeStrength = Mathf.Max(shakeStrength, Mathf.Clamp(strength, 0f, 0.65f));
+            shakeRemaining = ShakeDuration;
+        }
+
         private Transform dialogueTarget;
 
         public void SetDialogueTarget(Transform target) => dialogueTarget = target;
@@ -67,6 +77,7 @@ namespace Boki.Player
             if (enabledLookAction && lookAction != null && lookAction.action != null)
                 lookAction.action.Disable();
             enabledLookAction = false;
+            shakeRemaining = shakeStrength = 0f;
             SetCursorCaptured(false);
         }
 
@@ -150,6 +161,16 @@ namespace Boki.Player
                 ? desiredDistance
                 : Mathf.Lerp(currentDistance, desiredDistance,
                     1f - Mathf.Exp(-distanceRecoverySpeed * Time.deltaTime));
+            // Rotate the resolved camera so shaking cannot push its position through a wall.
+            if (shakeRemaining > 0f)
+            {
+                shakeRemaining = Mathf.Max(0f, shakeRemaining - Time.deltaTime);
+                float envelope = shakeRemaining / ShakeDuration;
+                float phase = (ShakeDuration - shakeRemaining) * 95f;
+                rotation *= Quaternion.Euler(Mathf.Sin(phase) * shakeStrength * envelope * envelope,
+                    Mathf.Sin(phase * 1.37f) * shakeStrength * envelope * envelope, 0f);
+                if (shakeRemaining == 0f) shakeStrength = 0f;
+            }
             transform.SetPositionAndRotation(origin + backward * currentDistance, rotation);
         }
     }

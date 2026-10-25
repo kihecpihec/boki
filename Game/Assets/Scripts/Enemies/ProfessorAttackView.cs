@@ -1,4 +1,6 @@
 using Boki.Core;
+using Boki.Player;
+using UnityEngine.Rendering;
 using UnityEngine;
 
 namespace Boki.Enemies
@@ -15,6 +17,8 @@ namespace Boki.Enemies
         [SerializeField] private LineRenderer shockwave;
         [SerializeField] private LineRenderer castPulse;
         private ProfessorBoss boss;
+        private ThirdPersonCamera followCamera;
+        private ParticleSystem debris;
         private Vector3 restPosition;
         private Quaternion restRotation;
         private float warningAge;
@@ -32,6 +36,8 @@ namespace Boki.Enemies
                 enabled = false;
                 return;
             }
+            if (Camera.main != null) followCamera = Camera.main.GetComponent<ThirdPersonCamera>();
+            if (debris == null) CreateDebris();
             restPosition = visual.localPosition;
             restRotation = visual.localRotation;
             boss.BarrageSheetFired += OnSheet;
@@ -50,13 +56,68 @@ namespace Boki.Enemies
 
         private void OnSheet() => castAge = 0f;
         private void OnWarning() => warningAge = 0f;
-        private void OnImpact() => impactAge = 0f;
+        private void OnImpact()
+        {
+            impactAge = 0f;
+            if (followCamera != null)
+            {
+                float distance = Vector3.Distance(followCamera.transform.position, boss.SlamCenter);
+                followCamera.ShakeImpact(0.55f * (1f - Mathf.InverseLerp(6f, 24f, distance)));
+            }
+            if (debris == null) return;
+            debris.transform.position = boss.SlamCenter + Vector3.up * 0.1f;
+            debris.Clear();
+            for (int i = 0; i < 40; i++)
+            {
+                float angle = i * Mathf.PI * 2f / 40f;
+                var emit = new ParticleSystem.EmitParams
+                {
+                    position = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * 0.4f,
+                    velocity = new Vector3(Mathf.Cos(angle) * (3f + i % 4), 1.5f + i % 3,
+                        Mathf.Sin(angle) * (3f + i % 4)),
+                    startColor = i % 3 == 0 ? Amber : new Color(0.52f, 0.3f, 0.16f, 0.7f),
+                    startSize = i % 3 == 0 ? 0.1f : 0.24f
+                };
+                debris.Emit(emit, 1);
+            }
+        }
+
+        private void CreateDebris()
+        {
+            if (shockwave.sharedMaterial == null) return;
+            var root = new GameObject("Deadline Impact Debris");
+            root.transform.SetParent(transform, false);
+            debris = root.AddComponent<ParticleSystem>();
+            debris.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = debris.main;
+            main.playOnAwake = false;
+            main.loop = false;
+            main.startLifetime = 0.65f;
+            main.gravityModifier = 1.4f;
+            main.maxParticles = 40;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            var emission = debris.emission;
+            emission.enabled = false;
+            var shape = debris.shape;
+            shape.enabled = false;
+            var fade = debris.colorOverLifetime;
+            fade.enabled = true;
+            var gradient = new Gradient();
+            gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+            fade.color = gradient;
+            var renderer = root.GetComponent<ParticleSystemRenderer>();
+            renderer.sharedMaterial = shockwave.sharedMaterial;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+        }
 
         private void Update()
         {
             if (!boss.CanAttack) { Hide(); return; }
             if (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive) return;
             float dt = Time.deltaTime;
+            if (debris != null) debris.Simulate(dt, false, false, false);
             castAge += dt;
             impactAge += dt;
             float cast = Mathf.Clamp01(1f - castAge / 0.3f);
@@ -108,6 +169,7 @@ namespace Boki.Enemies
             if (countdown != null) countdown.enabled = false;
             if (shockwave != null) shockwave.enabled = false;
             if (castPulse != null) castPulse.enabled = false;
+            if (debris != null) debris.Clear();
             warningAge = 0f;
             castAge = impactAge = 1f;
         }
