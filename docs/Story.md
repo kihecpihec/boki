@@ -48,6 +48,22 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 ## 3. Story Beats and Script
 
+### Phone Messages — Last Night Catching Up
+
+Three short, authored notifications give Guilt a personal foundation without explaining the apocalypse. Boki makes promises, laughs them off, and fears letting people down. Preserve the Saturday reveal: notifications show no date, weekday, delivery timestamp, or evidence that settles whether the world is real.
+
+| Beat | Placement | Notification | Optional voiced reaction |
+|---|---|---|---|
+| Pohorje: funny | Shared safe opening, after the movement prompt and existing departure voice line, before the fork | `OLD CONVERSATION · FRIEND` / Boki: “One drink. I'm leaving early.” / Friend: “You said that last time.” | None needed |
+| Maribor: uncomfortable | Shared merge after the encounters, before the FERI portal | `DELAYED MESSAGE · FRIEND` / “Did you make it home?” | “Just taking a shortcut.” |
+| FERI: personal | Shared exterior arrival before the entrance choice | `PERSONAL REMINDER` / “Just show up this time.” | None needed |
+
+Use one readable peripheral notification card, with a six-active-second initial display duration, steady text and an ordinary phone beep. The first message is explicitly an old conversation; Boki never types while riding. No phone menu, interaction, stopped movement, camera takeover or extra exposition. English notification text is intentional; existing Slovenian dialogue remains unchanged. Reuse the prologue phone tone to establish the motif. At FERI, pitch the tone downward into an unsettling tail; the later corridor Guilt warning should recall that sound. Do not trigger an additional chase or change Guilt pressure for this effect.
+
+Each beat is attempted once per run, across all route variants. A missed safe window is skipped rather than queued into combat. Pause and upgrade selection freeze the card and audio. Combat-space occupation, scripted chases, route selection, damage, loading, death and boss entry dismiss the card; warnings take priority. New Run resets eligibility. No new persistent save flags are needed. Optional reaction recordings can be added later; the text-and-tone slice must stand alone.
+
+V1's compact FERI arrival offers little reading time before its fork. Keep the short reminder there, dismiss it when a route is selected, and verify legibility in motion before extending any map. The [implementation and verification notes](plans/phone-story-verification.md) record initial trigger positions and remaining checks.
+
 ### PROLOGUE — “The Morning After” (20–30 Seconds, Skippable)
 
 **Location:** Bellevue in the early morning, overlooking Maribor. The camera is low in the grass. Distant techno bass slowly gives way to wind.
