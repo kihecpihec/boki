@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
@@ -10,6 +11,31 @@ namespace Boki.Editor
 {
     public static class PlayerBuild
     {
+        [MenuItem("Boki/Build Windows x86-64 Player")]
+        public static void WindowsX64()
+        {
+            ValidateEditor();
+            var previousArchitecture = UnityEditor.WindowsStandalone.UserBuildSettings.architecture;
+            string previousProductName = PlayerSettings.productName;
+            try
+            {
+                UnityEditor.WindowsStandalone.UserBuildSettings.architecture = OSArchitecture.x64;
+                PlayerSettings.productName = "Boki";
+                var scenes = new List<string>();
+                foreach (var scene in EditorBuildSettings.scenes)
+                    if (scene.enabled) scenes.Add(scene.path);
+                if (scenes.Count == 0)
+                    throw new InvalidOperationException("Enable the game scenes in Build Settings before building.");
+                Build(BuildTarget.StandaloneWindows64, "Boki.exe", "BOKI_BUILD_DIRECTORY", "Boki",
+                    scenes.ToArray(), BuildOptions.None);
+            }
+            finally
+            {
+                UnityEditor.WindowsStandalone.UserBuildSettings.architecture = previousArchitecture;
+                PlayerSettings.productName = previousProductName;
+            }
+        }
+
         [MenuItem("Boki/Build V2 Windows ARM64 Player")]
         public static void V2WindowsArm64() => BuildV2Windows(OSArchitecture.ARM64);
 
