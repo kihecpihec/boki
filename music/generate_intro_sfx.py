@@ -4,7 +4,9 @@
 Story §3 PROLOGUE, shot 2: "A short phone beep" announces »PREDAVANJE — 08:00 / FERI«.
 A cheap two-tone notification through a small speaker: odd-harmonic tone,
 band-limited, two bursts. The eye-pop boing and the panic-dash whoosh are the intro's
-cartoon gags. Everything is synthesized, so there are no samples or licenses.
+cartoon gags. The wake-up cues are the quiet foley around them: Boki's sleeping breaths and waking groan,
+the sleeve of the arm rising, and the click and pip of his digital watch. Everything is synthesized, so there
+are no samples or licenses.
 
 Usage: python3 music/generate_intro_sfx.py [output_dir]
 Default output: Game/Assets/Audio/Sfx
@@ -16,6 +18,9 @@ from pathlib import Path
 
 import numpy as np
 from scipy.signal import butter, sosfilt
+
+from ambience_synth import smooth_curve
+from generate_ending_sfx import formant_filter  # the vowel morph that already shapes the cat's meow
 
 SR = 48000
 PEAK = 0.5  # same ceiling as the menu effects
@@ -75,6 +80,84 @@ def dash_whoosh():
     return out
 
 
+def breath(seconds, peak, low, high, rng):
+    """One breath of air through the nose or mouth: band-limited noise that swells to `peak` (0..1 of the length) and ebbs."""
+    tt = t(seconds)
+    x = np.clip(tt / seconds, 0, 1)
+    warped = x ** (np.log(0.5) / np.log(peak))
+    env = np.sin(np.pi * warped) ** 2
+    air = sosfilt(butter(4, [low, high], "band", fs=SR, output="sos"), rng.standard_normal(tt.size))
+    return air / np.std(air) * env
+
+
+def rustle(seconds, low, high, rng, flutter=11.0):
+    """Cloth or grass moving: band-limited noise whose level flickers a few times a second."""
+    tt = t(seconds)
+    x = np.clip(tt / seconds, 0, 1)
+    air = sosfilt(butter(2, [low, high], "band", fs=SR, output="sos"), rng.standard_normal(tt.size))
+    flicker = 0.35 + 0.65 * smooth_curve(tt.size, flutter, rng)
+    return air / np.std(air) * flicker * np.sin(np.pi * x) ** 1.5
+
+
+def mix_at(out, sig, seconds, gain=1.0):
+    i = int(SR * seconds)
+    n = min(sig.size, out.size - i)
+    out[i:i + n] += sig[:n] * gain
+
+
+def wake_up():
+    """Shot 1 (4.5 s): two slow sleeping breaths matching the rise and fall of his chest (2.86 s a cycle), a shuffle in
+    the grass, then a deeper waking breath and a groggy 'mm-uh' just as his eyelids start to lift (3.5 s)."""
+    rng = np.random.default_rng(53)
+    out = np.zeros(int(SR * 4.5))
+    mix_at(out, breath(1.25, 0.55, 300, 1700, rng), 0.1, 0.5)          # in
+    mix_at(out, breath(1.3, 0.35, 200, 1200, rng), 1.5, 0.4)           # out
+    mix_at(out, rustle(0.4, 1200, 5200, rng, 14), 1.65, 0.28)          # shifts in the grass
+    mix_at(out, breath(0.7, 0.6, 300, 2100, rng), 3.1, 0.85)           # deeper, faster: he is surfacing
+    mix_at(out, rustle(0.55, 1000, 5000, rng, 13), 3.25, 0.3)          # the shuffle of waking
+
+    tt = t(0.6)
+    f0 = 118 - 26 * np.clip(tt / 0.6, 0, 1) ** 0.8
+    phase = np.cumsum(f0 * (1 + 0.01 * np.sin(2 * np.pi * 5 * tt))) / SR
+    voiced = (2 * (phase % 1) - 1) - 0.5 * np.sin(2 * np.pi * phase) + 0.18 * rng.standard_normal(tt.size)
+    groan = formant_filter(voiced, ((290, 1.0), (1000, 0.45), (2300, 0.12)), ((540, 1.0), (1180, 0.6), (2500, 0.2)))
+    groan *= np.minimum(1, tt / 0.12) * np.minimum(1, (0.6 - tt) / 0.2)
+    mix_at(out, groan / np.max(np.abs(groan)), 3.85, 1.1)
+    n = int(SR * 0.02)
+    smack = sosfilt(butter(2, [800, 3200], "band", fs=SR, output="sos"), rng.standard_normal(n)) * np.exp(-np.arange(n) / (SR * 0.004))
+    mix_at(out, smack / np.max(np.abs(smack)), 3.8, 0.12)
+    return out
+
+
+def arm_rustle():
+    """Shot 2 (1.8 s): the left arm lifting: the sleeve sliding over the jacket, with a squeak of the cuff."""
+    rng = np.random.default_rng(59)
+    out = np.zeros(int(SR * 1.8))
+    mix_at(out, rustle(1.25, 600, 4200, rng, 9), 0.1, 1.0)
+    mix_at(out, rustle(0.5, 2200, 6500, rng, 16), 0.65, 0.35)
+    for at, freq in ((0.5, 2650), (0.95, 3100)):
+        n = int(SR * 0.05)
+        tt = np.arange(n) / SR
+        squeak = np.sin(2 * np.pi * (freq + 400 * tt / 0.05) * tt) * np.sin(np.pi * tt / 0.05)
+        mix_at(out, squeak, at, 0.04)
+    return out
+
+
+def watch_check():
+    """Shot 3 (1.6 s): the wrist stops in front of his face: a strap click, a settling rustle, then the soft pip of a
+    digital watch lighting its display."""
+    rng = np.random.default_rng(61)
+    out = np.zeros(int(SR * 1.6))
+    n = int(SR * 0.012)
+    click = sosfilt(butter(2, [1500, 5000], "band", fs=SR, output="sos"), rng.standard_normal(n)) * np.exp(-np.arange(n) / (SR * 0.003))
+    mix_at(out, click / np.max(np.abs(click)), 0.04, 0.5)
+    mix_at(out, rustle(0.22, 900, 4500, rng, 15), 0.1, 0.22)
+    pip = burst(2960, 0.06) * 0.55
+    mix_at(out, sosfilt(butter(2, [1800, 5000], "band", fs=SR, output="sos"), pip), 0.38, 0.5)
+    mix_at(out, click / np.max(np.abs(click)), 0.375, 0.3)
+    return out
+
+
 def write_wav(path, sig):
     sig = sig / np.max(np.abs(sig)) * PEAK
     with wave.open(str(path), "wb") as w:
@@ -91,6 +174,9 @@ def main():
     write_wav(out_dir / "intro_phone_beep.wav", phone_beep())
     write_wav(out_dir / "intro_eye_pop.wav", eye_pop())
     write_wav(out_dir / "intro_dash.wav", dash_whoosh())
+    write_wav(out_dir / "intro_wake_up.wav", wake_up())
+    write_wav(out_dir / "intro_arm_rustle.wav", arm_rustle())
+    write_wav(out_dir / "intro_watch_check.wav", watch_check())
 
 
 if __name__ == "__main__":

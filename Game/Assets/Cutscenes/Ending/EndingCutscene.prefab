@@ -3819,6 +3819,11 @@ MonoBehaviour:
   bokiVoices:
   - {fileID: 8300000, guid: fa722ed6f192840cea37efa78a880bcb, type: 3}
   - {fileID: 8300000, guid: ec32ca07c997b4859beda11f9b8475b7, type: 3}
+  roomTone: {fileID: 8300000, guid: 3c1d5cea35d1da21facd6235f3133be6, type: 3}
+  reliefMusic: {fileID: 8300000, guid: 143915395452efd40a903895b379111b, type: 3}
+  roomToneGain: 0.55
+  musicGain: 0.6
+  fadeOutSeconds: 0.8
   skipAction: {fileID: -4443349345171448216, guid: d39db85e72eeb15da9d6614596f08cb9, type: 2}
   replayAction: {fileID: 7769359334556523274, guid: d39db85e72eeb15da9d6614596f08cb9, type: 2}
   playOnStart: 0

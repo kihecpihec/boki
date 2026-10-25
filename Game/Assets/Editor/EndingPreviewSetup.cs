@@ -295,6 +295,7 @@ namespace Boki.Editor
             so.FindProperty("skipAction").objectReferenceValue = input.Single(r => r.name == "Skip");
             so.FindProperty("replayAction").objectReferenceValue = input.Single(r => r.name == "Replay");
             so.FindProperty("playOnStart").boolValue = false;
+            CutsceneAmbienceSetup.AssignEnding(so);
             so.ApplyModifiedPropertiesWithoutUndo();
 
             if (PrefabUtility.SaveAsPrefabAsset(root, CutscenePrefab) == null)

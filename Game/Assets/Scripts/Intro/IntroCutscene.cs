@@ -46,6 +46,15 @@ namespace Boki.Intro
         [SerializeField] private AudioClip bokiLine;
         [SerializeField, Range(0f, 1f)] private float effectsGain = 0.35f;
         [SerializeField, Range(0f, 1f)] private float dialogueGain = 0.65f;
+        [Header("Ambience (optional; silent when unassigned)")]
+        [Tooltip("Story §3 PROLOGUE: distant techno bass gives way to wind on Pohorje. Lasts as long as the intro.")]
+        [SerializeField] private AudioClip ambience;
+        [SerializeField] private AudioClip wakeUp;
+        [SerializeField] private AudioClip armRustle;
+        [SerializeField] private AudioClip watchCheck;
+        [SerializeField, Range(0f, 1f)] private float ambienceGain = 0.6f;
+        [SerializeField, Range(0f, 1f)] private float foleyGain = 0.5f;
+        [SerializeField, Min(0.05f)] private float ambienceFadeSeconds = 0.5f;
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart = true;
@@ -63,6 +72,8 @@ namespace Boki.Intro
         private float objectiveRemaining;
         private bool ownsSkip;
         private bool ownsReplay;
+        private AudioSource ambienceSource;
+        private bool ambienceFading;
 
         public static int ShotCount => IntroActing.ShotSeconds.Length;
 
@@ -86,6 +97,8 @@ namespace Boki.Intro
         private void OnDisable()
         {
             if (audioSource != null) audioSource.Stop();
+            if (ambienceSource != null) ambienceSource.Stop();
+            ambienceFading = false;
             if (timeline != null) Unsubscribe(timeline);
             ReleasePause();
             RestoreCanvases();
@@ -133,8 +146,41 @@ namespace Boki.Intro
             timeline = new IntroTimeline(IntroActing.ShotSeconds);
             timeline.ShotStarted += OnShotStarted;
             timeline.Finished += OnFinished;
+            StartAmbience();
             timeline.Begin();
             ShowFrame(IntroActing.Wake, 0f);
+        }
+
+        private void StartAmbience()
+        {
+            ambienceFading = false;
+            if (ambience == null) return;
+            if (ambienceSource == null)
+            {
+                ambienceSource = gameObject.AddComponent<AudioSource>();
+                ambienceSource.playOnAwake = false;
+                ambienceSource.loop = false;
+                ambienceSource.spatialBlend = 0f;
+            }
+            ambienceSource.clip = ambience;
+            ambienceSource.volume = ambienceGain;
+            ambienceSource.Play();
+        }
+
+        // Skipping or finishing lets the bed die away instead of cutting it. Unscaled time: the gameplay pause is released by then.
+        private void FadeAmbience()
+        {
+            if (!ambienceFading || ambienceSource == null) return;
+            ambienceSource.volume = Mathf.MoveTowards(ambienceSource.volume, 0f,
+                ambienceGain / ambienceFadeSeconds * Time.unscaledDeltaTime);
+            if (ambienceSource.volume > 0f) return;
+            ambienceSource.Stop();
+            ambienceFading = false;
+        }
+
+        private void PlayFoley(AudioClip clip)
+        {
+            if (clip != null) audioSource.PlayOneShot(clip, foleyGain);
         }
 
         private void Unsubscribe(IntroTimeline target)
@@ -145,6 +191,7 @@ namespace Boki.Intro
 
         private void Update()
         {
+            FadeAmbience();
             if (timeline == null || timeline.IsFinished)
             {
                 if (replayAction != null && replayAction.action != null && replayAction.action.WasPressedThisFrame())
@@ -174,6 +221,9 @@ namespace Boki.Intro
 
         private void OnShotStarted(int shot)
         {
+            if (shot == IntroActing.Wake) PlayFoley(wakeUp);
+            if (shot == IntroActing.Stir) PlayFoley(armRustle);
+            if (shot == IntroActing.Watch) PlayFoley(watchCheck);
             if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep, effectsGain);
             if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine, dialogueGain);
             if (shot == IntroActing.Mount) headlight.enabled = true;
@@ -211,6 +261,7 @@ namespace Boki.Intro
             ReleasePause();
             RestoreCanvases();
             audioSource.Stop();
+            ambienceFading = ambienceSource != null && ambienceSource.isPlaying;
             ShowFrame(IntroActing.Mount, 1f);
             overlay.SetFade(0f);
             overlay.SetFlash(0f);

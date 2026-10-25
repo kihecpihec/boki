@@ -1335,12 +1335,22 @@ MonoBehaviour:
   followDistance: 5
   headlight: {fileID: 0}
   controls: []
+  gameplayCanvases: []
   objectiveSeconds: 6
   audioSource: {fileID: 676026459261687288}
   phoneBeep: {fileID: 8300000, guid: 2ae4df0fab4f12b0dbaaaf0c99f73d76, type: 3}
   eyePop: {fileID: 8300000, guid: 91c622999f5620cdc8ce3d145722e6c8, type: 3}
   dashWhoosh: {fileID: 8300000, guid: 9adf63bcbb7a8508ba68b7145be1585e, type: 3}
   bokiLine: {fileID: 8300000, guid: bd2c28c58a663c45fb98ebbf67dcd4db, type: 3}
+  effectsGain: 0.35
+  dialogueGain: 0.65
+  ambience: {fileID: 8300000, guid: 3eeb87eeaf1654499b017e1f33dfa260, type: 3}
+  wakeUp: {fileID: 8300000, guid: cbb403151ba025a14a26e45d3b52d6ed, type: 3}
+  armRustle: {fileID: 8300000, guid: 3b4de8d294a2b7297a082db5b0d204a0, type: 3}
+  watchCheck: {fileID: 8300000, guid: 968f3dd00ec7e578da375a1271a82569, type: 3}
+  ambienceGain: 0.6
+  foleyGain: 0.5
+  ambienceFadeSeconds: 0.5
   skipAction: {fileID: 2156066471589202878, guid: 5b1cfe52c78ee2f70aeba985cdbdda84, type: 2}
   replayAction: {fileID: -8861882190143886245, guid: 5b1cfe52c78ee2f70aeba985cdbdda84, type: 2}
   playOnStart: 0
