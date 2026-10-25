@@ -11,10 +11,13 @@ namespace Boki.Routes
         [SerializeField] private TextMesh label;
         [SerializeField] private string destinationLabel;
         [SerializeField, Min(0.01f)] private float bossSkipSpeed = 18f;
+        private PortalVortex vortex;
         private bool accepted;
         private void OnEnable()
         {
             if (manager == null || label == null) { Debug.LogError("Assign portal route manager and label.", this); enabled = false; return; }
+            // Added at runtime so existing V1 scenes pick up the portal effects without asset edits.
+            if (!TryGetComponent(out vortex)) vortex = gameObject.AddComponent<PortalVortex>();
             manager.Changed += Refresh;
             Refresh();
         }
@@ -29,7 +32,9 @@ namespace Boki.Routes
             var state = session.State;
             if (manager.Level == RouteLevel.City && state.Choice(RouteLevel.City) == RouteChoice.C
                 && !state.CitySideEscapeCompleted) return false;
-            accepted = session.TrySkipToV1Boss(manager.Level, horizontalSpeed, bossSkipSpeed) || manager.Advance();
+            accepted = session.TrySkipToV1Boss(manager.Level, horizontalSpeed, bossSkipSpeed) || manager.Advance(true);
+            // The same pull-in for every entry, so the speed shortcut stays unannounced (Gameplay §1.1).
+            if (accepted) vortex.PlayEntry(session.PortalTransitSeconds);
             return accepted;
         }
         private void OnTriggerEnter(Collider other) => Enter(other);

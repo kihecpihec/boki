@@ -214,9 +214,15 @@ namespace Boki.Editor
                         Check(session.State.Progression.Selections == 1 && !flow.IsChoosing, "Exactly one upgrade accepted");
                         session.State.Battery = 80; carriedHealth = player.Current;
                         Check(V1SceneSetup.Find<LevelPortal>(scene).TryTravel(), "Forest portal accepted");
+                        Check(session.IsLoading && Time.timeScale == 0f && SceneManager.GetActiveScene().path == scene.path,
+                            "Portal freezes the run and keeps the scene for the pull-in");
+                        portalAccepted = Time.realtimeSinceStartup;
                         stage++; break;
                     case 4:
                         Check(scene.path == V1SceneSetup.Scenes[1], "Forest portal loads V1 Maribor"); Validate(scene);
+                        Check(Time.realtimeSinceStartup - portalAccepted >= session.PortalTransitSeconds,
+                            "The scene loads only after the pull-in time");
+                        Check(session.GetComponent<PortalTransit>().IsPlaying, "Arrival swirl is still opening in the new world");
                         Check(player.Current == carriedHealth && session.State.Battery > 78 && session.State.Battery <= 80, "HP/battery carry across scenes");
                         Check(session.State.Progression.Selections == 1, "Upgrade carries across scenes");
                         Check(session.State.Gate(RouteLevel.City, RouteChoice.C) == GateState.RouteLock, "Route lock precedes persistent lock");
@@ -500,6 +506,7 @@ namespace Boki.Editor
             return false;
         }
 
+        private static float portalAccepted;
         private static string introScene;
         private static double introSceneLoaded;
         private static bool introKeyDown;

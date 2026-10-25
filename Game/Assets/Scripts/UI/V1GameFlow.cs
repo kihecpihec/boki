@@ -100,7 +100,8 @@ namespace Boki.UI
         private void Pause(InputAction.CallbackContext context) => PauseMenu();
         private void PauseMenu()
         {
-            if (terminal || choosing || session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
+            // A portal pull-in already holds the frozen run until its scene loads.
+            if (terminal || choosing || session.IsLoading || session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
             if (paused) Resume();
             else
             {
