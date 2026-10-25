@@ -151,9 +151,9 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 **Suggested initial playtest values, subject to balancing:**
 
 - Boki: 100 HP; speed 7 m/s; boost 11 m/s for 0.6 s with a 3 s cooldown; CharacterController jump.
-- Auto-laser: nearest visible target within 10 m; fires every 0.4 s; base damage 10.
+- Auto-laser: nearest visible target within 10 m; fires every 0.24 s; base damage 6.
 - Light battery: 100; drain 1.5/s; regular kills never restore charge; arena battery pickups restore +25, with placement and recharge rules in [Gameplay §5](Gameplay.md#battery-charges-and-action-feedback). At 0 battery, enemies gain +30% speed, with no extra damage boost.
-- Melee: approximately 20–30 HP; ranged: 15–25 HP. Increase stats slightly by level, e.g. HP ×1.0 / ×1.25 / ×1.4, without new AI types.
+- Melee: moves at 4.5 m/s; approximately 20–30 HP; ranged: 15–25 HP. Increase stats slightly by level, e.g. HP ×1.0 / ×1.25 / ×1.4, without new AI types.
 - Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. Lingering increases its appearance frequency, chase speed, and damage under [Gameplay.md §5](Gameplay.md#5-loop-within-each-route); approved initial scaling values and caps are specified there. No instant-death mechanic.
 - Professor: **4000 HP** in M6, with two attack types. This targets approximately 80 seconds of continuous fire with the approved [M2 combat baseline](Gameplay.md#m2-combat-baseline), before route modifiers. Verify the 60–100 s fight target through interactive playtesting.
 - Regular arenas open with 15 enemies and replenish without a population cap; spawn cadence and health/damage scaling are defined in [Gameplay §5](Gameplay.md#enemy-replenishment-and-exits). Use predefined spawn points.

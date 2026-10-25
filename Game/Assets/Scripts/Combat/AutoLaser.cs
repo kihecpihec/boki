@@ -15,13 +15,15 @@ namespace Boki.Combat
         [Tooltip("Environment only. Exclude player and enemy geometry.")]
         [SerializeField] private LayerMask obstructionMask = 1;
         [SerializeField, Min(0.01f)] private float range = 10f;
-        [SerializeField, Min(1)] private int damage = 10;
-        [SerializeField, Min(0.01f)] private float fireInterval = 0.4f;
+        [SerializeField, Min(1)] private int damage = 6;
+        [SerializeField, Min(0.01f)] private float fireInterval = 0.24f;
         [SerializeField, Min(0.01f)] private float beamDuration = 0.08f;
         private float cooldown;
         private float beamRemaining;
         private Vector3 impactPosition;
         public event System.Action Fired;
+        public event System.Action Hit;
+        public PlayerHealth Health => playerHealth;
 
         private void OnEnable()
         {
@@ -35,6 +37,7 @@ namespace Boki.Combat
             beam.useWorldSpace = true;
             beam.positionCount = 2;
             beam.enabled = false;
+            if (!TryGetComponent<ComboTracker>(out _)) gameObject.AddComponent<ComboTracker>();
         }
 
         private void OnDisable()
@@ -101,6 +104,7 @@ namespace Boki.Combat
             var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
             int hitDamage = Mathf.RoundToInt(damage * (upgrades != null ? upgrades.DamageMultiplier : 1f));
             target.TakeDamage(hitDamage);
+            Hit?.Invoke();
             if (upgrades != null && upgrades.HasDoubleTrouble)
             {
                 EnemyHealth second = FindTargetExcept(target);
@@ -116,6 +120,7 @@ namespace Boki.Combat
                     beam.SetPosition(2, beamOrigin.position);
                     beam.SetPosition(3, impactPosition);
                     second.TakeDamage(hitDamage);
+                    Hit?.Invoke();
                 }
             }
             if (impactBurst != null)

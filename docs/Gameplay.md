@@ -32,9 +32,9 @@ In the M1 test arena, Escape releases the cursor and a left click recaptures it.
 
 ### M2 Combat Baseline
 
-The automatic laser fires instantaneous pulses at the nearest visible living regular enemy within 10 m of the beam origin. Each pulse deals 10 damage, with a 0.4 s interval. Environment geometry blocks the beam; an occluded nearest enemy is skipped in favor of the nearest visible enemy. A brief beam visual shows each shot; there is no projectile travel or fire button.
+The automatic laser fires instantaneous pulses at the nearest visible living regular enemy within 10 m of the beam origin. Each pulse deals 6 damage, with a 0.24 s interval (25 damage per second, unchanged from the earlier 10 damage every 0.4 s, but with faster shots and impacts). Environment geometry blocks the beam; an occluded nearest enemy is skipped in favor of the nearest visible enemy. A brief beam visual shows each shot; there is no projectile travel or fire button.
 
-The initial melee prototype has 60 HP and moves at 3 m/s. Contact attacks deal 10 damage with a 0.75 s interval per enemy; damage is not applied every rendered frame. The initial contact distance is 0.9 m between controller centers, measured in 3D so jumping can avoid contact. Walls block contact damage. These Inspector values are a prototype baseline for playtesting.
+The initial melee prototype has 60 HP and moves at 4.5 m/s (raised from 3 m/s so crowds stay a threat to a 6 m/s rider). Contact attacks deal 10 damage with a 0.75 s interval per enemy; damage is not applied every rendered frame. The initial contact distance is 0.9 m between controller centers, measured in 3D so jumping can avoid contact. Walls block contact damage. These Inspector values are a prototype baseline for playtesting.
 
 M2 starts Boki at the canonical 100 HP. At zero HP, combat and player controls stop, `ABSENT` appears, and `Retry` restarts the combat test scene with fresh health and enemies. This scene-local retry is temporary until M3 introduces `RunSession`; it does not implement routes, persistence, XP, or battery rewards.
 
@@ -264,13 +264,17 @@ Frequency, base speed, and damage stop escalating at the last row. Upgrade selec
 
 ### Enemy Replenishment and Exits
 
-Use predefined spawn points on the selected route. On first active occupation, populate the combat space with 15 regular enemies, retrying unavailable positions during active gameplay until the opening group is placed. Reentry does not grant another opening group. Opening enemies may be visible; place them on valid, collision-free ground at least 8 m from Boki and spread them around the markers.
+Use predefined spawn points on the selected route. On first active occupation, populate the combat space with 15 regular enemies, one every 0.25 s so the arena visibly floods, retrying unavailable positions during active gameplay until the opening group is placed. Reentry does not grant another opening group. Opening enemies may be visible; place them on valid, collision-free ground at least 8 m from Boki and spread them around the markers.
 
 There is no desired population or maximum active enemy count. Continue spawning one enemy every 4 seconds in Pohorje/FERI and every 3 seconds in Maribor regardless of how many survive. Intervals decrease linearly over the first 120 accumulated active combat-space seconds to 2 seconds and 1.5 seconds respectively, then remain there. Missed attempts never accumulate. Regular enemies snapshot +25% original health and +15% original damage per accumulated combat minute when spawned, with continuous linear scaling and no strength cap; existing enemies keep their spawn stats. This applies to melee contact and ranged projectile damage, not the professor or Guilt.
 
 Use the same per-level combat clock as Guilt pressure: leaving a space retains progress, overlapping spaces do not double-count, pause/upgrade selection/loading/scripted sequences freeze progress, and the next level or New Run resets it. Replenishment requires active occupation; later spawns must also be outside camera view. If no safe point exists, wait. Death does not trigger immediate replacement. Stop replenishment on leaving the space, scene transition, boss entry, or terminal outcome. Preserve route-specific melee/ranged compositions. The player must manage the growing population by killing and dodging enemies and choosing upgrades.
 
 Exits have no kill quota or forced wave clear. Leaving early sacrifices potential upgrades. Preserve authored traversal requirements, including City C's side-door escape. Boss entry remains a commitment with the existing physical entrance seal.
+
+### Combo Counter
+
+Each laser hit on an enemy adds 1 to a combo; a Double Trouble second hit adds another. The combo resets to 0 whenever Boki takes damage or dies, and when the laser stops (scene change). There is no timeout and no combo reward yet. A right-edge `xN COMBO` counter appears from 2 hits, turns orange from 10, pops on each hit, and fades red when a streak of 2 or more is broken.
 
 ### Battery Charges and Action Feedback
 
