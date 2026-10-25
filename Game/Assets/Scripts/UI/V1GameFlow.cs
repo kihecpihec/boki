@@ -22,6 +22,11 @@ namespace Boki.UI
         [SerializeField] private GameObject panel;
         [SerializeField] private Text title;
         [SerializeField] private Text details;
+        [SerializeField] private Text retryLocation;
+        [SerializeField] private GameObject retrySummary;
+        [SerializeField] private Text retryKills;
+        [SerializeField] private Text retryXp;
+        [SerializeField] private Text retryUpgrades;
         [SerializeField] private Text objective;
         [SerializeField] private Button resume;
         [SerializeField] private Button retry;
@@ -44,6 +49,7 @@ namespace Boki.UI
         {
             if (health == null || movement == null || followCamera == null || laser == null || panel == null
                 || title == null || details == null || objective == null || resume == null || retry == null
+                || retryLocation == null || retrySummary == null || retryKills == null || retryXp == null || retryUpgrades == null
                 || upgrades == null || pauseAction == null || pauseAction.action == null)
             {
                 Debug.LogError("Assign player, pause/death UI, upgrade screen and Pause action on V1GameFlow.", this);
@@ -152,10 +158,14 @@ namespace Boki.UI
             Cursor.lockState = suspended ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = suspended;
         }
-        private void ShowPanel(string heading, string message, bool canResume)
+        private void ShowPanel(string heading, string message, bool canResume, bool showRetrySummary = false)
         {
             Suspend(true);
             title.text = heading; details.text = message;
+            title.fontSize = showRetrySummary ? 112 : 64;
+            details.gameObject.SetActive(!showRetrySummary);
+            retrySummary.SetActive(showRetrySummary);
+            retryLocation.gameObject.SetActive(showRetrySummary);
             resume.gameObject.SetActive(canResume);
             panel.SetActive(true);
             if (canResume) resume.Select(); else retry.Select();
@@ -178,7 +188,12 @@ namespace Boki.UI
         private void Died()
         {
             terminal = true;
-            ShowPanel("Try again", $"Your run has ended.\n\nKILLS  {session.State.KillCount}   XP  {session.State.XP}\nUPGRADES  {session.State.Progression.Selections}\n\nRoute discoveries are kept.\nStart again at Pohorje.", false);
+            string map = gameObject.scene.name;
+            retryLocation.text = map == "V1_Maribor" ? "MARIBOR" : map == "V1_FERI" ? "FERI" : "POHORJE";
+            retryKills.text = session.State.KillCount.ToString();
+            retryXp.text = session.State.XP.ToString();
+            retryUpgrades.text = session.State.Progression.Selections.ToString();
+            ShowPanel("ABSENT", "", false, true);
         }
         public void Victory()
         {
