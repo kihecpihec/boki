@@ -511,7 +511,7 @@ namespace Boki.Editor
             return overlay;
         }
 
-        private static RectTransform Rect(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
+        internal static RectTransform Rect(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot,
             Vector2 position, Vector2 size)
         {
             var rect = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
@@ -524,7 +524,7 @@ namespace Boki.Editor
             return rect;
         }
 
-        private static Image Fill(RectTransform rect, Color color)
+        internal static Image Fill(RectTransform rect, Color color)
         {
             var image = rect.gameObject.AddComponent<Image>();
             image.color = color;
@@ -532,7 +532,7 @@ namespace Boki.Editor
             return image;
         }
 
-        private static Text Label(RectTransform parent, string name, string content, int size, Color color, TextAnchor alignment)
+        internal static Text Label(RectTransform parent, string name, string content, int size, Color color, TextAnchor alignment)
         {
             RectTransform rect = Rect(parent, name, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
             var text = rect.gameObject.AddComponent<Text>();
@@ -634,7 +634,7 @@ namespace Boki.Editor
         private static void Stage(string name, Color color, float smoothness)
             => IntroBokiBuilder.EnsureMaterial(Folder, name, color, smoothness, false);
 
-        private static void ConfigureClip(string path)
+        internal static void ConfigureClip(string path)
         {
             AssetDatabase.ImportAsset(path);
             var importer = AssetImporter.GetAtPath(path) as AudioImporter;
@@ -650,14 +650,14 @@ namespace Boki.Editor
             importer.SaveAndReimport();
         }
 
-        private static T Load<T>(string path) where T : Object
+        internal static T Load<T>(string path) where T : Object
         {
             var asset = AssetDatabase.LoadAssetAtPath<T>(path);
             if (asset == null) throw new InvalidOperationException("Missing " + typeof(T).Name + " at " + path + ".");
             return asset;
         }
 
-        private static void Set(Object target, string field, Object value)
+        internal static void Set(Object target, string field, Object value)
         {
             var serialized = new SerializedObject(target);
             serialized.FindProperty(field).objectReferenceValue = value;
@@ -675,14 +675,14 @@ namespace Boki.Editor
             }
         }
 
-        private static void RequireIdle()
+        internal static void RequireIdle()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             for (int i = 0; i < SceneManager.sceneCount; i++)
                 if (SceneManager.GetSceneAt(i).isDirty) throw new InvalidOperationException("Save dirty scenes first.");
         }
 
-        private static void RestoreScenes(SceneSetup[] previous)
+        internal static void RestoreScenes(SceneSetup[] previous)
         {
             if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path)) EditorSceneManager.RestoreSceneManagerSetup(previous);
             else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);

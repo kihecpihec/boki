@@ -41,3 +41,7 @@ Manual checks still required:
 6. Optional recordings can be assigned to each scene's `reaction` field after checking overlap with player voices. The text-and-tone slice works without them.
 
 Windows player validation on the Ryzen 5600G has not been run. Headless Linux import and tests do not establish visual readability, audio quality or Windows performance.
+
+## Integration with dev
+
+Merged the latest `dev` first-arena intro changes without altering any of its existing Pohorje scene objects. The only conflict was adjacent additions before the root list; both the arena-intro and phone-story roots were retained. The integrated Unity EditMode suite passed 238 tests with zero failures or skips. Architecture audit still has no FAILs; the feature diff against `dev` passes `git diff --check`.

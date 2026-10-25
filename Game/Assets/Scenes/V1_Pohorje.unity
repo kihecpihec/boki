@@ -21105,6 +21105,143 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 25
   m_TargetDisplay: 0
+--- !u!1001 &1222240463
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: rider
+      value:
+      objectReference: {fileID: 630092947}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: riderRoot
+      value:
+      objectReference: {fileID: 510410234}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: shotCamera
+      value:
+      objectReference: {fileID: 110662113}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: replayAction
+      value:
+      objectReference: {fileID: 0}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: recordedAudio
+      value:
+      objectReference: {fileID: 283153939}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: arenas.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: controls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'arenas.Array.data[0]'
+      value:
+      objectReference: {fileID: 1873618722}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'arenas.Array.data[1]'
+      value:
+      objectReference: {fileID: 747853997}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'arenas.Array.data[2]'
+      value:
+      objectReference: {fileID: 610589930}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'controls.Array.data[0]'
+      value:
+      objectReference: {fileID: 7868977143442150401}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'controls.Array.data[1]'
+      value:
+      objectReference: {fileID: 110662111}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'controls.Array.data[2]'
+      value:
+      objectReference: {fileID: 7868977143442150406}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: gameplayCanvases.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'gameplayCanvases.Array.data[0]'
+      value:
+      objectReference: {fileID: 475276603}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'gameplayCanvases.Array.data[1]'
+      value:
+      objectReference: {fileID: 1256973295}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'gameplayCanvases.Array.data[2]'
+      value:
+      objectReference: {fileID: 144555420}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'gameplayCanvases.Array.data[3]'
+      value:
+      objectReference: {fileID: 1691230120}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'gameplayCanvases.Array.data[4]'
+      value:
+      objectReference: {fileID: 2125584300}
+    - target: {fileID: 1718332874377561202, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: 'gameplayCanvases.Array.data[5]'
+      value:
+      objectReference: {fileID: 1161102926}
+    - target: {fileID: 5865116374518577956, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_Name
+      value: ArenaIntroCutscene
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 40.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5943243441796818650, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 196bf95c7b8ae8976a00ba65e9a74bde, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -21125,6 +21262,7 @@ SceneRoots:
   - {fileID: 283153940}
   - {fileID: 1473640862}
   - {fileID: 588059255}
+  - {fileID: 1222240463}
 --- !u!4 &2011934636
 Transform:
   m_ObjectHideFlags: 0
