@@ -12,14 +12,14 @@ namespace Boki.Tests
         }
 
         [Test]
-        public void EachHitRaisesCountAndNotifies()
+        public void EachKillRaisesCountAndNotifies()
         {
             var combo = new ComboCounter();
             int changes = 0;
             combo.Changed += () => changes++;
-            combo.RegisterHit();
-            combo.RegisterHit();
-            combo.RegisterHit();
+            combo.RegisterKill();
+            combo.RegisterKill();
+            combo.RegisterKill();
             Assert.That(combo.Count, Is.EqualTo(3));
             Assert.That(changes, Is.EqualTo(3));
         }
@@ -28,8 +28,8 @@ namespace Boki.Tests
         public void ResetClearsStreakAndNotifies()
         {
             var combo = new ComboCounter();
-            combo.RegisterHit();
-            combo.RegisterHit();
+            combo.RegisterKill();
+            combo.RegisterKill();
             int changes = 0;
             combo.Changed += () => changes++;
             combo.Reset();
@@ -51,11 +51,24 @@ namespace Boki.Tests
         public void StreakRestartsFromOneAfterReset()
         {
             var combo = new ComboCounter();
-            combo.RegisterHit();
-            combo.RegisterHit();
+            combo.RegisterKill();
+            combo.RegisterKill();
             combo.Reset();
-            combo.RegisterHit();
+            combo.RegisterKill();
             Assert.That(combo.Count, Is.EqualTo(1));
         }
+        [TestCase(5)]
+        [TestCase(10)]
+        [TestCase(20)]
+        public void MilestoneCanBeReachedAgainAfterBreakingStreak(int kills)
+        {
+            var combo = new ComboCounter();
+            for (int i = 0; i < kills; i++) combo.RegisterKill();
+            Assert.That(combo.Count, Is.EqualTo(kills));
+            combo.Reset();
+            for (int i = 0; i < kills; i++) combo.RegisterKill();
+            Assert.That(combo.Count, Is.EqualTo(kills));
+        }
+
     }
 }
