@@ -481,6 +481,7 @@ namespace Boki.Editor
             Ref(flow, "health", health); Ref(flow, "movement", movement); Ref(flow, "followCamera", camera); Ref(flow, "laser", laser);
             Ref(flow, "panel", panel); Ref(flow, "title", title); Ref(flow, "details", details); Ref(flow, "objective", objective);
             Ref(flow, "resume", resume); Ref(flow, "retry", retry); Ref(flow, "upgrades", upgradeScreen); Ref(flow, "pauseAction", pauseAction);
+            V1TryAgainSetup.Restyle(new SerializedObject(flow));
             panel.SetActive(false);
             return new UIReferences { Flow = flow, Status = status, Boss = boss };
         }
