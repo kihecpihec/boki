@@ -53,6 +53,26 @@ The solo emitter setup also wires `BokiPlayerEffects.movement`, `health`, `ridin
 
 `LightBattery.strongGuiltWarning` is enabled only in these two scenes. Warning/Chase produces two red pulses per second with a wider nearby fill. Battery scaling and zero-charge extinction still apply; this cosmetic setting does not change Guilt timing or damage. Other scenes retain their existing flicker. Test G at full and low charge, ride/boost then stop, jump and land, and pause during visible dust. Inspect from behind and from the side for rear-wheel placement and legibility at Low settings.
 
+## Map ambience
+
+`MapAmbience` adds a quiet environmental bed and occasional distant details to the current V1 maps. `Player_Model_Test` uses the Pohorje profile for comparison with the player voices. It uses two scene-owned sources, without runtime synthesis, scene searches in Update, or new packages.
+
+| Scene | Loop | Sparse details | Bed / maximum detail volume | Gap between details |
+| --- | --- | --- | --- | --- |
+| `V1_Pohorje`, `Player_Model_Test` | Wind through trees | Distant bird, foliage rustle | 0.16 / 0.12 | 12–24 s |
+| `V1_Maribor` | Low street air and distant infrastructure rumble | Metal resonance, street gust | 0.14 / 0.11 | 16–30 s |
+| `V1_FERI` | Ventilation and electrical hum | Pipe creak, electrical tick | 0.075 / 0.075 | 22–38 s |
+
+The bed fades in over two seconds. Detail levels vary between 70% and 100% of their configured maximum, with restrained stereo placement and pitch variation; consecutive details use different clips. The randomized gap begins after a detail finishes. Dialogue reduces the bed to 35% and fades out any current detail; new details wait until speech finishes. Both layers pause with shared gameplay pause or focus loss, resume without restarting the loop, and stop on death, terminal screens or component disable. FERI's map ambience stops when the boss arena is entered, leaving the opening, boss music and ending clear. The approach is deliberately quieter under [Story §6](Story.md#6-visual-and-audio-direction).
+
+All nine clips are original synthesis in `Assets/Audio/Ambience/`, generated with `python3 tools/audio/generate_map_ambience.py`. They use mono 24 kHz, 16-bit PCM, totaling 4,608,396 bytes including WAV headers. The three 24-second loops use periodic modulation and circular filtered noise. Unity imports them as PCM with decompression on load; only the current map's loop and two details are referenced by its ambience component.
+
+**Boki → Audio → Apply Map Ambience** updates only the four existing scenes above, refuses Play Mode and dirty scenes, and restores the prior scene setup. Each scene's `Map Ambience` root contains `MapAmbience`, an `Environment Bed` source and a `Distant Details` source. The helper assigns `player`, optional `flow`, `dialogue`, `bedSource`, `detailSource`, `details`, profile volumes/intervals and FERI's `silenceInBossArena`. No Inspector assignments remain. Tune `bedVolume` and `detailVolume` on this root to adjust the environmental mix independently of the recorded voices. Existing geometry, prefabs, gameplay objects and their tuning are preserved.
+
+Validation in Unity 6000.6.7f1/macOS: applying setup twice produced byte-identical scenes. **Boki → Audio → Run Map Ambience Checks** passed all four scene bindings, live loop/detail playback, frozen sample positions during menu pause, focus pause/resume, dialogue duck/recovery, non-repeating details, disable/re-enable, death silence, scene cleanup, the city loop and FERI boss silence. The existing player-audio runtime checks also passed damage/laser/XP playback, repetition limits, pause/resume, death and disable cleanup. The ambience check accelerates detail intervals only on its live test instance. All new assets and scripts have Editor-generated metadata. The architecture audit has no failures. No deterministic gameplay rules changed.
+
+Manual listening: open each current V1 scene, ride for at least a minute and compare the environment against laser, enemy, pickup and Guilt voices. Check transitions and death/retry, open/close pause, switch application focus, approach a portal, then enter and defeat the professor. Expect a low environmental floor, infrequent details, clear dialogue and no ambience during the boss/ending. Repeat in `Player_Model_Test` for the forest profile. Check the Console for new errors. Subjective mix comfort over a full run and Windows target-hardware listening/performance remain unverified.
+
 ## Player gameplay audio
 
 `PlayerAudio` lives on the shared `Boki_Rigged_Test` player variant used in `Player_Model_Test`, `V1_Pohorje`, `V1_Maribor`, and `V1_FERI`. **Boki → Audio → Apply Player Sounds** updates that prefab and only those four existing scenes; it refuses Play Mode and dirty scenes and restores the prior scene setup. It preserves the maps, gameplay components and their tuning.

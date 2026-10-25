@@ -27,6 +27,7 @@ namespace Boki.UI
         [SerializeField] private AudioClip professorSaturday;
         [SerializeField] private AudioClip[] bokiReaction;
         public bool IsBossOpening => dialogueStage == 1 || dialogueStage == 2;
+        public bool IsDialoguePlaying => dialogueSource != null && dialogueSource.isPlaying;
 
         [Header("Mix and crowd control")]
         [SerializeField, Range(0f, 1f)] private float enemyHitGain = 0.38f;
