@@ -49,6 +49,14 @@ namespace Boki.Ending
         [Tooltip("The recorded »Boki ... danes je sobota.« and Boki's recorded »... A?« takes; one is picked per playthrough.")]
         [SerializeField] private AudioClip professorVoice;
         [SerializeField] private AudioClip[] bokiVoices = Array.Empty<AudioClip>();
+        [Header("Ambience and music (optional; silent when unassigned)")]
+        [Tooltip("The empty classroom: a drone while the red light is on, then fluorescent hum, a wall clock and birds outside.")]
+        [SerializeField] private AudioClip roomTone;
+        [Tooltip("A short Saturday-morning tune that starts when the zoom out reveals the cat and resolves on the closing card.")]
+        [SerializeField] private AudioClip reliefMusic;
+        [SerializeField, Range(0f, 1f)] private float roomToneGain = 0.55f;
+        [SerializeField, Range(0f, 1f)] private float musicGain = 0.6f;
+        [SerializeField, Min(0.05f)] private float fadeOutSeconds = 0.8f;
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart;
@@ -66,6 +74,9 @@ namespace Boki.Ending
         private float lastElapsed;
         private bool ownsSkip;
         private bool ownsReplay;
+        private AudioSource roomSource;
+        private AudioSource musicSource;
+        private bool fadingOut;
 
         public bool IsPlaying => timeline != null && !timeline.IsFinished;
 
@@ -90,6 +101,9 @@ namespace Boki.Ending
 
         private void OnDisable()
         {
+            StopBed(roomSource);
+            StopBed(musicSource);
+            fadingOut = false;
             if (timeline != null) Unsubscribe(timeline);
             ReleasePause();
             RestoreCanvases();
@@ -148,8 +162,53 @@ namespace Boki.Ending
             bokiVoice = bokiVoices[UnityEngine.Random.Range(0, bokiVoices.Length)];
             timeline = new IntroTimeline(EndingActing.ShotSeconds);
             timeline.Finished += OnFinished;
+            fadingOut = false;
+            StartBed(ref roomSource, roomTone, roomToneGain);
+            StopBed(musicSource);
             timeline.Begin();
             ShowFrame(EndingActing.Loom, 0f);
+        }
+
+        // The beds are separate sources so the one-shots can be stopped, and the beds faded, independently.
+        private void StartBed(ref AudioSource source, AudioClip clip, float gain)
+        {
+            if (clip == null) return;
+            if (source == null)
+            {
+                source = gameObject.AddComponent<AudioSource>();
+                source.playOnAwake = false;
+                source.loop = false;
+                source.spatialBlend = 0f;
+            }
+            source.clip = clip;
+            source.volume = gain;
+            source.Play();
+        }
+
+        private static void StopBed(AudioSource source)
+        {
+            if (source != null) source.Stop();
+        }
+
+        // Unscaled time: the gameplay pause is released by the time the ending finishes.
+        private void FadeBeds()
+        {
+            if (!fadingOut) return;
+            float step = Time.unscaledDeltaTime / fadeOutSeconds;
+            bool live = false;
+            if (roomSource != null && roomSource.isPlaying)
+            {
+                roomSource.volume = Mathf.MoveTowards(roomSource.volume, 0f, roomToneGain * step);
+                if (roomSource.volume <= 0f) roomSource.Stop();
+                live |= roomSource.isPlaying;
+            }
+            if (musicSource != null && musicSource.isPlaying)
+            {
+                musicSource.volume = Mathf.MoveTowards(musicSource.volume, 0f, musicGain * step);
+                if (musicSource.volume <= 0f) musicSource.Stop();
+                live |= musicSource.isPlaying;
+            }
+            fadingOut = live;
         }
 
         public void Skip()
@@ -161,6 +220,7 @@ namespace Boki.Ending
 
         private void Update()
         {
+            FadeBeds();
             if (timeline == null || timeline.IsFinished)
             {
                 if (replayAction != null && replayAction.action != null && replayAction.action.WasPressedThisFrame()) Play();
@@ -187,7 +247,11 @@ namespace Boki.Ending
             if (Crossed(from, to, EndingActing.Huh, EndingActing.BokiVoiceAt)) audioSource.PlayOneShot(bokiVoice);
             if (Crossed(from, to, EndingActing.ZoomIn, EndingActing.ZoomCueAt)) audioSource.PlayOneShot(zoom);
             if (Crossed(from, to, EndingActing.ZoomIn, EndingActing.ThumpAt)) audioSource.PlayOneShot(thump);
-            if (Crossed(from, to, EndingActing.ZoomOut, 0.001f)) audioSource.PlayOneShot(zoom, 0.8f);
+            if (Crossed(from, to, EndingActing.ZoomOut, 0.001f))
+            {
+                audioSource.PlayOneShot(zoom, 0.8f);
+                StartBed(ref musicSource, reliefMusic, musicGain);
+            }
             if (Crossed(from, to, EndingActing.ZoomOut, EndingActing.LickCueAt)) audioSource.PlayOneShot(lick);
             if (Crossed(from, to, EndingActing.Meow, EndingActing.MeowAt)) audioSource.PlayOneShot(meow);
             if (Crossed(from, to, EndingActing.Meow, 1.7f)) audioSource.PlayOneShot(lick, 0.8f);
@@ -220,6 +284,7 @@ namespace Boki.Ending
             ReleasePause();
             RestoreCanvases();
             audioSource.Stop();
+            fadingOut = true;
             Action done = completed;
             completed = null;
             if (done == null)
