@@ -235,7 +235,7 @@ namespace Boki.Intro
             }
             if (shot == IntroActing.Scramble) PlayFoley(scramble);
             if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep, effectsGain);
-            if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine, Mathf.Clamp01(dialogueGain * 1.6f));
+            if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine, dialogueGain * 2.5f);
             if (shot == IntroActing.Mount) headlight.enabled = true;
         }
 

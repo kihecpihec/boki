@@ -21,6 +21,8 @@ namespace Boki.UI
         [SerializeField, Min(1f)] private float maximumInterval = 24f;
         [SerializeField, Min(0.1f)] private float fadeSeconds = 2f;
         [SerializeField] private bool silenceInBossArena;
+        // Keep environmental beds and random gusts behind speech on every map.
+        private const float EnvironmentMixGain = 0.3f;
         private bool focused, paused;
         private float remaining;
         private int lastDetail = -1;
@@ -80,9 +82,9 @@ namespace Boki.UI
                 musicSource.volume = Mathf.MoveTowards(musicSource.volume,
                     musicVolume * (speaking ? 0.25f : 1f), musicVolume / fadeSeconds * Time.deltaTime);
             }
-            float target = bedVolume * (speaking ? 0.35f : 1f);
+            float target = bedVolume * EnvironmentMixGain * (speaking ? 0.35f : 1f);
             bedSource.volume = Mathf.MoveTowards(bedSource.volume, target,
-                bedVolume / fadeSeconds * Time.deltaTime);
+                bedVolume * EnvironmentMixGain / fadeSeconds * Time.deltaTime);
             if (speaking)
             {
                 // Leave room for portal dialogue as well as the scripted professor lines.
@@ -92,7 +94,7 @@ namespace Boki.UI
             remaining -= Time.deltaTime;
             if (remaining > 0f || detailSource.isPlaying) return;
             detailSource.clip = AudioVariations.Next(null, details, ref lastDetail);
-            detailSource.volume = detailVolume * Random.Range(0.7f, 1f);
+            detailSource.volume = detailVolume * EnvironmentMixGain * Random.Range(0.7f, 1f);
             detailSource.panStereo = Random.Range(-0.45f, 0.45f);
             detailSource.pitch = Random.Range(0.96f, 1.04f);
             detailSource.Play();

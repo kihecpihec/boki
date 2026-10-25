@@ -183,8 +183,8 @@ namespace Boki.UI
             dialogueSource.Stop();
             dialogueSource.clip = clip;
             bool isBoki = clip == bokiReply || (bokiReaction != null && System.Array.IndexOf(bokiReaction, clip) >= 0);
-            dialogueSource.volume = Mathf.Clamp01(dialogueVolume * gain * (isBoki ? 1.6f : 1f));
-            dialogueSource.Play();
+            dialogueSource.volume = dialogueVolume;
+            dialogueSource.PlayOneShot(clip, gain * (isBoki ? 2.5f : 1f));
         }
 
         private void Update()
