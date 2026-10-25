@@ -54,7 +54,8 @@ namespace Boki.UI
                 new Line(true, "Just show up this time.")),
         };
 
-        private static readonly Vector2 RestPosition = new Vector2(30f, -90f);
+        // Top right, below the speed readout: the Bellevue intro's objective prompt owns the top left for six seconds.
+        private static readonly Vector2 RestPosition = new Vector2(-30f, -120f);
         private static readonly Color CardColor = new Color(0.04f, 0.03f, 0.05f, 0.92f);
         private static readonly Color HeaderColor = new Color(0.66f, 0.62f, 0.55f);
         private static readonly Color IncomingColor = new Color(0.2f, 0.18f, 0.22f);
@@ -82,7 +83,6 @@ namespace Boki.UI
         private bool warningTail;
         private int lineCount;
         private RouteLevel shownLevel;
-        private RouteChoice initialChoice;
         private int initialHealth;
 
         private void OnEnable()
@@ -111,7 +111,6 @@ namespace Boki.UI
             if (session.State.Guilt.IsActive || session.State.Guilt.ScriptedSequenceActive) return;
             shownLevel = level;
             guiltTailArmed = level == RouteLevel.Feri;
-            initialChoice = session.State.Choice(level);
             initialHealth = session.State.Health.Current;
             Present(Script[(int)level]);
             remaining = displaySeconds;
@@ -126,10 +125,8 @@ namespace Boki.UI
         {
             if (remaining <= 0f && !warningTail) return;
             if (!session.State.Health.IsAlive || session.IsLoading || session.HasEnteredBossArena
-                || session.State.ActiveLevel != shownLevel
-                || session.State.Choice(shownLevel) != initialChoice || session.State.Health.Current < initialHealth
-                || (!warningTail && (session.State.Guilt.IsActive
-                    || session.State.Guilt.ScriptedSequenceActive)))
+                || session.State.ActiveLevel != shownLevel || session.State.Health.Current < initialHealth
+                || (!warningTail && session.State.Guilt.ScriptedSequenceActive))
             {
                 Hide();
                 return;
@@ -174,7 +171,7 @@ namespace Boki.UI
         {
             if (roundedSprite == null) roundedSprite = CreateRoundedSprite();
             cardRect = (RectTransform)card.transform;
-            cardRect.anchorMin = cardRect.anchorMax = cardRect.pivot = Vector2.up;
+            cardRect.anchorMin = cardRect.anchorMax = cardRect.pivot = Vector2.one;
             Style(cardImage, CardColor);
             Style(icon, Color.white);
             Anchor((RectTransform)icon.transform, Vector2.up, new Vector2(Padding, -Padding - 1f), new Vector2(16f, 16f));
@@ -252,13 +249,13 @@ namespace Boki.UI
             }
         }
 
-        // Slides and fades in, then out for the final SlideSeconds; the second line lands a beat after the first.
+        // Slides in from the right edge and fades in, then out for the final SlideSeconds; the second line lands a beat after the first.
         private void Animate()
         {
             float elapsed = displaySeconds - remaining;
             float visible = Mathf.SmoothStep(0f, 1f, Mathf.Min(elapsed, remaining) / SlideSeconds);
             card.alpha = visible;
-            cardRect.anchoredPosition = RestPosition + Vector2.left * ((1f - visible) * SlideDistance);
+            cardRect.anchoredPosition = RestPosition + Vector2.right * ((1f - visible) * SlideDistance);
             for (int i = 0; i < lineCount; i++)
                 bubbles[i].group.alpha = Mathf.Clamp01((elapsed - i * LineDelaySeconds) / LineFadeSeconds);
         }
@@ -270,7 +267,6 @@ namespace Boki.UI
             guiltTailArmed = false;
             Hide();
             warningTail = true;
-            initialChoice = session.State.Choice(RouteLevel.Feri);
             initialHealth = session.State.Health.Current;
             source.clip = notification;
             source.pitch = 0.25f;

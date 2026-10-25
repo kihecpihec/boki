@@ -4,7 +4,7 @@ The authored script and presentation requirements live in [Story §3](../Story.m
 
 ## Integration
 
-`RunState.TryConsumePhoneStory` owns once-per-level eligibility and New Run reset. `PhoneStoryTrigger` identifies the assigned player in a primitive trigger. `PhoneStoryView` presents one card and one bounded audio source, without input or camera control. The card is a phone notification (header, chat bubbles, slide in/out); the view owns all of its geometry, colours and the generated rounded sprite, so a restyle never needs the scenes re-saved. It uses the shared gameplay/pause state, skips occupied combat spaces and scripted chases, and dismisses for damage, route selection, loading, death and boss entry. Optional `reaction` clips are unassigned; no new dialogue recordings were created.
+`RunState.TryConsumePhoneStory` owns once-per-level eligibility and New Run reset. `PhoneStoryTrigger` identifies the assigned player in a primitive trigger. `PhoneStoryView` presents one card and one bounded audio source, without input or camera control. The card is a phone notification (header, chat bubbles, slide in/out); the view owns all of its geometry, colours and the generated rounded sprite, so a restyle never needs the scenes re-saved. It uses the shared gameplay/pause state, skips occupied combat spaces and scripted chases, and dismisses for damage, scripted sequences, loading, death and boss entry. Route selection and combat entry deliberately do not dismiss it. Optional `reaction` clips are unassigned; no new dialogue recordings were created.
 
 `Boki/Story/Apply Phone Notifications` is an idempotent, targeted setup command for the three V1 scenes and the required `Player_Model_Test` demonstration. The level-scene edits were explicitly authorized in this task, and again for the notification restyle. For roots built before the restyle it adds only the missing `Icon` and two `Bubble` children and keeps every existing assignment (`message` is read into `header` through `FormerlySerializedAs`). It refuses Play Mode and dirty scenes, restores the previous scene setup, and adds a separate `Phone Story` root without rebuilding maps or changing shared prefabs/build settings. Existing notification roots retain their Inspector assignments; rerunning only corrects trigger position/size to the authored setup.
 
@@ -19,9 +19,9 @@ Inspector bindings under each `Phone Story` root:
 
 - `PhoneStoryView`: `card` = Notification Card CanvasGroup (its `Image` is the background); `header` = Header Text; `icon` = Icon Image; `bubbles` = two entries of Bubble CanvasGroup, its Image and its child Text; `source` = root AudioSource; `notification` = existing `intro_phone_beep.wav`; optional `reaction`; `displaySeconds` = 6.
 - `PhoneStoryTrigger`: `player` = scene PlayerHealth; `view` = root PhoneStoryView; `level` = Forest/City/Feri; BoxCollider has Is Trigger enabled.
-- Canvas scales from 1280 × 720; card sits below the top-left location label and sizes itself to its text. No raycasts or interactive controls.
+- Canvas scales from 1280 × 720; the card sits at the top right below the speed readout and sizes itself to its text. The top left belongs to the Bellevue intro's objective prompt, which stays for six seconds after the intro and used to cover the Pohorje card. No raycasts or interactive controls.
 
-The FERI beep uses falling playback pitch for an unsettling tail. After the reminder has appeared, the first FERI Guilt warning recalls the same beep once at quarter-speed alongside the established warning audio. It never triggers a chase or changes pressure timing. FERI's existing fork is only a few metres past arrival: route selection dismisses the reminder, so full six-second reading time is not guaranteed. Test this before changing level geometry.
+The FERI beep uses falling playback pitch for an unsettling tail. After the reminder has appeared, the first FERI Guilt warning recalls the same beep once at quarter-speed alongside the established warning audio. It never triggers a chase or changes pressure timing. FERI's route gates are about five metres past the spawn, and the corridor combat space follows within a few seconds. The reminder therefore outlasts both and runs its full six seconds; it was previously dismissed by the route gate within about a second. Only damage, a scripted sequence, loading, death or boss entry cut it short.
 
 ## Verification
 
@@ -35,7 +35,7 @@ Manual checks still required:
 
 1. Open `Player_Model_Test`, enter Play Mode and ride forward through the demo trigger. Read the complete old conversation at 1280 × 720; controls and camera must remain responsive. Reenter: no repeat.
 2. Start a normal V1 run from MainMenu. Ride each shared section and check one message per level, including Maribor C's side escape and rear exit. Verify the first beep does not overlap the existing departure line.
-3. Pause and open an upgrade selection while a card is visible: text duration and audio freeze and resume. Take damage, enter combat, select a route, die or load the next scene: card and sound dismiss without a queued replay.
+3. Pause and open an upgrade selection while a card is visible: text duration and audio freeze and resume. Take damage, die or load the next scene: card and sound dismiss without a queued replay. Selecting a route or entering combat must not dismiss the card.
 4. Retry/New Run: messages become eligible again. Use the boss speed shortcut: no skipped-level messages appear in the classroom.
 5. Check FERI reminder reading time before the fork, and listen to its lowered tone alongside the existing later Guilt warning. No new Console errors should appear.
 6. Optional recordings can be assigned to each scene's `reaction` field after checking overlap with player voices. The text-and-tone slice works without them.
