@@ -64,6 +64,39 @@ Each beat is attempted once per run, across all route variants. A missed safe wi
 
 V1's compact FERI arrival offers little reading time before its fork. Keep the short reminder there and let it outlast the fork, and verify legibility in motion before extending any map. The [implementation and verification notes](plans/phone-story-verification.md) record initial trigger positions and remaining checks.
 
+### OPENING CRAWL — “Prologue: The Morning After” (About 45 Seconds, Skippable)
+
+**Placement:** plays when a run is started from the main menu, before the Bellevue prologue below. Retry, which reloads Bellevue after a death, skips it. Enter skips it at any moment and lands in the same place as playing it out: a black frame, then the prologue fades in from black.
+
+**Presentation:** a nod to the Star Wars opening, dressed in the game's VHS-horror look. Pure black, no map, no music track. In order:
+
+1. **Preface (4 s):** one phone-LCD-green line fades in and out: *Last night, on a hill above Maribor, a rave went on a little longer than planned...*
+2. **Title (5.5 s):** `BOKI` in red over `LATE TO FERI` in cream, with a low stinger. The title holds, then recedes into the dark.
+3. **Crawl (about 36 s):** cream text tilts away into the distance and dissolves before it reaches the far end. A low hum runs underneath; a heartbeat starts about halfway through and is racing when the last line arrives.
+4. **Outro (1.5 s):** black, with the hum fading out.
+
+**Copy** (English, new text; the Slovenian lines stay in the prologue itself):
+
+> **PROLOGUE**
+> **THE MORNING AFTER**
+>
+> Boki said he would have one drink and leave early.
+>
+> He did not leave early.
+>
+> Somewhere between the bass and the sunrise, he strapped a rave laser to his scooter. It seemed important at the time. Now it is the only thing keeping the dark away.
+>
+> When the music stopped, the city did not sound the same.
+>
+> He remembers green light. He remembers a promise. He does not remember what he did, or why something has been following him all night.
+>
+> It is nearly 08:00. The lecture at FERI will not wait. The professor will not forgive.
+>
+> **Guilt** is patient.
+> Boki is late.
+
+**Intent:** it answers “why a scooter with a laser?” without a tutorial, and says nothing the game does not later confirm. It stays vague about what Boki did (the *promise*, the *old conversation* on his phone) and never says whether the apocalypse is real, per the world interpretation in §1. It names no weekday, because the ending overturns the day. “One drink” echoes the Pohorje phone message. `Guilt` is the only red word in the body.
+
 ### PROLOGUE — “The Morning After” (20–30 Seconds, Skippable)
 
 **Location:** Bellevue in the early morning, overlooking Maribor. The camera is low in the grass. Distant techno bass slowly gives way to wind.
