@@ -95,9 +95,12 @@ namespace Boki.Editor
         public static void Validate(Scene scene)
         {
             MapAmbience[] all = RecordedAudioSetup.All<MapAmbience>(scene);
-            if (all.Length != 1 || all[0].GetComponentsInChildren<AudioSource>().Length != 2)
-                throw new InvalidOperationException(scene.name + " needs one ambience with two sources.");
+            if (all.Length != 1)
+                throw new InvalidOperationException(scene.name + " needs one ambience with bed and detail sources.");
             var fields = new SerializedObject(all[0]);
+            int expectedSources = fields.FindProperty("musicSource").objectReferenceValue == null ? 2 : 3;
+            if (all[0].GetComponentsInChildren<AudioSource>().Length != expectedSources)
+                throw new InvalidOperationException(scene.name + " has unexpected ambience sources.");
             foreach (string field in new[] { "player", "dialogue", "bedSource", "detailSource" })
                 if (fields.FindProperty(field).objectReferenceValue == null)
                     throw new InvalidOperationException(scene.name + " missing ambience " + field);
