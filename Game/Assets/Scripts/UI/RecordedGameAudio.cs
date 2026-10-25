@@ -104,6 +104,9 @@ namespace Boki.UI
             && (flow == null || !flow.IsTerminal)
             && (RunSession.Instance == null || RunSession.Instance.IsGameplayActive);
 
+        // A cutscene that already played the greeting spends it, so the first real enemy does not repeat it.
+        public void MarkEnemyGreetingPlayed() => greeted = true;
+
         public void PlayEnemyGreeting(Vector3 position)
         {
             if (greeted || enemyGreeting == null || !CanPlayWorld) return;

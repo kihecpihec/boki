@@ -1,4 +1,5 @@
 using System;
+using Boki.ArenaIntro;
 using Boki.Battery;
 using Boki.Combat;
 using Boki.Core;
@@ -159,6 +160,9 @@ namespace Boki.Editor
                     if (session.State.Pause.Contains(PauseReason.ScriptedSequence)) SkipIntro();
                     return;
                 }
+                // The first arena plays its own skippable scare; these checks drive gameplay, not presentation.
+                var arenaIntro = V1SceneSetup.Find<ArenaIntroCutscene>(scene);
+                if (arenaIntro != null && arenaIntro.IsPlaying) { arenaIntro.Skip(); return; }
                 player.GetComponent<ScooterController>().enabled = false;
                 switch (stage)
                 {
