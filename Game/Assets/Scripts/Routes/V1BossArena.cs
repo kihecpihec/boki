@@ -92,7 +92,8 @@ namespace Boki.Routes
             // Land beyond the existing entry trigger, on the classroom side of the seal.
             Vector3 direction = Vector3.ProjectOnPlane(professor.transform.position - transform.position, Vector3.up).normalized;
             Vector3 arrival = transform.position + direction * 2f;
-            if (!Physics.Raycast(arrival + Vector3.up * 4f, Vector3.down, out var ground, 20f, 1, QueryTriggerInteraction.Ignore))
+            // The entry trigger is inside the room. Raising the ray above it hits the roof instead of the floor.
+            if (!Physics.Raycast(arrival, Vector3.down, out var ground, 20f, 1, QueryTriggerInteraction.Ignore))
             { Debug.LogError("V1 boss shortcut arrival needs classroom ground.", this); return; }
             var controller = player.GetComponent<CharacterController>();
             bool wasEnabled = controller.enabled;
