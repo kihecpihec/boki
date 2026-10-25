@@ -15,6 +15,7 @@ namespace Boki.UI
         [SerializeField] private GameObject skipHint;
         [SerializeField] private RectTransform meowBurst;
         [SerializeField] private CanvasGroup endCard;
+        private SubtitlePresentation captions;
 
         private void OnEnable()
         {
@@ -23,8 +24,14 @@ namespace Boki.UI
             {
                 Debug.LogError("Assign every EndingOverlay reference.", this);
                 enabled = false;
+                return;
             }
+            if (captions == null) captions = new SubtitlePresentation(subtitle, subtitleBacking, 130f);
+            captions.Clear();
         }
+
+        private void LateUpdate() => captions?.RefreshLayout();
+        private void OnDisable() => captions?.Clear();
 
         public void SetFade(float alpha)
         {
@@ -46,9 +53,8 @@ namespace Boki.UI
 
         public void SetSubtitle(string line, Color color)
         {
-            subtitle.text = line;
-            subtitle.color = color;
-            subtitleBacking.SetActive(!string.IsNullOrEmpty(line));
+            if (captions == null) captions = new SubtitlePresentation(subtitle, subtitleBacking, 130f);
+            captions.Show(line, color);
         }
 
         // The comic MEOW! burst: pops in with the amount (which may overshoot 1) and wobbles while it is up.
