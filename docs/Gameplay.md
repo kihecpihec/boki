@@ -14,7 +14,7 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 | `Left Shift` | Short **boost** (the consistent term; do not call it “dash”) |
 | `E` | Interact with the `POWER OFF` panel and other interactive objects |
 | `Esc` | Pause / back |
-| Automatic | Laser targets the nearest enemy in range; contact collects XP and arena battery charges |
+| Automatic | Laser targets the nearest enemy in range; nearby XP orbs float toward Boki for collection; contact collects arena battery charges |
 
 **Visual target:** low-poly PS1/VHS horror, with obstacles and attacks readable even on Low settings. **Successful run duration:** approximately 7–12 minutes, including the boss.
 
@@ -274,7 +274,7 @@ Exits have no kill quota or forced wave clear. Leaving early sacrifices potentia
 
 ### Battery Charges and Action Feedback
 
-Regular kills grant XP and increment the kill count, but **never recharge battery or drop battery charges**. After maximum level they still count as kills, without XP or battery rewards. Battery starts at 100, drains at 1.5/s during active gameplay (including the boss), and retains the existing zero-charge speed penalty. Current charge and upgraded capacity carry between scenes.
+Regular kills drop small floating XP orbs and increment the kill count. Within 3 metres, orbs home toward Boki at 12 m/s and grant XP on arrival; attraction and hovering pause with gameplay. Regular kills **never recharge battery or drop battery charges**. After maximum level they still count as kills, without XP or battery rewards. Battery starts at 100, drains at 1.5/s during active gameplay (including the boss), and retains the existing zero-charge speed penalty. Current charge and upgraded capacity carry between scenes.
 
 At healthy battery charge, a broad white light at the scooter headlamp reveals the riding area in all directions, including elevated obstacles (initial tuning: 28 m maximum radius). Rendering layers keep this strong surrounding light off Boki and the scooter model; a separate, restrained unshadowed fill follows the camera-facing side of the rider, keeping his front, back and sides readable as he turns without making him glow. The lamp is white from startup through depletion during ordinary riding. During the existing Guilt warning/chase cue, the surrounding lamp pulses smoothly between white and red at two cycles per active second, with restrained brightness modulation; the rider fill stays white. Pause freezes the pulse, and clearing the warning restores white immediately. As the charge fraction falls, brightness and reach fade gradually, and the darkness overlay's clear area contracts toward the rider and darkens with them. At zero, the surrounding light switches off while a faint local fill barely reveals Boki and the scooter. Recharging restores visibility proportionally to charge.
 
