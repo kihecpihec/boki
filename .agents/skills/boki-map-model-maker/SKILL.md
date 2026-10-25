@@ -5,15 +5,15 @@ description: Use when building, polishing, exporting, or reviewing a Blender map
 
 # Boki map model maker
 
-Rulebook for delivering a **finished Blender map** that drops into `Game/` and can be wired in Unity without touching the model again. Game rules live in `docs/`; this skill only covers the art-to-engine contract. Link to docs, never copy rules.
+Rulebook for delivering a **finished Blender map** that drops into `Source/Game/` and can be wired in Unity without touching the model again. Game rules live in `Documentation/`; this skill only covers the art-to-engine contract. Link to docs, never copy rules.
 
-Maps are static, so "rig" here means **engine-ready setup**: collision, gates, triggers, spawn/charge markers, visibility groups and LODs-by-chunk, not skeletons. (Skinned characters follow `output/character-modeling-v2/UNITY_HANDOFF.md`.)
+Maps are static, so "rig" here means **engine-ready setup**: collision, gates, triggers, spawn/charge markers, visibility groups and LODs-by-chunk, not skeletons. (Skinned characters follow `Source/output/character-modeling-v2/UNITY_HANDOFF.md`.)
 
 Read first, as needed:
-- Route structure and what each space must contain: `docs/Gameplay.md` §2–5, §8 and `docs/Architecture.md` §3–7.
-- Player envelope: `docs/Movement.md` (capsule 1.8 m high, radius 0.35 m, 45° slope limit, 0.25 m step offset, boost/jump speeds).
-- Existing worked example: `output/world-modeling-v3/maps/pohorje/README.md` (and `maribor/`), with the Unity importer in `Game/Assets/Editor/MapProductionTools.cs`.
-- Ownership: do not edit another developer's scenes/prefabs. Importing FBX/textures into `Game/Assets/Art/<Map>/` is fine; assembling a production scene needs the scene owner's agreement.
+- Route structure and what each space must contain: `Documentation/Gameplay.md` §2–5, §8 and `Documentation/Architecture.md` §3–7.
+- Player envelope: `Documentation/Movement.md` (capsule 1.8 m high, radius 0.35 m, 45° slope limit, 0.25 m step offset, boost/jump speeds).
+- Existing worked example: `Source/output/world-modeling-v3/maps/pohorje/README.md` (and `maribor/`), with the Unity importer in `Source/Game/Assets/Editor/MapProductionTools.cs`.
+- Ownership: do not edit another developer's scenes/prefabs. Importing FBX/textures into `Source/Game/Assets/Art/<Map>/` is fine; assembling a production scene needs the scene owner's agreement.
 
 ## Workflow
 
@@ -34,7 +34,7 @@ Read first, as needed:
 - [ ] Origins: modules at a documented snap corner/center on the floor plane; props (trees, rocks, poles, carts) at ground base center; world-placed chunks keep world coordinates with origin at (0,0,0) so they line up when imported together.
 - [ ] Positions are in one shared map space across all chunk files so FBX pieces assemble without hand placement.
 
-### Player-fit dimensions (verify against `docs/Movement.md`)
+### Player-fit dimensions (verify against `Documentation/Movement.md`)
 - [ ] Main lanes ≥ 9 m clear (Pohorje delivery value); tight spots still ≥ 3 m wide, ≥ 3.5 m clear height. Ceilings over riding paths clear the capsule, camera pivot (1.4 m) and jump apex.
 - [ ] Walkable slopes ≤ 45° and readable ones ≤ ~35°; no steps taller than 0.25 m unless intended as a jump/ramp; ramps are real inclined surfaces, not stairs.
 - [ ] Gaps/pits are either clearly jumpable at boost speed or clearly blocked. No accidental 0.1–0.4 m ledges.
@@ -113,7 +113,7 @@ All markers sit on or snap to the final floor surface (raycast down to verify).
 
 ## Export
 
-- Source: `Source/<Map>.blend` (outside `Game/Assets`). Delivered: `Export/*.fbx` + `Textures/*.png` + `markers.json` + `validation.json`.
+- Source: `Source/<Map>.blend` (outside `Source/Game/Assets`). Delivered: `Export/*.fbx` + `Textures/*.png` + `markers.json` + `validation.json`.
 - FBX settings: Selected Objects only; Mesh only (+ Empty for markers file); Scale 1.0; Apply Scalings = FBX All; Forward −Z, Up Y; Apply Unit; Apply Modifiers on; Triangulate Faces on; Smoothing = Face for flat-shaded; no animation, no armature, no leaf bones; Path Mode = Copy off (textures are referenced, not embedded).
 - One FBX per chunk family (shared, each route, terrain chunks, foliage chunks, roofs, collision guides, markers). Keep individual files small enough to reimport quickly.
 - Reimport every FBX into a clean Blender scene and verify triangle count, bounds, material slots and marker positions against `validation.json`.

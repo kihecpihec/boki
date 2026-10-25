@@ -1,11 +1,11 @@
 ---
 name: boki-unity-architecture
-description: Use before writing or changing any C#, asmdef, prefab wiring, Editor tool, or test in the Boki Unity project (Game/). Defines where code goes, which patterns to follow, what never to do, and how to verify and hand off, so new work stays consistent with the existing rules/adapter split. Also use to audit or bootstrap project structure, add a new gameplay system (battery, Guilt pressure, upgrades, pause, enemies, HUD), or review a Unity change.
+description: Use before writing or changing any C#, asmdef, prefab wiring, Editor tool, or test in the Boki Unity project (Source/Game/). Defines where code goes, which patterns to follow, what never to do, and how to verify and hand off, so new work stays consistent with the existing rules/adapter split. Also use to audit or bootstrap project structure, add a new gameplay system (battery, Guilt pressure, upgrades, pause, enemies, HUD), or review a Unity change.
 ---
 
 # Boki Unity architecture
 
-This skill is the engineering rulebook for `Game/`. It does not restate game rules. Those live in `docs/` and `AGENTS.md`; read the section your task needs (AGENTS.md has the lookup table) and never copy a rule into code comments or other docs. Link to it.
+This skill is the engineering rulebook for `Source/Game/`. It does not restate game rules. Those live in `Documentation/` and `AGENTS.md`; read the section your task needs (AGENTS.md has the lookup table) and never copy a rule into code comments or other docs. Link to it.
 
 Pinned stack: Unity `6000.6.7f1`, URP, Input System, no extra packages. Two developers, jam deadline, 5600G target. Playable slice beats architecture; simple beats clever; scene ownership is a hard boundary.
 
@@ -27,7 +27,7 @@ Pinned stack: Unity `6000.6.7f1`, URP, Input System, no extra packages. Two deve
 | Run-wide mutable state | `RunState` (rules) owned by `RunSession` (adapter) | One authority. Scene objects bind to it; they never keep a second copy. |
 | Scene behavior (movement, AI, triggers, spawners, pickups, gates) | `Assets/Scripts/<Domain>/` MonoBehaviour | Sealed, one per file, thin. |
 | HUD and menus | `Assets/Scripts/UI/` | Reads state and events; contains no gameplay rules. |
-| Tuning numbers | `[SerializeField]` on the adapter with the doc value as default, or a constructor argument to a rules class | Canonical values stay in `docs/`. Add a `// Gameplay §x` pointer, not a copy of the prose. |
+| Tuning numbers | `[SerializeField]` on the adapter with the doc value as default, or a constructor argument to a rules class | Canonical values stay in `Documentation/`. Add a `// Gameplay §x` pointer, not a copy of the prose. |
 | Scene/prefab setup helpers, smoke checks, builds | `Assets/Editor/`, namespace `Boki.Editor` | See "Editor tooling" below. |
 | EditMode tests | `Assets/Tests/EditMode/<Domain>/`, one test asmdef per Rules asmdef | Behavior and edge cases, not implementation. |
 | Anything else | Ask, or write the smallest thing that works and note it | |
@@ -38,7 +38,7 @@ Read `references/project-structure.md` for the target tree, assembly graph, and 
 
 ## Non-negotiables
 
-Gameplay traps (details in `AGENTS.md` and `docs/Gameplay.md`, so link rather than restate):
+Gameplay traps (details in `AGENTS.md` and `Documentation/Gameplay.md`, so link rather than restate):
 - C unlocks apply on the next run. `ROUTE_LOCK` beats `PERSISTENT_LOCK`. Persist immediately, snapshot only on New Run.
 - Milestone, gate, exit, and boss-start handlers are idempotent.
 - One shared pause authority; there is no per-system pause.
@@ -56,9 +56,9 @@ Code:
 
 Process:
 - Never commit, push, merge, or rewrite history unless asked. Stay on a feature branch, not `main`.
-- Never edit another developer's scene or prefab without explicit authorization. Ownership unclear: ask, and continue code-only work. Do not rebuild production scenes with a scene builder; write an idempotent upgrade helper that refuses Play Mode and dirty scenes, as `docs/plans/M6.md` requires.
+- Never edit another developer's scene or prefab without explicit authorization. Ownership unclear: ask, and continue code-only work. Do not rebuild production scenes with a scene builder; write an idempotent upgrade helper that refuses Play Mode and dirty scenes, as `Documentation/plans/M6.md` requires.
 - A script or asset created outside Unity has no `.meta`. Never invent a GUID. Import it in `6000.6.7f1`, or report the pending import and do not call the work ready to integrate. Move or delete assets together with their `.meta`.
-- Edit `Game/ProjectSettings/`, `Packages/`, input assets, and shared prefabs only when the task needs it and only after agreement. Never touch `Library/`, `Temp/`, or package caches.
+- Edit `Source/Game/ProjectSettings/`, `Packages/`, input assets, and shared prefabs only when the task needs it and only after agreement. Never touch `Library/`, `Temp/`, or package caches.
 
 ## Code style (match what exists)
 
@@ -79,7 +79,7 @@ Use this when the request is to set up or tidy the project rather than build a f
 1. Run `audit.sh`. FAIL lines are blockers. WARN lines are a backlog, not an instruction to fix everything now.
 2. Compare against `references/project-structure.md` ("current" vs "target" columns). Apply, in order: (a) pure-code fixes needing no new assets, (b) tests for untested rules, (c) items needing Unity import, listed as pending with exact steps.
 3. Changes to shared files (`EditorBuildSettings.asset`, `ProjectSettings/*`, `Packages/*`, asmdef moves) are proposals. Present them and wait, even when the fix is obvious.
-4. Record structural decisions in `docs/Architecture.md` §2/§3 (the canonical source), not in this skill. Update this skill only for engineering rules.
+4. Record structural decisions in `Documentation/Architecture.md` §2/§3 (the canonical source), not in this skill. Update this skill only for engineering rules.
 
 ## When this skill is wrong
 

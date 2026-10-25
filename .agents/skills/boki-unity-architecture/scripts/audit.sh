@@ -4,7 +4,7 @@
 # Exit code 1 if any FAIL is reported; WARN lines are advisory.
 set -u
 
-game="${1:-Game}"
+game="${1:-Source/Game}"
 assets="$game/Assets"
 [ -d "$assets" ] || { echo "No Assets directory at $assets (run from repo root or pass the Game path)"; exit 2; }
 

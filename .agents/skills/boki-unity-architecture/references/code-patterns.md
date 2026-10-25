@@ -162,7 +162,7 @@ Serialize `InputActionReference`s. Enable only what you find disabled and rememb
 - Cache components in `Awake`/`OnEnable`. No `GetComponent`, `Find*`, LINQ, string concatenation, or collection allocation in `Update`.
 - Use `Physics.*NonAlloc` with a reused buffer when a query returns multiple hits. Single-hit `Raycast`/`Linecast`/`SphereCast` do not allocate.
 - Update HUD text only when the value changes (event-driven), not every frame.
-- Projectile travel uses a swept query so fast frames do not tunnel (`docs/plans/M6.md` §2). Bounded lifetime or range on every spawned object. Pool only after profiling.
+- Projectile travel uses a swept query so fast frames do not tunnel (`Documentation/plans/M6.md` §2). Bounded lifetime or range on every spawned object. Pool only after profiling.
 
 ## 9. Scene loading
 
@@ -174,4 +174,4 @@ All transitions go through `RunSession` (`Advance`, `Retry`/New Run). It validat
 - Public setters on shared state (`RunState.Battery`) instead of rule methods.
 - Magic layer numbers and string identifiers (upgrades as `string`).
 - Treating a smoke-check or scene builder passing as proof the game is playable. They are not (Architecture §9).
-- Putting game rules into prose inside code comments or `docs/plans`. Rules go in the canonical doc; handoffs only record what was done.
+- Putting game rules into prose inside code comments or `Documentation/plans`. Rules go in the canonical doc; handoffs only record what was done.

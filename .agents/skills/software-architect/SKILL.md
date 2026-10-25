@@ -1,11 +1,11 @@
 ---
 name: software-architect
-description: Review the Boki Unity project as a software architect and write an evidence-based report on architecture, code quality, performance, testing, Unity asset hygiene, and drift from the design docs. Use when the user asks for an architecture review, a code audit, or a health check of the Unity project. Read-only for game code; writes one report under docs/reviews/.
+description: Review the Boki Unity project as a software architect and write an evidence-based report on architecture, code quality, performance, testing, Unity asset hygiene, and drift from the design docs. Use when the user asks for an architecture review, a code audit, or a health check of the Unity project. Read-only for game code; writes one report under Documentation/reviews/.
 ---
 
 # Software Architect Review
 
-Act as a pragmatic software architect for a two-person game jam. Review `Game/` against what the project says it wants, then write one report. Findings must be specific, verifiable, and ranked by impact on the core priorities in `AGENTS.md`: a playable vertical slice, 30+ FPS on a Ryzen 5600G, and protecting the other developer's scenes.
+Act as a pragmatic software architect for a two-person game jam. Review `Source/Game/` against what the project says it wants, then write one report. Findings must be specific, verifiable, and ranked by impact on the core priorities in `AGENTS.md`: a playable vertical slice, 30+ FPS on a Ryzen 5600G, and protecting the other developer's scenes.
 
 Do not apply fixes, refactor, commit, or push. The only file you create is the report.
 
@@ -15,8 +15,8 @@ This skill works in any coding agent (Claude Code, Codex, and others). It names 
 
 - **Evidence over opinion.** Every finding cites `path:line` (or an asset path and the YAML field) and says what actually happens. If you did not read it, do not claim it. Mark anything inferred as "Likely" and say what would confirm it.
 - **Judge against this project's goals, not textbook purity.** `Architecture.md` §1 asks for simple MonoBehaviours, no framework, no new packages. Do not recommend DI containers, ECS, event buses, or layers of abstraction unless a concrete problem in the code needs one. Simpler beats more architecture here.
-- **Respect documented design.** Game rules live in `docs/Gameplay.md`, `docs/Movement.md`, `docs/Story.md`. If code and docs disagree, report the conflict and which side looks wrong. Do not decide design questions.
-- **Calibrate to milestone.** `Architecture.md` §9 and `docs/plans/` say what is in scope now. Flag missing features only if the current milestone claims them; list the rest as "not yet built" at most.
+- **Respect documented design.** Game rules live in `Documentation/Gameplay.md`, `Documentation/Movement.md`, `Documentation/Story.md`. If code and docs disagree, report the conflict and which side looks wrong. Do not decide design questions.
+- **Calibrate to milestone.** `Architecture.md` §9 and `Documentation/plans/` say what is in scope now. Flag missing features only if the current milestone claims them; list the rest as "not yet built" at most.
 - **Unity cannot run during the review.** Use static analysis only. State plainly that no profiling, Play Mode, or Windows build was done, and list performance claims as predictions with a suggested profiler check.
 - **Keep it proportionate.** A 1,000-line codebase does not need a 20-page report. Prefer a short list of findings that matter over exhaustive nitpicks. Say what is good too, briefly, so the next review knows what to preserve.
 
@@ -26,15 +26,15 @@ Scope: if an argument names a focus or path, review only that, but still read en
 
 ### 1. Orient (read, don't skim)
 
-- `AGENTS.md`, `README.md`, and `docs/Architecture.md` (§1–7 at minimum). Skim `docs/Gameplay.md` §2–4 and §8 for route rules and the performance target.
-- `docs/plans/` for the latest milestone and its `*-verification.md`, to know what is claimed done.
+- `AGENTS.md`, `README.md`, and `Documentation/Architecture.md` (§1–7 at minimum). Skim `Documentation/Gameplay.md` §2–4 and §8 for route rules and the performance target.
+- `Documentation/plans/` for the latest milestone and its `*-verification.md`, to know what is claimed done.
 - `git log --oneline -20` and `git status` to see recent direction and any uncommitted work.
-- `Game/ProjectSettings/ProjectVersion.txt` and `Game/Packages/manifest.json` for the Editor version and packages. Note unused or unagreed packages.
-- Previous reports in `docs/reviews/`, if any. Check which earlier findings were fixed or ignored and say so in the report.
+- `Source/Game/ProjectSettings/ProjectVersion.txt` and `Source/Game/Packages/manifest.json` for the Editor version and packages. Note unused or unagreed packages.
+- Previous reports in `Documentation/reviews/`, if any. Check which earlier findings were fixed or ignored and say so in the report.
 
 ### 2. Inventory
 
-List every `.cs` under `Game/Assets`, every `.asmdef`, and every scene and prefab. Get sizes with `wc -l`. Build a picture of: assemblies and their references, which scripts are pure C# rules versus MonoBehaviours, and what the Editor-only scripts do.
+List every `.cs` under `Source/Game/Assets`, every `.asmdef`, and every scene and prefab. Get sizes with `wc -l`. Build a picture of: assemblies and their references, which scripts are pure C# rules versus MonoBehaviours, and what the Editor-only scripts do.
 
 ### 3. Review lenses
 
@@ -67,7 +67,7 @@ Check these in code, not only in tests.
 - Targeting scans: does `AutoLaser` or enemy code iterate all enemies every frame? Does it scale to the cap of 8 / 12 / 8 active enemies (`Architecture.md` §7)?
 - Instantiate/Destroy churn for enemies, projectiles, VFX. Is pooling needed at the planned counts, or is it premature?
 - Physics: mesh colliders where primitives suffice (`AGENTS.md` forbids them without need), non-convex mesh colliders on moving objects, collision matrix, layer use, ragdolls.
-- Rendering from assets: grep scenes, prefabs, and URP assets for shadow-casting light count, realtime vs baked lights, shadow distance and resolution, render scale, MSAA, post-processing volumes, SRP batcher compatibility, huge textures, high-poly meshes. Check `Game/Assets/Settings/PC_RPAsset.asset` and `QualitySettings.asset` against `Architecture.md` §7.
+- Rendering from assets: grep scenes, prefabs, and URP assets for shadow-casting light count, realtime vs baked lights, shadow distance and resolution, render scale, MSAA, post-processing volumes, SRP batcher compatibility, huge textures, high-poly meshes. Check `Source/Game/Assets/Settings/PC_RPAsset.asset` and `QualitySettings.asset` against `Architecture.md` §7.
 - Memory and GC: Editor-time or runtime allocations in loops, large `Resources` folders, unbounded lists.
 - Anything that only the Linux Editor would hide. State that Windows needs a player build test.
 
@@ -76,19 +76,19 @@ Check these in code, not only in tests.
 - Camera: collision handling, jitter from update order (`LateUpdate`, interpolation), sensitivity configurability.
 
 **Testing**
-- What do the EditMode tests in `Game/Assets/Tests/` cover, and do they check behavior and edge cases (lock priority, next-run unlock timing, reset behavior) rather than implementation details?
+- What do the EditMode tests in `Source/Game/Assets/Tests/` cover, and do they check behavior and edge cases (lock priority, next-run unlock timing, reset behavior) rather than implementation details?
 - Gaps against the rules in `AGENTS.md` ("Validation and Documentation"). Rules that are not tested but should be.
 - Check that test assemblies reference the right `*.Rules` assemblies and are Editor-only.
 - Review the Editor scripts (`SceneBuilder`, `SmokeChecks`, `PlayerBuild`): are they deterministic, idempotent, and safe? Do they overwrite scenes or prefabs the other developer owns? Are they duplicated across milestones (M1…M5) in a way that now needs consolidation?
 - Can the tests and smoke checks run headless? Find the exact command if one is documented; do not invent one.
 
 **Unity asset hygiene and scene ownership**
-- Every asset has its `.meta`, and no `.meta` is orphaned: compare `git ls-files` for `Game/Assets`.
+- Every asset has its `.meta`, and no `.meta` is orphaned: compare `git ls-files` for `Source/Game/Assets`.
 - No duplicate GUIDs: `grep -h '^guid:' ... | sort | uniq -d`.
 - Scripts in scenes and prefabs resolve: grep scene/prefab YAML for `m_Script` GUIDs with no matching `.meta` (missing script references).
 - `EditorBuildSettings.asset` lists every gameplay scene (`Architecture.md` §10).
 - Asset serialization is `Force Text` and meta files are visible (`EditorSettings.asset`).
-- Nothing generated is committed: `Library`, `Temp`, `Logs`, `Obj`, builds, `output/` contents. Check `git ls-files` and `.gitignore`.
+- Nothing generated is committed: `Library`, `Temp`, `Logs`, `Obj`, builds, `Source/output/` contents. Check `git ls-files` and `.gitignore`.
 - Scene ownership: from `git log --format='%an %s' -- <scene>`, note which scenes have been touched by more than one author or by an agent. Prefabs and scenes edited by hand-written YAML are a merge-conflict and corruption risk, so say so when you see it.
 - Scene size and merge risk: very large single scenes, nested prefab overrides that should be prefab variants.
 - Naming and folder layout versus `Architecture.md` §2.
@@ -99,11 +99,11 @@ Check these in code, not only in tests.
 
 ### 4. Verify before reporting
 
-Re-open the code for each High/Critical finding and confirm it. Drop any you cannot confirm or downgrade them to "Likely". Check whether a finding is already tracked in `docs/plans/` or in a verification file, and if so, say it is a known item.
+Re-open the code for each High/Critical finding and confirm it. Drop any you cannot confirm or downgrade them to "Likely". Check whether a finding is already tracked in `Documentation/plans/` or in a verification file, and if so, say it is a known item.
 
 ### 5. Write the report
 
-Create `docs/reviews/architecture-review-YYYY-MM-DD.md` using today's date (create the directory if needed; if the file exists, append `-2`, `-3`, and so on, instead of overwriting). Use English prose. Preserve Slovenian terms verbatim.
+Create `Documentation/reviews/architecture-review-YYYY-MM-DD.md` using today's date (create the directory if needed; if the file exists, append `-2`, `-3`, and so on, instead of overwriting). Use English prose. Preserve Slovenian terms verbatim.
 
 Use this structure:
 

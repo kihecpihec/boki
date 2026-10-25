@@ -1,6 +1,6 @@
 # Project structure: current state, target, migration rules
 
-Canonical layout lives in `docs/Architecture.md` §2–3. This file adds the engineering view: assemblies, dependency direction, and what is debt versus intended. Update Architecture.md for any structural decision; update this file only to keep the "current" column true.
+Canonical layout lives in `Documentation/Architecture.md` §2–3. This file adds the engineering view: assemblies, dependency direction, and what is debt versus intended. Update Architecture.md for any structural decision; update this file only to keep the "current" column true.
 
 ## Assembly graph
 
