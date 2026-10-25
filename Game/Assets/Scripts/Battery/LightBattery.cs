@@ -43,6 +43,8 @@ namespace Boki.Battery
         public bool IsGameplayActive => isActiveAndEnabled && player != null
             && player.isActiveAndEnabled && player.IsAlive && session != null && session.IsGameplayActive;
         public float EnemySpeedMultiplier => State.EnemySpeedMultiplier;
+        public Vector3 LampPosition => surroundingLight.transform.position;
+        public float LampReach => surroundingLight.enabled ? surroundingLight.range : 0f;
 
         private void Awake()
         {

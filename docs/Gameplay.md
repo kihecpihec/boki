@@ -178,6 +178,8 @@ Each fork has these states:
 - `ROUTE_LOCK`: dark roots / shadowed gate and “SEALED BY YOUR PREVIOUS PATH”.
 - `SELECTED`: chosen route; the other routes in this scene close immediately.
 
+Each gate's sign is a trailhead board standing beside the entrance, outside the riding line, showing the route letter, its §2 name and the message above. Its reflective lettering obeys the darkness: it lights up only within the headlight's current reach and fades in the scene fog, so low battery shortens how far away signs can be read.
+
 **Lock display priority:** first check the connection from the previous choice (`ROUTE_LOCK`), then the permanent unlock (`PERSISTENT_LOCK`), otherwise `AVAILABLE`. If both locks apply, display **`ROUTE_LOCK`** and give the player one clear explanation. `SELECTED` applies only after crossing the actual selection trigger.
 
 **Physics / UX:** `ROUTE_LOCK` and `PERSISTENT_LOCK` require an enabled blocking collider, a disabled selection trigger, and the correct message when crossing is attempted. `AVAILABLE` requires a passable entrance and an active trigger. Once the player chooses, immediately close the alternatives and prevent a second choice.
