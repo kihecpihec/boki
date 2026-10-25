@@ -150,7 +150,7 @@ namespace Boki.Player
             if (departurePending && speed > 0.3f)
             {
                 departurePending = false;
-                Play(rewardSource, departureLine, 0.85f);
+                PlayVoice(rewardSource, departureLine, 0.85f);
             }
             shotCooldown = Mathf.Max(0f, shotCooldown - Time.deltaTime);
             xpCooldown = Mathf.Max(0f, xpCooldown - Time.deltaTime);
@@ -170,7 +170,7 @@ namespace Boki.Player
             if (battery.WarningStrength > 0.1f && !reactedToGuilt && guiltReaction != null)
             {
                 reactedToGuilt = true;
-                Play(rewardSource, guiltReaction, 0.65f);
+                PlayVoice(rewardSource, guiltReaction, 0.65f);
                 guiltVoiceCooldown = guiltReaction.length + 0.2f;
             }
             if (battery.WarningStrength > 0.1f && guiltVoiceCooldown <= 0f)
@@ -178,7 +178,7 @@ namespace Boki.Player
                 AudioClip voice = AudioVariations.Next(null, guiltVariations, ref lastGuilt);
                 if (voice != null)
                 {
-                    Play(actionSource, voice, guiltGain);
+                    PlayVoice(actionSource, voice, guiltGain);
                     guiltVoiceCooldown = Mathf.Max(guiltVoiceInterval, voice.length + 0.35f);
                 }
             }
@@ -191,6 +191,11 @@ namespace Boki.Player
         private void Play(AudioSource source, AudioClip clip, float gain = 1f)
         {
             if (isActiveAndEnabled && focused && clip != null) source.PlayOneShot(clip, volume * mixGain * gain);
+        }
+        private void PlayVoice(AudioSource source, AudioClip clip, float gain)
+        {
+            // Lift recorded Boki voices by about 4 dB without raising movement and weapon effects.
+            Play(source, clip, gain * 1.6f);
         }
         private void PlayJump() => Play(actionSource, jump, 0.5f);
         private void PlayBoost() => Play(actionSource, boost, 0.65f);
@@ -222,16 +227,16 @@ namespace Boki.Player
                     motorSource.Stop();
                     actionSource.Stop();
                     rewardSource.Stop();
-                    Play(actionSource, death, 0.9f);
+                    PlayVoice(actionSource, death, 0.9f);
                 }
                 else if (damageCooldown <= 0f)
                 {
                     AudioClip clip = AudioVariations.Next(damage, damageVariations, ref lastDamage);
-                    Play(actionSource, clip, damageGain);
+                    PlayVoice(actionSource, clip, damageGain);
                     damageCooldown = Mathf.Max(0.55f, clip.length + 0.1f);
                 }
             }
-            else if (health.Current > previousHealth && snack != null) Play(rewardSource, snack, 0.65f);
+            else if (health.Current > previousHealth && snack != null) PlayVoice(rewardSource, snack, 0.65f);
             previousHealth = health.Current;
         }
         public void PlayBatteryCollection() => Play(rewardSource, batteryPickup, 0.5f);
