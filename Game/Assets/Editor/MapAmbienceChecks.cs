@@ -17,14 +17,14 @@ namespace Boki.Editor
     {
         private const string Key = "Boki.MapAmbienceChecks";
         [Serializable] private sealed class SavedScenes { public string[] paths; public bool[] loaded; public bool[] active; }
-        private static int stage, bedSample, detailSample;
+        private static int stage, bedSample, detailSample, musicSample;
         private static double started, nextTick;
         private static string failure;
         private static MapAmbience ambience;
-        private static AudioSource bed, detail, speech;
+        private static AudioSource bed, detail, speech, music;
         private static PlayerHealth player;
         private static AudioClip previousDetail;
-        private static float beforeDuck;
+        private static float beforeDuck, musicBeforeDuck;
 
         static MapAmbienceChecks()
         {
@@ -45,7 +45,11 @@ namespace Boki.Editor
             { saved.paths[i] = previous[i].path; saved.loaded[i] = previous[i].isLoaded; saved.active[i] = previous[i].isActive; }
             SessionState.SetString(Key + ".Scenes", JsonUtility.ToJson(saved));
             foreach (string scene in new[] { "V1_Pohorje", "V1_Maribor", "V1_FERI", "Player_Model_Test" })
-                MapAmbienceSetup.Validate(EditorSceneManager.OpenScene("Assets/Scenes/" + scene + ".unity"));
+            {
+                Scene opened = EditorSceneManager.OpenScene("Assets/Scenes/" + scene + ".unity");
+                MapAmbienceSetup.Validate(opened);
+                LevelMusicSetup.Validate(opened);
+            }
             SessionState.SetBool(Key, true);
             EditorApplication.EnterPlaymode();
         }
@@ -106,36 +110,37 @@ namespace Boki.Editor
                         break;
                     case 1:
                         Check(bed.isPlaying && bed.loop && bed.volume > 0f && bed.volume <= 0.16f, "Quiet faded loop plays");
+                        Check(music.isPlaying && music.loop && music.volume > 0f, "Gameplay music plays");
                         Check(detail.isPlaying && !detail.loop, "Sparse detail plays");
                         previousDetail = detail.clip;
                         session.SetPaused(PauseReason.Menu, true);
                         break;
                     case 2:
-                        Check(!bed.isPlaying && !detail.isPlaying, "Menu pauses both layers");
-                        bedSample = bed.timeSamples; detailSample = detail.timeSamples;
+                        Check(!bed.isPlaying && !detail.isPlaying && !music.isPlaying, "Menu pauses both layers");
+                        bedSample = bed.timeSamples; detailSample = detail.timeSamples; musicSample = music.timeSamples;
                         break;
                     case 3:
-                        Check(bed.timeSamples == bedSample && detail.timeSamples == detailSample, "Paused samples stay frozen");
+                        Check(bed.timeSamples == bedSample && detail.timeSamples == detailSample && music.timeSamples == musicSample, "Paused samples stay frozen");
                         session.SetPaused(PauseReason.Menu, false);
                         break;
                     case 4:
-                        Check(bed.isPlaying && detail.isPlaying, "Both layers resume");
+                        Check(bed.isPlaying && detail.isPlaying && music.isPlaying, "Both layers resume");
                         ambience.SendMessage("OnApplicationFocus", false);
                         break;
                     case 5:
-                        Check(!bed.isPlaying && !detail.isPlaying, "Focus loss pauses ambience");
+                        Check(!bed.isPlaying && !detail.isPlaying && !music.isPlaying, "Focus loss pauses ambience");
                         ambience.SendMessage("OnApplicationFocus", true);
                         break;
                     case 6:
-                        Check(bed.isPlaying && detail.isPlaying, "Focus return resumes ambience");
-                        beforeDuck = bed.volume;
+                        Check(bed.isPlaying && detail.isPlaying && music.isPlaying, "Focus return resumes ambience");
+                        beforeDuck = bed.volume; musicBeforeDuck = music.volume;
                         speech.clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Sfx/Recorded/Dialogue/professor_question.wav");
                         speech.volume = 0f;
                         speech.Play();
                         nextTick += 0.6;
                         break;
                     case 7:
-                        Check(bed.volume < beforeDuck && detail.volume < 0.01f, "Dialogue ducks bed and details");
+                        Check(bed.volume < beforeDuck && music.volume < musicBeforeDuck && detail.volume < 0.01f, "Dialogue ducks bed and details");
                         speech.Stop();
                         nextTick += 0.6;
                         break;
@@ -144,16 +149,16 @@ namespace Boki.Editor
                         if (!detail.isPlaying || detail.clip == previousDetail) return;
                         Check(detail.clip != previousDetail, "Next sparse detail avoids immediate repeat");
                         ambience.enabled = false;
-                        Check(!bed.isPlaying && !detail.isPlaying, "Disable stops both sources");
+                        Check(!bed.isPlaying && !detail.isPlaying && !music.isPlaying, "Disable stops both sources");
                         ambience.enabled = true;
                         ambience.SendMessage("OnApplicationFocus", true);
                         break;
                     case 9:
-                        Check(bed.isPlaying && ambience.GetComponentsInChildren<AudioSource>().Length == 2, "Re-enable restarts without new sources");
+                        Check(bed.isPlaying && ambience.GetComponentsInChildren<AudioSource>().Length == 3, "Re-enable restarts without new sources");
                         player.TakeDamage(player.Current);
                         break;
                     case 10:
-                        Check(!bed.isPlaying && !detail.isPlaying, "Death stops ambience");
+                        Check(!bed.isPlaying && !detail.isPlaying && !music.isPlaying, "Death stops ambience");
                         EditorSceneManager.LoadSceneInPlayMode("Assets/Scenes/V1_Maribor.unity", new LoadSceneParameters(LoadSceneMode.Single));
                         nextTick += 1;
                         break;
@@ -163,7 +168,7 @@ namespace Boki.Editor
                         Bind();
                         break;
                     case 12:
-                        Check(bed.isPlaying && bed.clip.name == "city_air", "City has its own live bed");
+                        Check(bed.isPlaying && bed.clip.name == "city_air" && music.isPlaying && music.clip.name == "maribor_gameplay", "City has its own live bed");
                         EditorSceneManager.LoadSceneInPlayMode("Assets/Scenes/V1_FERI.unity", new LoadSceneParameters(LoadSceneMode.Single));
                         nextTick += 1;
                         break;
@@ -171,13 +176,13 @@ namespace Boki.Editor
                         Bind();
                         break;
                     case 14:
-                        Check(bed.isPlaying && bed.clip.name == "feri_ventilation" && bed.volume <= 0.075f, "FERI approach stays quieter");
+                        Check(bed.isPlaying && bed.clip.name == "feri_ventilation" && bed.volume <= 0.075f && music.isPlaying && music.clip.name == "feri_gameplay", "FERI approach stays quieter");
                         Check(session.State.TrySelect(RouteLevel.Forest, RouteChoice.A) && session.State.TryAdvance(RouteLevel.Forest)
                             && session.State.TrySelect(RouteLevel.City, RouteChoice.A) && session.State.TryAdvance(RouteLevel.City)
                             && session.State.TrySelect(RouteLevel.Feri, RouteChoice.A) && session.EnterBossArena(), "Enter boss run state");
                         break;
                     case 15:
-                        Check(!bed.isPlaying && !detail.isPlaying, "Boss and ending retain silence from map ambience");
+                        Check(!bed.isPlaying && !detail.isPlaying && !music.isPlaying, "Boss and ending retain silence from map ambience");
                         EditorApplication.ExitPlaymode();
                         break;
                 }
@@ -192,6 +197,7 @@ namespace Boki.Editor
             Check(ambience != null && ambience.isActiveAndEnabled, "Enabled map ambience exists");
             var fields = new SerializedObject(ambience);
             bed = (AudioSource)fields.FindProperty("bedSource").objectReferenceValue;
+            music = (AudioSource)fields.FindProperty("musicSource").objectReferenceValue;
             detail = (AudioSource)fields.FindProperty("detailSource").objectReferenceValue;
             var dialogue = (RecordedGameAudio)fields.FindProperty("dialogue").objectReferenceValue;
             speech = (AudioSource)new SerializedObject(dialogue).FindProperty("dialogueSource").objectReferenceValue;

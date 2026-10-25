@@ -12,6 +12,8 @@ namespace Boki.UI
         [SerializeField] private RecordedGameAudio dialogue;
         [SerializeField] private AudioSource bedSource;
         [SerializeField] private AudioSource detailSource;
+        [SerializeField] private AudioSource musicSource;
+        [SerializeField, Range(0f, 1f)] private float musicVolume = 0.18f;
         [SerializeField] private AudioClip[] details;
         [SerializeField, Range(0f, 1f)] private float bedVolume = 0.16f;
         [SerializeField, Range(0f, 1f)] private float detailVolume = 0.12f;
@@ -39,6 +41,7 @@ namespace Boki.UI
             remaining = NextInterval();
             bedSource.Stop();
             detailSource.Stop();
+            if (musicSource != null) { musicSource.Stop(); musicSource.loop = true; musicSource.volume = 0f; }
             bedSource.loop = true;
             bedSource.volume = 0f;
             detailSource.loop = false;
@@ -58,18 +61,25 @@ namespace Boki.UI
                 bedSource.Stop();
                 detailSource.Stop();
                 bedSource.volume = 0f;
+                if (musicSource != null) { musicSource.Stop(); musicSource.volume = 0f; }
                 paused = false;
                 return;
             }
             bool suspend = !focused || (session != null && !session.IsGameplayActive);
             if (suspend)
             {
-                if (!paused) { bedSource.Pause(); detailSource.Pause(); paused = true; }
+                if (!paused) { bedSource.Pause(); detailSource.Pause(); if (musicSource != null) musicSource.Pause(); paused = true; }
                 return;
             }
-            if (paused) { bedSource.UnPause(); detailSource.UnPause(); paused = false; }
+            if (paused) { bedSource.UnPause(); detailSource.UnPause(); if (musicSource != null) musicSource.UnPause(); paused = false; }
             if (!bedSource.isPlaying) bedSource.Play();
             bool speaking = dialogue.IsDialoguePlaying;
+            if (musicSource != null)
+            {
+                if (!musicSource.isPlaying) musicSource.Play();
+                musicSource.volume = Mathf.MoveTowards(musicSource.volume,
+                    musicVolume * (speaking ? 0.25f : 1f), musicVolume / fadeSeconds * Time.deltaTime);
+            }
             float target = bedVolume * (speaking ? 0.35f : 1f);
             bedSource.volume = Mathf.MoveTowards(bedSource.volume, target,
                 bedVolume / fadeSeconds * Time.deltaTime);
@@ -93,6 +103,7 @@ namespace Boki.UI
         {
             if (bedSource != null) { bedSource.Stop(); bedSource.volume = 0f; }
             if (detailSource != null) detailSource.Stop();
+            if (musicSource != null) { musicSource.Stop(); musicSource.volume = 0f; }
         }
     }
 }
