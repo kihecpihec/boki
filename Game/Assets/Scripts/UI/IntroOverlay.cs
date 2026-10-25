@@ -15,6 +15,7 @@ namespace Boki.UI
         [SerializeField] private CanvasGroup watchReadout;
         [SerializeField] private GameObject objective;
         [SerializeField] private GameObject skipHint;
+        private SubtitlePresentation captions;
 
         private void OnEnable()
         {
@@ -23,8 +24,14 @@ namespace Boki.UI
             {
                 Debug.LogError("Assign every IntroOverlay reference.", this);
                 enabled = false;
+                return;
             }
+            if (captions == null) captions = new SubtitlePresentation(subtitle, subtitleBacking, 130f);
+            captions.Clear();
         }
+
+        private void LateUpdate() => captions?.RefreshLayout();
+        private void OnDisable() => captions?.Clear();
 
         public void SetFade(float alpha)
         {
@@ -45,9 +52,8 @@ namespace Boki.UI
 
         public void SetSubtitle(string line, Color color)
         {
-            subtitle.text = line;
-            subtitle.color = color;
-            subtitleBacking.SetActive(!string.IsNullOrEmpty(line));
+            if (captions == null) captions = new SubtitlePresentation(subtitle, subtitleBacking, 130f);
+            captions.Show(line, color);
         }
 
         public void SetWatchReadout(float alpha) => watchReadout.alpha = Mathf.Clamp01(alpha);
