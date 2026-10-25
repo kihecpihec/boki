@@ -194,8 +194,8 @@ namespace Boki.Player
         }
         private void PlayVoice(AudioSource source, AudioClip clip, float gain)
         {
-            // Lift recorded Boki voices by about 4 dB without raising movement and weapon effects.
-            Play(source, clip, gain * 1.6f);
+            // Lift recorded Boki voices by about 8 dB without raising movement and weapon effects.
+            Play(source, clip, gain * 2.5f);
         }
         private void PlayJump() => Play(actionSource, jump, 0.5f);
         private void PlayBoost() => Play(actionSource, boost, 0.65f);

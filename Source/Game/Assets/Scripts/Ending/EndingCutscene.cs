@@ -244,7 +244,7 @@ namespace Boki.Ending
         {
             if (Crossed(from, to, EndingActing.Loom, EndingActing.ShrinkAt)) audioSource.PlayOneShot(deflate);
             if (Crossed(from, to, EndingActing.Saturday, EndingActing.ProfessorVoiceAt)) audioSource.PlayOneShot(professorVoice);
-            if (Crossed(from, to, EndingActing.Huh, EndingActing.BokiVoiceAt)) audioSource.PlayOneShot(bokiVoice);
+            if (Crossed(from, to, EndingActing.Huh, EndingActing.BokiVoiceAt)) audioSource.PlayOneShot(bokiVoice, 1.6f);
             if (Crossed(from, to, EndingActing.ZoomIn, EndingActing.ZoomCueAt)) audioSource.PlayOneShot(zoom);
             if (Crossed(from, to, EndingActing.ZoomIn, EndingActing.ThumpAt)) audioSource.PlayOneShot(thump);
             if (Crossed(from, to, EndingActing.ZoomOut, 0.001f))

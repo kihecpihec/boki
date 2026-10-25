@@ -264,7 +264,7 @@ namespace Boki.ArenaIntro
             if (Crossed(from, to, ArenaIntroActing.StartOf(ArenaIntroActing.Startle) + ArenaIntroActing.EyePopAt))
                 audioSource.PlayOneShot(eyePop, effectsGain);
             if (Crossed(from, to, ArenaIntroActing.StartOf(ArenaIntroActing.Line) + ArenaIntroActing.BokiVoiceAt))
-                audioSource.PlayOneShot(bokiLine, dialogueGain);
+                audioSource.PlayOneShot(bokiLine, dialogueGain * 1.6f);
             if (ArenaIntroActing.Approach.Footfalls(ArenaIntroActing.CreepSeconds(to))
                 > ArenaIntroActing.Approach.Footfalls(ArenaIntroActing.CreepSeconds(from)))
                 creeperSteps.PlayOneShot(step, stepGain * UnityEngine.Random.Range(0.75f, 1f));
