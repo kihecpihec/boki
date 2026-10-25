@@ -4555,7 +4555,7 @@ MonoBehaviour:
   bossMusic: {fileID: 1841370298}
   musicVolume: 0.22
   musicFadeSeconds: 2
-  ending: {fileID: 1049928029}
+  ending: {fileID: 2130732319}
 --- !u!54 &383054552
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -33416,7 +33416,7 @@ SceneRoots:
   - {fileID: 147284491}
   - {fileID: 1395120943}
   - {fileID: 283153940}
-  - {fileID: 1049928028}
+  - {fileID: 2130732318}
 --- !u!1 &218053377
 GameObject:
   m_ObjectHideFlags: 0
@@ -34292,7 +34292,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 383054550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1049928028
+--- !u!1001 &2130732318
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -34391,19 +34391,19 @@ PrefabInstance:
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'gameplayCanvases.Array.data[0]'
       value:
-      objectReference: {fileID: 1161102926}
+      objectReference: {fileID: 1256973295}
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'gameplayCanvases.Array.data[1]'
       value:
-      objectReference: {fileID: 1256973295}
+      objectReference: {fileID: 1161102926}
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'gameplayCanvases.Array.data[2]'
       value:
-      objectReference: {fileID: 5921520}
+      objectReference: {fileID: 475276603}
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'gameplayCanvases.Array.data[3]'
       value:
-      objectReference: {fileID: 1395120942}
+      objectReference: {fileID: 5921520}
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'gameplayCanvases.Array.data[4]'
       value:
@@ -34411,15 +34411,15 @@ PrefabInstance:
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'gameplayCanvases.Array.data[5]'
       value:
-      objectReference: {fileID: 475276603}
+      objectReference: {fileID: 1395120942}
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'hiddenDuringEnding.Array.data[0]'
       value:
-      objectReference: {fileID: 665513807}
+      objectReference: {fileID: 232696391}
     - target: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: 'hiddenDuringEnding.Array.data[1]'
       value:
-      objectReference: {fileID: 665513806}
+      objectReference: {fileID: 232696390}
     - target: {fileID: 5252526856455458495, guid: 297333390779ab502a60efa8d45152f9, type: 3}
       propertyPath: m_Name
       value: EndingCutscene
@@ -34429,25 +34429,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 297333390779ab502a60efa8d45152f9, type: 3}
---- !u!223 &5921520 stripped
-Canvas:
-  m_CorrespondingSourceObject: {fileID: 7682159238172089488, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
-  m_PrefabInstance: {fileID: 5921517}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &665513806 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3763210331324900712, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
-  m_PrefabInstance: {fileID: 7868977143442150400}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &665513807 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8677340950860934668, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
-  m_PrefabInstance: {fileID: 7868977143442150400}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1049928029 stripped
+--- !u!114 &2130732319 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3712106562248660103, guid: 297333390779ab502a60efa8d45152f9, type: 3}
-  m_PrefabInstance: {fileID: 1049928028}
+  m_PrefabInstance: {fileID: 2130732318}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -34455,3 +34440,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d92fc27e34c196e67a24c0ac4f45d85d, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::Boki.Ending.EndingCutscene
+--- !u!223 &5921520 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7682159238172089488, guid: d2449dfde86394ca6a1e24821bab1a99, type: 3}
+  m_PrefabInstance: {fileID: 5921517}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &232696390 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3763210331324900712, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+  m_PrefabInstance: {fileID: 7868977143442150400}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &232696391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8677340950860934668, guid: 5310545e68c224015b6e6c1da1a37ca5, type: 3}
+  m_PrefabInstance: {fileID: 7868977143442150400}
+  m_PrefabAsset: {fileID: 0}

@@ -12,13 +12,18 @@ namespace Boki.Enemies
         private AudioClip paper;
         private AudioClip slam;
         private bool paused;
+        [SerializeField, Range(0f, 1f)] private float volume = 0.4f;
+        [SerializeField, Range(0f, 1f)] private float paperGain = 0.3f;
+        [SerializeField, Range(0f, 1f)] private float slamGain = 0.75f;
+        [SerializeField, Min(0f)] private float paperSoundInterval = 0.7f;
+        private float paperCooldown;
 
         private void Awake()
         {
             source = gameObject.AddComponent<AudioSource>();
             source.playOnAwake = false;
             source.spatialBlend = 0f;
-            source.volume = 0.65f;
+            source.volume = volume;
             // Short synthesized foley keeps every existing encounter audible without asset wiring.
             paper = CreateClip("Professor paper flutter", 0.28f, false);
             slam = CreateClip("Professor deadline impact", 0.55f, true);
@@ -27,6 +32,7 @@ namespace Boki.Enemies
         private void OnEnable()
         {
             boss = GetComponent<ProfessorBoss>();
+            paperCooldown = 0f;
             boss.BarrageSheetFired += OnPaper;
             boss.SlamLanded += OnSlam;
         }
@@ -43,14 +49,20 @@ namespace Boki.Enemies
         {
             if (!boss.isActiveAndEnabled || !boss.CanAttack) { source.Stop(); return; }
             bool shouldPause = Time.deltaTime <= 0f || (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive);
+            if (!shouldPause) paperCooldown = Mathf.Max(0f, paperCooldown - Time.deltaTime);
             if (shouldPause == paused) return;
             paused = shouldPause;
             if (paused) source.Pause();
             else source.UnPause();
         }
 
-        private void OnPaper() => source.PlayOneShot(paper, 0.65f);
-        private void OnSlam() => source.PlayOneShot(slam);
+        private void OnPaper()
+        {
+            if (paperCooldown > 0f) return;
+            source.PlayOneShot(paper, paperGain);
+            paperCooldown = paperSoundInterval;
+        }
+        private void OnSlam() => source.PlayOneShot(slam, slamGain);
 
         private static AudioClip CreateClip(string name, float duration, bool impact)
         {
