@@ -28,6 +28,15 @@ namespace Boki.UI
         [SerializeField] private AudioClip[] bokiReaction;
         public bool IsBossOpening => dialogueStage == 1 || dialogueStage == 2;
 
+        [Header("Mix and crowd control")]
+        [SerializeField, Range(0f, 1f)] private float enemyHitGain = 0.38f;
+        [SerializeField, Range(0f, 1f)] private float enemyDeathGain = 0.6f;
+        [SerializeField, Range(0f, 1f)] private float greetingGain = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float dialogueGain = 0.65f;
+        [SerializeField, Range(0f, 1f)] private float portalGain = 0.4f;
+        [SerializeField, Min(0f)] private float enemyHitInterval = 0.3f;
+        [SerializeField, Min(0f)] private float enemyDeathInterval = 0.55f;
+        [SerializeField, Range(1, 6)] private int simultaneousEnemyVoices = 2;
         private bool focused, worldPaused, dialoguePaused, greeted, ownsPause;
         private int lastDamage = -1, lastDeath = -1, lastTeleport = -1, lastReaction = -1;
         private int dialogueStage;
@@ -37,6 +46,9 @@ namespace Boki.UI
         private LevelPortal[] portals;
         private BoxCollider[] portalColliders;
         private bool[] portalVoicesPlayed;
+        private float[] enemyVolumes;
+        private readonly bool[] deathVoices = new bool[6];
+        private float dialogueVolume, hitCooldown, deathCooldown;
 
         private void OnEnable()
         {
@@ -50,6 +62,13 @@ namespace Boki.UI
             }
             focused = Application.isFocused;
             worldPaused = dialoguePaused = greeted = false;
+            hitCooldown = deathCooldown = 0f;
+            if (enemyVolumes == null)
+            {
+                enemyVolumes = new float[enemySources.Length];
+                for (int i = 0; i < enemySources.Length; i++) enemyVolumes[i] = enemySources[i].volume;
+                dialogueVolume = dialogueSource.volume;
+            }
         }
 
         private void Start()
@@ -74,7 +93,7 @@ namespace Boki.UI
                 AudioClip clip = AudioVariations.Next(null, teleport, ref lastTeleport);
                 if (clip == null) return;
                 portalVoicesPlayed[i] = true;
-                PlayDialogue(clip);
+                PlayDialogue(clip, portalGain);
                 return;
             }
         }
@@ -87,29 +106,44 @@ namespace Boki.UI
         public void PlayEnemyGreeting(Vector3 position)
         {
             if (greeted || enemyGreeting == null || !CanPlayWorld) return;
-            greeted = PlayWorld(enemyGreeting, position, false);
+            greeted = PlayWorld(enemyGreeting, position, false, greetingGain);
         }
         public void PlayEnemyDamage(Vector3 position)
         {
-            if (CanPlayWorld) PlayWorld(AudioVariations.Next(null, enemyDamage, ref lastDamage), position, false);
+            if (CanPlayWorld && hitCooldown <= 0f
+                && PlayWorld(AudioVariations.Next(null, enemyDamage, ref lastDamage), position, false, enemyHitGain))
+                hitCooldown = enemyHitInterval;
         }
         public void PlayEnemyDeath(Vector3 position)
         {
-            if (CanPlayWorld) PlayWorld(AudioVariations.Next(null, enemyDeath, ref lastDeath), position, true);
+            if (CanPlayWorld && deathCooldown <= 0f
+                && PlayWorld(AudioVariations.Next(null, enemyDeath, ref lastDeath), position, true, enemyDeathGain))
+                deathCooldown = enemyDeathInterval;
         }
 
-        private bool PlayWorld(AudioClip clip, Vector3 position, bool important)
+        private bool PlayWorld(AudioClip clip, Vector3 position, bool important, float gain)
         {
             if (clip == null) return false;
             int slot = -1;
+            int playing = 0, replaceable = -1;
             for (int i = 0; i < enemySources.Length; i++)
-                if (!enemySources[i].isPlaying) { slot = i; break; }
-            if (slot < 0 && important) slot = 0;
+            {
+                if (!enemySources[i].isPlaying) { if (slot < 0) slot = i; }
+                else
+                {
+                    playing++;
+                    if (!deathVoices[i]) replaceable = i;
+                }
+            }
+            if (playing >= simultaneousEnemyVoices || slot < 0)
+                slot = important ? replaceable : -1;
             if (slot < 0) return false;
             AudioSource source = enemySources[slot];
             source.Stop();
             source.transform.position = position;
             source.clip = clip;
+            source.volume = enemyVolumes[slot] * gain;
+            deathVoices[slot] = important;
             source.Play();
             return true;
         }
@@ -136,19 +170,25 @@ namespace Boki.UI
         private void ShowLine(AudioClip clip, string text)
         {
             if (subtitle != null) subtitle.text = text;
-            PlayDialogue(clip);
+            PlayDialogue(clip, dialogueGain);
             remaining = clip != null ? clip.length + 0.2f : 0.2f;
         }
-        private void PlayDialogue(AudioClip clip)
+        private void PlayDialogue(AudioClip clip, float gain)
         {
             if (clip == null) return;
             dialogueSource.Stop();
             dialogueSource.clip = clip;
+            dialogueSource.volume = dialogueVolume * gain;
             dialogueSource.Play();
         }
 
         private void Update()
         {
+            if (CanPlayWorld)
+            {
+                hitCooldown = Mathf.Max(0f, hitCooldown - Time.deltaTime);
+                deathCooldown = Mathf.Max(0f, deathCooldown - Time.deltaTime);
+            }
             PlayNearbyPortalVoice();
             bool terminal = !player.IsAlive || (flow != null && flow.IsTerminal);
             bool pauseWorld = !focused || terminal
@@ -199,9 +239,18 @@ namespace Boki.UI
         private void OnDisable()
         {
             EndSequence();
-            if (dialogueSource != null) dialogueSource.Stop();
+            if (dialogueSource != null)
+            {
+                dialogueSource.Stop();
+                if (enemyVolumes != null) dialogueSource.volume = dialogueVolume;
+            }
             if (enemySources != null)
-                foreach (AudioSource source in enemySources) if (source != null) source.Stop();
+                for (int i = 0; i < enemySources.Length; i++)
+                    if (enemySources[i] != null)
+                    {
+                        enemySources[i].Stop();
+                        if (enemyVolumes != null) enemySources[i].volume = enemyVolumes[i];
+                    }
         }
     }
 }

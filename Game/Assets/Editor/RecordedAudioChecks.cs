@@ -144,10 +144,12 @@ namespace Boki.Editor
                         spawned = instance.GetComponent<EnemyHealth>();
                         foreach (AudioSource source in world) source.Stop();
                         spawned.TakeDamage(1);
-                        Check(Playing("damage_", world) != null, "Spawned enemy damage voice");
+                        AudioSource hit = Playing("damage_", world);
+                        Check(hit != null, "Spawned enemy damage voice");
                         spawned.TakeDamage(spawned.Current);
                         death = Playing("death_", world);
                         Check(death != null, "Lethal hit plays a death variation");
+                        Check(hit.volume < death.volume && death.volume < 0.5f, "Enemy mix is quieter, with deaths above hits");
                         stage++;
                         break;
                     case 1:
@@ -168,6 +170,9 @@ namespace Boki.Editor
                     case 4:
                         Check(death.isPlaying, "Death tail resumes");
                         for (int i = 0; i < 20; i++) output.PlayEnemyDeath(player.transform.position);
+                        int sounding = 0;
+                        foreach (AudioSource source in world) if (source.isPlaying) sounding++;
+                        Check(sounding <= 2, "Crowded death bursts retain at most two audible enemy voices");
                         Check(output.GetComponentsInChildren<AudioSource>().Length == 7, "Voice limit creates no new sources");
                         var controller = player.GetComponent<CharacterController>();
                         controller.enabled = false;
