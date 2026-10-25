@@ -8,12 +8,12 @@ Temo Halloween sva vključila s senčnimi pošastmi, temo in srhljivim vzdušjem
 
 ## Zagon na Windows
 
-Za oddajo uporabljava mapo [Build/](Build/), namenjeno celotni različici Windows x86-64. **V trenutnem repozitoriju izvršne datoteke še nimava priložene; v `Build/` so za zdaj le navodila.** Uspešno izdelavo prejšnje različice sva dokumentirala v [zapisu o izdelavi](Documentation/plans/first-windows-build.md), končni preizkus na drugem računalniku Windows pa morava še opraviti.
+Celotno različico Windows x86-64 sva priložila v [Build/](Build/). Zaženeva jo z [Build/Boki.exe](Build/Boki.exe). Postopek izdelave sva opisala v [navodilih za različico Windows](Build/README.md), končni preizkus na drugem računalniku Windows pa morava še opraviti.
 
 Pripravljeno različico zaženeva tako:
 
 1. Preneseva repozitorij oziroma celoten paket igre in ga razširiva na disk.
-2. V `Build/` odpreva mapo različice Windows in zaženeva `Boki.exe`.
+2. Odpreva mapo `Build/` in zaženeva `Boki.exe`.
 3. V meniju izbereva **NEW RUN**.
 
 Ob datoteki `Boki.exe` ohraniva pripadajočo mapo `Boki_Data/`, `UnityPlayer.dll`, `MonoBleedingEdge/` in vse druge datoteke izdelane igre. Samo `.exe` ne zadostuje. Če imava priložen `Launch-Boki.cmd`, lahko z njim zaženeva igro v oknu pri 1280 × 720 z Direct3D 11.
