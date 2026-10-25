@@ -72,12 +72,20 @@ namespace Boki.Editor
             EditorSceneManager.OpenScene(V1SceneSetup.Scenes[2]);
         }
 
+        [MenuItem("Boki/Version 1/Run Development HUD Checks")]
+        public static void RunDevelopmentHud()
+        {
+            Run();
+            SessionState.SetBool(Key + ".Hud", true);
+        }
+
         private static void Changed(PlayModeStateChange state)
         {
             if (!SessionState.GetBool(Key, false)) return;
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
                 stage = SessionState.GetBool(Key + ".Professor", false) ? 80 : 0; professorSamples = 0; encounterVerified = false; introScene = null; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
+                if (SessionState.GetBool(Key + ".Hud", false)) stage = 200;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             var saved = JsonUtility.FromJson<Saved>(SessionState.GetString(Key + ".Saved", ""));
@@ -87,6 +95,8 @@ namespace Boki.Editor
             SessionState.SetBool(Key, false);
             bool professorOnly = SessionState.GetBool(Key + ".Professor", false);
             SessionState.EraseBool(Key + ".Professor");
+            bool hudOnly = SessionState.GetBool(Key + ".Hud", false);
+            SessionState.EraseBool(Key + ".Hud");
             InputSystem.settings.backgroundBehavior = (InputSettings.BackgroundBehavior)saved.background;
             InputSystem.settings.editorInputBehaviorInPlayMode = (InputSettings.EditorInputBehaviorInPlayMode)saved.editorInput;
             bool restore = saved.paths.Length > 0;
@@ -98,8 +108,9 @@ namespace Boki.Editor
                 EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
             else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            if (professorOnly) Debug.Log(failed ? "PROFESSOR_ARENA_CHECKS_FAILED: " + failure : "PROFESSOR_ARENA_CHECKS_PASSED");
-            else Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, portal guards/travel, XP contact, upgrade pause, state carry, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
+            if (hudOnly) Debug.Log(failed ? "DEVELOPMENT_HUD_CHECKS_FAILED: " + failure : "DEVELOPMENT_HUD_CHECKS_PASSED");
+            else if (professorOnly) Debug.Log(failed ? "PROFESSOR_ARENA_CHECKS_FAILED: " + failure : "PROFESSOR_ARENA_CHECKS_PASSED");
+            else Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, normal and fast portal travel, boss shortcut arrival/carry/reset, XP contact, upgrade pause, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
             if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
         }
         private static void Log(string message, string trace, LogType type)
@@ -114,7 +125,7 @@ namespace Boki.Editor
         {
             if (!SessionState.GetBool(Key, false) || !EditorApplication.isPlaying) return;
             if (failed) { EditorApplication.ExitPlaymode(); return; }
-            if (EditorApplication.timeSinceStartup - started > 100) { Fail("Timeout at stage " + stage); return; }
+            if (EditorApplication.timeSinceStartup - started > 180) { Fail("Timeout at stage " + stage); return; }
             if (EditorApplication.timeSinceStartup < nextTick) return;
             nextTick = EditorApplication.timeSinceStartup + 0.2;
             try
@@ -125,6 +136,9 @@ namespace Boki.Editor
                 var manager = V1SceneSetup.Find<RouteManager>(scene);
                 var flow = V1SceneSetup.Find<V1GameFlow>(scene);
                 if (session == null || player == null || manager == null || flow == null || session.IsLoading) return;
+                // Focus-dependent speech holds the boss opening indefinitely in batch mode.
+                // These checks exercise gameplay; voice/camera presentation remains a manual check.
+                foreach (var audio in V1SceneSetup.All<RecordedGameAudio>(scene)) audio.enabled = false;
                 // V1_Pohorje opens with the Bellevue intro, which holds gameplay until it ends; skip it like a player.
                 // The intro starts a frame or so after the scene loads, so give it a second before trusting the pause state.
                 if (scene.path != introScene) { introScene = scene.path; introSceneLoaded = EditorApplication.timeSinceStartup; }
@@ -137,6 +151,19 @@ namespace Boki.Editor
                 player.GetComponent<ScooterController>().enabled = false;
                 switch (stage)
                 {
+                    case 200:
+                        CheckDevelopmentSpeed(scene, "0.00 m/s");
+                        SetHorizontalSpeed(player, 14f);
+                        stage++; break;
+                    case 201:
+                        CheckDevelopmentSpeed(scene, "14.00 m/s");
+                        var hud = V1SceneSetup.Find<PlayerHud>(scene);
+                        hud.enabled = false;
+                        hud.enabled = true;
+                        stage++; break;
+                    case 202:
+                        CheckDevelopmentSpeed(scene, "14.00 m/s");
+                        EditorApplication.ExitPlaymode(); break;
                     case 80:
                         var focusedBoss = V1SceneSetup.Find<ProfessorBoss>(scene);
                         Teleport(player, new Vector3(0f, 0.05f, 78f));
@@ -166,7 +193,7 @@ namespace Boki.Editor
                         }
                         player.GetComponent<AutoLaser>().enabled = true;
                         player.TakeDamage(7);
-                        session.State.Progression.AddXp(2);
+                        session.State.Progression.AddXp(session.State.Progression.NextThreshold - 1);
                         int killsBefore = session.State.KillCount;
                         var rewardTemplate = V1SceneSetup.All<MeleeEnemy>(scene)[0].gameObject;
                         var target = Object.Instantiate(rewardTemplate, player.transform.position + Vector3.right * 2, Quaternion.identity);
@@ -177,7 +204,7 @@ namespace Boki.Editor
                         Teleport(player, pickup.transform.position - Vector3.up * 0.5f);
                         stage++; break;
                     case 2:
-                        Check(session.State.XP == 3, "Contact collects XP");
+                        Check(session.State.XP == session.State.Progression.NextThreshold, "Contact collects XP");
                         Check(flow.IsChoosing && Time.timeScale == 0 && !session.IsGameplayActive, "Upgrade pauses gameplay");
                         Check(V1SceneSetup.Find<UpgradeScreen>(scene).IsVisible, "Actual upgrade screen is visible and initialized");
                         pausedBattery = session.State.Battery; stage++; break;
@@ -313,7 +340,7 @@ namespace Boki.Editor
                     case 20:
                         Check(scene.path == V1SceneSetup.Scenes[0] && player.Current == 100 && session.State.XP == 0, "Death retry resets run at Pohorje");
                         Check(Time.timeScale == 1 && !flow.IsTerminal, "Retry resumes gameplay");
-                        session.State.Progression.AddXp(33);
+                        session.State.Progression.AddXp(int.MaxValue);
                         foreach (var kind in new[] { UpgradeId.DoubleTrouble, UpgradeId.PanicMode, UpgradeId.TurboSkiro, UpgradeId.TurboSkiro, UpgradeId.RaveOverdrive })
                             Check(FixtureChoose(session.State.Progression, kind), "Prepare capped late offer");
                         player.GetComponent<LightBattery>().enabled = false; // Hold charge full for this eligibility fixture.
@@ -330,6 +357,66 @@ namespace Boki.Editor
                         Check(session.State.Progression.Selections == 5, "Hidden card cannot be selected");
                         upgrade.RequestChoice(0);
                         Check(session.State.Progression.IsMaxLevel && !flow.IsChoosing && Time.timeScale == 1, "Final choice resumes at maximum level");
+                        foreach (string key in UnlockKeys) PlayerPrefs.SetInt(key, 0);
+                        PlayerPrefs.Save();
+                        flow.Retry(); stage++; break;
+                    case 22:
+                        Check(scene.path == RunSession.V1PohorjeScene && !session.State.BossShortcutTaken, "Shortcut fixture starts a fresh Forest run");
+                        Select(scene, RouteChoice.A); stage++; break;
+                    case 23:
+                        Check(session.State.Choice(RouteLevel.Forest) == RouteChoice.A, "Shortcut still requires a physical route choice");
+                        session.SetPaused(PauseReason.Menu, true);
+                        Check(!V1SceneSetup.Find<LevelPortal>(scene).TryTravel(), "Paused portal rejects travel");
+                        session.SetPaused(PauseReason.Menu, false);
+                        player.TakeDamage(7); carriedHealth = player.Current;
+                        session.State.Battery = 80;
+                        session.State.Progression.AddXp(session.State.Progression.NextThreshold);
+                        Check(FixtureChoose(session.State.Progression, UpgradeId.RaveOverdrive), "Shortcut carries an accepted upgrade");
+                        RideIntoPortal(scene, player, 14f); stage++; break;
+                    case 24:
+                        CheckShortcutArrival(scene, session, player);
+                        Check(player.Current == carriedHealth && session.State.Battery > 78 && session.State.Battery <= 80,
+                            "Fast Forest portal carries HP and battery");
+                        Check(session.State.XP == session.State.Progression.PreviousThreshold && session.State.Progression.Selections == 1,
+                            "Fast portal carries XP and upgrades");
+                        Check(session.State.Choice(RouteLevel.City) == RouteChoice.None && session.State.Choice(RouteLevel.Feri) == RouteChoice.None,
+                            "Forest shortcut does not invent skipped route choices");
+                        Check(PlayerPrefs.GetInt(UnlockKeys[0]) == 1 && PlayerPrefs.GetInt(UnlockKeys[1]) == 0
+                            && PlayerPrefs.GetInt(UnlockKeys[2]) == 0 && !session.State.AvailableUnlocks.ForestC,
+                            "Only the reached exit earns a next-run discovery");
+                        V1SceneSetup.Find<ProfessorBoss>(scene).GetComponent<EnemyHealth>().TakeDamage(10000);
+                        var shortcutEnding = V1SceneSetup.Find<EndingCutscene>(scene);
+                        Check(shortcutEnding.IsPlaying, "Shortcut boss victory starts the ending");
+                        shortcutEnding.Skip();
+                        Check(flow.IsTerminal, "Shortcut victory reaches results");
+                        Debug.Log("V1_FAST_FOREST_PORTAL_PASSED: classroom arrival, resource carry, real route choices, next-run discoveries and boss victory.");
+                        flow.Retry(); stage++; break;
+                    case 25:
+                        Check(scene.path == RunSession.V1PohorjeScene && !session.State.BossShortcutTaken && !session.HasEnteredBossArena,
+                            "Victory retry clears shortcut and arena entry");
+                        Check(session.State.AvailableUnlocks.ForestC && !session.State.AvailableUnlocks.CityC && !session.State.AvailableUnlocks.FeriC,
+                            "Skipped discoveries remain locked next run");
+                        Select(scene, RouteChoice.A); stage++; break;
+                    case 26:
+                        RideIntoPortal(scene, player, 10.5f); stage++; break;
+                    case 27:
+                        Check(scene.path == RunSession.V1MariborScene && !session.State.BossShortcutTaken,
+                            "Physical portal entry at ordinary boost speed still reaches City");
+                        Select(scene, RouteChoice.B); stage++; break;
+                    case 28:
+                        Check(session.State.Choice(RouteLevel.City) == RouteChoice.B, "Fast City entry has an actual route choice");
+                        RideIntoPortal(scene, player, 18f); stage++; break;
+                    case 29:
+                        CheckShortcutArrival(scene, session, player);
+                        Check(session.State.Choice(RouteLevel.City) == RouteChoice.B && session.State.Choice(RouteLevel.Feri) == RouteChoice.None,
+                            "City shortcut keeps actual choices without assigning FERI B");
+                        player.TakeDamage(10000);
+                        Check(flow.IsTerminal, "Death after shortcut reaches ABSENT");
+                        Debug.Log("V1_FAST_CITY_PORTAL_PASSED: classroom arrival, default boss and death flow.");
+                        flow.Retry(); stage++; break;
+                    case 30:
+                        Check(scene.path == RunSession.V1PohorjeScene && !session.State.BossShortcutTaken && !session.HasEnteredBossArena
+                            && player.Current == 100 && session.State.XP == 0, "Death retry clears shortcut and restores fresh resources");
                         EditorApplication.ExitPlaymode(); break;
                     case 100:
                         var occupied = V1SceneSetup.All<BatteryCombatSpace>(scene).Find(s => s.gameObject.activeInHierarchy);
@@ -350,6 +437,61 @@ namespace Boki.Editor
                 for (UpgradeId candidate = 0; candidate < id; candidate++) if (state.Eligible(candidate)) first++;
             }
             public override int Next(int maxValue) { if (picked) return 0; picked = true; return first % maxValue; }
+        }
+
+        private static void RideIntoPortal(Scene scene, PlayerHealth player, float speed)
+        {
+            // Freeze input, then seed the real movement state so the physical trigger reads HorizontalSpeed.
+            SetHorizontalSpeed(player, speed);
+            var portal = V1SceneSetup.Find<LevelPortal>(scene);
+            Teleport(player, portal.GetComponent<BoxCollider>().bounds.center - Vector3.up * 0.8f);
+        }
+
+        private static void SetHorizontalSpeed(PlayerHealth player, float speed)
+        {
+            var movement = player.GetComponent<ScooterController>();
+            var field = typeof(ScooterController).GetField("motion", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            ((ScooterMotion)field.GetValue(movement)).ApplyKnockback(0f, 1f, speed);
+            Check(Mathf.Approximately(movement.HorizontalSpeed, speed), "Fixture has the requested horizontal speed");
+        }
+
+        private static void CheckDevelopmentSpeed(Scene scene, string expected)
+        {
+            var meters = V1SceneSetup.All<UnityEngine.UI.Text>(scene).FindAll(text => text.name == "Development Speed");
+            Check(meters.Count == 1, "Exactly one development speed readout");
+            var meter = meters[0];
+            Check(meter.isActiveAndEnabled && meter.gameObject.activeInHierarchy, "Speed readout is active even when the source boost label is hidden");
+            Check(meter.text == expected, "Speed readout displays " + expected);
+            Canvas.ForceUpdateCanvases();
+            Check(meter.cachedTextGenerator.vertexCount > 0 && !meter.canvasRenderer.cull && meter.color.a > 0f,
+                "Speed readout generates visible text geometry");
+            Vector2 screen = RectTransformUtility.WorldToScreenPoint(null, meter.rectTransform.position);
+            Check(screen.x > 0f && screen.x <= Screen.width && screen.y > 0f && screen.y <= Screen.height,
+                "Speed readout is inside the Game view");
+        }
+
+        private static void CheckShortcutArrival(Scene scene, RunSession session, PlayerHealth player)
+        {
+            Check(scene.path == RunSession.V1FeriScene && session.State.BossShortcutTaken, "Fast portal loads V1 FERI shortcut");
+            Check(session.HasEnteredBossArena && session.State.Guilt.BossEntered
+                && V1SceneSetup.Find<ProfessorBoss>(scene).IsFighting, "Shortcut immediately starts the professor and ends Guilt");
+            Check(Object.FindObjectsByType<RunSession>().Length == 1, "Shortcut retains one run session");
+            var routeStatus = (UnityEngine.UI.Text)new SerializedObject(V1SceneSetup.Find<RouteManager>(scene))
+                .FindProperty("status").objectReferenceValue;
+            Check(routeStatus.text == "", "Shortcut does not prompt a skipped FERI route selection");
+            var arena = V1SceneSetup.Find<V1BossArena>(scene);
+            var serialized = new SerializedObject(arena);
+            var seal = (GameObject)serialized.FindProperty("entranceSeal").objectReferenceValue;
+            Check(seal.activeSelf && player.transform.position.z > seal.transform.position.z + 1f,
+                "Shortcut lands on the classroom side of its closed seal");
+            Check(Physics.Raycast(player.transform.position + Vector3.up, Vector3.down, 3f, 1, QueryTriggerInteraction.Ignore),
+                "Shortcut arrival has solid ground");
+            Check(!session.EnterBossArena(), "Duplicate shortcut arena entry is rejected");
+            var approaches = serialized.FindProperty("approachEncounters");
+            for (int i = 0; i < approaches.arraySize; i++)
+                Check(!((GameObject)approaches.GetArrayElementAtIndex(i).objectReferenceValue).activeSelf, "Skipped approach encounters remain inactive");
+            foreach (RouteChoice route in new[] { RouteChoice.A, RouteChoice.B, RouteChoice.C })
+                Check(session.State.Gate(RouteLevel.Feri, route) == GateState.RouteLock, "Skipped FERI branches remain sealed");
         }
         private static bool FixtureChoose(UpgradeState state, UpgradeId kind)
         {

@@ -36,6 +36,7 @@ namespace Boki.Routes
         public bool CitySideEscapeCompleted { get; private set; }
         public bool CityRetreatStarted { get; private set; }
         public bool PowerOff { get; private set; }
+        public bool BossShortcutTaken { get; private set; }
         public int KillCount { get; set; }
         public double StartedAt { get; private set; }
         public UnlockSnapshot AvailableUnlocks { get; private set; }
@@ -54,7 +55,7 @@ namespace Boki.Routes
             Progression.Changed += NotifyChanged;
             KillCount = 0;
             Pause.Reset();
-            CityRetreatStarted = CitySideEscapeCompleted = PowerOff = false;
+            CityRetreatStarted = CitySideEscapeCompleted = PowerOff = BossShortcutTaken = false;
             Array.Clear(choices, 0, choices.Length);
             ActiveLevel = RouteLevel.Forest;
             StartedAt = startedAt;
@@ -74,7 +75,7 @@ namespace Boki.Routes
             var selected = Choice(level);
             if (selected != RouteChoice.None)
                 return selected == route ? GateState.Selected : GateState.RouteLock;
-            if (level != ActiveLevel || !Linked(level, route)) return GateState.RouteLock;
+            if (BossShortcutTaken || level != ActiveLevel || !Linked(level, route)) return GateState.RouteLock;
             return route == RouteChoice.C && !AvailableUnlocks.AllowsC(level)
                 ? GateState.PersistentLock : GateState.Available;
         }
@@ -112,6 +113,24 @@ namespace Boki.Routes
 
         public bool CanAdvance(RouteLevel level) => ValidLevel(level) && level == ActiveLevel
             && level != RouteLevel.Feri && Health.IsAlive && Choice(level) != RouteChoice.None;
+
+        // Gameplay §1.1: V1 portal speed shortcut; the adapter supplies horizontal speed and tuning.
+        public bool CanSkipToBoss(RouteLevel from, float horizontalSpeed, float minimumSpeed) =>
+            !BossShortcutTaken && CanAdvance(from) && !Pause.IsPaused && !Guilt.GameplaySuspended
+            && !Guilt.ScriptedSequenceActive && !Guilt.IsLoading
+            && (from != RouteLevel.City || Choice(from) != RouteChoice.C || CitySideEscapeCompleted)
+            && minimumSpeed > 0f && !float.IsInfinity(minimumSpeed)
+            && horizontalSpeed >= minimumSpeed && !float.IsInfinity(horizontalSpeed);
+
+        public bool TrySkipToBoss(RouteLevel from, float horizontalSpeed, float minimumSpeed)
+        {
+            if (!CanSkipToBoss(from, horizontalSpeed, minimumSpeed)) return false;
+            BossShortcutTaken = true;
+            ActiveLevel = RouteLevel.Feri;
+            Guilt.Reset();
+            Changed?.Invoke();
+            return true;
+        }
 
         public bool CompleteCityEscape()
         {

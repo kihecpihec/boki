@@ -41,7 +41,9 @@ namespace Boki.Routes
                 if (playerFacingStatus)
                 {
                     var selected = session.State.Choice(level);
-                    if (selected != RouteChoice.None)
+                    if (session.State.BossShortcutTaken)
+                        status.text = "";
+                    else if (selected != RouteChoice.None)
                         status.text = "PATH " + selected + " SELECTED • " + (level == RouteLevel.Feri ? "REACH THE CLASSROOM" : "FIND THE " + (level == RouteLevel.Forest ? "MARIBOR" : "FERI") + " PORTAL");
                     else
                     {

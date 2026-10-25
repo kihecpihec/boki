@@ -14,6 +14,125 @@ namespace Boki.Tests
         private static readonly RouteChoice[] Routes = { RouteChoice.A, RouteChoice.B, RouteChoice.C };
         private static UnlockSnapshot All => new UnlockSnapshot { ForestC = true, CityC = true, FeriC = true };
 
+        [TestCase(0f, false)]
+        [TestCase(10.5f, false)]
+        [TestCase(13.999f, false)]
+        [TestCase(14f, true)]
+        [TestCase(18f, true)]
+        [TestCase(float.NaN, false)]
+        [TestCase(float.PositiveInfinity, false)]
+        [TestCase(float.NegativeInfinity, false)]
+        public void BossShortcutUsesHorizontalSpeedThreshold(float speed, bool accepted)
+        {
+            var run = new RunState(default, 0);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, speed, 14f), Is.EqualTo(accepted));
+            Assert.That(run.BossShortcutTaken, Is.EqualTo(accepted));
+            Assert.That(run.ActiveLevel, Is.EqualTo(accepted ? RouteLevel.Feri : RouteLevel.Forest));
+        }
+
+        [TestCase(0f)]
+        [TestCase(-1f)]
+        [TestCase(float.NaN)]
+        [TestCase(float.PositiveInfinity)]
+        public void InvalidShortcutTuningCannotSkip(float minimum)
+        {
+            var run = new RunState(default, 0);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, minimum), Is.False);
+        }
+
+        [TestCase(RouteLevel.Forest)]
+        [TestCase(RouteLevel.City)]
+        public void BossShortcutPreservesResourcesAndActualChoicesWithoutOpeningFeriRoutes(RouteLevel source)
+        {
+            var run = new RunState(default, 5);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            if (source == RouteLevel.City)
+            {
+                run.TryAdvance(RouteLevel.Forest);
+                run.TrySelect(RouteLevel.City, RouteChoice.B);
+            }
+            run.Health.TakeDamage(27);
+            run.Battery = 23;
+            int carriedXp = run.Progression.NextThreshold;
+            run.Progression.AddXp(carriedXp);
+            run.Progression.CreateOffer(new FirstOfferRandom());
+            Assert.That(run.Progression.TrySelect(0, run.Progression.OfferVersion), Is.True);
+            var progression = run.Progression;
+            var battery = run.LightBattery;
+            run.KillCount = 2;
+            run.Guilt.SetCombatSpaceOccupied(1, true);
+            run.Guilt.Tick(22f);
+            int notifications = 0;
+            run.Changed += () => notifications++;
+
+            Assert.That(run.TrySkipToBoss(source, 14f, 14f), Is.True);
+            Assert.That(run.Health.Current, Is.EqualTo(73));
+            Assert.That(run.Battery, Is.EqualTo(23));
+            Assert.That(run.Progression, Is.SameAs(progression));
+            Assert.That(run.LightBattery, Is.SameAs(battery));
+            Assert.That(run.Progression.Selections, Is.EqualTo(1));
+            Assert.That(run.XP, Is.EqualTo(carriedXp));
+            Assert.That(run.KillCount, Is.EqualTo(2));
+            Assert.That(run.StartedAt, Is.EqualTo(5));
+            Assert.That(run.Choice(RouteLevel.Forest), Is.EqualTo(RouteChoice.A));
+            Assert.That(run.Choice(RouteLevel.City), Is.EqualTo(source == RouteLevel.City ? RouteChoice.B : RouteChoice.None));
+            Assert.That(run.Choice(RouteLevel.Feri), Is.EqualTo(RouteChoice.None));
+            Assert.That(run.Guilt.AccumulatedCombatSeconds, Is.Zero);
+            Assert.That(run.AvailableUnlocks.ForestC || run.AvailableUnlocks.CityC || run.AvailableUnlocks.FeriC, Is.False);
+            foreach (var route in Routes) Assert.That(run.Gate(RouteLevel.Feri, route), Is.EqualTo(GateState.RouteLock));
+            Assert.That(run.TrySkipToBoss(source, 18f, 14f), Is.False);
+            Assert.That(notifications, Is.EqualTo(1));
+
+            run.NewRun(All, 20);
+            Assert.That(run.BossShortcutTaken, Is.False);
+            Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Forest));
+            Assert.That(run.Health.Current, Is.EqualTo(100));
+            Assert.That(run.Battery, Is.EqualTo(100));
+            Assert.That(run.XP, Is.Zero);
+            Assert.That(run.Upgrades, Is.Empty);
+        }
+
+        [Test]
+        public void BossShortcutRequiresSelectionLifeAndActiveUnsuspendedLevel()
+        {
+            var run = new RunState(All, 0);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss((RouteLevel)99, 18f, 14f), Is.False);
+            run.Pause.Set(Boki.Core.PauseReason.Menu, true);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            run.Pause.Reset();
+            run.Guilt.GameplaySuspended = true;
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            run.Guilt.GameplaySuspended = false;
+            run.Guilt.ScriptedSequenceActive = true;
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            run.Guilt.ScriptedSequenceActive = false;
+            run.Guilt.IsLoading = true;
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            run.Guilt.IsLoading = false;
+            run.Health.TakeDamage(100);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Forest));
+        }
+
+        [Test]
+        public void BossShortcutCannotBypassCityCSideEscape()
+        {
+            var run = new RunState(All, 0);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.B);
+            run.TryAdvance(RouteLevel.Forest);
+            run.TrySelect(RouteLevel.City, RouteChoice.C);
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.False);
+            run.BeginCityRetreat();
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.False);
+            run.CompleteCityEscape();
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.True);
+        }
+
         [Test]
         public void NextLevelResetsGuiltButRejectedAdvanceDoesNot()
         {

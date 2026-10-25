@@ -15,6 +15,24 @@ namespace Boki.Tests
         }
 
         [Test]
+        public void BossShortcutAwardsOnlyTheExitActuallyReachedAndKeepsUnlocksForNextRun()
+        {
+            var store = new Store();
+            var progress = new PersistentUnlocks(store);
+            var run = new RunState(default, 0);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            Assert.That(progress.Earn(run, RouteLevel.Forest), Is.True);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 14f, 14f), Is.True);
+            Assert.That(progress.Earn(run, RouteLevel.City), Is.False);
+            Assert.That(progress.Earn(run, RouteLevel.Feri), Is.False);
+            Assert.That(run.AvailableUnlocks.ForestC, Is.False);
+            run.NewRun(progress.Read(), 10);
+            Assert.That(run.AvailableUnlocks.ForestC, Is.True);
+            Assert.That(run.AvailableUnlocks.CityC || run.AvailableUnlocks.FeriC, Is.False);
+            Assert.That(store.Saves, Is.EqualTo(1));
+        }
+
+        [Test]
         public void MilestonesSaveOnceAndApplyOnlyOnNewRun()
         {
             var store = new Store();

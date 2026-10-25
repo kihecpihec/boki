@@ -109,6 +109,8 @@ The functional upgrade slice adds floating XP orbs that home toward nearby Boki 
 
 ### Version 1 integration
 
+The speed shortcut in [Gameplay §1.1](Gameplay.md#11-v1-portal-speed-shortcut) uses `RunState.CanSkipToBoss` / `TrySkipToBoss` for deterministic eligibility and state changes. `LevelPortal` supplies horizontal scooter speed; `RunSession.TrySkipToV1Boss` limits it to V1, saves the reached exit and loads `V1_FERI`. `V1BossArena` places a shortcut arrival on classroom ground using its existing entry/professor references and starts the fight through the normal idempotent entry path. `BossShortcutTaken` permits boss entry without inventing a FERI choice; all FERI route gates remain sealed. Existing V1 scenes pick this up without asset edits or new Inspector assignments.
+
 `V1_Pohorje`, `V1_Maribor`, and `V1_FERI` combine the authored maps with the rigged player, actual player HUD, selected-route encounters, rechargeable arena batteries, shared Guilt pressure, nearby homing XP orbs, eligible upgrade offers, death/retry and the professor ending. `LevelPortal` advances through the existing `RouteManager` and `RunSession`; it cannot bypass route selection or City C's side escape. V1 begins with the skippable Bellevue intro at the authored V1_Pohorje player start, then hands control to the rider in the same scene. Intro_Preview mirrors that integrated Pohorje setting; the original grayboxes remain unchanged. See [intro verification](plans/intro-preview-verification.md#pohorje-integration). `V1_FERI` plays the skippable victory ending when the professor falls, then shows the results panel: `V1BossArena` hands the victory to an optional `EndingCutscene`, which holds gameplay with `PauseReason.ScriptedSequence` and calls `V1GameFlow.Victory` when it finishes or is skipped. `Ending_Preview` is its isolated, map-free set. See [ending verification](plans/ending-preview-verification.md).
 
 V1 uses the shared engine-free `Boki.Upgrades.Rules` composed by `RunState`. `V1GameFlow` connects the UI and input, while `RunSession.SetPaused` owns shared suspension and `Time.timeScale`. `RouteEncounter`, shared `EnemyHealth`/`XpPickup`, `V1RouteEvent` and `V1BossArena` adapt scene events to the existing run rules. `PlayerGameplayFeedback` supplies the model scene's effects without its test shortcuts. V1 input references and materials are isolated in `Assets/V1/`; XP uses the shared `Boki.Upgrades.XpPickup` adapter; scene-local overrides repair missing upgrade-prefab input references without changing the shared prefab. See [V1 setup and verification](plans/version-one-verification.md) for controls, scope and remaining platform/playtest work.
@@ -140,6 +142,7 @@ upgrades = []
 forestChoice = none
 cityChoice = none
 feriChoice = none
+bossShortcutTaken = false
 killCount = 0
 startedAt = currentTime
 availableUnlocks = snapshot(PersistentUnlocks)

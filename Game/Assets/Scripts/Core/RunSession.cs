@@ -118,7 +118,7 @@ namespace Boki.Core
         public bool EnterBossArena()
         {
             if (hasEnteredBossArena || IsLoading || State.ActiveLevel != RouteLevel.Feri || !State.Health.IsAlive
-                || State.Choice(RouteLevel.Feri) == RouteChoice.None) return false;
+                || (State.Choice(RouteLevel.Feri) == RouteChoice.None && !State.BossShortcutTaken)) return false;
             if (UsesPersistentUnlocks) unlocks.Earn(State, RouteLevel.Feri);
             hasEnteredBossArena = true;
             State.Guilt.EndForBoss();
@@ -148,6 +148,23 @@ namespace Boki.Core
         }
 
         public bool Retry() => Load(forestDestination, true, RouteLevel.Forest);
+
+        public bool TrySkipToV1Boss(RouteLevel from, float horizontalSpeed, float minimumSpeed)
+        {
+            string source = from == RouteLevel.Forest ? V1PohorjeScene : V1MariborScene;
+            if (!IsGameplayActive || forestDestination != V1PohorjeScene || cityDestination != V1MariborScene
+                || feriDestination != V1FeriScene || SceneManager.GetActiveScene().path != source
+                || !State.CanSkipToBoss(from, horizontalSpeed, minimumSpeed) || !CanLoad(V1FeriScene)) return false;
+            // Save only the exit actually reached, before moving the active level past it.
+            if (UsesPersistentUnlocks) unlocks.Earn(State, from);
+            if (!State.TrySkipToBoss(from, horizontalSpeed, minimumSpeed)) return false;
+            IsLoading = true;
+            State.Guilt.IsLoading = true;
+            SetPaused(PauseReason.Loading, true);
+            LoadScene(V1FeriScene);
+            return true;
+        }
+
         public bool Advance(RouteLevel level)
         {
             if (!State.CanAdvance(level)) return false;

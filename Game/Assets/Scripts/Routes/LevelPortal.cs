@@ -1,4 +1,5 @@
 using Boki.Core;
+using Boki.Player;
 using UnityEngine;
 
 namespace Boki.Routes
@@ -9,6 +10,7 @@ namespace Boki.Routes
         [SerializeField] private RouteManager manager;
         [SerializeField] private TextMesh label;
         [SerializeField] private string destinationLabel;
+        [SerializeField, Min(0.01f)] private float bossSkipSpeed = 14f;
         private bool accepted;
         private void OnEnable()
         {
@@ -17,20 +19,26 @@ namespace Boki.Routes
             Refresh();
         }
         private void OnDisable() { if (manager != null) manager.Changed -= Refresh; }
-        public bool TryTravel()
+        public bool TryTravel() => TryTravel(0f);
+
+        private bool TryTravel(float horizontalSpeed)
         {
             if (accepted || manager == null || !manager.IsReady) return false;
-            var state = RunSession.Instance.State;
+            var session = RunSession.Instance;
+            if (!session.IsGameplayActive) return false;
+            var state = session.State;
             if (manager.Level == RouteLevel.City && state.Choice(RouteLevel.City) == RouteChoice.C
                 && !state.CitySideEscapeCompleted) return false;
-            accepted = manager.Advance();
+            accepted = session.TrySkipToV1Boss(manager.Level, horizontalSpeed, bossSkipSpeed) || manager.Advance();
             return accepted;
         }
         private void OnTriggerEnter(Collider other) => Enter(other);
         private void OnTriggerStay(Collider other) => Enter(other);
         private void Enter(Collider other)
         {
-            if (manager != null && manager.IsPlayer(other)) TryTravel();
+            if (manager == null || !manager.IsPlayer(other)) return;
+            var movement = other.GetComponentInParent<ScooterController>();
+            TryTravel(movement != null ? movement.HorizontalSpeed : 0f);
         }
         private void Refresh()
         {
