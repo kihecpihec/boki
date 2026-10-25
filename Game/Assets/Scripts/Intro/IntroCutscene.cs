@@ -52,8 +52,13 @@ namespace Boki.Intro
         [SerializeField] private AudioClip wakeUp;
         [SerializeField] private AudioClip armRustle;
         [SerializeField] private AudioClip watchCheck;
+        [Tooltip("Starts with the Watch shot: a pulse that races from 07:58 on, jolts on the eye pops and ends in the sprint.")]
+        [SerializeField] private AudioClip heartbeat;
+        [Tooltip("The Scramble shot: gasp, bottle kick, footfalls, skid, scooter clank and the leap.")]
+        [SerializeField] private AudioClip scramble;
         [SerializeField, Range(0f, 1f)] private float ambienceGain = 0.6f;
         [SerializeField, Range(0f, 1f)] private float foleyGain = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float heartbeatGain = 0.45f;
         [SerializeField, Min(0.05f)] private float ambienceFadeSeconds = 0.5f;
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
@@ -223,7 +228,12 @@ namespace Boki.Intro
         {
             if (shot == IntroActing.Wake) PlayFoley(wakeUp);
             if (shot == IntroActing.Stir) PlayFoley(armRustle);
-            if (shot == IntroActing.Watch) PlayFoley(watchCheck);
+            if (shot == IntroActing.Watch)
+            {
+                PlayFoley(watchCheck);
+                if (heartbeat != null) audioSource.PlayOneShot(heartbeat, heartbeatGain);
+            }
+            if (shot == IntroActing.Scramble) PlayFoley(scramble);
             if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep, effectsGain);
             if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine, dialogueGain);
             if (shot == IntroActing.Mount) headlight.enabled = true;

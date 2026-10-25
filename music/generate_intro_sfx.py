@@ -5,8 +5,10 @@ Story §3 PROLOGUE, shot 2: "A short phone beep" announces »PREDAVANJE — 08:0
 A cheap two-tone notification through a small speaker: odd-harmonic tone,
 band-limited, two bursts. The eye-pop boing and the panic-dash whoosh are the intro's
 cartoon gags. The wake-up cues are the quiet foley around them: Boki's sleeping breaths and waking groan,
-the sleeve of the arm rising, and the click and pip of his digital watch. Everything is synthesized, so there
-are no samples or licenses.
+the sleeve of the arm rising, and the click and pip of his digital watch. Then the urgency: a heartbeat that
+races from the moment he reads 07:58 and a rising whine under the lecture message, and the sprint itself
+(gasps, footfalls on the stride beat, the bottle kick, the skid, the scooter clank, the leap). Everything is
+synthesized, so there are no samples or licenses.
 
 Usage: python3 music/generate_intro_sfx.py [output_dir]
 Default output: Game/Assets/Audio/Sfx
@@ -19,7 +21,7 @@ from pathlib import Path
 import numpy as np
 from scipy.signal import butter, sosfilt
 
-from ambience_synth import smooth_curve
+from ambience_synth import band as bandpass, highpass, lowpass, smooth_curve
 from generate_ending_sfx import formant_filter  # the vowel morph that already shapes the cat's meow
 
 SR = 48000
@@ -158,6 +160,110 @@ def watch_check():
     return out
 
 
+def heart_thump():
+    """One heart thump: a short low body with a soft noisy front so small speakers still carry it."""
+    tt = t(0.3)
+    freq = 70 + 95 * np.exp(-30 * tt)
+    body = np.sin(2 * np.pi * np.cumsum(freq) / SR) * np.exp(-tt * 16)
+    rng = np.random.default_rng(67)
+    front = lowpass(rng.standard_normal(tt.size), 450) * np.exp(-tt / 0.02)
+    return (body + 0.5 * front) * np.minimum(1, tt / 0.003)
+
+
+HEART_SECONDS = 11.9
+
+
+def heartbeat():
+    """Starts with shot 3 (his eyes land on 07:58) and runs to the mount: a pulse that races from 62 to 150 bpm, jolts
+    on each eye pop (2.05 s and 3.85 s in, matching the pop times in IntroActing), with a rising, trembling whine that
+    builds under the lecture message and the line, then cuts the instant he bolts (8.8 s in, the Scramble shot)."""
+    out = np.zeros(int(SR * HEART_SECONDS))
+    tt = t(HEART_SECONDS)
+    pace = ((0, 62), (1.6, 70), (2.05, 72), (2.4, 100), (3.3, 110), (5.7, 120), (8.8, 140), (11.2, 150), (HEART_SECONDS, 150))
+    thump = heart_thump()
+    now = 0.2
+    while now < HEART_SECONDS - 0.4:
+        beat = 60 / np.interp(now, *zip(*pace))
+        grow = np.interp(now, (0, 2.4, 8.8, HEART_SECONDS), (0.45, 0.7, 1.0, 1.0))
+        mix_at(out, thump, now, grow)
+        mix_at(out, thump, now + 0.3 * beat, grow * 0.65)
+        now += beat
+    for at in (2.05, 3.85):
+        mix_at(out, thump, at, 1.4)
+
+    x = np.clip((tt - 3.3) / 5.5, 0, 1)
+    freq = 440 * 2 ** (1.2 * x)
+    p1 = 2 * np.pi * np.cumsum(freq) / SR
+    p2 = 2 * np.pi * np.cumsum(freq * 1.006) / SR
+    flutter = 0.6 + 0.4 * np.sin(2 * np.pi * np.cumsum(4 + 10 * x) / SR)
+    whine = (np.sin(p1) + np.sin(p2) + 0.3 * np.sin(2 * p1)) * flutter
+    whine = lowpass(whine, 3200) * x ** 1.6 * np.where(tt < 8.8, 1.0, np.exp(-(tt - 8.8) * 14))
+    out += whine * 0.14
+    return out * np.minimum(1, (HEART_SECONDS - tt) / 0.7)
+
+
+def step(rng, weight):
+    """A foot in dewy grass: a dull thud and a quick swish of blades."""
+    tt = t(0.12)
+    thud = lowpass(rng.standard_normal(tt.size), 700) * np.exp(-tt / 0.025)
+    swish = bandpass(rng.standard_normal(tt.size), 2000, 6500) * np.exp(-tt / 0.018) * 0.5
+    return (thud / np.std(thud) * 0.9 + swish / np.std(swish) * 0.25) * weight * np.minimum(1, tt / 0.001)
+
+
+def metal_clunk(rng):
+    """The scooter: a few damped resonances of a frame plus a short click."""
+    tt = t(0.4)
+    ring = sum(np.sin(2 * np.pi * f * tt) * np.exp(-tt / tau) * g for f, tau, g in ((410, 0.09, 1.0), (980, 0.06, 0.6), (1900, 0.04, 0.35)))
+    n = int(SR * 0.01)
+    click = bandpass(rng.standard_normal(n), 1500, 6000) * np.exp(-np.arange(n) / (SR * 0.002))
+    ring[:n] += click / np.max(np.abs(click)) * 0.8
+    return ring * np.minimum(1, tt / 0.001)
+
+
+def bottle_tok(rng):
+    """An empty plastic bottle struck or bouncing: a hollow tok."""
+    tt = t(0.2)
+    ring = np.sin(2 * np.pi * 1250 * tt) * np.exp(-tt / 0.05) + 0.5 * np.sin(2 * np.pi * 2100 * tt) * np.exp(-tt / 0.03)
+    n = int(SR * 0.008)
+    ring[:n] += bandpass(rng.standard_normal(n), 600, 3000) * np.exp(-np.arange(n) / (SR * 0.002)) * 0.8
+    return ring * np.minimum(1, tt / 0.0008)
+
+
+STRIDE_HERTZ = 3.4          # IntroActing.StrideHertz: a footfall every half stride
+SCRAMBLE_START = 15.1       # seconds into the intro (the first six shots)
+SCRAMBLE_SECONDS = 2.9      # the 2.4 s shot plus the landing, which sounds just inside the Mount shot
+
+
+def scramble():
+    """Shot 7 (2.4 s) and the landing: Boki gasps awake and sits up, kicks the bottle, springs up and runs at the city,
+    skids, runs back, the scooter clanks upright, and he leaps on. Run and skid times are IntroActing's (0.72-1.17 s,
+    1.17-1.37 s, 1.37-1.95 s); footfalls land on the stride beat of the global clock, as his legs do."""
+    rng = np.random.default_rng(71)
+    out = np.zeros(int(SR * SCRAMBLE_SECONDS))
+    mix_at(out, breath(0.28, 0.35, 400, 3000, rng), 0.0, 1.1)          # the gasp as he sits bolt upright
+    mix_at(out, rustle(0.35, 900, 5000, rng, 15), 0.02, 0.5)
+    mix_at(out, rustle(0.4, 900, 5200, rng, 17), 0.4, 0.45)            # springing to his feet
+    mix_at(out, bottle_tok(rng), 0.3, 0.9)                             # the sit-up kicks the bottle
+    for at, gain in ((1.02, 0.55), (1.2, 0.35), (1.31, 0.2)):          # it hops, lands and bounces
+        mix_at(out, bottle_tok(rng), at, gain)
+    mix_at(out, rustle(0.55, 400, 2500, rng, 24), 1.35, 0.16)          # then rolls to rest
+
+    for k in range(100, 130):
+        at = k / (2 * STRIDE_HERTZ) - SCRAMBLE_START
+        if 0.72 <= at < 1.17 or 1.37 <= at < 1.95:
+            mix_at(out, step(rng, 1.0 if k % 2 else 0.9), at, 0.9)
+    skid = rustle(0.2, 800, 4200, rng, 30) * np.linspace(1.0, 0.4, int(SR * 0.2))
+    mix_at(out, skid, 1.17, 0.9)                                       # the slide as he turns
+    mix_at(out, metal_clunk(rng), 1.27, 0.9)                           # the scooter swings upright
+    for at in (0.95, 1.55, 1.85):
+        mix_at(out, breath(0.17, 0.4, 500, 3200, rng), at, 0.55)       # panting
+    mix_at(out, rustle(0.35, 1500, 6000, rng, 18), 2.05, 0.4)          # the leap
+    thump = heart_thump()[: int(SR * 0.16)]
+    mix_at(out, thump, 2.4, 2.2)                                       # landing on the deck
+    mix_at(out, metal_clunk(rng), 2.4, 0.75)
+    return out
+
+
 def write_wav(path, sig):
     sig = sig / np.max(np.abs(sig)) * PEAK
     with wave.open(str(path), "wb") as w:
@@ -177,6 +283,8 @@ def main():
     write_wav(out_dir / "intro_wake_up.wav", wake_up())
     write_wav(out_dir / "intro_arm_rustle.wav", arm_rustle())
     write_wav(out_dir / "intro_watch_check.wav", watch_check())
+    write_wav(out_dir / "intro_heartbeat.wav", heartbeat())
+    write_wav(out_dir / "intro_scramble.wav", scramble())
 
 
 if __name__ == "__main__":

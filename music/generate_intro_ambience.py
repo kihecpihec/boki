@@ -15,7 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
-from ambience_synth import (SR, chaffinch, curve, distant, encode_ogg, great_tit, lowpass, place, reverb,
+from ambience_synth import (SR, curve, distant, encode_ogg, great_tit, lowpass, place, reverb,
                             robin, tvec, wind)
 
 SECONDS = 21.0
@@ -57,21 +57,20 @@ def render():
     rng = np.random.default_rng(2026)
     mix = np.zeros((2, int(SR * SECONDS)))
 
-    # The wind swells as the bass leaves, then holds under the shots and sinks at the very end.
-    wind_level = curve(SECONDS, ((0, 0.28), (4, 0.4), (10, 0.85), (18, 0.85), (SECONDS, 0.0)))
+    # The wind is a soft presence as the bass leaves, peaks while he is still calm, and is gone from under the
+    # panic: from the lecture message (9.6 s) the heartbeat and the dread carry the scene, not the weather.
+    wind_level = curve(SECONDS, ((0, 0.16), (4, 0.22), (8, 0.34), (9.6, 0.25), (12, 0.08), (SECONDS, 0.0)))
     mix += wind(SECONDS, rng) * wind_level * 0.1
 
     bass = party_through_the_fog(rng)
     mix += np.stack([bass, bass]) * 0.3
 
-    # A few forest birds once the party is gone: far away, so rolled off and put in the air.
+    # Two forest birds while it is still calm and the party is fading: far away, so rolled off and put in the air.
+    # None once the panic starts.
     birds = np.zeros_like(mix)
     for at, voice, pan, gain in (
-        (6.9, great_tit(), -0.55, 0.13),
-        (9.4, robin(rng), 0.6, 0.11),
-        (12.3, chaffinch(), -0.3, 0.1),
-        (15.4, great_tit(), 0.5, 0.1),
-        (18.0, robin(rng), -0.4, 0.07),
+        (5.2, robin(rng), 0.6, 0.11),
+        (7.0, great_tit(), -0.55, 0.13),
     ):
         place(birds, distant(voice), at, pan, gain)
     mix += reverb(birds, 1.8, 0.45, rng)
@@ -85,7 +84,8 @@ def render():
 def main():
     out_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[1] / "Game/Assets/Audio/Sfx/intro_ambience.ogg"
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    encode_ogg(render(), out_path, peak=0.5)
+    # The peak is the first kick; 0.43 keeps the bass at the level it had when the wind was louder.
+    encode_ogg(render(), out_path, peak=0.43)
 
 
 if __name__ == "__main__":

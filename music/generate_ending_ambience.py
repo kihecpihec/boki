@@ -3,9 +3,9 @@
 
 Story §3 FINAL BOSS victory plus the "unusually quiet space" of §6: the boss music is gone and the classroom
 is nearly silent. While the red light is still on (EndingActing.ShrinkAt, 0.9 s) a low dissonant drone
-hangs in the room; when the professor deflates it drains away and the ordinary Saturday morning takes over:
-the hum of the fluorescent tubes, air in the ventilation, a wall clock ticking and a few birds through the
-window. The bed is 25 s, a little longer than the ending (24.4 s). EndingCutscene fades it out when the ending finishes.
+hangs in the room; when the professor deflates it drains away and the plain quiet of the classroom takes over:
+the hum of the fluorescent tubes and a wall clock ticking. Nothing from outdoors: no wind and no birds.
+The bed is 25 s, a little longer than the ending (24.4 s). EndingCutscene fades it out when the ending finishes.
 
 Usage: python3 music/generate_ending_ambience.py [output.ogg]
 Default output: Game/Assets/Audio/Sfx/ending_ambience.ogg
@@ -16,8 +16,7 @@ from pathlib import Path
 
 import numpy as np
 
-from ambience_synth import (SR, band, chaffinch, curve, distant, encode_ogg, great_tit, highpass, lowpass, place,
-                            reverb, robin, smooth_curve, tvec, unit)
+from ambience_synth import SR, band, curve, encode_ogg, lowpass, place, reverb, smooth_curve, tvec, unit
 
 SECONDS = 25.0
 
@@ -41,14 +40,7 @@ def fluorescent_hum(rng):
     for k, gain in ((1, 1.0), (2, 0.42), (3, 0.3), (4, 0.12), (6, 0.07)):
         hum += gain * np.sin(2 * np.pi * 100.0 * k * tt + k)
     buzz = unit(band(rng.standard_normal(n), 2400, 5200)) * (0.04 + 0.05 * smooth_curve(n, 0.4, rng))
-    return hum * 0.028 + buzz * 0.01
-
-
-def ventilation(rng):
-    """Air moving in a duct: low-passed noise that breathes slowly."""
-    n = int(SR * SECONDS)
-    air = unit(lowpass(rng.standard_normal(n), 650, 2)) + 0.5 * unit(band(rng.standard_normal(n), 900, 2200))
-    return air * (0.6 + 0.4 * smooth_curve(n, 0.12, rng)) * 0.045
+    return hum * 0.04 + buzz * 0.01
 
 
 def tick(accent, rng):
@@ -71,27 +63,13 @@ def render():
     # The room tone is there under the drone, and comes up as it drains away.
     room_level = curve(SECONDS, ((0, 0.35), (1.0, 0.45), (2.6, 1.0), (SECONDS, 1.0)))
     hum = fluorescent_hum(rng) * room_level
-    air = np.stack([ventilation(rng), ventilation(rng)]) * room_level
-    mix += np.stack([hum, hum]) + air
+    mix += np.stack([hum, hum])
 
     # The clock starts ticking once it is quiet: one tick a second, left of the room.
     ticks = np.zeros((2, n))
     for k, at in enumerate(np.arange(2.7, SECONDS - 0.2, 1.0)):
         place(ticks, tick(k % 2 == 0, rng), at, -0.35, 0.16)
     mix += reverb(ticks, 0.45, 0.3, rng, damp=6000)
-
-    # Saturday morning outside the window: far off, rolled off and a little boxed in by the glass.
-    birds = np.zeros_like(mix)
-    for at, voice, pan, gain in (
-        (3.4, great_tit(), 0.6, 0.12),
-        (6.6, robin(rng), 0.7, 0.1),
-        (9.7, chaffinch(), 0.55, 0.09),
-        (13.2, great_tit(), 0.65, 0.1),
-        (16.8, robin(rng), 0.7, 0.09),
-        (20.1, chaffinch(), 0.6, 0.08),
-    ):
-        place(birds, distant(voice, 4600), at, pan, gain)
-    mix += reverb(birds, 0.9, 0.3, rng)
 
     mix *= np.minimum(1, tvec(SECONDS) / 0.05)
     mix *= np.minimum(1, (SECONDS - tvec(SECONDS)) / 0.5)
