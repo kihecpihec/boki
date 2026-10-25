@@ -2,7 +2,6 @@ using Boki.Core;
 using Boki.Player;
 using Boki.Routes;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Boki.UI
 {
@@ -14,7 +13,6 @@ namespace Boki.UI
         [SerializeField] private PlayerHealth player;
         [SerializeField] private V1GameFlow flow;
         [SerializeField] private RouteManager routes;
-        [SerializeField] private Text subtitle;
         [SerializeField] private AudioSource[] enemySources;
         [SerializeField] private AudioSource dialogueSource;
         [SerializeField] private AudioClip[] enemyDamage;
@@ -43,7 +41,7 @@ namespace Boki.UI
         private int dialogueStage;
         private float remaining;
         private RunSession sequenceSession;
-        private string previousSubtitle;
+        private SubtitlePresentation captions;
         private LevelPortal[] portals;
         private BoxCollider[] portalColliders;
         private bool[] portalVoicesPlayed;
@@ -63,6 +61,8 @@ namespace Boki.UI
             }
             focused = Application.isFocused;
             worldPaused = dialoguePaused = greeted = false;
+            if (captions == null) captions = SubtitlePresentation.Create(transform);
+            captions.Clear();
             hitCooldown = deathCooldown = 0f;
             if (enemyVolumes == null)
             {
@@ -103,6 +103,9 @@ namespace Boki.UI
         private bool CanPlayWorld => isActiveAndEnabled && focused && player.IsAlive
             && (flow == null || !flow.IsTerminal)
             && (RunSession.Instance == null || RunSession.Instance.IsGameplayActive);
+
+        // A cutscene that already played the greeting spends it, so the first real enemy does not repeat it.
+        public void MarkEnemyGreetingPlayed() => greeted = true;
 
         public void PlayEnemyGreeting(Vector3 position)
         {
@@ -155,7 +158,6 @@ namespace Boki.UI
             sequenceSession = RunSession.Ensure();
             ownsPause = !sequenceSession.State.Pause.Contains(PauseReason.ScriptedSequence);
             if (ownsPause) sequenceSession.SetPaused(PauseReason.ScriptedSequence, true);
-            previousSubtitle = subtitle != null ? subtitle.text : null;
             dialogueStage = 1;
             ShowLine(professorQuestion, "»Boki. Koliko je ura?«");
         }
@@ -170,7 +172,8 @@ namespace Boki.UI
 
         private void ShowLine(AudioClip clip, string text)
         {
-            if (subtitle != null) subtitle.text = text;
+            captions.SetSortingOrder(flow != null && flow.IsTerminal ? 55 : 40);
+            captions.Show(text, new Color(0.94f, 0.9f, 0.8f));
             PlayDialogue(clip, dialogueGain);
             remaining = clip != null ? clip.length + 0.2f : 0.2f;
         }
@@ -185,6 +188,7 @@ namespace Boki.UI
 
         private void Update()
         {
+            captions.RefreshLayout();
             if (CanPlayWorld)
             {
                 hitCooldown = Mathf.Max(0f, hitCooldown - Time.deltaTime);
@@ -233,8 +237,7 @@ namespace Boki.UI
             if (ownsPause && sequenceSession != null)
                 sequenceSession.SetPaused(PauseReason.ScriptedSequence, false);
             ownsPause = false;
-            if (subtitle != null && previousSubtitle != null) subtitle.text = previousSubtitle;
-            previousSubtitle = null;
+            captions?.Clear();
             dialogueStage = 0;
         }
         private void OnDisable()

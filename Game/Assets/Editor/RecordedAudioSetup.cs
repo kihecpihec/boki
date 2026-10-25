@@ -149,9 +149,6 @@ namespace Boki.Editor
                     RouteManager[] routes = All<RouteManager>(scene);
                     Set(serialized, "flow", flows.Length > 0 ? flows[0] : null);
                     Set(serialized, "routes", routes.Length > 0 ? routes[0] : null);
-                    if (flows.Length > 0)
-                        Set(serialized, "subtitle", new SerializedObject(flows[0]).FindProperty("objective").objectReferenceValue);
-                    else Set(serialized, "subtitle", null);
                     var voices = new Object[6];
                     for (int i = 0; i < voices.Length; i++) voices[i] = Source(root.transform, "Enemy Voice " + (i + 1), true);
                     SetArray(serialized, "enemySources", voices);
