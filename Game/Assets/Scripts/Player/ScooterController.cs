@@ -36,6 +36,7 @@ namespace Boki.Player
         [SerializeField, Min(0f)] private float slopeGain = 0.5f;
         [SerializeField, Min(0f)] private float airStrafeAcceleration = 18f;
         [SerializeField, Min(1f)] private float airStrafeMaxMultiplier = 3f;
+        [SerializeField, Min(0f)] private float momentumSpeedHeadroom = 0.1f;
         [SerializeField, Min(0f)] private float bunnyHopGain = 1.5f;
 
         private CharacterController controller;
@@ -91,7 +92,7 @@ namespace Boki.Player
                 boostDuration, boostCooldown, jumpHeight, Mathf.Abs(gravity), groundAcceleration,
                 airAcceleration, brakeDeceleration, groundOverspeedDecay, airOverspeedDecay,
                 overspeedTurnRate, coyoteTime, jumpBuffer, landingGrace, airStrafeAcceleration, airStrafeMaxMultiplier,
-                bunnyHopGain));
+                bunnyHopGain, momentumSpeedHeadroom));
             walkableNormalY = Mathf.Cos(controller.slopeLimit * Mathf.Deg2Rad);
             ownsMove = EnableAction(moveAction);
             ownsJump = EnableAction(jumpAction);

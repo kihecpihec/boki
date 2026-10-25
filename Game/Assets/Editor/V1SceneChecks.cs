@@ -378,7 +378,7 @@ namespace Boki.Editor
                         session.State.Battery = 80;
                         session.State.Progression.AddXp(session.State.Progression.NextThreshold);
                         Check(FixtureChoose(session.State.Progression, UpgradeId.RaveOverdrive), "Shortcut carries an accepted upgrade");
-                        RideIntoPortal(scene, player, 14f); stage++; break;
+                        RideIntoPortal(scene, player, 18f); stage++; break;
                     case 24:
                         CheckShortcutArrival(scene, session, player);
                         Check(player.Current == carriedHealth && session.State.Battery > 78 && session.State.Battery <= 80,
@@ -404,10 +404,10 @@ namespace Boki.Editor
                             "Skipped discoveries remain locked next run");
                         Select(scene, RouteChoice.A); stage++; break;
                     case 26:
-                        RideIntoPortal(scene, player, 10.5f); stage++; break;
+                        RideIntoPortal(scene, player, 17.999f); stage++; break;
                     case 27:
                         Check(scene.path == RunSession.V1MariborScene && !session.State.BossShortcutTaken,
-                            "Physical portal entry at ordinary boost speed still reaches City");
+                            "Physical portal entry just below 18 m/s still reaches City");
                         Select(scene, RouteChoice.B); stage++; break;
                     case 28:
                         Check(session.State.Choice(RouteLevel.City) == RouteChoice.B, "Fast City entry has an actual route choice");

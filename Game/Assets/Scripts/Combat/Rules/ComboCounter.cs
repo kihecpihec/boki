@@ -2,13 +2,13 @@ using System;
 
 namespace Boki.Combat
 {
-    // Counts laser hits in a row; the adapter resets it whenever the player is hurt.
+    // Counts kills in a row; the adapter resets it whenever the player is hurt.
     public sealed class ComboCounter
     {
         public int Count { get; private set; }
         public event Action Changed;
 
-        public void RegisterHit()
+        public void RegisterKill()
         {
             if (Count < int.MaxValue) Count++;
             Changed?.Invoke();
