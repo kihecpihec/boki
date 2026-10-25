@@ -26,6 +26,9 @@ namespace Boki.Battery
         [SerializeField] private Vector3 riderFillPosition = new Vector3(0f, 1.6f, -0.9f);
         [SerializeField, Min(0f)] private float emptyFillIntensity = 0.12f;
         [SerializeField, Min(0.1f)] private float emptyFillRange = 2.2f;
+        // Gameplay §5: local visibility survives depletion without revealing the distant route.
+        [SerializeField, Min(0f)] private float emptyWorldIntensity = 4f;
+        [SerializeField, Min(1f)] private float emptyWorldRange = 8f;
         public float ChargeFraction => Mathf.Clamp01(State.Current / State.Capacity);
         public float WarningStrength { get; set; }
         public float Visibility { get; private set; }
@@ -101,7 +104,7 @@ namespace Boki.Battery
         {
             Vector3 lampOrigin = headlightMount != null ? headlightMount.position : transform.TransformPoint(headlightPosition);
             surroundingLight.transform.position = lampOrigin + transform.up * headlightHeightOffset;
-            surroundingLight.enabled = player.IsAlive && State.Current > 0f;
+            surroundingLight.enabled = player.IsAlive;
             // Keep the gentle fill on the visible side of Boki as he turns or the camera orbits.
             if (riderFillCamera != null)
             {
@@ -121,14 +124,16 @@ namespace Boki.Battery
             if (warning <= 0f) warningTime = 0f;
             else if (IsGameplayActive) warningTime = Mathf.Repeat(warningTime + Time.deltaTime, 1f);
             float pulse = 0.5f + 0.5f * Mathf.Cos(warningTime * Mathf.PI * 4f);
-            surroundingLight.color = Color.Lerp(LampColor, GuiltWarningColor, warning * pulse);
+            surroundingLight.color = Color.Lerp(LampColor, GuiltWarningColor, warning * pulse * targetVisibility);
             nearbyFill.color = LampColor;
             float warningDip = strongGuiltWarning ? 0.18f : 0.1f;
             float flicker = 1f - warning * warningDip * pulse;
-            // Fade reach as well as brightness so low charge leaves only the immediate riding area.
-            surroundingLight.range = headlightRange * Mathf.Lerp(0.1f, 1f, visibility);
+            // Keep a readable floor under depletion and warning flicker, using the same unshadowed light.
+            surroundingLight.range = Mathf.Lerp(Mathf.Min(emptyWorldRange, headlightRange), headlightRange, visibility);
             nearbyFill.range = Mathf.Lerp(emptyFillRange, fillRange * nearbyRangeMultiplier, visibility);
-            surroundingLight.intensity = intensity * headlightBrightnessMultiplier * visibility * flicker;
+            float chargedIntensity = intensity * headlightBrightnessMultiplier;
+            float minimumIntensity = Mathf.Min(emptyWorldIntensity, chargedIntensity);
+            surroundingLight.intensity = minimumIntensity + (chargedIntensity - minimumIntensity) * visibility * flicker;
             nearbyFill.intensity = Mathf.Lerp(emptyFillIntensity, fillIntensity * nearbyBrightnessMultiplier, visibility) * flicker;
             nearbyFill.enabled = player.IsAlive;
         }
