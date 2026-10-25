@@ -6,12 +6,12 @@ GAMEJAM BEST × ŠS FERI 2026 · Dokumentacija projekta
 
 ### 1. Podatki o ekipi
 
-**Ime ekipe:** Bolani  
+**Ime ekipe:** Bolani
 **Člani in vloge:** Ismar Mujezinović – programiranje, grafika, zvok; Hanan Mešić – programiranje, grafika, zvok.
 
 ### 2. Ime igre
 
-**Boki: Late to FERI**  
+**Boki: Late to FERI**
 *Predavanje ne bo čakalo. Tudi Guilt ne.*
 
 ### 3. Povzetek koncepta
@@ -46,7 +46,7 @@ V repozitorij sva vključila povezane ravni, menije, boj, nadgradnje, shranjevan
 
 ### 1. Razvojni proces
 
-Projekt sva načrtovala okoli igralne poti od Bellevueja prek Pohorja in Maribora do predavalnice na FERI. Ločeno sva dokumentirala [zgodbo](docs/Story.md), [pravila igranja](docs/Gameplay.md) in [arhitekturo](docs/Architecture.md). Načrte mejnikov in zapise preverjanj hraniva v `docs/plans/`.
+Projekt sva načrtovala okoli igralne poti od Bellevueja prek Pohorja in Maribora do predavalnice na FERI. Ločeno sva dokumentirala [zgodbo](Documentation/Story.md), [pravila igranja](Documentation/Gameplay.md) in [arhitekturo](Documentation/Architecture.md). Načrte mejnikov in zapise preverjanj hraniva v `Documentation/plans/`.
 
 Oba sva sodelovala pri programiranju, grafiki in zvoku. Pri razvoju uporabljava ločene veje za funkcionalnosti, preizkusne scene, ponovno uporabo modelov, skriptirano pripravo vsebin in preverjanje v Unity pred vključitvijo v igro.
 
@@ -68,17 +68,17 @@ S srhljivim vzdušjem in namernimi motnjami ohranjava negotovost, ali je Bokijev
 
 ### 3. Tehnična izvedba
 
-Projekt Unity hraniva v `Game/`, sisteme igre v `Game/Assets/Scripts/`, orodja za pripravo in preverjanje v `Game/Assets/Editor/`, scene pa v `Game/Assets/Scenes/`. Deterministična pravila sva ločila od komponent Unity, da lahko s testi EditMode preverjava omejitve poti, napredovanje in časovne mehanike.
+Projekt Unity hraniva v `Source/Game/`, sisteme igre v `Source/Game/Assets/Scripts/`, orodja za pripravo in preverjanje v `Source/Game/Assets/Editor/`, scene pa v `Source/Game/Assets/Scenes/`. Deterministična pravila sva ločila od komponent Unity, da lahko s testi EditMode preverjava omejitve poti, napredovanje in časovne mehanike.
 
 Za začetno sceno sva izbrala `MainMenu`, nato vključila uvodno besedilo ter `V1_Pohorje`, `V1_Maribor` in `V1_FERI`. S skupnim stanjem poskusa med ravnmi prenašava zdravje, baterijo in nadgradnje. Z osrednjim sistemom usklajujeva ustavitev igre med premorom, izbiro nadgradenj in režiranimi prizori. Obremenitev integrirane grafike zmanjšujeva s ponovno uporabo sovražnikov, preprostimi trkalnimi telesi, nizkopoligonskimi modeli in omejeno osvetlitvijo. Vpliv naraščajočega števila sovražnikov morava še izmeriti na ciljni strojni opremi.
 
 ### 4. Vizualni in zvočni del
 
-V vizualnem slogu združujeva nizkopoligonske oblike obdobja PS1 in zgodnjega PS2, teksture nizke ločljivosti, meglo, temo in motnje VHS. Izvorne modele Blender, izvoze FBX in referenčne pakete hraniva v `output/`, uvožene vsebine igre pa v `Game/Assets/`.
+V vizualnem slogu združujeva nizkopoligonske oblike obdobja PS1 in zgodnjega PS2, teksture nizke ločljivosti, meglo, temo in motnje VHS. Izvorne modele Blender, izvoze FBX in referenčne pakete hraniva v `Source/output/`, uvožene vsebine igre pa v `Source/Game/Assets/`.
 
-Reference likov in okolij, ustvarjene z AI, sva opisala v [paketu likov](output/character-modeling-v2/README.md) in [paketu okolij](output/world-modeling-v1/README.md). Te slike uporabljava kot reference, zato jih vseh ne štejeva med teksture, prikazane v igri. Pri modelih in animacijah uporabljava tudi skriptirane postopke izdelave in izvoza.
+Reference likov in okolij, ustvarjene z AI, sva opisala v [paketu likov](Source/output/character-modeling-v2/README.md) in [paketu okolij](Source/output/world-modeling-v1/README.md). Te slike uporabljava kot reference, zato jih vseh ne štejeva med teksture, prikazane v igri. Pri modelih in animacijah uporabljava tudi skriptirane postopke izdelave in izvoza.
 
-Izvirne glasovne posnetke, zvočne učinke in evidenco obdelave hraniva v [sfx/](sfx/README.md). FFmpeg sva uporabila za pretvorbo, rezanje in postopne prehode glasnosti, kopije za igro pa sva uvozila v Unity.
+Izvirne glasovne posnetke, zvočne učinke in evidenco obdelave hraniva v [Source/sfx/](Source/sfx/README.md). FFmpeg sva uporabila za pretvorbo, rezanje in postopne prehode glasnosti, kopije za igro pa sva uvozila v Unity.
 
 ### 5. Namestitev in zagon igre na Windows
 
@@ -86,16 +86,16 @@ Izvirne glasovne posnetke, zvočne učinke in evidenco obdelave hraniva v [sfx/]
 2. Skupaj ohraniva `Boki.exe`, `Boki_Data/`, `UnityPlayer.dll` in vse druge priložene datoteke za delovanje igre. Sama datoteka `.exe` ne zadostuje.
 3. Zaženeva `Boki.exe` in izbereva **NEW RUN**. Če imava v paketu `Launch-Boki.cmd`, lahko z njim igro zaženeva v oknu pri 1280 × 720 z Direct3D 11.
 
-Izdelano igro shranjujeva v `Game/Builds/Windows-x64/Boki.exe`; izdelanih različic ne vključujeva v Git. Za ciljno konfiguracijo sva izbrala Windows 11 z Ryzen 5600G in 16 GB RAM; minimalnih zahtev še nisva izmerila.
+Izdelano igro shranjujeva v `Source/Game/Builds/Windows-x64/Boki.exe`; izdelanih različic ne vključujeva v Git. Za ciljno konfiguracijo sva izbrala Windows 11 z Ryzen 5600G in 16 GB RAM; minimalnih zahtev še nisva izmerila.
 
 Izvorni projekt odpreva takole:
 
 1. Klonirava [repozitorij](https://github.com/kihecpihec/boki) ali razširiva arhiv izvorne kode.
 2. Prek Unity Hub namestiva Unity **6000.6.7f1** ter podporo Windows Build Support za izdelavo različice Windows.
-3. Dodava in odpreva mapo `Game/` ter počakava na obnovitev paketov in uvoz vsebin.
+3. Dodava in odpreva mapo `Source/Game/` ter počakava na obnovitev paketov in uvoz vsebin.
 4. Odpreva `Assets/Scenes/MainMenu.unity` in pritisneva Play. Za izdelavo igre izbereva Windows x86_64 in ohraniva nastavljeni seznam scen.
 
-Postopek izdelave in omejitve preverjanja sva opisala v [zapisu o različici Windows](docs/plans/first-windows-build.md).
+Postopek izdelave in omejitve preverjanja sva opisala v [zapisu o različici Windows](Documentation/plans/first-windows-build.md).
 
 ### 6. Uporaba AI in zunanjih virov
 
@@ -105,15 +105,15 @@ Postopek izdelave in omejitve preverjanja sva opisala v [zapisu o različici Win
 | --- | --- |
 | Grafika | Z AI sva generirala grafiko in vizualne reference likov ter okolij. |
 | Koda | Z AI sva generirala programsko kodo. |
-| Modeli | Z AI sva generirala modele; postopke priprave in izvoza hraniva v `output/`. |
+| Modeli | Z AI sva generirala modele; postopke priprave in izvoza hraniva v `Source/output/`. |
 | Dokumentacija | S Codexom sva si pomagala pri pripravi besedila na podlagi repozitorija. |
-| Zvok | Izvirne posnetke in izvor izsekov hraniva v `sfx/manifest.json`; za obdelavo sva uporabila FFmpeg. |
+| Zvok | Izvirne posnetke in izvor izsekov hraniva v `Source/sfx/manifest.json`; za obdelavo sva uporabila FFmpeg. |
 
 V repozitoriju beleživa preverjanje modelov in izvozov, uvoz v Unity, avtomatizirane teste pravil ter osnovne preizkuse delovanja.
 
 ### 7. Testiranje
 
-V [zapisu preverjanja menijev](docs/plans/main-menu-flow-verification.md) sva zabeležila 178 uspešnih testov EditMode in preizkuse poteka igre brez grafičnega vmesnika. V [zapisu o različici Windows](docs/plans/first-windows-build.md) sva zabeležila uspešno izdelavo x64 in preverjanje arhiva, zagona ter igranja na Windows pa še nisva preverila. Pri dokumentaciji se opirava na obstoječe zapise; testov zanjo nisva ponovno izvedla.
+V [zapisu preverjanja menijev](Documentation/plans/main-menu-flow-verification.md) sva zabeležila 178 uspešnih testov EditMode in preizkuse poteka igre brez grafičnega vmesnika. V [zapisu o različici Windows](Documentation/plans/first-windows-build.md) sva zabeležila uspešno izdelavo x64 in preverjanje arhiva, zagona ter igranja na Windows pa še nisva preverila. Pri dokumentaciji se opirava na obstoječe zapise; testov zanjo nisva ponovno izvedla.
 
 Preveriti morava še celotno igranje na Windows, tipkovnico in miško, čas odklepanja poti, premor in nadaljevanje, zvočno ravnovesje ter zmogljivost med množicami sovražnikov in bojem s profesorjem.
 
