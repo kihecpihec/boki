@@ -1,5 +1,6 @@
 using Boki.Combat;
 using Boki.Core;
+using Boki.Ending;
 using Boki.Enemies;
 using Boki.UI;
 using Boki.Player;
@@ -22,6 +23,8 @@ namespace Boki.Routes
         [SerializeField] private AudioSource bossMusic;
         [SerializeField, Range(0f, 1f)] private float musicVolume = 0.22f;
         [SerializeField, Min(0.1f)] private float musicFadeSeconds = 2f;
+        [Tooltip("Optional. Plays the Story §3 victory ending, voices included, before the results panel.")]
+        [SerializeField] private EndingCutscene ending;
         private ThirdPersonCamera followCamera;
         private PlayerHealth player;
         private bool entered, reinforced;
@@ -110,6 +113,13 @@ namespace Boki.Routes
         private void Won()
         {
             bossStatus.text = "";
+            // The ending speaks its own lines; without one the recorded victory lines play over the results panel.
+            // A fallen player already has the ABSENT panel, which Victory leaves alone, so no ending plays over it.
+            if (ending != null && !flow.IsTerminal)
+            {
+                ending.Play(flow.Victory);
+                return;
+            }
             flow.Victory();
             if (recordedAudio != null) recordedAudio.PlayBossVictory();
         }

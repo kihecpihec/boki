@@ -2,6 +2,7 @@ using System;
 using Boki.Battery;
 using Boki.Combat;
 using Boki.Core;
+using Boki.Ending;
 using Boki.Enemies;
 using Boki.Player;
 using Boki.Upgrades;
@@ -76,7 +77,7 @@ namespace Boki.Editor
             if (!SessionState.GetBool(Key, false)) return;
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                stage = SessionState.GetBool(Key + ".Professor", false) ? 80 : 0; professorSamples = 0; encounterVerified = false; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
+                stage = SessionState.GetBool(Key + ".Professor", false) ? 80 : 0; professorSamples = 0; encounterVerified = false; introScene = null; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             var saved = JsonUtility.FromJson<Saved>(SessionState.GetString(Key + ".Saved", ""));
@@ -124,6 +125,15 @@ namespace Boki.Editor
                 var manager = V1SceneSetup.Find<RouteManager>(scene);
                 var flow = V1SceneSetup.Find<V1GameFlow>(scene);
                 if (session == null || player == null || manager == null || flow == null || session.IsLoading) return;
+                // V1_Pohorje opens with the Bellevue intro, which holds gameplay until it ends; skip it like a player.
+                // The intro starts a frame or so after the scene loads, so give it a second before trusting the pause state.
+                if (scene.path != introScene) { introScene = scene.path; introSceneLoaded = EditorApplication.timeSinceStartup; }
+                if (scene.path == V1SceneSetup.Scenes[0]
+                    && (session.State.Pause.Contains(PauseReason.ScriptedSequence) || EditorApplication.timeSinceStartup - introSceneLoaded < 1.0))
+                {
+                    if (session.State.Pause.Contains(PauseReason.ScriptedSequence)) SkipIntro();
+                    return;
+                }
                 player.GetComponent<ScooterController>().enabled = false;
                 switch (stage)
                 {
@@ -236,10 +246,19 @@ namespace Boki.Editor
                             "Professor remains inside arena borders");
                         if (professorSamples < 60) break;
                         Check(Vector3.Distance(professorStart, at) > 1f, "Professor patrol moves during fight");
+                        // The focused professor run can end with the player already down; a fallen player gets no ending.
+                        bool playerDown = flow.IsTerminal;
                         boss.GetComponent<EnemyHealth>().TakeDamage(10000);
                         Check(Object.FindObjectsByType<EnemyDeathBurst>().Length > 0,
                             "Professor death emits detached particle burst");
-                        Check(flow.IsTerminal && Time.timeScale == 0, "Boss defeat shows terminal victory screen");
+                        var ending = V1SceneSetup.Find<EndingCutscene>(scene);
+                        if (playerDown) Check(!ending.IsPlaying, "A fallen player gets no ending");
+                        else
+                        {
+                            Check(ending.IsPlaying && !flow.IsTerminal, "Boss defeat plays the ending before the results panel");
+                            ending.Skip();
+                        }
+                        Check(!ending.IsPlaying && flow.IsTerminal && Time.timeScale == 0, "Boss defeat shows terminal victory screen");
                         if (SessionState.GetBool(Key + ".Professor", false))
                         {
                             EditorApplication.ExitPlaymode();
@@ -315,7 +334,7 @@ namespace Boki.Editor
                     case 100:
                         var occupied = V1SceneSetup.All<BatteryCombatSpace>(scene).Find(s => s.gameObject.activeInHierarchy);
                         Check(occupied.State.Occupied && session.State.Guilt.AccumulatedCombatSeconds > 0f, "Physical combat occupancy activates battery and Guilt clocks");
-                        Check(EnemyHealth.Active.Count > 0 && EnemyHealth.Active.Count <= 4, "Selected route replenishes safely within its target count");
+                        Check(EnemyHealth.Active.Count > 0 && EnemyHealth.Active.Count <= 4, "Selected route replenishes safely within its target count (active=" + EnemyHealth.Active.Count + ")");
                         encounterVerified = true; stage = 1; break;
                 }
             }
@@ -337,6 +356,21 @@ namespace Boki.Editor
             if (!state.CreateOffer(new PickRandom(kind, state))) return false;
             for (int i = 0; i < state.OfferCount; i++) if (state.Offer(i) == kind) return state.TrySelect(i, state.OfferVersion);
             return false;
+        }
+
+        private static string introScene;
+        private static double introSceneLoaded;
+        private static bool introKeyDown;
+        // Presses and releases Enter on alternate ticks until the intro lets go of the pause.
+        private static void SkipIntro()
+        {
+            if (Keyboard.current == null) InputSystem.AddDevice<Keyboard>();
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+            InputSystem.EnableDevice(Keyboard.current);
+            introKeyDown = !introKeyDown;
+            InputSystem.QueueStateEvent(Keyboard.current, introKeyDown ? new KeyboardState(UnityEngine.InputSystem.Key.Enter) : new KeyboardState());
+            InputSystem.Update();
         }
 
         private static V1RouteEvent Event(Scene scene, V1RouteEventKind kind)
