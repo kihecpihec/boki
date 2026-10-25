@@ -1348,8 +1348,11 @@ MonoBehaviour:
   wakeUp: {fileID: 8300000, guid: cbb403151ba025a14a26e45d3b52d6ed, type: 3}
   armRustle: {fileID: 8300000, guid: 3b4de8d294a2b7297a082db5b0d204a0, type: 3}
   watchCheck: {fileID: 8300000, guid: 968f3dd00ec7e578da375a1271a82569, type: 3}
+  heartbeat: {fileID: 8300000, guid: bd7253f98aa557f3ab5e7c6b90f01d4c, type: 3}
+  scramble: {fileID: 8300000, guid: 7b3ece2f85749d76ca29cbee5716952a, type: 3}
   ambienceGain: 0.6
   foleyGain: 0.5
+  heartbeatGain: 0.45
   ambienceFadeSeconds: 0.5
   skipAction: {fileID: 2156066471589202878, guid: 5b1cfe52c78ee2f70aeba985cdbdda84, type: 2}
   replayAction: {fileID: -8861882190143886245, guid: 5b1cfe52c78ee2f70aeba985cdbdda84, type: 2}

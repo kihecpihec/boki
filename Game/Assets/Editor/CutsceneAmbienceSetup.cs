@@ -18,7 +18,7 @@ namespace Boki.Editor
         private const string IntroAmbience = SfxFolder + "intro_ambience.ogg";
         private const string EndingAmbience = SfxFolder + "ending_ambience.ogg";
         private const string EndingMusic = "Assets/Audio/Music/ending_music.ogg";
-        private static readonly string[] IntroCues = { "intro_wake_up", "intro_arm_rustle", "intro_watch_check" };
+        private static readonly string[] IntroCues = { "intro_wake_up", "intro_arm_rustle", "intro_watch_check", "intro_heartbeat", "intro_scramble" };
 
         [MenuItem("Boki/Audio/Wire Intro And Ending Ambience")]
         public static void Wire()
@@ -38,6 +38,8 @@ namespace Boki.Editor
             Set(so, "wakeUp", Load<AudioClip>(SfxFolder + "intro_wake_up.wav"));
             Set(so, "armRustle", Load<AudioClip>(SfxFolder + "intro_arm_rustle.wav"));
             Set(so, "watchCheck", Load<AudioClip>(SfxFolder + "intro_watch_check.wav"));
+            Set(so, "heartbeat", Load<AudioClip>(SfxFolder + "intro_heartbeat.wav"));
+            Set(so, "scramble", Load<AudioClip>(SfxFolder + "intro_scramble.wav"));
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
