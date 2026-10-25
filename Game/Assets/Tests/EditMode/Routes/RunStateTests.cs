@@ -6,6 +6,40 @@ namespace Boki.Tests
 {
     public sealed class RunStateTests
     {
+        [Test]
+        public void PhoneStoryIsOncePerLevelAndResetsOnlyOnNewRun()
+        {
+            var run = new RunState(default, 0);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.City), Is.False);
+            Assert.That(run.TryConsumePhoneStory((RouteLevel)99), Is.False);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.True);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.False);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            run.TryAdvance(RouteLevel.Forest);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.False);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.City), Is.True);
+            run.NewRun(default, 1);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.True);
+        }
+
+        [Test]
+        public void PhoneStoryCannotConsumeDuringPauseLoadingDeathOrShortcut()
+        {
+            var run = new RunState(default, 0);
+            run.Pause.Set(Boki.Core.PauseReason.Menu, true);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.False);
+            run.Pause.Reset();
+            run.Guilt.IsLoading = true;
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.False);
+            run.Guilt.IsLoading = false;
+            run.Health.TakeDamage(100);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Forest), Is.False);
+            run.NewRun(default, 1);
+            run.TrySelect(RouteLevel.Forest, RouteChoice.A);
+            run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f);
+            Assert.That(run.TryConsumePhoneStory(RouteLevel.Feri), Is.False);
+        }
+
         private sealed class FirstOfferRandom : System.Random
         {
             public override int Next(int maxValue) => 0;

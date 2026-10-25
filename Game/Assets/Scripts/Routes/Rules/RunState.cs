@@ -24,6 +24,7 @@ namespace Boki.Routes
 
     public sealed class RunState
     {
+        private readonly bool[] phoneStoryConsumed = new bool[3];
         private readonly RouteChoice[] choices = new RouteChoice[3];
         public GuiltState Guilt { get; } = new GuiltState();
         public HealthState Health { get; private set; }
@@ -57,6 +58,7 @@ namespace Boki.Routes
             Pause.Reset();
             CityRetreatStarted = CitySideEscapeCompleted = PowerOff = BossShortcutTaken = false;
             Array.Clear(choices, 0, choices.Length);
+            Array.Clear(phoneStoryConsumed, 0, phoneStoryConsumed.Length);
             ActiveLevel = RouteLevel.Forest;
             StartedAt = startedAt;
             AvailableUnlocks = unlocks;
@@ -68,6 +70,16 @@ namespace Boki.Routes
         public RouteChoice Choice(RouteLevel level) => ValidLevel(level) ? choices[(int)level] : RouteChoice.None;
         public static bool ValidLevel(RouteLevel level) => level >= RouteLevel.Forest && level <= RouteLevel.Feri;
         public static bool ValidChoice(RouteChoice route) => route >= RouteChoice.A && route <= RouteChoice.C;
+
+        // Story §3: a missed safe window is consumed too, never queued into combat.
+        public bool TryConsumePhoneStory(RouteLevel level)
+        {
+            if (!ValidLevel(level) || level != ActiveLevel || !Health.IsAlive
+                || Pause.IsPaused || Guilt.GameplaySuspended || Guilt.IsLoading
+                || BossShortcutTaken || Guilt.BossEntered || phoneStoryConsumed[(int)level]) return false;
+            phoneStoryConsumed[(int)level] = true;
+            return true;
+        }
 
         public GateState Gate(RouteLevel level, RouteChoice route)
         {
