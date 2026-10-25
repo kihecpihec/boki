@@ -15,6 +15,7 @@ namespace Boki.UI
         private const float PopSeconds = 0.48f;
         private const float LostSeconds = 0.6f;
         private const float CalloutSeconds = 0.85f;
+        private const float BadgeScale = 0.65f;
         private static readonly Color Cream = new Color(0.94f, 0.87f, 0.72f);
         private static readonly Color Hot = new Color(1f, 0.56f, 0.24f);
         private static readonly Color Lost = new Color(0.85f, 0.12f, 0.16f);
@@ -31,6 +32,7 @@ namespace Boki.UI
         private Text echo;
         private float impactDirection;
         private float impactStrength;
+        private Vector2 badgePosition = new Vector2(-95f, 0f);
         private Vector2 calloutPosition;
         private float calloutAngle;
         private AudioSource source;
@@ -57,7 +59,8 @@ namespace Boki.UI
             badge = badgeObject.GetComponent<RectTransform>();
             badge.SetParent(root.transform, false);
             badge.anchorMin = badge.anchorMax = badge.pivot = new Vector2(1f, 0.5f);
-            badge.anchoredPosition = new Vector2(-42f, 0f);
+            badge.anchoredPosition = badgePosition;
+            badge.localScale = Vector3.one * BadgeScale;
             badge.sizeDelta = new Vector2(270f, 160f);
             badgeOpacity = badgeObject.GetComponent<CanvasGroup>();
             badgeOpacity.blocksRaycasts = false;
@@ -75,9 +78,9 @@ namespace Boki.UI
             cracks.text = "/ /";
             cracks.color = new Color(0.08f, 0.04f, 0.06f);
             cracks.gameObject.SetActive(false);
-            callout = Label("Milestone", root.transform, Vector2.zero, new Vector2(370f, 65f), 38);
+            callout = Label("Milestone", root.transform, Vector2.zero, new Vector2(270f, 55f), 28);
             callout.alignment = TextAnchor.MiddleCenter;
-            callout.rectTransform.anchorMin = callout.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            callout.rectTransform.anchorMin = callout.rectTransform.anchorMax = new Vector2(1f, 0.5f);
             callout.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             callout.gameObject.SetActive(false);
             source = root.AddComponent<AudioSource>();
@@ -85,6 +88,7 @@ namespace Boki.UI
             source.spatialBlend = 0f;
             source.priority = 180;
             cues = new[] { CreateCue(0), CreateCue(1), CreateCue(2), CreateCue(3) };
+            Canvas.ForceUpdateCanvases();
             canvas.enabled = false;
         }
 
@@ -130,6 +134,8 @@ namespace Boki.UI
                 badgeOpacity.alpha = 1f;
                 accent.color = now >= 10 ? Hot : Cream;
                 underline.color = now >= 10 ? Hot : Cream;
+                if (now >= 2)
+                    badgePosition = AnimateEffects ? RandomRightSidePosition(240f, 95f, 160f) : new Vector2(-95f, 0f);
                 PoseBadge(AnimateEffects ? 1f : 0f);
                 count.color = label.color = now >= 10 ? Hot : Cream;
                 canvas.enabled = now >= 2;
@@ -158,10 +164,7 @@ namespace Boki.UI
         {
             int tier = kills == 5 ? 0 : kills == 10 ? 1 : 2;
             callout.text = tier == 0 ? "LOCKED IN" : tier == 1 ? "RAVE MODE" : "UNSTOPPABLE";
-            // Fixed peripheral slots leave the riding area and boss bar clear.
-            int slot = AnimateEffects ? Random.Range(0, 3) : 1;
-            calloutPosition = slot == 0 ? new Vector2(-400f, 130f)
-                : slot == 1 ? new Vector2(390f, 155f) : new Vector2(-400f, -140f);
+            calloutPosition = AnimateEffects ? RandomRightSidePosition(180f, 180f, 110f) : new Vector2(-180f, 100f);
             calloutAngle = AnimateEffects ? Random.Range(-9f, 9f) : 0f;
             callout.rectTransform.anchoredPosition = calloutPosition;
             callout.rectTransform.localRotation = Quaternion.Euler(0f, 0f, calloutAngle);
@@ -169,6 +172,15 @@ namespace Boki.UI
             calloutRemaining = CalloutSeconds;
             callout.gameObject.SetActive(true);
             PlayCue(tier);
+        }
+
+        private Vector2 RandomRightSidePosition(float leftInset, float rightInset, float verticalInset)
+        {
+            Rect area = ((RectTransform)canvas.transform).rect;
+            // Insets leave room for the pop, rotation and broken-streak fall.
+            float left = Mathf.Min(-rightInset, -area.width * 0.5f + leftInset);
+            float height = Mathf.Max(0f, area.height * 0.5f - verticalInset);
+            return new Vector2(Random.Range(left, -rightInset), Random.Range(-height, height));
         }
 
         private void PlayCue(int index)
@@ -200,7 +212,7 @@ namespace Boki.UI
                 color.a = Mathf.Clamp01(calloutRemaining / 0.2f);
                 callout.color = color;
                 float punch = AnimateEffects ? Mathf.Clamp01((calloutRemaining - 0.65f) / 0.2f) * 0.2f : 0f;
-                callout.rectTransform.localScale = Vector3.one * (1f + punch * 2f);
+                callout.rectTransform.localScale = Vector3.one * (1f + punch);
                 callout.rectTransform.anchoredPosition = calloutPosition + new Vector2(punch * 100f, punch * -65f);
                 callout.rectTransform.localRotation = Quaternion.Euler(0f, 0f, AnimateEffects ? calloutAngle + punch * 45f : 0f);
                 if (calloutRemaining <= 0f) callout.gameObject.SetActive(false);
@@ -217,7 +229,7 @@ namespace Boki.UI
             {
                 float fall = 1f - fade;
                 badge.localRotation = Quaternion.Euler(0f, 0f, -5f - fall * fall * 24f);
-                badge.anchoredPosition = new Vector2(-42f + fall * 48f, -fall * fall * 95f);
+                badge.anchoredPosition = badgePosition + new Vector2(fall * 48f, -fall * fall * 95f);
                 Color crackColor = cracks.color;
                 crackColor.a = fade;
                 cracks.color = crackColor;
@@ -231,8 +243,8 @@ namespace Boki.UI
             float kick = remaining * remaining * impactStrength;
             float twist = Mathf.Cos(age * Mathf.PI * 3f) * kick;
             badge.localRotation = Quaternion.Euler(0f, 0f, AnimateEffects ? -5f + twist * impactDirection * 13f : 0f);
-            badge.anchoredPosition = new Vector2(-42f + kick * 30f, kick * 12f);
-            badge.localScale = Vector3.one * (1f + kick * 0.16f);
+            badge.anchoredPosition = badgePosition + new Vector2(kick * 30f, kick * 12f);
+            badge.localScale = Vector3.one * (BadgeScale * (1f + kick * 0.16f));
             count.rectTransform.localScale = Vector3.one * (1f + kick * 0.22f);
             echo.rectTransform.anchoredPosition = new Vector2(-22f - age * 42f, 24f + age * 20f);
             echo.rectTransform.localScale = Vector3.one * (1f + age * 0.45f);
