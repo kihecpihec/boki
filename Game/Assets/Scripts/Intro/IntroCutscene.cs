@@ -44,6 +44,8 @@ namespace Boki.Intro
         [SerializeField] private AudioClip eyePop;
         [SerializeField] private AudioClip dashWhoosh;
         [SerializeField] private AudioClip bokiLine;
+        [SerializeField, Range(0f, 1f)] private float effectsGain = 0.35f;
+        [SerializeField, Range(0f, 1f)] private float dialogueGain = 0.65f;
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart = true;
@@ -172,8 +174,8 @@ namespace Boki.Intro
 
         private void OnShotStarted(int shot)
         {
-            if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep);
-            if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine);
+            if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep, effectsGain);
+            if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine, dialogueGain);
             if (shot == IntroActing.Mount) headlight.enabled = true;
         }
 
@@ -181,11 +183,11 @@ namespace Boki.Intro
         private void PlayCues(float from, float to)
         {
             if (Crossed(from, to, IntroActing.StartOf(IntroActing.DoubleTake) + IntroActing.FirstPopAt))
-                audioSource.PlayOneShot(eyePop, 0.8f);
+                audioSource.PlayOneShot(eyePop, effectsGain * 0.8f);
             if (Crossed(from, to, IntroActing.StartOf(IntroActing.Message) + IntroActing.SecondPopAt))
-                audioSource.PlayOneShot(eyePop);
+                audioSource.PlayOneShot(eyePop, effectsGain);
             if (Crossed(from, to, IntroActing.StartOf(IntroActing.Scramble) + IntroActing.DashAt))
-                audioSource.PlayOneShot(dashWhoosh);
+                audioSource.PlayOneShot(dashWhoosh, effectsGain * 0.8f);
         }
 
         private static bool Crossed(float from, float to, float at) => from < at && at <= to;

@@ -92,6 +92,9 @@ namespace Boki.Editor
                         audio.GetComponent<ScooterController>().enabled = false;
                         health.TakeDamage(1);
                         Check(actions.isPlaying, "Accepted damage plays an action sound");
+                        actions.Stop();
+                        health.TakeDamage(1);
+                        Check(!actions.isPlaying, "Rapid damage does not stack pain voices");
                         break;
                     case 1:
                         actions.Stop();
@@ -103,6 +106,9 @@ namespace Boki.Editor
                         break;
                     case 2:
                         Check(actions.isPlaying, "Actual laser shot plays audio");
+                        actions.Stop();
+                        audio.SendMessage("PlayShot");
+                        Check(!actions.isPlaying, "Repeated laser audio is suppressed during its sound cooldown");
                         UnityEngine.Object.Destroy(target);
                         audio.GetComponent<AutoLaser>().enabled = false;
                         audio.PlayXpCollection();
@@ -111,6 +117,9 @@ namespace Boki.Editor
                         break;
                     case 3:
                         Check(!motor.isPlaying && !actions.isPlaying && !rewards.isPlaying, "Shared menu pause suspends all sources");
+                        rewards.Stop();
+                        audio.PlayXpCollection();
+                        Check(!rewards.isPlaying, "XP sound cooldown spans collection frames and gameplay pause");
                         session.SetPaused(PauseReason.Menu, false);
                         break;
                     case 4:

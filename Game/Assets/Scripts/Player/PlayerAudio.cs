@@ -34,6 +34,16 @@ namespace Boki.Player
         [SerializeField] private AudioClip guiltReaction;
         [SerializeField] private AudioClip snack;
         [SerializeField, Range(0f, 1f)] private float volume = 0.65f;
+        [Header("Mix and repetition")]
+        [SerializeField, Range(0f, 1f)] private float mixGain = 0.75f;
+        [SerializeField, Range(0f, 1f)] private float motorGain = 0.35f;
+        [SerializeField, Range(0f, 1f)] private float laserGain = 0.18f;
+        [SerializeField, Range(0f, 1f)] private float damageGain = 0.65f;
+        [SerializeField, Range(0f, 1f)] private float warningGain = 0.8f;
+        [SerializeField, Range(0f, 1f)] private float guiltGain = 0.5f;
+        [SerializeField, Min(0f)] private float laserSoundInterval = 1f;
+        [SerializeField, Min(0f)] private float xpSoundInterval = 0.35f;
+        [SerializeField, Min(0f)] private float guiltVoiceInterval = 7f;
         private int previousHealth;
         private int batteryBand;
         private float warningCooldown;
@@ -47,6 +57,7 @@ namespace Boki.Player
         private int lastDamage = -1, lastShot = -1, lastGuilt = -1;
         private float guiltVoiceCooldown;
         private bool reactedToGuilt;
+        private float shotCooldown, xpCooldown, damageCooldown;
 
         private void OnEnable()
         {
@@ -65,6 +76,7 @@ namespace Boki.Player
             batteryBand = BatteryBand();
             warningCooldown = airTime = impactCooldown = 0f;
             guiltVoiceCooldown = 0f;
+            shotCooldown = xpCooldown = damageCooldown = 0f;
             reactedToGuilt = false;
             paused = false;
             rewardsPaused = false;
@@ -127,27 +139,30 @@ namespace Boki.Player
             }
             float speed = active && movement.isActiveAndEnabled ? movement.HorizontalSpeed : 0f;
             float speedFraction = Mathf.Clamp01(speed / Mathf.Max(1f, movement.BoostSpeed));
-            float target = speed > 0.3f ? volume * Mathf.Lerp(0.12f, 0.45f, speedFraction)
+            float target = speed > 0.3f ? volume * mixGain * motorGain * Mathf.Lerp(0.12f, 0.45f, speedFraction)
                 * (movement.IsGrounded ? 1f : 0.2f) : 0f;
             motorSource.volume = active ? Mathf.MoveTowards(motorSource.volume, target, Time.deltaTime * 2f) : 0f;
             motorSource.pitch = Mathf.Lerp(0.7f, 1.65f, speedFraction);
             if (!active) return;
+            shotCooldown = Mathf.Max(0f, shotCooldown - Time.deltaTime);
+            xpCooldown = Mathf.Max(0f, xpCooldown - Time.deltaTime);
+            damageCooldown = Mathf.Max(0f, damageCooldown - Time.deltaTime);
             impactCooldown = Mathf.Max(0f, impactCooldown - Time.deltaTime);
             airTime = movement.IsGrounded ? 0f : airTime + Time.deltaTime;
             int band = BatteryBand();
-            if (band < batteryBand) Play(actionSource, band == 0 ? batteryEmpty : batteryLow, 0.7f);
+            if (band < batteryBand) Play(actionSource, band == 0 ? batteryEmpty : batteryLow, warningGain);
             batteryBand = band;
             warningCooldown = Mathf.Max(0f, warningCooldown - Time.deltaTime);
             guiltVoiceCooldown = Mathf.Max(0f, guiltVoiceCooldown - Time.deltaTime);
             if (battery.WarningStrength > 0.1f && warningCooldown <= 0f)
             {
-                Play(actionSource, guiltHeartbeat, 0.7f);
-                warningCooldown = 1.2f;
+                Play(actionSource, guiltHeartbeat, 0.28f);
+                warningCooldown = 1.8f;
             }
             if (battery.WarningStrength > 0.1f && !reactedToGuilt && guiltReaction != null)
             {
                 reactedToGuilt = true;
-                Play(rewardSource, guiltReaction, 0.9f);
+                Play(rewardSource, guiltReaction, 0.65f);
                 guiltVoiceCooldown = guiltReaction.length + 0.2f;
             }
             if (battery.WarningStrength > 0.1f && guiltVoiceCooldown <= 0f)
@@ -155,8 +170,8 @@ namespace Boki.Player
                 AudioClip voice = AudioVariations.Next(null, guiltVariations, ref lastGuilt);
                 if (voice != null)
                 {
-                    Play(actionSource, voice, 0.9f);
-                    guiltVoiceCooldown = voice.length + 1.5f;
+                    Play(actionSource, voice, guiltGain);
+                    guiltVoiceCooldown = Mathf.Max(guiltVoiceInterval, voice.length + 1f);
                 }
             }
         }
@@ -165,21 +180,28 @@ namespace Boki.Player
             : battery.State.Current / battery.State.Capacity <= 0.2f ? 1 : 2;
         private void Play(AudioSource source, AudioClip clip, float gain = 1f)
         {
-            if (isActiveAndEnabled && focused) source.PlayOneShot(clip, volume * gain);
+            if (isActiveAndEnabled && focused && clip != null) source.PlayOneShot(clip, volume * mixGain * gain);
         }
-        private void PlayJump() => Play(actionSource, jump, 0.8f);
-        private void PlayBoost() => Play(actionSource, boost, 0.8f);
+        private void PlayJump() => Play(actionSource, jump, 0.5f);
+        private void PlayBoost() => Play(actionSource, boost, 0.65f);
         private void PlayLanding()
         {
-            if (airTime >= 0.1f) Play(actionSource, landing, Mathf.Clamp(airTime, 0.3f, 1f));
+            if (airTime >= 0.1f) Play(actionSource, landing, Mathf.Clamp(airTime, 0.3f, 1f) * 0.5f);
             airTime = 0f;
         }
-        private void PlayShot() => Play(actionSource, AudioVariations.Next(shot, shotVariations, ref lastShot), 0.45f);
+        private void PlayShot()
+        {
+            if (shotCooldown > 0f || !focused) return;
+            AudioClip clip = AudioVariations.Next(shot, shotVariations, ref lastShot);
+            Play(actionSource, clip, laserGain);
+            // Only thin the sound events; every laser pulse still fires and deals its normal damage.
+            shotCooldown = Mathf.Max(laserSoundInterval, clip.length + 0.08f);
+        }
         private void PlayWallImpact(float speed)
         {
             if (impactCooldown > 0f) return;
-            Play(actionSource, landing, Mathf.Clamp(speed / 12f, 0.2f, 0.7f));
-            impactCooldown = 0.2f;
+            Play(actionSource, landing, Mathf.Clamp(speed / 12f, 0.2f, 0.7f) * 0.5f);
+            impactCooldown = 0.5f;
         }
         private void OnHealthChanged()
         {
@@ -190,20 +212,26 @@ namespace Boki.Player
                     motorSource.Stop();
                     actionSource.Stop();
                     rewardSource.Stop();
-                    Play(actionSource, death);
+                    Play(actionSource, death, 0.9f);
                 }
-                else Play(actionSource, AudioVariations.Next(damage, damageVariations, ref lastDamage), 0.8f);
+                else if (damageCooldown <= 0f)
+                {
+                    AudioClip clip = AudioVariations.Next(damage, damageVariations, ref lastDamage);
+                    Play(actionSource, clip, damageGain);
+                    damageCooldown = Mathf.Max(0.55f, clip.length + 0.1f);
+                }
             }
-            else if (health.Current > previousHealth && snack != null) Play(rewardSource, snack, 0.8f);
+            else if (health.Current > previousHealth && snack != null) Play(rewardSource, snack, 0.65f);
             previousHealth = health.Current;
         }
-        public void PlayBatteryCollection() => Play(rewardSource, batteryPickup, 0.8f);
+        public void PlayBatteryCollection() => Play(rewardSource, batteryPickup, 0.5f);
         public void PlayXpCollection()
         {
             // A cluster collected in one physics step needs one chime, not dozens of voices.
-            if (lastXpFrame == Time.frameCount) return;
+            if (lastXpFrame == Time.frameCount || xpCooldown > 0f) return;
             lastXpFrame = Time.frameCount;
-            Play(rewardSource, xpPickup, 0.65f);
+            Play(rewardSource, xpPickup, 0.25f);
+            xpCooldown = xpSoundInterval;
         }
     }
 }
