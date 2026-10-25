@@ -16,7 +16,9 @@ Pripravljeno različico zaženeva tako:
 2. Odpreva mapo `Build/` in zaženeva `Boki.exe`.
 3. V meniju izbereva **NEW RUN**.
 
-Ob datoteki `Boki.exe` ohraniva pripadajočo mapo `Boki_Data/`, `UnityPlayer.dll`, `MonoBleedingEdge/` in vse druge datoteke izdelane igre. Samo `.exe` ne zadostuje. Če imava priložen `Launch-Boki.cmd`, lahko z njim zaženeva igro v oknu pri 1280 × 720 z Direct3D 11.
+Ob datoteki `Boki.exe` ohraniva pripadajočo mapo `Boki_Data/`, `UnityPlayer.dll`, `MonoBleedingEdge/` in vse druge datoteke izdelane igre. Samo `.exe` ne zadostuje.
+
+The game starts in borderless fullscreen at the display's native resolution, overriding any lower resolution saved by an earlier launch. Run `Build/Boki.exe` directly.
 
 Za ciljni računalnik sva izbrala Windows 11, Ryzen 5600G z integrirano grafiko in 16 GB RAM. Ciljava na najmanj 30 FPS pri 1280 × 720 in nizkih nastavitvah; to morava še potrditi na ciljni strojni opremi.
 

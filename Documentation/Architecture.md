@@ -8,7 +8,7 @@
 
 **Two developers have 48 hours.** The architecture must deliver a playable version quickly, without unnecessary abstractions or new Unity packages.
 
-See [README.md](../README.md#development-setup) for the target hardware. Primary build: Windows x86_64, 1280×720, Low, at least 30 FPS **measured on the target machine**. 60 FPS is a stretch goal, not a promise. Linux development is supported, but Linux Editor FPS does not replace a Windows player build test.
+See [README.md](../README.md#development-setup) for the target hardware. Primary build: Windows x86_64, borderless fullscreen at the display's native resolution on startup. Keep 1280×720 Low as the performance baseline, at least 30 FPS **measured on the target machine**; measure native-resolution performance separately. 60 FPS is a stretch goal, not a promise. Linux development is supported, but Linux Editor FPS does not replace a Windows player build test.
 
 **Style:** simple third-person 3D, PS1/low-poly/VHS, URP Forward. No HDRP, ray tracing, or expensive volumetric effects.
 
@@ -228,7 +228,7 @@ Add deterministic behavior tests for thresholds and queued selections, additive 
 2. Use **Input System**, already included in the URP template. Do not mix in legacy `Input.GetAxis` calls without agreement.
 3. Movement uses an **arcade CharacterController**, not realistic scooter physics. The model can lean visually.
 4. Use **URP Forward**, one main light, and as few additional shadow-casting lights as possible. Use simple fog and limited visibility rather than volumetric fog.
-5. Display at 1280×720 Low; use `renderScale ≈ 0.75–0.9` if needed. Allow VHS/glitch effects to be disabled.
+5. Start in borderless fullscreen at the display's native resolution, overriding saved lower resolutions through `NativeDisplayResolution`. The PC pipeline uses `renderScale = 1`; use 1280×720 Low as the performance baseline and measure native resolution separately. Allow VHS/glitch effects to be disabled.
 6. Cap active regular enemies at **8 / 12 / 8** (Forest/City/FERI). Use simple colliders and no ragdolls.
 7. Before the jam ends, make a **Windows x86_64 player build** and test the city horde, FERI boss, and most heavily lit scene. Record actual FPS. Linux Editor results do not substitute for this check.
 
