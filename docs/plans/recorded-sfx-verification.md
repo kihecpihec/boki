@@ -50,8 +50,10 @@ Running it again reuses the existing components and seven output sources.
 four scenes. Each scene's `Recorded Game Audio` object has `RecordedGameAudio`
 with the player, optional V1 flow/route/status references, six `enemySources`,
 one `dialogueSource` and the recorded clip groups. Enemy voices are 3D with no
-Doppler; player and dialogue cues are 2D. Excess hit voices are skipped, while
-deaths may replace an existing voice, keeping the six-source enemy limit.
+Doppler; player and dialogue cues are 2D. The allocated six-source budget now
+allows two audible enemy voices by default. Excess hits and clustered deaths
+are skipped; deaths may replace a hit/greeting voice while existing death tails
+finish. See [mix gains and repetition limits](../PlayerEffects.md#quieter-mix-and-repetition-limits).
 
 Every scene-local regular enemy, professor and inactive spawn/reinforcement
 template has `EnemyAudio.output` assigned to its scene output. Professor bindings
