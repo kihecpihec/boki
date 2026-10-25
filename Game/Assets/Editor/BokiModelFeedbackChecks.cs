@@ -204,6 +204,8 @@ namespace Boki.Editor
                         var beam = (LineRenderer)beamSettings.FindProperty("beam").objectReferenceValue;
                         var muzzle = (Transform)beamSettings.FindProperty("beamOrigin").objectReferenceValue;
                         Require(beam.enabled, "A laser hit must show the short beam and impact together.");
+                        Require(beam.sharedMaterial != null && beam.sharedMaterial.shader.name == "Boki/Laser Beam",
+                            "The laser beam must use the additive Laser Beam shader.");
                         Require(Vector3.Distance(beam.GetPosition(0), muzzle.position) < 0.001f,
                             "The visible laser pulse must start at the scooter emitter.");
                         Require(battery.transform.localScale == colliderScale, "Feedback must not scale the collision root.");
