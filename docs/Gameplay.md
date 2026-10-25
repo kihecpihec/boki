@@ -16,6 +16,8 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 | `Esc` | Pause / back |
 | Automatic | Laser targets the nearest enemy in range; nearby XP orbs float toward Boki for collection; contact collects arena battery charges |
 
+The on-screen controls reminder appears only in Bellevue, under the objective. It disappears once Boki chooses a Pohorje route and does not return in Maribor or FERI. A new run brings it back.
+
 **Visual target:** low-poly PS1/VHS horror, with obstacles and attacks readable even on Low settings. **Successful run duration:** approximately 7–12 minutes, including the boss.
 
 **Status:** values and designs here are an initial specification, not evidence that these systems already exist in the Unity project.

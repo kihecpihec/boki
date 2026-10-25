@@ -462,7 +462,7 @@ namespace Boki.Editor
             canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay; canvas.GetComponent<Canvas>().sortingOrder = 50;
             var scaler = canvas.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1280, 720);
             var status = Label(canvas.transform, "Route Status", new Vector2(0.5f, 1), new Vector2(0, -35), new Vector2(1000, 55), "Choose A or B. C routes unlock on later runs.", 16);
-            var objective = Label(canvas.transform, "Objective", new Vector2(0.5f, 1), new Vector2(0, -95), new Vector2(1000, 40), "WASD ride  •  Space jump  •  Shift boost  •  Esc pause\nChoose a route, collect XP and battery charges, then " + (level == RouteLevel.Feri ? "reach the classroom." : "find the portal."), 16);
+            var objective = Label(canvas.transform, "Objective", new Vector2(0.5f, 1), new Vector2(0, -95), new Vector2(1000, 40), "Choose a route, collect XP and battery charges, then " + (level == RouteLevel.Feri ? "reach the classroom." : "find the portal."), 16);
             var boss = Label(canvas.transform, "Boss Health", new Vector2(0.5f, 1), new Vector2(0, -140), new Vector2(800, 35), "", 22);
             var panel = Child(canvas.transform, "Pause and Death", typeof(RectTransform), typeof(Image));
             var rect = panel.GetComponent<RectTransform>(); rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
