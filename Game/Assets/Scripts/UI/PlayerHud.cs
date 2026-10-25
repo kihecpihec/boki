@@ -27,6 +27,7 @@ namespace Boki.UI
         [SerializeField] private bool screenEffectsEnabled = true;
         [SerializeField, Min(1f)] private float guiltWarningDistance = 15f;
         private Texture2D edgeTexture;
+        private float healthPulseAge;
         private int lastHealth = -1, lastMaximum = -1, lastCharge = -1, lastCapacity = -1, lastXp = -1, lastSelections = -1;
         private RouteLevel? lastLevel;
         public bool ScreenEffectsEnabled { get => screenEffectsEnabled; set => screenEffectsEnabled = value; }
@@ -44,13 +45,13 @@ namespace Boki.UI
             }
             lastHealth = lastMaximum = lastCharge = lastCapacity = lastXp = lastSelections = -1;
             lastLevel = null;
-            edgeTexture = new Texture2D(64, 64, TextureFormat.RGBA32, false) { name = "HUD Guilt Edges", wrapMode = TextureWrapMode.Clamp };
+            edgeTexture = new Texture2D(64, 64, TextureFormat.RGBA32, false) { name = "HUD Warning Edges", wrapMode = TextureWrapMode.Clamp };
             for (int y = 0; y < 64; y++)
                 for (int x = 0; x < 64; x++)
                 {
                     float edge = Mathf.Max(Mathf.Abs(x / 63f * 2f - 1f), Mathf.Abs(y / 63f * 2f - 1f));
                     float alpha = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.8f, 1f, edge));
-                    edgeTexture.SetPixel(x, y, new Color(0.3f, 0.015f, 0.015f, alpha * 0.35f));
+                    edgeTexture.SetPixel(x, y, new Color(0.75f, 0.015f, 0.015f, alpha * 0.55f));
                 }
             edgeTexture.Apply(false, true);
             guiltEdges.texture = edgeTexture;
@@ -99,7 +100,20 @@ namespace Boki.UI
                 && guilt.Pressure.IsActive && !guilt.Pressure.AwaitingPlacement
                 && (guilt.Phase == GuiltPhase.Warning || guilt.Phase == GuiltPhase.Chase)
                 ? 1f - Mathf.Clamp01(Vector3.Distance(health.transform.position, guilt.transform.position) / guiltWarningDistance) : 0f;
-            float opacity = screenEffectsEnabled ? Mathf.MoveTowards(guiltEdges.color.a, warning, Time.unscaledDeltaTime * 2f) : 0f;
+            bool active = RunSession.Instance == null || RunSession.Instance.IsGameplayActive;
+            float healthFraction = (float)health.Current / Mathf.Max(1, health.Maximum);
+            float lowHealth = 0f;
+            if (screenEffectsEnabled && health.IsAlive && healthFraction <= 0.3f)
+            {
+                if (active) healthPulseAge += Time.deltaTime;
+                float severity = Mathf.InverseLerp(0.3f, 0f, healthFraction);
+                float pulse = 0.5f + 0.5f * Mathf.Sin(healthPulseAge * Mathf.PI * 2f * 1.2f);
+                lowHealth = Mathf.Lerp(0.3f, 0.65f, severity) + pulse * 0.35f;
+            }
+            else healthPulseAge = 0f;
+            warning = Mathf.Max(warning, lowHealth);
+            if (!health.IsAlive) warning = 0f;
+            float opacity = screenEffectsEnabled && health.IsAlive ? Mathf.MoveTowards(guiltEdges.color.a, warning, (active ? Time.deltaTime : 0f) * 4f) : 0f;
             guiltEdges.color = new Color(1f, 1f, 1f, opacity);
             guiltEdges.enabled = opacity > 0f;
         }
