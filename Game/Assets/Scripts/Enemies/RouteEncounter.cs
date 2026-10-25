@@ -16,9 +16,12 @@ namespace Boki.Enemies
         [SerializeField] private GameObject[] templates;
         [SerializeField, Min(1)] private int initialCount = 15;
         [SerializeField] private float cadence = 4f;
+        [Tooltip("Seconds between opening-group spawns so the arena visibly floods. 0 places the whole group at once.")]
+        [SerializeField, Min(0f)] private float openingInterval = 0.25f;
         private readonly List<GameObject> spawned = new List<GameObject>();
         private int initialSpawned;
         private float timer;
+        private float openingTimer;
         private int nextPoint, nextTemplate;
 
         private void OnEnable()
@@ -33,18 +36,24 @@ namespace Boki.Enemies
             var session = RunSession.Instance;
             if (session == null || !session.IsGameplayActive || session.HasEnteredBossArena || session.State.Guilt.ScriptedSequenceActive || !space.State.Occupied) return;
             bool initial = initialSpawned < initialCount;
-            if (!initial)
+            if (initial)
+            {
+                openingTimer -= Time.deltaTime;
+                if (openingTimer > 0f) return;
+            }
+            else
             {
                 timer -= Time.deltaTime;
                 if (timer > 0f) return;
                 timer = EncounterCadence.Evaluate(cadence, session.State.Guilt.AccumulatedCombatSeconds);
             }
             spawned.RemoveAll(enemy => enemy == null);
-            int attempts = initial ? initialCount - initialSpawned : 1;
+            int attempts = initial && openingInterval <= 0f ? initialCount - initialSpawned : 1;
             for (int attempt = 0; attempt < attempts; attempt++)
                 if (TrySpawn(initial, session.State.Guilt.AccumulatedCombatSeconds) && initial)
                 {
                     initialSpawned++;
+                    openingTimer = openingInterval;
                     timer = EncounterCadence.Evaluate(cadence, session.State.Guilt.AccumulatedCombatSeconds);
                 }
         }
@@ -95,7 +104,7 @@ namespace Boki.Enemies
             foreach (var enemy in spawned) if (enemy != null) Destroy(enemy);
             spawned.Clear();
             initialSpawned = 0;
-            timer = 0f;
+            timer = openingTimer = 0f;
         }
     }
 }

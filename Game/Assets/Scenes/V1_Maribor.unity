@@ -16849,8 +16849,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   range: 10
-  damage: 10
-  fireInterval: 0.4
+  damage: 6
+  fireInterval: 0.24
   beamDuration: 0.08
 --- !u!114 &7868977143442150409
 MonoBehaviour:
