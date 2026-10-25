@@ -61,6 +61,7 @@ namespace Boki.Core
             SceneManager.sceneLoaded += SceneLoaded;
         }
 
+        public LightBattery Light => lightDriver;
         public bool BindLight(LightBattery driver)
         {
             if (lightDriver != null && lightDriver != driver)

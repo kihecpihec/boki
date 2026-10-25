@@ -16,6 +16,8 @@ This document specifies the decision system and gameplay loop. See [Story.md](St
 | `Esc` | Pause / back |
 | Automatic | Laser targets the nearest enemy in range; nearby XP orbs float toward Boki for collection; contact collects arena battery charges |
 
+The on-screen controls reminder appears only in Bellevue, under the objective. It disappears once Boki chooses a Pohorje route and does not return in Maribor or FERI. A new run brings it back.
+
 **Visual target:** low-poly PS1/VHS horror, with obstacles and attacks readable even on Low settings. **Successful run duration:** approximately 7–12 minutes, including the boss.
 
 **Status:** values and designs here are an initial specification, not evidence that these systems already exist in the Unity project.
@@ -175,6 +177,8 @@ Each fork has these states:
 - `PERSISTENT_LOCK`: padlock and “DISCOVER ON ANOTHER RUN”.
 - `ROUTE_LOCK`: dark roots / shadowed gate and “SEALED BY YOUR PREVIOUS PATH”.
 - `SELECTED`: chosen route; the other routes in this scene close immediately.
+
+Each gate's sign is a trailhead board standing beside the entrance, outside the riding line, showing the route letter, its §2 name and the message above. Its reflective lettering obeys the darkness: it lights up only within the headlight's current reach and fades in the scene fog, so low battery shortens how far away signs can be read.
 
 **Lock display priority:** first check the connection from the previous choice (`ROUTE_LOCK`), then the permanent unlock (`PERSISTENT_LOCK`), otherwise `AVAILABLE`. If both locks apply, display **`ROUTE_LOCK`** and give the player one clear explanation. `SELECTED` applies only after crossing the actual selection trigger.
 
