@@ -9,6 +9,7 @@ namespace Boki.Core
     public sealed class RunSession : MonoBehaviour
     {
         public const string MainMenuScene = "Assets/Scenes/MainMenu.unity";
+        public const string OpeningCrawlScene = "Assets/Scenes/OpeningCrawl.unity";
         public const string V1PohorjeScene = "Assets/Scenes/V1_Pohorje.unity";
         public const string V1MariborScene = "Assets/Scenes/V1_Maribor.unity";
         public const string V1FeriScene = "Assets/Scenes/V1_FERI.unity";
@@ -134,14 +135,28 @@ namespace Boki.Core
             return true;
         }
 
+        // From the main menu: the opening crawl introduces the run when it is in the build, and ends in BeginV1Run.
         public bool StartV1Run()
         {
             if (IsLoading) return false;
+            UseV1Routes();
+            return IsSceneAvailable(OpeningCrawlScene) ? Load(OpeningCrawlScene, true, RouteLevel.Forest) : Retry();
+        }
+
+        // Straight into Bellevue, as the opening crawl does when it ends or is skipped.
+        public bool BeginV1Run()
+        {
+            if (IsLoading) return false;
+            UseV1Routes();
+            return Retry();
+        }
+
+        private void UseV1Routes()
+        {
             forestDestination = V1PohorjeScene;
             cityDestination = V1MariborScene;
             feriDestination = V1FeriScene;
             persistentProgress = true;
-            return Retry();
         }
 
         public bool ReturnToMainMenu()
@@ -215,13 +230,18 @@ namespace Boki.Core
 
         private bool CanLoad(string path)
         {
-#if UNITY_EDITOR
-            bool available = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEditor.SceneAsset>(path) != null;
-#else
-            bool available = Application.CanStreamedLevelBeLoaded(path);
-#endif
+            bool available = IsSceneAvailable(path);
             if (!available) Debug.LogError("Missing run destination in the build scene list: " + path, this);
             return available;
+        }
+
+        private static bool IsSceneAvailable(string path)
+        {
+#if UNITY_EDITOR
+            return UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEditor.SceneAsset>(path) != null;
+#else
+            return Application.CanStreamedLevelBeLoaded(path);
+#endif
         }
 
         private static void LoadScene(string path)
