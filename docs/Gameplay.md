@@ -78,6 +78,14 @@ flowchart TD
 
 **Time budget:** prologue 20–30 s (skippable) + Pohorje 2–3 min + Maribor 3–4 min + FERI approach 1–2 min + professor 1–2 min = approximately **7 min 20 s – 11 min 30 s** with the prologue. The target is **7–12 min**; the boss is counted once.
 
+### 1.1 V1 Portal Speed Shortcut
+
+In `V1_Pohorje` and `V1_Maribor`, entering the shared exit portal at **14 m/s or faster horizontal speed** sends Boki directly into the professor's classroom in `V1_FERI`, skipping the remaining levels/approach. This is initial Inspector tuning (`LevelPortal.bossSkipSpeed`), above the ordinary 10.5 m/s boost. Vertical falling/jump speed does not count. Slower entry follows normal scene progression. There are no hints, speed indicators on the portal, warning effects, or shortcut messages.
+
+This is an explicit V1 exception to the three-level progression above and the route graph below. It still requires an actual route choice in the current level, a living player and active, unpaused gameplay; City C still requires its completed side-door escape. Preserve HP, battery capacity/charge, XP, upgrades, kills and run start time. Keep only route choices actually made: skipped levels remain `None`, and the FERI approach branches stay sealed and inactive. Land safely inside the classroom, seal its entrance, end Guilt pursuit and start the normal professor fight once, with neither the FERI B reinforcements nor the FERI C `POWER OFF` modifier.
+
+Only the exit actually reached earns its usual permanent C discovery. Skipped City/FERI discoveries are not awarded, including FERI C on shortcut arena entry. All earned discoveries still apply only on the next run. Victory and death use the normal ending/retry flow; New Run clears the shortcut state. Older graybox/test scenes retain their normal transitions.
+
 ## 2. Branching Route Graph
 
 ```mermaid
@@ -213,6 +221,7 @@ SavePersistentUnlocks();
 savedUnlocks.cityC = true;
 SavePersistentUnlocks();
 // On first entering the boss arena:
+// Except V1 shortcut entry (see §1.1), which has no FERI route choice.
 savedUnlocks.feriC = true;
 SavePersistentUnlocks();
 ```

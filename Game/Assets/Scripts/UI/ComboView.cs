@@ -29,7 +29,7 @@ namespace Boki.UI
             tracker = GetComponent<ComboTracker>();
             var root = new GameObject("Combo HUD", typeof(RectTransform), typeof(CanvasScaler));
             root.transform.SetParent(transform, false);
-            canvas = root.AddComponent<Canvas>();
+            canvas = root.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 25;
             var scaler = root.GetComponent<CanvasScaler>();

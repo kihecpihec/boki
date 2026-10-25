@@ -37,6 +37,8 @@ namespace Boki.Routes
             focused = Application.isFocused;
             followCamera = FindFirstObjectByType<ThirdPersonCamera>();
             player = FindFirstObjectByType<PlayerHealth>();
+            if (RunSession.Instance.State.BossShortcutTaken && !RunSession.Instance.HasEnteredBossArena)
+                ArriveFromPortal();
             if (bossMusic == null) return;
             bossMusic.playOnAwake = false;
             bossMusic.loop = true;
@@ -81,7 +83,29 @@ namespace Boki.Routes
         private void OnTriggerStay(Collider other) => Enter(other);
         private void Enter(Collider other)
         {
-            if (entered || !manager.IsPlayer(other) || !manager.IsReady || !RunSession.Instance.EnterBossArena()) return;
+            if (manager.IsPlayer(other)) TryEnter(other.transform);
+        }
+
+        private void ArriveFromPortal()
+        {
+            if (player == null || gameObject.scene.path != RunSession.V1FeriScene) return;
+            // Land beyond the existing entry trigger, on the classroom side of the seal.
+            Vector3 direction = Vector3.ProjectOnPlane(professor.transform.position - transform.position, Vector3.up).normalized;
+            Vector3 arrival = transform.position + direction * 2f;
+            if (!Physics.Raycast(arrival + Vector3.up * 4f, Vector3.down, out var ground, 20f, 1, QueryTriggerInteraction.Ignore))
+            { Debug.LogError("V1 boss shortcut arrival needs classroom ground.", this); return; }
+            var controller = player.GetComponent<CharacterController>();
+            bool wasEnabled = controller.enabled;
+            controller.enabled = false;
+            player.transform.SetPositionAndRotation(ground.point + Vector3.up * 0.05f, Quaternion.LookRotation(direction));
+            controller.enabled = wasEnabled;
+            Physics.SyncTransforms();
+            TryEnter(player.transform);
+        }
+
+        private void TryEnter(Transform rider)
+        {
+            if (entered || !manager.IsReady || !RunSession.Instance.EnterBossArena()) return;
             entered = true;
             foreach (var encounter in approachEncounters) encounter.SetActive(false);
             entranceSeal.SetActive(true);
@@ -91,7 +115,7 @@ namespace Boki.Routes
             flow.SetObjective("Defeat the professor. Dodge the papers and leave the warning circle.");
             if (followCamera != null)
             {
-                Vector3 direction = professor.transform.position - other.transform.position;
+                Vector3 direction = professor.transform.position - rider.position;
                 followCamera.SnapHeading(Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg);
             }
             if (recordedAudio != null) recordedAudio.PlayBossOpening();

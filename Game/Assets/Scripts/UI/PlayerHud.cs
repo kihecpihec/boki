@@ -30,6 +30,11 @@ namespace Boki.UI
         private float healthPulseAge;
         private int lastHealth = -1, lastMaximum = -1, lastCharge = -1, lastCapacity = -1, lastXp = -1, lastSelections = -1;
         private RouteLevel? lastLevel;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private Text developmentSpeedText;
+        private float nextSpeedRefresh;
+        private int lastSpeedHundredths = -1;
+#endif
         public bool ScreenEffectsEnabled { get => screenEffectsEnabled; set => screenEffectsEnabled = value; }
         public void BindGuilt(GuiltChaser chaser) => guilt = chaser;
 
@@ -45,6 +50,22 @@ namespace Boki.UI
             }
             lastHealth = lastMaximum = lastCharge = lastCapacity = lastXp = lastSelections = -1;
             lastLevel = null;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            developmentSpeedText = Instantiate(boostText, boostText.transform.parent);
+            developmentSpeedText.name = "Development Speed";
+            developmentSpeedText.raycastTarget = false;
+            developmentSpeedText.alignment = TextAnchor.UpperRight;
+            developmentSpeedText.fontSize = 24;
+            developmentSpeedText.text = "0.00 m/s";
+            var speedRect = developmentSpeedText.rectTransform;
+            speedRect.anchorMin = speedRect.anchorMax = speedRect.pivot = Vector2.one;
+            speedRect.anchoredPosition = new Vector2(-34f, -28f);
+            speedRect.sizeDelta = new Vector2(240f, 36f);
+            developmentSpeedText.enabled = true;
+            developmentSpeedText.gameObject.SetActive(true);
+            lastSpeedHundredths = -1;
+            nextSpeedRefresh = 0f;
+#endif
             edgeTexture = new Texture2D(64, 64, TextureFormat.RGBA32, false) { name = "HUD Warning Edges", wrapMode = TextureWrapMode.Clamp };
             for (int y = 0; y < 64; y++)
                 for (int x = 0; x < 64; x++)
@@ -60,6 +81,18 @@ namespace Boki.UI
 
         private void LateUpdate()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (Time.unscaledTime >= nextSpeedRefresh)
+            {
+                nextSpeedRefresh = Time.unscaledTime + 0.1f;
+                int speedHundredths = Mathf.FloorToInt(movement.HorizontalSpeed * 100f);
+                if (speedHundredths != lastSpeedHundredths)
+                {
+                    lastSpeedHundredths = speedHundredths;
+                    developmentSpeedText.text = (speedHundredths / 100f).ToString("F2", System.Globalization.CultureInfo.InvariantCulture) + " m/s";
+                }
+            }
+#endif
             if (health.Current != lastHealth || health.Maximum != lastMaximum)
             {
                 lastHealth = health.Current;
@@ -120,6 +153,10 @@ namespace Boki.UI
 
         private void OnDisable()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (developmentSpeedText != null) Destroy(developmentSpeedText.gameObject);
+            developmentSpeedText = null;
+#endif
             if (guiltEdges != null) { guiltEdges.texture = null; guiltEdges.enabled = false; }
             if (edgeTexture != null) Destroy(edgeTexture);
         }
