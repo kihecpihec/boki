@@ -1,0 +1,638 @@
+{
+  "status": "visual handoff only; no gameplay implementation",
+  "canonicalSources": {
+    "docs/Gameplay.md": "96fad3d0055f46024c1f18958e58d6a1a6640b453172e5b8ddb6ff5a2ee5974f",
+    "docs/Story.md": "5657d7e0708817aff50d73a6682e9250f4a3deba550d7e5352c00f951edb1dcb"
+  },
+  "spatialStatus": "All new pocket extents, marker coordinates and Lent B4 are authoring proposals requiring playtests.",
+  "coordinates": "Pocket-local meters: X right, Z toward exit; Y=0. Inset plans are 14 SVG pixels per meter.",
+  "rulesReference": "../../docs/Gameplay.md#5-loop-within-each-route",
+  "levels": [
+    {
+      "id": "forest",
+      "desiredRegularEnemies": 4,
+      "maxRegularEnemies": 8,
+      "spawnCadenceActiveSeconds": 4,
+      "routes": [
+        {
+          "id": "F_A",
+          "name": "Gozdna strmina",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Scripted Guilt behind Boki",
+          "extraChargeStatus": null
+        },
+        {
+          "id": "F_B",
+          "name": "Gondola service path",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Static gondola; no new system",
+          "extraChargeStatus": null
+        },
+        {
+          "id": "F_C",
+          "name": "Rave tunel",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Grate event; B1 guaranteed",
+          "extraChargeStatus": null
+        }
+      ]
+    },
+    {
+      "id": "city",
+      "desiredRegularEnemies": 6,
+      "maxRegularEnemies": 12,
+      "spawnCadenceActiveSeconds": 3,
+      "routes": [
+        {
+          "id": "C_A",
+          "name": "Tabor",
+          "pocketM": [
+            24,
+            20
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              20,
+              4
+            ],
+            [
+              12.0,
+              16
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              23,
+              1
+            ],
+            [
+              1,
+              10.0
+            ],
+            [
+              23,
+              10.0
+            ],
+            [
+              1,
+              19
+            ],
+            [
+              23,
+              19
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              12.0,
+              2
+            ],
+            [
+              15.0,
+              10.0
+            ],
+            [
+              12.0,
+              18
+            ]
+          ],
+          "authoredEvent": "Car-ramp escape; Guilt roof",
+          "extraChargeStatus": null
+        },
+        {
+          "id": "C_B",
+          "name": "Lent",
+          "pocketM": [
+            24,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              20,
+              4
+            ],
+            [
+              12.0,
+              14
+            ],
+            [
+              12.0,
+              9.0
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              23,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              23,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              23,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              12.0,
+              2
+            ],
+            [
+              15.0,
+              9.0
+            ],
+            [
+              12.0,
+              16
+            ]
+          ],
+          "authoredEvent": "B4: extra recovery proposal",
+          "extraChargeStatus": "Lent B4 is a proposed recorded route variation"
+        },
+        {
+          "id": "C_C",
+          "name": "Podzemni prehod",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Guilt turn-back → side door",
+          "extraChargeStatus": null
+        }
+      ]
+    },
+    {
+      "id": "feri",
+      "desiredRegularEnemies": 4,
+      "maxRegularEnemies": 8,
+      "spawnCadenceActiveSeconds": 4,
+      "routes": [
+        {
+          "id": "E_A",
+          "name": "Glavni vhod",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Standard professor fight",
+          "extraChargeStatus": null
+        },
+        {
+          "id": "E_B",
+          "name": "Dvorišče",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Boss: two melee at half HP",
+          "extraChargeStatus": null
+        },
+        {
+          "id": "E_C",
+          "name": "Servisni vhod",
+          "pocketM": [
+            20,
+            18
+          ],
+          "chargesXZ": [
+            [
+              4,
+              4
+            ],
+            [
+              16,
+              4
+            ],
+            [
+              10.0,
+              14
+            ]
+          ],
+          "spawnCandidatesXZ": [
+            [
+              1,
+              1
+            ],
+            [
+              19,
+              1
+            ],
+            [
+              1,
+              9.0
+            ],
+            [
+              19,
+              9.0
+            ],
+            [
+              1,
+              17
+            ],
+            [
+              19,
+              17
+            ]
+          ],
+          "guiltCandidatesXZ": [
+            [
+              10.0,
+              2
+            ],
+            [
+              13.0,
+              9.0
+            ],
+            [
+              10.0,
+              16
+            ]
+          ],
+          "authoredEvent": "Optional POWER OFF → 85% HP",
+          "extraChargeStatus": null
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "roomM": [
+      24,
+      20
+    ],
+    "clearFloorM": [
+      14,
+      12
+    ],
+    "chargePositionsXZ": [
+      [
+        4,
+        8
+      ],
+      [
+        20,
+        8
+      ]
+    ],
+    "startingHp": 4000,
+    "powerOffStartingHp": 3400
+  }
+}

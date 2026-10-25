@@ -1,0 +1,50 @@
+{
+  "source": "docs/Gameplay.md section 3",
+  "sourceSha256": "96fad3d0055f46024c1f18958e58d6a1a6640b453172e5b8ddb6ff5a2ee5974f",
+  "generatedSnapshot": true,
+  "note": "Canonical source remains Gameplay.md. C routes also require the corresponding run-start unlock snapshot. Regenerate if the source changes.",
+  "links": [
+    {
+      "from": "F_A",
+      "to": [
+        "C_A",
+        "C_B"
+      ]
+    },
+    {
+      "from": "F_B",
+      "to": [
+        "C_A",
+        "C_C"
+      ]
+    },
+    {
+      "from": "F_C",
+      "to": [
+        "C_B",
+        "C_C"
+      ]
+    },
+    {
+      "from": "C_A",
+      "to": [
+        "E_A",
+        "E_B"
+      ]
+    },
+    {
+      "from": "C_B",
+      "to": [
+        "E_B",
+        "E_C"
+      ]
+    },
+    {
+      "from": "C_C",
+      "to": [
+        "E_A",
+        "E_C"
+      ]
+    }
+  ]
+}

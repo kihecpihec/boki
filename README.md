@@ -1,21 +1,65 @@
-# Boki
+# Boki: Late to FERI
 
-Unity project: `Game/`. Open it with Unity **6000.6.7f1**, as pinned in `Game/ProjectSettings/ProjectVersion.txt`. The project uses the Universal Render Pipeline and Input System.
+Za GAMEJAM BEST × ŠS FERI 2026 sva kot ekipa **Bolani** ustvarila tretjeosebno akcijsko grozljivko z retro videzom PS1/VHS. V njej spremljava Bokija, ki po rejvu na Pohorju z električnim skirojem hiti skozi apokaliptični Maribor na predavanje na FERI. Z vožnjo, samodejnim laserjem, nadgradnjami in izbiro poti združujeva boj za preživetje z begom pred pošastjo Guilt.
 
-## Development setup
+**Ekipo sestavljava:** Ismar Mujezinović in Hanan Mešić; oba sva sodelovala pri programiranju, grafiki in zvoku.
 
-The target development machine runs Windows 11 Education with 16 GB RAM and a Ryzen 5600G. Check gameplay performance on the Ryzen 5600G. Validate Windows-specific behavior in the Windows Editor when developing on Linux.
+Temo Halloween sva vključila s senčnimi pošastmi, temo in srhljivim vzdušjem, temo »It’s not a bug, it’s a feature« pa z namernimi vizualnimi motnjami, nezanesljivo uro in popačenimi prostori.
 
-## Contributor guidance
+## Zagon na Windows
 
-Read [AGENTS.md](AGENTS.md) for branch policy, scene ownership, Unity asset handling, naming, and task-specific documentation references. All documentation prose is English; established Slovenian quotations, character prompts, and references retain their original wording.
+Celotno različico Windows x86-64 sva priložila v [Build/](Build/). Zaženeva jo z [Build/Boki.exe](Build/Boki.exe). Postopek izdelave sva opisala v [navodilih za različico Windows](Build/README.md), končni preizkus na drugem računalniku Windows pa morava še opraviti.
 
-## Design references
+Pripravljeno različico zaženeva tako:
 
-Read the relevant sections for your task rather than all documents upfront:
+1. Preneseva repozitorij oziroma celoten paket igre in ga razširiva na disk.
+2. Odpreva mapo `Build/` in zaženeva `Boki.exe`.
+3. V meniju izbereva **NEW RUN**.
 
-- [Gameplay](docs/Gameplay.md): mechanics, canonical route matrix, state, and acceptance checks.
-- [Story](docs/Story.md): narrative, character dialogue, atmosphere, and visual direction.
-- [Architecture](docs/Architecture.md): planned Unity modules, scene integration, platform checks, and milestones.
+Ob datoteki `Boki.exe` ohraniva pripadajočo mapo `Boki_Data/`, `UnityPlayer.dll`, `MonoBleedingEdge/` in vse druge datoteke izdelane igre. Samo `.exe` ne zadostuje. Če imava priložen `Launch-Boki.cmd`, lahko z njim zaženeva igro v oknu pri 1280 × 720 z Direct3D 11.
 
-These documents describe the intended design; they do not imply that the systems are already implemented.
+Za ciljni računalnik sva izbrala Windows 11, Ryzen 5600G z integrirano grafiko in 16 GB RAM. Ciljava na najmanj 30 FPS pri 1280 × 720 in nizkih nastavitvah; to morava še potrditi na ciljni strojni opremi.
+
+## Kontrole in cilj
+
+| Vnos | Dejanje |
+| --- | --- |
+| WASD | Vožnja skiroja |
+| Miška | Pogled oziroma kamera |
+| Preslednica | Skok |
+| Levi Shift | boost |
+| E | Interakcija |
+| Escape | Premor |
+| Enter | Preskok podprtih uvodnih prizorov oziroma potrditev nadgradnje |
+| Miška, A/D, puščice ali razpoložljive tipke 1–3 | Izbira nadgradnje |
+
+Za cilj sva postavila prihod do predavalnice in zmago nad profesorjem. Laser sva zasnovala za samodejno streljanje, z izkušnjami omogočava nadgradnje, s polnilci pa obnovo baterije za luč. Poti sva povezala tako, da zgodnje izbire omejujejo poznejše možnosti. Odkrite skrivne poti omogočiva šele v naslednjem poskusu, ob smrti pa jih ohraniva.
+
+## Dokumentacija, video in predstavitev
+
+Podrobnejši opis koncepta, razvoja, tehnične izvedbe in uporabe AI sva zbrala v [Bolani_Boki_Dokumentacija.md](Bolani_Boki_Dokumentacija.md).
+
+Za oddajo morava dodati še:
+
+- **`Bolani_Boki_Video.mp4`**: 30 sekund dejanskega igranja, pokončno 1080 × 1920 (9:16), posneto z OBS Studio skladno z navodili za oddajo.
+- **`Bolani_Boki_Predstavitev.pdf`** oziroma predstavitev v formatu `.ppt`: največ 4 minute za koncept, mehanike, razvoj in uporabo AI; nato imava 3 minute za demonstracijo v živo.
+- **`Bolani_Boki_Predstavitev_Video.zip`**: predstavitev in video skupaj.
+
+Videa in predstavitve v trenutnem repozitoriju še nimava priloženih.
+
+## Uporaba AI
+
+**Delež uporabe AI ocenjujeva na 80 %**, kar se nanaša na skupni prispevek pri izdelavi igre, predvsem pri generiranju grafike, kode in modelov. AI sva uporabila tudi pri vizualnih referencah in pripravi dokumentacije. Izvirne zvočne posnetke in evidenco njihove obdelave hraniva v [Source/sfx/](Source/sfx/README.md). Več podrobnosti navajava v [dokumentaciji](Bolani_Boki_Dokumentacija.md#6-uporaba-ai-in-zunanjih-virov).
+
+## Struktura in odpiranje projekta
+
+Repozitorij sva uredila tako:
+
+- [Build/](Build/): mesto za izdelano igro Windows in vse pripadajoče datoteke.
+- [Documentation/](Documentation/): načrti, pravila in zapisi preverjanj.
+- `Source/Game/`: projekt Unity.
+- `Source/music/`, `Source/sfx/`, `Source/output/` in `Source/tools/`: izvorni zvok, modeli, reference in orodja za pripravo vsebin.
+
+Za odpiranje projekta v Unity Hub izbereva **`Source/Game/`** in Unity **6000.6.7f1**, kot sva določila v `Source/Game/ProjectSettings/ProjectVersion.txt`. Po uvozu paketov in vsebin odpreva `Assets/Scenes/MainMenu.unity` ter pritisneva Play. Za izdelavo različice Windows potrebujeva še Windows Build Support (Mono); postopek opisujeva v [navodilih za izdelavo](Documentation/plans/v2-windows-arm64-build.md).
+
+Pri razvoju uporabljava C#, Universal Render Pipeline in Unity Input System. Podrobnosti hraniva v dokumentih [Pravila igranja](Documentation/Gameplay.md), [Zgodba](Documentation/Story.md) in [Arhitektura](Documentation/Architecture.md), pravila sodelovanja pa v [AGENTS.md](AGENTS.md).

@@ -1,0 +1,17 @@
+{
+  "name": "Boki.V1.Tests",
+  "references": [
+    "Boki.Upgrades.Rules",
+    "Boki.Run.Rules",
+    "Boki.Battery.Rules",
+    "Boki.Combat.Rules",
+    "Boki.Core.Rules",
+    "Boki.Enemies.Rules"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

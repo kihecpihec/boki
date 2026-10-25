@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>BOKI / Start screen mock</title>
+<style>
+/* To change the background: replace ref/background.png (any 16:9 image) or edit --bg below.
+   Remove class "mask-hud" from .screen once the new image has no baked-in HUD. */
+:root{--bg:url(ref/background.png)}
+*{box-sizing:border-box;margin:0}
+body{background:#000;font:22px/1.4 "Courier New",Consolas,monospace;color:#e8e4dc}
+.screen{position:relative;width:1600px;height:900px;overflow:hidden;background:#05060a}
+.bg{position:absolute;inset:0;background:var(--bg) center/cover no-repeat;image-rendering:pixelated;filter:brightness(1.15) contrast(1.1)}
+/* hide baked-in HUD of the source screenshot */
+/* readability only: keeps text legible on any background */
+.cover{position:absolute;inset:0;background:
+ linear-gradient(180deg,#05060a99 0,#05060a00 18%),
+ linear-gradient(0deg,#05060acc 0,#05060a00 38%),
+ linear-gradient(90deg,#05060a88 0,#05060a00 45%)}
+/* hides the HUD baked into the current placeholder screenshot */
+.mask-hud .cover{background:
+ linear-gradient(180deg,#05060aff 0,#05060aee 8%,#05060a00 20%),
+ linear-gradient(0deg,#05060aff 0,#05060aff 17%,#05060a00 36%),
+ linear-gradient(90deg,#05060aaa 0,#05060a00 40%)}
+.vig{position:absolute;inset:0;box-shadow:inset 0 0 220px 40px #7a0b10aa;pointer-events:none}
+.scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0000 0 2px,#0004 2px 3px);pointer-events:none}
+.noise{position:absolute;inset:0;opacity:.07;background:repeating-conic-gradient(#fff 0 25%,#000 0 50%) 0 0/4px 4px;mix-blend-mode:overlay}
+.tl,.tr{position:absolute;top:34px;font-size:26px;letter-spacing:.08em}
+.tl{left:46px}.tr{right:46px}
+.title{position:absolute;left:46px;top:150px;font:700 210px/1 "Courier New",monospace;letter-spacing:.06em;color:#e8e4dc;
+ text-shadow:-6px 0 #ff2a3a99,6px 0 #2affd566,0 0 50px #000}
+.title::after{content:"";position:absolute;left:0;right:0;top:92px;height:14px;background:#05060a;opacity:.55;transform:translateX(18px)}
+.sub{position:absolute;left:52px;top:372px;text-shadow:0 0 8px #000,0 0 18px #000;font-size:24px;color:#bdb8ae;letter-spacing:.06em}
+.sub i{font-style:normal;color:#c4202a}
+.menu{position:absolute;left:46px;bottom:52px;font-size:30px;line-height:1.7;letter-spacing:.08em}
+.menu div{color:#8c8880}
+.menu .sel{color:#e8e4dc}
+.menu .sel::before{content:"> ";color:#c4202a}
+.menu .sel::after{content:"_";animation:b 1s steps(1) infinite}
+@keyframes b{50%{opacity:0}}
+.menu div:not(.sel){padding-left:2ch}
+.hint{position:absolute;right:46px;bottom:52px;font-size:24px;letter-spacing:.08em;text-align:right;color:#bdb8ae}
+.hint small{display:block;font-size:17px;color:#7d7a74;margin-top:4px}
+.bar{position:absolute;left:46px;bottom:300px}
+</style></head><body>
+<div class="screen mask-hud">
+ <div class="bg"></div><div class="cover"></div><div class="vig"></div>
+ <div class="tl">BELLEVUE</div><div class="tr">07:58</div>
+ <div class="title">BOKI</div>
+ <div class="sub">YOU ARE LATE. <i>DON'T LOOK BACK.</i></div>
+ <div class="menu"><div class="sel">NEW RUN</div><div>UNLOCKS</div><div>SETTINGS</div><div>QUIT</div></div>
+ <div class="hint">ENTER: START<small>W/S SELECT &nbsp; ESC BACK</small></div>
+ <div class="noise"></div><div class="scan"></div>
+</div></body></html>

@@ -1,0 +1,5 @@
+{
+  "name": "Boki.Enemies.Rules",
+  "rootNamespace": "Boki.Enemies",
+  "noEngineReferences": true
+}
