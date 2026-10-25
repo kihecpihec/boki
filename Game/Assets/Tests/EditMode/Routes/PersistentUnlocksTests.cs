@@ -22,7 +22,7 @@ namespace Boki.Tests
             var run = new RunState(default, 0);
             run.TrySelect(RouteLevel.Forest, RouteChoice.A);
             Assert.That(progress.Earn(run, RouteLevel.Forest), Is.True);
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 14f, 14f), Is.True);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.True);
             Assert.That(progress.Earn(run, RouteLevel.City), Is.False);
             Assert.That(progress.Earn(run, RouteLevel.Feri), Is.False);
             Assert.That(run.AvailableUnlocks.ForestC, Is.False);

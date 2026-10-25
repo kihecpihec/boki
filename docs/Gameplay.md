@@ -80,7 +80,7 @@ flowchart TD
 
 ### 1.1 V1 Portal Speed Shortcut
 
-In `V1_Pohorje` and `V1_Maribor`, entering the shared exit portal at **14 m/s or faster horizontal speed** sends Boki directly into the professor's classroom in `V1_FERI`, skipping the remaining levels/approach. This is initial Inspector tuning (`LevelPortal.bossSkipSpeed`), above the ordinary 10.5 m/s boost. Vertical falling/jump speed does not count. Slower entry follows normal scene progression. There are no hints, speed indicators on the portal, warning effects, or shortcut messages.
+In `V1_Pohorje` and `V1_Maribor`, entering the shared exit portal at **18 m/s or faster horizontal speed** sends Boki directly into the professor's classroom in `V1_FERI`, skipping the remaining levels/approach. This is initial Inspector tuning (`LevelPortal.bossSkipSpeed`), above the ordinary 10.5 m/s boost. Vertical falling/jump speed does not count. Slower entry follows normal scene progression. There are no hints, speed indicators on the portal, warning effects, or shortcut messages.
 
 This is an explicit V1 exception to the three-level progression above and the route graph below. It still requires an actual route choice in the current level, a living player and active, unpaused gameplay; City C still requires its completed side-door escape. Preserve HP, battery capacity/charge, XP, upgrades, kills and run start time. Keep only route choices actually made: skipped levels remain `None`, and the FERI approach branches stay sealed and inactive. Land safely inside the classroom, seal its entrance, end Guilt pursuit and start the normal professor fight once, with neither the FERI B reinforcements nor the FERI C `POWER OFF` modifier.
 
