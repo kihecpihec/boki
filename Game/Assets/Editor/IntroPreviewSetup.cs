@@ -29,6 +29,7 @@ namespace Boki.Editor
         private const string BeepPath = "Assets/Audio/Sfx/intro_phone_beep.wav";
         private const string EyePopPath = "Assets/Audio/Sfx/intro_eye_pop.wav";
         private const string DashPath = "Assets/Audio/Sfx/intro_dash.wav";
+        private const string BokiLinePath = "Assets/Audio/Sfx/fak_nespet.mp3";
         private const string CutsceneName = "Intro Cutscene";
         private const string FramesVariable = "BOKI_INTRO_FRAMES";
         private static readonly Color Paper = new Color(0.91f, 0.89f, 0.86f);
@@ -289,6 +290,7 @@ namespace Boki.Editor
             so.FindProperty("phoneBeep").objectReferenceValue = Load<AudioClip>(BeepPath);
             so.FindProperty("eyePop").objectReferenceValue = Load<AudioClip>(EyePopPath);
             so.FindProperty("dashWhoosh").objectReferenceValue = Load<AudioClip>(DashPath);
+            so.FindProperty("bokiLine").objectReferenceValue = Load<AudioClip>(BokiLinePath);
             so.FindProperty("skipAction").objectReferenceValue = input.Single(r => r.name == "Skip");
             so.FindProperty("replayAction").objectReferenceValue = input.Single(r => r.name == "Replay");
             so.FindProperty("playOnStart").boolValue = false;

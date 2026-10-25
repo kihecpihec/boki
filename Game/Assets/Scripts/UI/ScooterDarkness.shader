@@ -27,7 +27,7 @@ Shader "Boki/ScooterDarkness"
             {
                 float2 delta = (i.uv - _Center.xy) * float2(_Aspect, 1);
                 float shade = smoothstep(_Radius * 0.45, _Radius, length(delta));
-                return half4(0.015, 0.02, 0.045, shade * _Opacity);
+                return half4(0, 0, 0, shade * _Opacity);
             }
             ENDHLSL
         }

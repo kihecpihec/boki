@@ -30,6 +30,7 @@ namespace Boki.Editor
         private const string InputPath = Folder + "/EndingInput.asset";
         private const string SfxFolder = "Assets/Audio/Sfx/";
         private const string EyePopPath = SfxFolder + "intro_eye_pop.wav";
+        private const string DialogueFolder = SfxFolder + "Recorded/Dialogue/";
         private const string AtlasPath = "Assets/Art/Player/Boki_Atlas.mat";
                 private const string CutsceneName = "Ending Cutscene";
         private const string StageName = "Ending Stage";
@@ -285,6 +286,12 @@ namespace Boki.Editor
             so.FindProperty("meow").objectReferenceValue = Load<AudioClip>(SfxFolder + "ending_meow.wav");
             so.FindProperty("lick").objectReferenceValue = Load<AudioClip>(SfxFolder + "ending_lick.wav");
             so.FindProperty("eyePop").objectReferenceValue = Load<AudioClip>(EyePopPath);
+            so.FindProperty("professorVoice").objectReferenceValue = Load<AudioClip>(DialogueFolder + "professor_saturday.wav");
+            SetObjects(so.FindProperty("bokiVoices"), new Object[]
+            {
+                Load<AudioClip>(DialogueFolder + "boki_reaction_01.wav"),
+                Load<AudioClip>(DialogueFolder + "boki_reaction_02.wav"),
+            });
             so.FindProperty("skipAction").objectReferenceValue = input.Single(r => r.name == "Skip");
             so.FindProperty("replayAction").objectReferenceValue = input.Single(r => r.name == "Replay");
             so.FindProperty("playOnStart").boolValue = false;

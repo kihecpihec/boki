@@ -38,6 +38,8 @@ namespace Boki.Editor
         private static Light fill;
         private static Camera previewCamera;
         private static RenderTexture previewTexture;
+        private static float chargedIntensity, chargedRange;
+        private static Color pausedWarningColor;
 
         static ScooterLightChecks()
         {
@@ -124,12 +126,16 @@ namespace Boki.Editor
                         first = charges[0];
                         lamp = battery.GetComponentInChildren<Light>();
                         foreach (Light light in battery.GetComponentsInChildren<Light>())
-                            if (light.type == LightType.Point) fill = light;
-                        Require(lamp.type == LightType.Spot && fill != null && fill.enabled,
+                            if (light.name == "Scooter Nearby Fill") fill = light;
+                        Require(lamp.type == LightType.Point && fill != null && fill.enabled,
                             "Charged scooter has a headlight and nearby fill.");
                         Require(battery.State.Current < 100f && lamp.enabled, "Active gameplay drains battery and keeps charged light on.");
                         RunSession.Instance.State.Guilt.GameplaySuspended = true;
                         battery.State.Current = 100f;
+                        Require(fill.type == LightType.Point && fill.color == Color.white && lamp.color == Color.white
+                            && lamp.range > 20f && lamp.renderingLayerMask == 1u
+                            && fill.renderingLayerMask == 2u,
+                            "The scooter casts white light all around; a separate layer keeps rider lighting subtle.");
                         Teleport(first.transform.position - Vector3.up * 0.6f);
                         Next();
                         break;
@@ -166,8 +172,9 @@ namespace Boki.Editor
                         Next();
                         break;
                     case 5:
-                        Require(!lamp.enabled && !fill.enabled && battery.EnemySpeedMultiplier == 1.3f,
-                            "Empty battery extinguishes both lights and enemy movement multiplier is 1.3.");
+                        Require(!lamp.enabled && fill.enabled && fill.intensity > 0f && fill.intensity <= 0.15f
+                            && fill.range <= 2.5f && fill.color == Color.white && battery.EnemySpeedMultiplier == 1.3f,
+                            "Empty battery leaves only a faint white rider fill; enemy movement multiplier remains 1.3.");
                         var absentSpace = first.GetComponentInParent<BatteryCombatSpace>();
                         Require(absentSpace.State.Remaining(new SerializedObject(first).FindProperty("slot").intValue) == pausedTimer,
                             "Recharge cannot advance while outside the space.");
@@ -234,18 +241,93 @@ namespace Boki.Editor
                     Next();
                     break;
                 case 1:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 1.0) return;
+                    foreach (Light light in battery.GetComponentsInChildren<Light>())
+                        Debug.Log($"SCOOTER_PREVIEW {light.name} position={light.transform.position} forward={light.transform.forward} intensity={light.intensity} range={light.range} player={battery.transform.position}");
+                    lamp = new SerializedObject(battery).FindProperty("surroundingLight").objectReferenceValue as Light;
+                    Require(lamp != null && lamp.type == LightType.Point && lamp.range > 27f,
+                        "The model scene casts light all around from the scooter.");
+                    foreach (SkinnedMeshRenderer renderer in battery.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                        Require(renderer.renderingLayerMask == 2u && (renderer.renderingLayerMask & lamp.renderingLayerMask) == 0u,
+                            "The bright surrounding lamp cannot illuminate Boki's renderers.");
+                    chargedIntensity = lamp.intensity;
+                    chargedRange = lamp.range;
+                    previewCamera.Render();
                     CaptureFrame("boki-light-charged.png");
+                    battery.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
                     Next();
                     break;
                 case 2:
-                    battery.State.Current = 0f;
+                    Light riderFill = null;
+                    foreach (Light light in battery.GetComponentsInChildren<Light>())
+                        if (light.name == "Scooter Nearby Fill") riderFill = light;
+                    Vector3 towardCamera = Vector3.ProjectOnPlane(previewCamera.transform.position - battery.transform.position, Vector3.up).normalized;
+                    Vector3 towardFill = riderFill != null
+                        ? Vector3.ProjectOnPlane(riderFill.transform.position - battery.transform.position, Vector3.up).normalized
+                        : Vector3.zero;
+                    Require(riderFill != null && Vector3.Dot(towardCamera, towardFill) > 0.99f
+                        && riderFill.intensity < 1f && riderFill.renderingLayerMask == 2u,
+                        "Turning toward the camera keeps the visible front gently lit on the rider-only layer.");
+                    CaptureFrame("boki-light-front.png");
+                    battery.State.Current = 50f;
                     Next();
                     break;
                 case 3:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 0.8) return;
+                    Require(lamp.intensity < chargedIntensity * 0.75f && lamp.range < chargedRange * 0.75f,
+                        "Half battery dims and contracts the surrounding light.");
+                    CaptureFrame("boki-light-half.png");
+                    Next();
+                    break;
+                case 4:
+                    battery.State.Current = 0f;
+                    Next();
+                    break;
+                case 5:
+                    Require(!lamp.enabled && battery.Visibility == 0f, "Empty battery extinguishes surrounding light.");
                     CaptureFrame("boki-light-empty.png");
                     Next();
                     break;
-                case 4: Finish(null); break;
+                case 6:
+                    var rider = battery.GetComponentInChildren<SkinnedMeshRenderer>();
+                    Require(rider != null, "The preview has Boki's rigged model.");
+                    battery.enabled = false;
+                    Require(rider.renderingLayerMask == 1u, "Disabling the light restores Boki's authored rendering layer.");
+                    battery.enabled = true;
+                    Require(rider.renderingLayerMask == 2u, "Re-enabling the light isolates Boki from the bright spill again.");
+                    battery.State.Current = 100f;
+                    var previewEffects = battery.GetComponent<BokiModelTestEffects>();
+                    if (previewEffects != null) previewEffects.enabled = false;
+                    battery.WarningStrength = 1f;
+                    Next();
+                    break;
+                case 7:
+                    Require(lamp.color.r > 0.9f && lamp.color.g < 0.1f,
+                        "Guilt warning flashes the surrounding scooter light red.");
+                    foreach (Light light in battery.GetComponentsInChildren<Light>())
+                        if (light.name == "Scooter Nearby Fill")
+                            Require(light.color == Color.white && light.intensity < 1f,
+                                "Guilt warning preserves Boki's gentle white visibility fill.");
+                    CaptureFrame("boki-light-guilt.png");
+                    pausedWarningColor = lamp.color;
+                    Next();
+                    break;
+                case 8:
+                    Require(lamp.color == pausedWarningColor, "Pause freezes the warning pulse.");
+                    RunSession.Instance.State.Guilt.GameplaySuspended = false;
+                    Next();
+                    break;
+                case 9:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 0.65) return;
+                    Require(lamp.color.g > pausedWarningColor.g + 0.2f,
+                        "Active Guilt warning pulses back toward white instead of staying solid red.");
+                    battery.WarningStrength = 0f;
+                    Next();
+                    break;
+                case 10:
+                    Require(lamp.color == Color.white, "Clearing Guilt warning immediately restores white scooter light.");
+                    Finish(null);
+                    break;
             }
         }
 

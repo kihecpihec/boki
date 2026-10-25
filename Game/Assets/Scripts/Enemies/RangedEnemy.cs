@@ -23,6 +23,8 @@ namespace Boki.Enemies
         [SerializeField, Min(0f)] private float hoverAmplitude = 0.15f;
         [SerializeField, Min(0f)] private float hoverFrequency = 1.2f;
         [SerializeField] private LayerMask obstructionMask = 1;
+        private float damageMultiplier = 1f;
+        public void SetDamageMultiplier(float multiplier) => damageMultiplier = Mathf.Max(1f, multiplier);
         private EnemyHealth health;
         private CharacterController targetController;
         private LightBattery targetLight;
@@ -67,7 +69,7 @@ namespace Boki.Enemies
             bool visible = !Physics.Linecast(origin, center, obstructionMask, QueryTriggerInteraction.Ignore);
             if (!shooter.Tick(dt, Vector3.Distance(origin, center), visible)) return;
             EnemyProjectile shot = Instantiate(projectilePrefab, origin, Quaternion.identity);
-            shot.Launch(target, center - origin, projectileDamage);
+            shot.Launch(target, center - origin, Mathf.RoundToInt(projectileDamage * damageMultiplier));
             Fired?.Invoke();
         }
 

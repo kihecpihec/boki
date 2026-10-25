@@ -43,6 +43,7 @@ namespace Boki.Intro
         [SerializeField] private AudioClip phoneBeep;
         [SerializeField] private AudioClip eyePop;
         [SerializeField] private AudioClip dashWhoosh;
+        [SerializeField] private AudioClip bokiLine;
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart = true;
@@ -68,7 +69,7 @@ namespace Boki.Intro
             if (shotCamera == null || stage == null || overlay == null || wakeActors == null || boki == null
                 || !boki.IsWired || fallenScooter == null || bottle == null || rider == null
                 || riderRoot == null || followPivot == null || headlight == null || controls == null
-                || audioSource == null || phoneBeep == null || eyePop == null || dashWhoosh == null
+                || audioSource == null || phoneBeep == null || eyePop == null || dashWhoosh == null || bokiLine == null
                 || skipAction == null || skipAction.action == null
                 || System.Array.IndexOf(controls, null) >= 0)
             {
@@ -82,6 +83,7 @@ namespace Boki.Intro
 
         private void OnDisable()
         {
+            if (audioSource != null) audioSource.Stop();
             if (timeline != null) Unsubscribe(timeline);
             ReleasePause();
             RestoreCanvases();
@@ -171,6 +173,7 @@ namespace Boki.Intro
         private void OnShotStarted(int shot)
         {
             if (shot == IntroActing.Message) audioSource.PlayOneShot(phoneBeep);
+            if (shot == IntroActing.Line) audioSource.PlayOneShot(bokiLine);
             if (shot == IntroActing.Mount) headlight.enabled = true;
         }
 

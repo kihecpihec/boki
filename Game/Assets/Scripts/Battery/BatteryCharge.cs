@@ -36,7 +36,10 @@ namespace Boki.Battery
         {
             if (!isActiveAndEnabled || !space.isActiveAndEnabled || other.GetComponentInParent<PlayerHealth>() != player) return;
             if (space.State.TryCollect(slot, space.Battery.State, space.Battery.IsGameplayActive))
+            {
+                player.GetComponent<PlayerAudio>()?.PlayBatteryCollection();
                 Collected?.Invoke();
+            }
         }
     }
 }

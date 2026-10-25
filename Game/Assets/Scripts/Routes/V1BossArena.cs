@@ -18,7 +18,8 @@ namespace Boki.Routes
         [SerializeField] private GameObject[] approachEncounters;
         [SerializeField] private GameObject[] reinforcementTemplates;
         [SerializeField] private Text bossStatus;
-        [Tooltip("Optional. Plays the Story §3 victory ending before the results panel.")]
+        [SerializeField] private RecordedGameAudio recordedAudio;
+        [Tooltip("Optional. Plays the Story §3 victory ending, voices included, before the results panel.")]
         [SerializeField] private EndingCutscene ending;
         private bool entered, reinforced;
         private void OnEnable()
@@ -46,11 +47,13 @@ namespace Boki.Routes
             if (RunSession.Instance.State.PowerOff) bossHealth.TakeDamage(Mathf.RoundToInt(bossHealth.Maximum * 0.15f));
             professor.BeginFight();
             flow.SetObjective("Defeat the professor. Dodge the papers and leave the warning circle.");
+            if (recordedAudio != null) recordedAudio.PlayBossOpening();
             Damaged();
         }
         private void Damaged()
         {
-            bossStatus.text = $"THE PROFESSOR  {bossHealth.Current}/{bossHealth.Maximum}";
+            // ProfessorHealthBar owns the boss display; retain the scene reference for older scenes.
+            bossStatus.text = "";
             if (!entered || reinforced || bossHealth.Current > bossHealth.Maximum / 2
                 || RunSession.Instance.State.Choice(RouteLevel.Feri) != RouteChoice.B) return;
             reinforced = true;
@@ -63,8 +66,15 @@ namespace Boki.Routes
         private void Won()
         {
             bossStatus.text = "";
-            if (ending != null) ending.Play(flow.Victory);
-            else flow.Victory();
+            // The ending speaks its own lines; without one the recorded victory lines play over the results panel.
+            // A fallen player already has the ABSENT panel, which Victory leaves alone, so no ending plays over it.
+            if (ending != null && !flow.IsTerminal)
+            {
+                ending.Play(flow.Victory);
+                return;
+            }
+            flow.Victory();
+            if (recordedAudio != null) recordedAudio.PlayBossVictory();
         }
     }
 }

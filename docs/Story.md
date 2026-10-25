@@ -104,7 +104,7 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 ### FINAL BOSS — “THE DEADLINE” (1–2 Minutes)
 
-**Shot:** Boki races into the classroom. The professor stands behind the lectern. The board reads `PRISOTNOST: 0/1`.
+**Shot:** Boki races into the classroom. The professor stands at the back of the classroom, facing the entrance. The board reads `PRISOTNOST: 0/1`.
 
 **Professor (calmly):** »Boki. Koliko je ura?«
 
@@ -114,10 +114,16 @@ Boki checks his watch. The digits change: **07:59 → 08:00 → 88:88 → 08:00*
 
 The professor's shadow stretches. An enormous Guilt figure rises behind him from the back wall, then merges with his shadow. Red light fills the classroom. The screen displays `FINAL BOSS: THE DEADLINE`.
 
-**Boss rules:** one arena; the professor moves very little or stands behind the lectern. Alternate two attacks:
+**Boss rules:** one arena; the professor patrols inside the classroom perimeter, faces Boki during combat, and stops for pause or the end of combat. The lectern is removed to leave his approach clear. Cycle two attack types through four combos: three aimed papers, a double slam, two radial paper volleys, then a triple slam; repeat from the aimed barrage.
 
-1. **Exam Barrage:** fires 3 slow paper sheets, using the Watcher projectile system with another model.
-2. **Deadline Slam:** a red warning circle appears on the ground for 0.8 s, then the area deals damage. The player can boost out.
+1. **Exam Barrage:** fires 3 slow aimed paper sheets, using the Watcher projectile system with another model. Aim each sheet toward Boki’s movement with 0.35 s of lead, capped at 3 m; projectiles never home. Its radial combo fires two horizontal 360° volleys of 12 papers at the sheet interval, with the second volley rotated 15° to shift the dodge gaps.
+2. **Deadline Slam:** a red warning circle appears on the ground for 0.8 s, then the area deals damage. Place it 0.25 s ahead of Boki’s horizontal movement, capped at 2 m, and freeze its position for the entire warning. The player can change direction, jump or boost out. Double and triple slam combos leave 0.35 s recovery after each impact before placing a fresh warning at the player’s new predicted position; every warning lasts the full 0.8 s. Paper casts play a short flutter/whoosh and each slam impact plays a low thump with a sharp crack.
+
+**Harder professor tuning:** retain 4000 HP so damage upgrades shorten exposure rather than inflating the fight. Divide the authored 2.5 s attack gap and 0.6 s sheet interval by a 1.6 combat-tempo multiplier (about 1.56 s and 0.375 s). Keep the 1.5 s opening delay. Apply a 1.5 damage multiplier to authored sheet/slam damage (12 → 18 and 25 → 38); the half-health attack-speed multiplier remains 1.25, and the slam warning always lasts 0.8 s. These are playtest starting values: a zero-upgrade victory should demand consistent dodging, while roughly three selections should noticeably reduce exposure. Difficulty never scales to the number of upgrades or repeat runs.
+
+**Body contact:** during an active fight, touching the professor deals 20 damage immediately, then at most once per active second, and replaces horizontal scooter momentum with a 10 m/s push away from him. The push cancels an active boost, retains its cooldown and vertical motion, and uses normal scooter collision and deceleration; it never teleports Boki. Pause, pre-fight, death and victory cannot deal contact damage. Solid world geometry blocks contact hits.
+
+**Boss HUD:** show a top-centred dark VHS panel with cream lettering, a segmented red health bar, numeric current/maximum HP, and an orange recent-damage trail. Show only the title `THE PROFESSOR` and current/maximum health; omit the clock, phase, subtitle and recording text. Display only during a live fight and hide on player/boss death or boss disable.
 
 At approximately 50% HP, a short audio glitch plays and attacks become slightly faster. FERI B and C apply the modifiers described above. Guilt is only a visual silhouette here, **not** an independent second AI monster.
 
@@ -145,12 +151,12 @@ Cut to black. `YOU SURVIVED. YOU WERE NEVER LATE.` Then show chosen routes, time
 **Suggested initial playtest values, subject to balancing:**
 
 - Boki: 100 HP; speed 7 m/s; boost 11 m/s for 0.6 s with a 3 s cooldown; CharacterController jump.
-- Auto-laser: nearest target within 12 m; fires every 0.5 s; base damage 10.
+- Auto-laser: nearest visible target within 10 m; fires every 0.4 s; base damage 10.
 - Light battery: 100; drain 1.5/s; regular kills never restore charge; arena battery pickups restore +25, with placement and recharge rules in [Gameplay §5](Gameplay.md#battery-charges-and-action-feedback). At 0 battery, enemies gain +30% speed, with no extra damage boost.
 - Melee: approximately 20–30 HP; ranged: 15–25 HP. Increase stats slightly by level, e.g. HP ×1.0 / ×1.25 / ×1.4, without new AI types.
 - Guilt: invulnerable; audio warning and light flicker when nearby. Boki gains **+25% speed for 2 s**, with a 5 s cooldown. Guilt periodically disappears and later reappears at a newly selected point. Lingering increases its appearance frequency, chase speed, and damage under [Gameplay.md §5](Gameplay.md#5-loop-within-each-route); approved initial scaling values and caps are specified there. No instant-death mechanic.
 - Professor: **4000 HP** in M6, with two attack types. This targets approximately 80 seconds of continuous fire with the approved [M2 combat baseline](Gameplay.md#m2-combat-baseline), before route modifiers. Verify the 60–100 s fight target through interactive playtesting.
-- Active regular enemy cap: Pohorje 8; Maribor 12; FERI 8 plus boss. Spawn from a few predefined points only.
+- Regular arenas open with 15 enemies and replenish without a population cap; spawn cadence and health/damage scaling are defined in [Gameplay §5](Gameplay.md#enemy-replenishment-and-exits). Use predefined spawn points.
 
 ### Difficulty Curve
 
@@ -162,7 +168,7 @@ Within a run, staying longer in a combat space escalates Guilt pressure. Difficu
 
 ## 5. Upgrades and Replay Motivation
 
-Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **3 → 7 → 12 → 18 → 25 → 33**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
+Regular enemies drop one contact-collected XP pack each until maximum level. Use cumulative thresholds **8 → 18 → 30 → 45 → 65 → 90**: six upgrade selections maximum per run. XP and selections carry across scenes and reset on death/New Run. At six selections stop generating XP drops, disable collection of leftover XP, and show `MAX LEVEL`; kills still count but never recharge battery. Initial pacing target: roughly three selections in normal runs, five or six only through risky extended stays. Tune XP and Guilt pressure together after playtesting.
 
 Crossing a threshold pauses gameplay and offers three distinct random eligible options, or two when only two eligible rewards remain. Select exactly one before resuming; if multiple thresholds are crossed, resolve choices sequentially without unpausing combat. Bonuses add percentages of the original base stat rather than multiplying previous upgrades.
 
@@ -186,6 +192,7 @@ Turbo Skiro and the existing Guilt movement advantage add: one Turbo selection p
 ## 6. Visual and Audio Direction
 
 - Low-poly PS1/VHS: low-resolution textures, short view distance, strong fog. Use a consistent limited palette: cold blue/black forest, orange-red city, unsettling green-red FERI.
+- V1 lighting: surroundings should be nearly black, with black distance fog and no broad daylight fill. Keep the location palette in surfaces and small landmark accents. The battery-powered scooter lamp uses white light around the rider to reveal riding space and enemies, pulsing red during Guilt warnings. A restrained camera-facing white fill keeps Boki readable as he turns; empty battery switches off the surrounding light while retaining a faint rider fill. Preserve visible recovery-pickup and attack-warning cues in darkness. `Player_Model_Test` demonstrates the same lighting.
 - Scenes must stay **readable while moving**: clear contrasting enemy silhouettes, red warnings, yellow/green pickups. Keep the VHS shader subtle and switchable.
 - Show Guilt mostly as a distant silhouette in fog or on roofs. Constantly rendering a large mesh is unnecessary and less frightening.
 - Audio: distant techno bass in the prologue, heartbeat near Guilt, digital transition glitches, laser sounds, scooter-wheel impacts, school bell, and an unusually quiet space before the boss.
@@ -205,7 +212,7 @@ Differentiate branches through **obstacle layout, encounter types, and lighting/
 
 Hardware and Editor setup live in [README.md](../README.md#development-setup); performance settings and measurement requirements live in [Gameplay.md §8](Gameplay.md#8-performance-target-and-unity-settings) and [Architecture.md §7](Architecture.md#7-project-settings-and-performance).
 
-Keep the visual direction within that budget: simple lighting, small textures, short ParticleSystem effects, simple colliders, three gameplay scenes plus a menu, and no realistic scooter simulation or hundreds of active enemies. Add object pooling only if spawning causes measurable stutter. A Very Low preset can disable AA, reduce additional lights and view distance, and turn off grain. Test an actual Windows build on the integrated Radeon early; FPS in a stronger machine's Editor is not a valid target-hardware test.
+Keep the visual direction within that budget: simple lighting, small textures, short ParticleSystem effects, simple colliders, three gameplay scenes plus a menu, and no realistic scooter simulation. Regular arena populations are uncapped per Gameplay §5; validate large surviving hordes on target hardware. Add object pooling only if spawning causes measurable stutter. A Very Low preset can disable AA, reduce additional lights and view distance, and turn off grain. Test an actual Windows build on the integrated Radeon early; FPS in a stronger machine's Editor is not a valid target-hardware test.
 
 ## 9. Minimum Scope for 48 Hours
 

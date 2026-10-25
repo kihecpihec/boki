@@ -20,7 +20,7 @@ namespace Boki.Ending
         public const int Both = 8;
         public const int EndCard = 9;
 
-        public static readonly float[] ShotSeconds = { 2.6f, 2f, 2.8f, 2.2f, 2f, 2.4f, 1.8f, 2.2f, 3.6f, 2.4f };
+        public static readonly float[] ShotSeconds = { 2.6f, 2f, 2.8f, 2.6f, 2f, 2.4f, 1.8f, 2.2f, 3.6f, 2.4f };
 
         // Seconds into their shot. The sounds and the poses share these.
         public const float ShrinkAt = 0.9f;
@@ -29,6 +29,10 @@ namespace Boki.Ending
         public const float MeowAt = 0.45f;
         public const float BokiPopAt = 0.75f;
         public const float LickCueAt = 0.02f;
+        // The recorded lines (professor_saturday.wav, boki_reaction_0*.wav) start here in their shots. The professor's
+        // speech sits at 0.1-0.6 s and 0.9-1.9 s of his clip, Boki's at 0.1-2 s of his.
+        public const float ProfessorVoiceAt = 0.25f;
+        public const float BokiVoiceAt = 0.3f;
 
         // Seconds per lick stroke. Matches LICK_PERIOD in music/generate_ending_sfx.py.
         public const float LickSeconds = 0.5f;
@@ -199,11 +203,11 @@ namespace Boki.Ending
         // »Boki ... danes je sobota.« Jaw bobbing per syllable, a pause for the ellipsis, a nod on the last word.
         private static void SampleSaturday(ref Beat beat, float t, float e)
         {
-            float speaking = Window(t, 0.3f, 0.85f) + Window(t, 1.2f, 2.35f);
+            float speaking = Window(t, ProfessorVoiceAt + 0.1f, ProfessorVoiceAt + 0.6f) + Window(t, ProfessorVoiceAt + 0.9f, ProfessorVoiceAt + 1.9f);
             ref EndingProfessor.Pose pose = ref beat.Professor;
             pose.Mouth = speaking * (0.3f + 0.5f * Mathf.Abs(Mathf.Sin(t * 14f)));
             pose.Head = new Vector3(4f + 4f * speaking * Mathf.Sin(t * 7f), 0f, 0f);
-            float gesture = Window(t, 1.6f, 2.6f);
+            float gesture = Window(t, 1.55f, 2.4f);
             pose.UpperArmR = Vector3.Lerp(LecternUpperR, new Vector3(-62f, 0f, -18f), gesture);
             pose.LowerArmR = Vector3.Lerp(LecternLower, new Vector3(-60f, 0f, 0f), gesture);
 
@@ -220,12 +224,12 @@ namespace Boki.Ending
             boki.Lids = Mathf.Lerp(0.5f, 0.78f, Smooth(0f, 0.3f, t));
             boki.Brows = Mathf.Lerp(-0.2f, 0.35f, Smooth(0.5f, 1f, t));
             boki.BrowTilt = 12f * Smooth(0.6f, 1.1f, t);
-            boki.Mouth = 0.08f + 0.55f * Window(t, 0.75f, 1.55f) * (0.6f + 0.4f * Mathf.Sin(t * 11f));
+            boki.Mouth = 0.08f + 0.55f * Window(t, BokiVoiceAt + 0.1f, BokiVoiceAt + 1.8f) * (0.6f + 0.4f * Mathf.Sin(t * 11f));
             boki.Head = new Vector3(0f, 0f, 14f * Smooth(0.7f, 1.3f, t));
             boki.Gaze = new Vector2(0.4f, 0.1f);
             boki.SweatTime = t - 1.3f;
 
-            beat.Subtitle = t >= 0.7f ? BokiLine : NoLine;
+            beat.Subtitle = t >= BokiVoiceAt ? BokiLine : NoLine;
             Vector3 face = BokiSpot + Vector3.up * FaceHeight;
             Vector3 forward = new Vector3(Mathf.Sin(beat.BokiYaw * Mathf.Deg2Rad), 0f, Mathf.Cos(beat.BokiYaw * Mathf.Deg2Rad));
             Vector3 right = Vector3.Cross(Vector3.up, forward);

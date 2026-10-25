@@ -65,6 +65,34 @@ namespace Boki.Editor
             }
         }
 
+        [MenuItem("Boki/Version 1/Upgrade Enemy Effects")]
+        public static void UpgradeEnemyEffects()
+        {
+            RequireCleanEditor();
+            var previous = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string path in Scenes)
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+                        throw new InvalidOperationException("Missing V1 scene: " + path);
+                foreach (string path in Scenes)
+                {
+                    Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    EnemyPrefabBuilder.UpgradeAttacks(scene);
+                    V1SceneChecks.ValidateEnemyEffects(scene);
+                    EditorSceneManager.SaveScene(scene);
+                    Debug.Log("V1_ENEMY_EFFECTS_SAVED " + path);
+                }
+            }
+            finally
+            {
+                bool restore = previous.Length > 0;
+                foreach (var item in previous) restore &= !string.IsNullOrEmpty(item.path);
+                if (restore) EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
         [MenuItem("Boki/Version 1/Open Pohorje")]
         public static void Open()
         {
@@ -124,6 +152,7 @@ namespace Boki.Editor
             var laser = player.GetComponent<AutoLaser>();
             if (battery == null || laser == null) throw new InvalidOperationException("Player_Model_Test must have its current light and laser setup.");
             Ref(battery, "player", health);
+            ScooterLightSetup.ConfigureWideWhiteLight(scene);
             var hud = Find<PlayerHud>(scene);
             if (hud == null) throw new InvalidOperationException("Player_Model_Test must have Ismar's HUD.");
             Ref(hud, "health", health); Ref(hud, "movement", player); Ref(hud, "battery", battery);
@@ -158,7 +187,7 @@ namespace Boki.Editor
                 if (level == RouteLevel.City) CreateCityEscape(runtime.transform, markers, manager, ui.Flow);
             }
             else CreateBoss(runtime.transform, markers, manager, health, battery, guilt, ui, branches.ToArray(), charges);
-            if (level == RouteLevel.Feri) EnemyPrefabBuilder.UpgradeAttacks(scene);
+            EnemyPrefabBuilder.UpgradeAttacks(scene);
             foreach (var root in scene.GetRootGameObjects()) if (root.name == "Enemy Attack Templates") root.transform.SetParent(runtime.transform, true);
             ArrayRef(feedback, "charges", charges.ToArray());
             EnsureEventSystem(scene);
@@ -179,11 +208,6 @@ namespace Boki.Editor
                 foreach (var m in manifest.markers)
                     markers.Add(new Marker { Name = m.name, Kind = m.kind, Owner = m.owner, Position = MapProductionTools.Vector(m.position),
                         Size = MapProductionTools.Vector(m.size), Forward = MapProductionTools.Vector(m.forward) });
-                RenderSettings.fogColor = level == RouteLevel.Forest ? new Color(0.14f, 0.20f, 0.24f) : new Color(0.18f, 0.12f, 0.11f);
-                RenderSettings.fogMode = FogMode.Linear; RenderSettings.fogStartDistance = 35; RenderSettings.fogEndDistance = 180;
-                RenderSettings.ambientMode = AmbientMode.Flat;
-                RenderSettings.ambientLight = level == RouteLevel.Forest ? new Color(0.52f, 0.59f, 0.63f) : new Color(0.58f, 0.49f, 0.46f);
-                var probe = new SphericalHarmonicsL2(); probe.AddAmbientLight(RenderSettings.ambientLight); RenderSettings.ambientProbe = probe;
                 foreach (var m in markers)
                 {
                     if (m.Kind != "light_violet" && m.Kind != "light_warm") continue;
@@ -212,12 +236,8 @@ namespace Boki.Editor
                     markers.Add(new Marker { Name = m.name, Kind = kind, Owner = owner, Position = FeriMapTestBuilder.Unity(m.position),
                         Size = m.size == null ? Vector3.zero : FeriMapTestBuilder.Unity(m.size) });
                 }
-                RenderSettings.fogMode = FogMode.ExponentialSquared; RenderSettings.fogDensity = 0.015f;
-                RenderSettings.fogColor = new Color(0.03f, 0.07f, 0.05f);
-                RenderSettings.ambientMode = AmbientMode.Trilight; RenderSettings.ambientSkyColor = new Color(0.30f, 0.42f, 0.36f);
-                RenderSettings.ambientEquatorColor = new Color(0.18f, 0.26f, 0.22f); RenderSettings.ambientGroundColor = new Color(0.05f, 0.08f, 0.06f);
             }
-            RenderSettings.skybox = null; RenderSettings.fog = true;
+            ScooterLightSetup.ConfigureLighting(destination);
             return map;
         }
 
@@ -330,7 +350,7 @@ namespace Boki.Editor
             }
             var encounter = parent.gameObject.AddComponent<RouteEncounter>(); Ref(encounter, "space", space); Ref(encounter, "player", player); Ref(encounter, "viewCamera", camera);
             ArrayRef(encounter, "templates", templates.ToArray()); ArrayRef(encounter, "spawnPoints", points.ToArray());
-            Int(encounter, "desiredCount", level == RouteLevel.City ? 6 : 4); Int(encounter, "maximumCount", level == RouteLevel.City ? 12 : 8);
+            Int(encounter, "initialCount", 15);
             Float(encounter, "cadence", level == RouteLevel.City ? 3f : 4f);
         }
 

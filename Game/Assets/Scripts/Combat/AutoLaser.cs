@@ -15,12 +15,13 @@ namespace Boki.Combat
         [Tooltip("Environment only. Exclude player and enemy geometry.")]
         [SerializeField] private LayerMask obstructionMask = 1;
         [SerializeField, Min(0.01f)] private float range = 10f;
-        [SerializeField, Min(1)] private int damage = 20;
+        [SerializeField, Min(1)] private int damage = 10;
         [SerializeField, Min(0.01f)] private float fireInterval = 0.4f;
         [SerializeField, Min(0.01f)] private float beamDuration = 0.08f;
         private float cooldown;
         private float beamRemaining;
         private Vector3 impactPosition;
+        public event System.Action Fired;
 
         private void OnEnable()
         {
@@ -96,6 +97,7 @@ namespace Boki.Combat
             beam.SetPosition(0, beamOrigin.position);
             beam.SetPosition(1, impactPosition);
             beam.enabled = true;
+            Fired?.Invoke();
             var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
             int hitDamage = Mathf.RoundToInt(damage * (upgrades != null ? upgrades.DamageMultiplier : 1f));
             target.TakeDamage(hitDamage);

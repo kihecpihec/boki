@@ -85,6 +85,126 @@ namespace Boki.Editor
             Debug.Log("SCOOTER_LIGHT_SETUP_APPLIED");
         }
 
+        [MenuItem("Boki/Light Battery/Apply Darkness to V1 and Model Test")]
+        public static void ApplyDarkness()
+        {
+            RequireClean();
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string path in new[] { ModelScene, "Assets/Scenes/V1_Pohorje.unity",
+                    "Assets/Scenes/V1_Maribor.unity", "Assets/Scenes/V1_FERI.unity" })
+                {
+                    Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    ConfigureLighting(scene);
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    EditorSceneManager.SaveScene(scene);
+                }
+            }
+            finally
+            {
+                if (setup.Length > 0 && !string.IsNullOrEmpty(setup[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+            Debug.Log("V1_DARKNESS_APPLIED");
+        }
+
+        [MenuItem("Boki/Light Battery/Apply Surrounding Scooter Light to V1 and Model Test")]
+        public static void ApplyV1Headlights()
+        {
+            RequireClean();
+            SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
+            try
+            {
+                foreach (string path in new[] { ModelScene, V1SceneSetup.Scenes[0], V1SceneSetup.Scenes[1], V1SceneSetup.Scenes[2] })
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+                        throw new InvalidOperationException("Missing V1 scene: " + path);
+                foreach (string path in new[] { ModelScene, V1SceneSetup.Scenes[0], V1SceneSetup.Scenes[1], V1SceneSetup.Scenes[2] })
+                {
+                    Scene scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                    ConfigureWideWhiteLight(scene);
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    EditorSceneManager.SaveScene(scene);
+                    Debug.Log("V1_WIDE_WHITE_LIGHT_SAVED " + path);
+                }
+            }
+            finally
+            {
+                if (setup.Length > 0 && !string.IsNullOrEmpty(setup[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(setup);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
+        internal static void ConfigureWideWhiteLight(Scene scene)
+        {
+            LightBattery battery = Find<LightBattery>(scene);
+            ScooterDarkness darkness = Find<ScooterDarkness>(scene);
+            if (battery == null || darkness == null)
+                throw new InvalidOperationException("Missing scooter light or darkness overlay in " + scene.path);
+            var settings = new SerializedObject(battery);
+            var lamp = settings.FindProperty("surroundingLight").objectReferenceValue as Light;
+            var mount = settings.FindProperty("headlightMount").objectReferenceValue as Transform;
+            if (mount == null)
+                foreach (Transform child in battery.GetComponentsInChildren<Transform>(true))
+                    if (child.name == "Socket_Headlight") { mount = child; break; }
+            if (lamp == null || mount == null)
+                throw new InvalidOperationException("Assign the scooter lamp and headlight socket in " + scene.path);
+            settings.FindProperty("headlightMount").objectReferenceValue = mount;
+            settings.FindProperty("intensity").floatValue = 5f;
+            settings.FindProperty("headlightRange").floatValue = 28f;
+            settings.FindProperty("headlightHeightOffset").floatValue = 0.1f;
+            settings.FindProperty("headlightBrightnessMultiplier").floatValue = 12f;
+            settings.FindProperty("fillIntensity").floatValue = 0.55f;
+            settings.FindProperty("fillRange").floatValue = 2.5f;
+            settings.FindProperty("nearbyBrightnessMultiplier").floatValue = 1.3f;
+            settings.FindProperty("nearbyRangeMultiplier").floatValue = 1.4f;
+            settings.FindProperty("riderFillPosition").vector3Value = new Vector3(0f, 1.6f, -0.9f);
+            settings.FindProperty("emptyFillIntensity").floatValue = 0.12f;
+            settings.FindProperty("emptyFillRange").floatValue = 2.2f;
+            settings.ApplyModifiedPropertiesWithoutUndo();
+            // Pin presentation values even when they currently equal inherited script defaults.
+            if (PrefabUtility.IsPartOfPrefabInstance(battery))
+            {
+                Object source = PrefabUtility.GetCorrespondingObjectFromSource(battery);
+                var overrides = new System.Collections.Generic.List<PropertyModification>(
+                    PrefabUtility.GetPropertyModifications(battery));
+                overrides.RemoveAll(item => item.target == source
+                    && (item.propertyPath == "headlightAngle" || item.propertyPath == "headlightDownwardAngle"));
+                SerializedProperty property = settings.GetIterator();
+                while (property.NextVisible(true))
+                {
+                    if (property.propertyType != SerializedPropertyType.Float) continue;
+                    string path = property.propertyPath;
+                    overrides.RemoveAll(item => item.target == source && item.propertyPath == path);
+                    overrides.Add(new PropertyModification { target = source, propertyPath = path,
+                        value = property.floatValue.ToString(System.Globalization.CultureInfo.InvariantCulture) });
+                }
+                PrefabUtility.SetPropertyModifications(battery, overrides.ToArray());
+            }
+            lamp.type = LightType.Point;
+            lamp.color = Color.white;
+            lamp.useColorTemperature = false;
+            lamp.range = 28f;
+            lamp.intensity = 60f;
+            lamp.shadows = LightShadows.None;
+            lamp.transform.position = mount.position + battery.transform.up * 0.1f;
+            lamp.transform.rotation = battery.transform.rotation;
+            var overlay = new SerializedObject(darkness);
+            overlay.FindProperty("lightRadius").floatValue = 7f;
+            overlay.FindProperty("darknessOpacity").floatValue = 0.3f;
+            overlay.FindProperty("forwardOffset").floatValue = 0f;
+            overlay.FindProperty("radiusScale").floatValue = 0.75f;
+            overlay.FindProperty("extraDarkness").floatValue = 0.03f;
+            overlay.FindProperty("chargedRadiusMultiplier").floatValue = 3f;
+            overlay.FindProperty("chargedOpacityMultiplier").floatValue = 0.65f;
+            overlay.ApplyModifiedPropertiesWithoutUndo();
+            foreach (Object changed in new Object[] { battery, lamp, lamp.transform, darkness })
+                if (PrefabUtility.IsPartOfPrefabInstance(changed))
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(changed);
+        }
+
         private static LightBattery ConfigurePlayer(GameObject player)
         {
             PlayerHealth health = player.GetComponent<PlayerHealth>();
@@ -100,9 +220,10 @@ namespace Boki.Editor
             Light light = lamp.GetComponent<Light>();
             if (light == null) light = lamp.gameObject.AddComponent<Light>();
             light.type = LightType.Point;
-            light.range = 9f;
-            light.intensity = 5f;
-            light.color = new Color(0.55f, 0.9f, 1f);
+            light.range = 28f;
+            light.intensity = 60f;
+            light.color = Color.white;
+            light.useColorTemperature = false;
             light.shadows = LightShadows.None;
             light.renderMode = LightRenderMode.ForcePixel;
             LightBattery battery = player.GetComponent<LightBattery>();
@@ -112,28 +233,39 @@ namespace Boki.Editor
             return battery;
         }
 
-        private static void ConfigureLighting(Scene scene)
+        internal static void ConfigureLighting(Scene scene)
         {
             RenderSettings.skybox = null;
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.07f, 0.09f, 0.13f);
-            RenderSettings.ambientEquatorColor = new Color(0.045f, 0.055f, 0.085f);
-            RenderSettings.ambientGroundColor = new Color(0.025f, 0.03f, 0.045f);
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.006f, 0.006f, 0.006f);
+            RenderSettings.ambientSkyColor = RenderSettings.ambientLight;
+            RenderSettings.ambientEquatorColor = RenderSettings.ambientLight;
+            RenderSettings.ambientGroundColor = RenderSettings.ambientLight;
+            RenderSettings.reflectionIntensity = 0f;
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogColor = new Color(0.015f, 0.02f, 0.04f);
-            RenderSettings.fogDensity = 0.035f;
+            RenderSettings.fogColor = Color.black;
+            RenderSettings.fogDensity = 0.045f;
             var probe = new UnityEngine.Rendering.SphericalHarmonicsL2();
-            probe.AddAmbientLight(RenderSettings.ambientEquatorColor);
+            probe.AddAmbientLight(RenderSettings.ambientLight);
             RenderSettings.ambientProbe = probe;
             foreach (ThirdPersonCamera follow in FindAll<ThirdPersonCamera>(scene))
             {
                 Camera camera = follow.GetComponent<Camera>();
                 camera.clearFlags = CameraClearFlags.SolidColor;
-                camera.backgroundColor = RenderSettings.fogColor;
+                camera.backgroundColor = Color.black;
             }
             foreach (Light light in FindAll<Light>(scene))
-                if (light.type == LightType.Directional) light.intensity = Mathf.Min(light.intensity, 0.18f);
+            {
+                if (light.type == LightType.Directional) light.intensity = 0f;
+                // Keep landmarks local; they must not illuminate an entire encounter without battery.
+                else if (light.GetComponentInParent<LightBattery>() == null)
+                {
+                    light.range = Mathf.Min(light.range, 3f);
+                    light.intensity = Mathf.Min(light.intensity, 0.35f);
+                    light.shadows = LightShadows.None;
+                }
+            }
         }
 
         private static void ConfigureUI(Scene scene, LightBattery battery)

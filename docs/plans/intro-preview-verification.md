@@ -1,7 +1,7 @@
 # Bellevue prologue: minimum slice
 
 Implements [Story.md §3 PROLOGUE](../Story.md#prologue--the-morning-after-2030-seconds-skippable)
-shots 1, 2 and 4 as a skippable ~19 s sequence, played for laughs: Boki's eyes pop out
+shots 1, 2 and 4 as a skippable ~20.5 s sequence, played for laughs: Boki's eyes pop out
 twice and he scrambles onto the scooter. Shot 3 (the VHS glitch with the overturned
 cars and the black figure) is **not built**; neither is the bass-to-wind audio. The
 full prologue stays M10 in [Architecture.md](../Architecture.md#completion-of-the-documented-game).
@@ -13,7 +13,7 @@ full prologue stays M10 in [Architecture.md](../Architecture.md#completion-of-th
 | Watch | 2 | 1.6 | The camera closes on the watch; the LCD fills the screen with **07:58**. |
 | Double take | 2 | 1.7 | Cut to his face. A blank stare, then the eyes pop out (first pop) with a `!`, sweat drops, raised brows, a gaping mouth, a camera punch and a flash. The arm drops. |
 | Message | 2 | 2.4 | Phone beep, subtitle »PREDAVANJE — 08:00 / FERI«. The bigger second pop: eyes on stalks, mouth wide, shaking, harder punch. |
-| Line | 2 | 2.0 | Subtitle »Fak ... ne spet.« The eyes sag back, the brows turn worried, the head droops; then fade to black. |
+| Line | 2 | 3.1 | Voice `fak_nespet.mp3` starts with subtitle »Fak ... ne spet.« The eyes sag back, the brows turn worried, the head droops; then fade to black. |
 | Scramble | 4 | 2.4 | From black: Boki sits bolt upright and knocks the bottle away, springs up, sprints the wrong way, skids, turns back (the scooter flips upright) and leaps onto it. |
 | Mount | 4 | 3.0 | Rider on the scooter, headlight on, `OBJECTIVE: GET TO FERI` / `DON'T LOOK BACK`, the camera swings behind him. |
 
@@ -214,3 +214,9 @@ Checks for this integration: Unity 6000.6.7f1 imported and saved all three scene
 wake, reaction, scramble and mount frames inspected against the Pohorje setting.
 The architecture audit and `git diff --check` passed. Full interactive Play Mode
 and Windows player checks have not been performed.
+
+## Spoken line cue
+
+`IntroCutscene.bokiLine` references `Assets/Audio/Sfx/fak_nespet.mp3` on the shared intro prefab. The voice starts when the Line shot begins (12 seconds into the sequence). That shot now lasts 3.1 seconds to fit the approximately 3.03-second recording before Scramble; total runtime is 20.5 seconds. Existing finish/skip handling stops the audio. The preview builder preserves this assignment.
+
+Manual check: play `V1_Pohorje`, listen for the line with its subtitle, and confirm it finishes before the scramble. Retry should play it once again. Skip during the line should silence it immediately. In `Player_Model_Test`, press I to replay and repeat the skip check; check the Console for new errors.

@@ -31,6 +31,9 @@ namespace Boki.Editor
         private static float pausedBattery;
         private static int carriedHealth;
         private static bool encounterVerified;
+        private static int professorSamples;
+        private static Vector3 professorStart;
+        private static Vector3 professorPaused;
 
         static V1SceneChecks()
         {
@@ -61,12 +64,20 @@ namespace Boki.Editor
             EditorApplication.EnterPlaymode();
         }
 
+        [MenuItem("Boki/Version 1/Run Professor Checks")]
+        public static void RunProfessor()
+        {
+            Run();
+            SessionState.SetBool(Key + ".Professor", true);
+            EditorSceneManager.OpenScene(V1SceneSetup.Scenes[2]);
+        }
+
         private static void Changed(PlayModeStateChange state)
         {
             if (!SessionState.GetBool(Key, false)) return;
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                stage = 0; encounterVerified = false; introScene = null; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
+                stage = SessionState.GetBool(Key + ".Professor", false) ? 80 : 0; professorSamples = 0; encounterVerified = false; introScene = null; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             var saved = JsonUtility.FromJson<Saved>(SessionState.GetString(Key + ".Saved", ""));
@@ -74,6 +85,8 @@ namespace Boki.Editor
                 if (saved.has[i]) PlayerPrefs.SetInt(UnlockKeys[i], saved.values[i]); else PlayerPrefs.DeleteKey(UnlockKeys[i]);
             PlayerPrefs.Save();
             SessionState.SetBool(Key, false);
+            bool professorOnly = SessionState.GetBool(Key + ".Professor", false);
+            SessionState.EraseBool(Key + ".Professor");
             InputSystem.settings.backgroundBehavior = (InputSettings.BackgroundBehavior)saved.background;
             InputSystem.settings.editorInputBehaviorInPlayMode = (InputSettings.EditorInputBehaviorInPlayMode)saved.editorInput;
             bool restore = saved.paths.Length > 0;
@@ -85,7 +98,8 @@ namespace Boki.Editor
                 EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
             else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, portal guards/travel, XP contact, upgrade pause, state carry, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
+            if (professorOnly) Debug.Log(failed ? "PROFESSOR_ARENA_CHECKS_FAILED: " + failure : "PROFESSOR_ARENA_CHECKS_PASSED");
+            else Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, portal guards/travel, XP contact, upgrade pause, state carry, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
             if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
         }
         private static void Log(string message, string trace, LogType type)
@@ -123,6 +137,13 @@ namespace Boki.Editor
                 player.GetComponent<ScooterController>().enabled = false;
                 switch (stage)
                 {
+                    case 80:
+                        var focusedBoss = V1SceneSetup.Find<ProfessorBoss>(scene);
+                        Teleport(player, new Vector3(0f, 0.05f, 78f));
+                        focusedBoss.gameObject.SetActive(true);
+                        focusedBoss.BeginFight();
+                        stage = 8;
+                        break;
                     case 0:
                         Check(scene.path == V1SceneSetup.Scenes[0], "Starts in V1 Pohorje");
                         Validate(scene);
@@ -184,13 +205,65 @@ namespace Boki.Editor
                         Teleport(player, V1SceneSetup.Find<V1BossArena>(scene).transform.position - Vector3.up * 0.5f); stage++; break;
                     case 8:
                         var boss = V1SceneSetup.Find<ProfessorBoss>(scene);
-                        Check(session.HasEnteredBossArena && boss.IsFighting, "Physical arena entry begins professor fight");
-                        Check(session.State.Guilt.BossEntered, "Boss entry ends Guilt pressure");
+                        if (!SessionState.GetBool(Key + ".Professor", false))
+                        {
+                            Check(session.HasEnteredBossArena && boss.IsFighting, "Physical arena entry begins professor fight");
+                            Check(session.State.Guilt.BossEntered, "Boss entry ends Guilt pressure");
+                        }
+                        if (professorSamples++ == 0)
+                        {
+                            professorStart = boss.transform.position;
+                            var feedback = boss.GetComponent<EnemyFeedback>();
+                            Check(feedback != null && feedback.enabled, "Professor has active hit/death feedback");
+                            boss.GetComponent<EnemyHealth>().TakeDamage(1);
+                            bool flashed = false;
+                            var block = new MaterialPropertyBlock();
+                            foreach (var renderer in boss.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.GetPropertyBlock(block, 0);
+                                flashed |= block.HasColor(Shader.PropertyToID("_BaseColor"))
+                                    || block.HasColor(Shader.PropertyToID("_Color"));
+                            }
+                            Check(flashed, "Professor accepted hit flashes model materials");
+                            break;
+                        }
+                        if (professorSamples == 2)
+                        {
+                            professorPaused = boss.transform.position;
+                            session.State.Guilt.GameplaySuspended = true;
+                            break;
+                        }
+                        if (professorSamples == 3)
+                        {
+                            Check(boss.transform.position == professorPaused, "Professor patrol respects shared pause");
+                            session.State.Guilt.GameplaySuspended = false;
+                        }
+                        var floor = (BoxCollider)new SerializedObject(boss).FindProperty("movementFloor").objectReferenceValue;
+                        Bounds safe = floor.bounds;
+                        Vector3 at = boss.transform.position;
+                        Check(at.x > safe.min.x + 0.5f && at.x < safe.max.x - 0.5f
+                            && at.z > safe.min.z + 0.5f && at.z < safe.max.z - 0.5f,
+                            "Professor remains inside arena borders");
+                        if (professorSamples < 60) break;
+                        Check(Vector3.Distance(professorStart, at) > 1f, "Professor patrol moves during fight");
+                        // The focused professor run can end with the player already down; a fallen player gets no ending.
+                        bool playerDown = flow.IsTerminal;
                         boss.GetComponent<EnemyHealth>().TakeDamage(10000);
+                        Check(Object.FindObjectsByType<EnemyDeathBurst>().Length > 0,
+                            "Professor death emits detached particle burst");
                         var ending = V1SceneSetup.Find<EndingCutscene>(scene);
-                        Check(ending.IsPlaying && !flow.IsTerminal, "Boss defeat plays the ending before the results panel");
-                        ending.Skip();
-                        Check(!ending.IsPlaying && flow.IsTerminal && Time.timeScale == 0, "Skipping the ending shows terminal victory screen");
+                        if (playerDown) Check(!ending.IsPlaying, "A fallen player gets no ending");
+                        else
+                        {
+                            Check(ending.IsPlaying && !flow.IsTerminal, "Boss defeat plays the ending before the results panel");
+                            ending.Skip();
+                        }
+                        Check(!ending.IsPlaying && flow.IsTerminal && Time.timeScale == 0, "Boss defeat shows terminal victory screen");
+                        if (SessionState.GetBool(Key + ".Professor", false))
+                        {
+                            EditorApplication.ExitPlaymode();
+                            break;
+                        }
                         flow.Retry(); stage++; break;
                     case 9:
                         Check(scene.path == V1SceneSetup.Scenes[0], "Victory retry returns to Pohorje");
@@ -261,7 +334,7 @@ namespace Boki.Editor
                     case 100:
                         var occupied = V1SceneSetup.All<BatteryCombatSpace>(scene).Find(s => s.gameObject.activeInHierarchy);
                         Check(occupied.State.Occupied && session.State.Guilt.AccumulatedCombatSeconds > 0f, "Physical combat occupancy activates battery and Guilt clocks");
-                        Check(EnemyHealth.Active.Count > 0 && EnemyHealth.Active.Count <= 4, "Selected route replenishes safely within its target count");
+                        Check(EnemyHealth.Active.Count > 0 && EnemyHealth.Active.Count <= 4, "Selected route replenishes safely within its target count (active=" + EnemyHealth.Active.Count + ")");
                         encounterVerified = true; stage = 1; break;
                 }
             }
@@ -319,8 +392,65 @@ namespace Boki.Editor
             controller.enabled = false; player.transform.position = point; controller.enabled = true;
             Physics.SyncTransforms(); controller.Move(Vector3.forward * 0.01f);
         }
+        internal static void ValidateEnemyEffects(Scene scene)
+        {
+            int templateRoots = 0;
+            foreach (var transform in V1SceneSetup.All<Transform>(scene))
+                if (transform.name == "Enemy Attack Templates")
+                {
+                    templateRoots++;
+                    Check(!transform.gameObject.activeSelf, "Attack templates remain inactive");
+                }
+            Check(templateRoots == 1, "Exactly one enemy attack template root");
+            foreach (var health in V1SceneSetup.All<EnemyHealth>(scene))
+                Check(new SerializedObject(health).FindProperty("showCombatFeedback").boolValue
+                    || (health.TryGetComponent<EnemyFeedback>(out var feedback) && feedback.enabled),
+                    "Hit and death feedback enabled: " + health.name);
+            foreach (var ranged in V1SceneSetup.All<RangedEnemy>(scene))
+            {
+                var projectile = (EnemyProjectile)new SerializedObject(ranged).FindProperty("projectilePrefab").objectReferenceValue;
+                ValidateProjectileEffect(projectile, scene);
+                Check(projectile.name == (ranged.name.StartsWith("ExamPaper", StringComparison.Ordinal)
+                    ? "Proj_ExamPaper" : "Proj_WatcherOrb"), "Correct projectile visual: " + ranged.name);
+            }
+            foreach (var boss in V1SceneSetup.All<ProfessorBoss>(scene))
+            {
+                ValidateProjectileEffect((EnemyProjectile)new SerializedObject(boss).FindProperty("sheetPrefab").objectReferenceValue, scene);
+                var view = boss.GetComponent<ProfessorAttackView>();
+                Check(view != null && view.enabled, "Professor attack view enabled");
+                var serialized = new SerializedObject(view);
+                foreach (string field in new[] { "visual", "warning", "countdown", "shockwave", "castPulse" })
+                    Check(serialized.FindProperty(field).objectReferenceValue != null, "Professor effect assignment: " + field);
+            }
+            Debug.Log("V1_ENEMY_EFFECTS_VALIDATED " + scene.path);
+        }
+
+        private static void ValidateProjectileEffect(EnemyProjectile projectile, Scene scene)
+        {
+            Check(projectile != null && projectile.gameObject.scene == scene, "Scene-local projectile template");
+            Check(!projectile.gameObject.activeInHierarchy, "Projectile template cannot fire or update");
+            var serialized = new SerializedObject(projectile);
+            Check(serialized.FindProperty("trailMaterial").objectReferenceValue != null, "Projectile trail/impact material assigned");
+            Check(serialized.FindProperty("trailWidth").floatValue > 0f, "Visible projectile trail width");
+        }
+
         private static void Validate(Scene scene)
         {
+            ValidateEnemyEffects(scene);
+            var battery = new SerializedObject(V1SceneSetup.Find<LightBattery>(scene));
+            var lamp = battery.FindProperty("surroundingLight").objectReferenceValue as Light;
+            Check(battery.FindProperty("headlightRange").floatValue == 28f
+                && battery.FindProperty("headlightBrightnessMultiplier").floatValue == 12f,
+                "Wide, surrounding V1 scooter light is explicitly configured");
+            Check(lamp != null && lamp.type == LightType.Point && lamp.color == Color.white && !lamp.useColorTemperature
+                && lamp.shadows == LightShadows.None, "V1 scooter beam stays white without additional shadows");
+            Check(battery.FindProperty("riderFillPosition").vector3Value == new Vector3(0f, 1.6f, -0.9f)
+                && battery.FindProperty("nearbyBrightnessMultiplier").floatValue == 1.3f,
+                "Restrained V1 rider fill avoids a backpack hotspot");
+            var darkness = new SerializedObject(V1SceneSetup.Find<ScooterDarkness>(scene));
+            Check(darkness.FindProperty("chargedRadiusMultiplier").floatValue == 3f
+                && darkness.FindProperty("darknessOpacity").floatValue == 0.3f,
+                "V1 darkness opening accommodates the wide beam");
             Check(V1SceneSetup.All<RouteGate>(scene).Count == 3, "Exactly three route gates");
             Check(V1SceneSetup.All<PlayerHud>(scene).Count == 1, "One real HUD");
             Check(V1SceneSetup.All<PlayerGameplayFeedback>(scene).Count == 1, "One production feedback bridge");

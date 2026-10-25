@@ -43,7 +43,7 @@ namespace Boki.Editor
             EnsureFolder("Assets", "Effects");
             EnsureFolder("Assets/Effects", "Boki");
             Material body = GetMaterial("Body", "Universal Render Pipeline/Unlit", new Color(0.15f, 0.65f, 0.7f));
-            Material floor = GetMaterial("Floor", "Universal Render Pipeline/Unlit", new Color(0.06f, 0.07f, 0.1f));
+            Material floor = GetMaterial("Floor", "Universal Render Pipeline/Lit", new Color(0.22f, 0.25f, 0.3f));
             Material trailMaterial = GetMaterial("BoostTrail", "Boki/Boost Trail", Color.white);
 
             Scene previousScene = SceneManager.GetActiveScene();

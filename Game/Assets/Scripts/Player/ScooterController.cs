@@ -64,6 +64,10 @@ namespace Boki.Player
         public float BoostDuration => motion != null && motion.BoostRemaining > 0f ? motion.ActiveBoostDuration : boostDuration;
         public float BoostCooldown => boostCooldown;
         public bool IsGrounded { get; private set; }
+        public event System.Action Jumped;
+        public event System.Action Boosted;
+        public event System.Action Landed;
+        public event System.Action<float> WallImpacted;
         public Vector3 GroundNormal { get; private set; } = Vector3.up;
         private bool ownsMove;
         private bool ownsJump;
@@ -162,10 +166,14 @@ namespace Boki.Player
             grounded |= snap;
             Vector3 slopeAcceleration = grounded
                 ? Vector3.ProjectOnPlane(Vector3.down * Mathf.Abs(gravity), groundNormal) * slopeGain : Vector3.zero;
+            float previousVerticalSpeed = motion.VerticalSpeed;
+            float previousBoost = motion.BoostRemaining;
             motion.Tick(direction.x, direction.z, grounded,
                 canRead && jumpAction.action.WasPressedThisFrame(),
                 canRead && boostAction.action.WasPressedThisFrame(), dt, transform.forward.x, transform.forward.z,
                 canRead ? slopeAcceleration.x : 0f, canRead ? slopeAcceleration.z : 0f);
+            if (motion.VerticalSpeed > 0f && motion.VerticalSpeed > previousVerticalSpeed) Jumped?.Invoke();
+            if (motion.BoostRemaining > previousBoost) Boosted?.Invoke();
 
             Vector3 horizontal = new Vector3(motion.DisplacementX, 0f, motion.DisplacementZ);
             if (grounded && motion.VerticalSpeed <= 0f)
@@ -175,7 +183,9 @@ namespace Boki.Player
             CollisionFlags flags = controller.Move(displacement);
             motion.ResolveVertical((flags & CollisionFlags.Below) != 0, (flags & CollisionFlags.Above) != 0);
             wasGrounded = grounded || (flags & CollisionFlags.Below) != 0;
+            bool previouslyGrounded = IsGrounded;
             IsGrounded = wasGrounded && motion.VerticalSpeed <= 0f;
+            if (!previouslyGrounded && IsGrounded) Landed?.Invoke();
             GroundNormal = IsGrounded ? groundNormal : Vector3.up;
 
             Vector3 heading = new Vector3(motion.HorizontalX, 0f, motion.HorizontalZ);
@@ -200,10 +210,21 @@ namespace Boki.Player
             return distance <= controller.skinWidth + 0.03f;
         }
 
+        public void ApplyKnockback(Vector3 direction, float speed)
+        {
+            if (!isActiveAndEnabled || motion == null || playerHealth == null || !playerHealth.IsAlive
+                || (RunSession.Instance != null && !RunSession.Instance.IsGameplayActive)) return;
+            motion.ApplyKnockback(direction.x, direction.z, speed);
+        }
+
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (motion != null && hit.normal.y < walkableNormalY && hit.normal.y > -0.9f)
+            {
+                float impactSpeed = -(motion.HorizontalX * hit.normal.x + motion.HorizontalZ * hit.normal.z);
                 motion.ResolveWall(hit.normal.x, hit.normal.z);
+                if (impactSpeed > 2f) WallImpacted?.Invoke(impactSpeed);
+            }
         }
     }
 }

@@ -66,3 +66,19 @@ Graphical review on Low and a Windows x86_64 player run on the Ryzen 5600G at 12
 - Extended `EnemySmokeChecks.Run` passed (`/tmp/boki-attack-smoke-final.log`, `ENEMY_SMOKE_PASSED`): melee/Watcher attacks, three professor sheets, telegraph and impact, exact damage-radius boundary, projectile trails, effect cleanup on disable, a projectile crossing the player between frames, and the existing Guilt placement/lifecycle checks.
 - Architecture audit has no failures; existing warnings remain. `git diff --check` passes. No shared prefabs, other scenes, packages or project settings were changed.
 - These were headless Linux checks. Interactive visual review, pause/death during warnings, boost/jump avoidance, and Windows/5600G performance remain manual checks; they are not established by the smoke run.
+
+## V1 scene integration
+
+**Boki → Version 1 → Upgrade Enemy Effects** upgrades only the three existing V1 scenes, refuses Play Mode and dirty scenes, and restores the previous scene setup. It does not rebuild maps or encounters or edit shared prefabs. All scenes are checked for existence before editing begins.
+
+- Pohorje and Maribor now reference scene-local Watcher orb templates with the existing red trails and bounded impact bursts. FERI retains its amber exam papers and professor presentation. Hit/death feedback already attaches through `EnemyHealth`; Guilt remains undamageable.
+- The shared attack upgrade accepts scenes without a professor and reuses nested template roots, including FERI's existing root under `V1 Gameplay`. The V1 scene builder also applies attack effects to every level on future builds.
+- The upgrade validates every ranged template's scene-local reference, inactive template state, visual type, trail material and width; it checks hit/death feedback configuration and professor presentation references. These checks also run with the V1 integration checks.
+- No Inspector assignments are needed. For manual review, open each `V1_*` scene, select a route, let a ranged enemy fire and confirm the projectile trail and impact burst. Hit and kill regular enemies, pause during an effect, and verify it resumes correctly. In FERI, check the professor's barrage, warning countdown and slam; Guilt should retain its existing warning/chase presentation. Require no new Console errors. Windows/5600G visual and performance verification remains required.
+
+### Recorded V1 checks (2026-10-24)
+
+- Unity `6000.6.7f1` compiled, upgraded and validated all three V1 scenes (`/tmp/boki-v1-enemy-effects.log`). Repeating the command validated them again and produced identical scene SHA-256 hashes (`/tmp/boki-v1-enemy-effects-repeat.log`).
+- `EnemyFeedbackChecks.Run` passed (`/tmp/boki-v1-enemy-feedback.log`, `ENEMY_FEEDBACK_PASSED`). Unity also reported the previously recorded Editor Search startup `ArgumentOutOfRangeException`; its stack is in `UnityEditor.Search.SearchDatabase.EnumerateAll`.
+- Removed unrelated Unity object ordering, prefab override ordering, whitespace and HUD font serialization changes. FERI has no remaining scene diff; only the two missing scene integrations remain. Existing object blocks outside projectile overrides and scene roots are preserved. Scene object IDs are unique.
+- Architecture audit: no failures, existing warnings remain. `git diff --check` passes. No new assets or missing `.meta` files; no shared prefab, package or project-setting changes. Deterministic rules were unchanged, so EditMode rule tests were not rerun. Interactive Play Mode review and Windows/5600G verification remain pending.

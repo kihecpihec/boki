@@ -36,6 +36,7 @@ namespace Boki.Upgrades
             PlayerHealth player = other.GetComponentInParent<PlayerHealth>();
             if (player == null || !player.UsesRunSession || !player.IsAlive) return;
             if (!session.State.Progression.AddXp()) return;
+            player.GetComponent<PlayerAudio>()?.PlayXpCollection();
             collected = true;
             gameObject.SetActive(false);
             Destroy(gameObject);

@@ -2,16 +2,16 @@ using System;
 
 namespace Boki.Enemies
 {
-    public enum BossAction { None, FireSheet, StartSlamTelegraph, SlamImpact }
+    public enum BossAction { None, FireSheet, StartSlamTelegraph, SlamImpact, FirePaperRing }
 
-    // Story §3 Final Boss: alternate Exam Barrage (3 slow sheets) and Deadline Slam (0.8 s red warning, then damage).
+    // Story §3 Final Boss: aimed barrage, double slam, radial barrage, triple slam.
     // At about 50% HP attacks become slightly faster; the telegraph stays 0.8 s so it remains readable.
     public sealed class BossAttackScheduler
     {
         public const int SheetsPerBarrage = 3;
         public const float SlamTelegraphSeconds = 0.8f;
 
-        private enum Step { Waiting, Barrage, Telegraph }
+        private enum Step { Waiting, Barrage, Telegraph, SlamRecovery }
 
         private readonly float attackGap;
         private readonly float sheetInterval;
@@ -19,7 +19,9 @@ namespace Boki.Enemies
         private Step step = Step.Waiting;
         private float remaining;
         private int sheetsLeft;
-        private bool slamNext;
+        private int combo;
+        private int slamsLeft;
+        public int PaperRingIndex { get; private set; }
 
         public bool IsEnraged { get; private set; }
 
@@ -48,35 +50,46 @@ namespace Boki.Enemies
                     return BeginAttack();
                 case Step.Barrage:
                     remaining = Scaled(sheetInterval);
+                    BossAction action = combo == 2 ? BossAction.FirePaperRing : BossAction.FireSheet;
+                    if (combo == 2) PaperRingIndex++;
                     if (--sheetsLeft <= 0) EndAttack();
-                    return BossAction.FireSheet;
+                    return action;
+                case Step.SlamRecovery:
+                    step = Step.Telegraph;
+                    remaining = SlamTelegraphSeconds;
+                    return BossAction.StartSlamTelegraph;
                 default:
-                    EndAttack();
+                    if (--slamsLeft > 0)
+                    {
+                        step = Step.SlamRecovery;
+                        remaining = 0.35f;
+                    }
+                    else EndAttack();
                     return BossAction.SlamImpact;
             }
         }
 
         private BossAction BeginAttack()
         {
-            if (slamNext)
+            if (combo == 1 || combo == 3)
             {
                 step = Step.Telegraph;
+                slamsLeft = combo == 1 ? 2 : 3;
                 remaining = SlamTelegraphSeconds;
-                slamNext = false;
                 return BossAction.StartSlamTelegraph;
             }
             step = Step.Barrage;
-            sheetsLeft = SheetsPerBarrage - 1;
+            PaperRingIndex = 0;
+            sheetsLeft = combo == 2 ? 1 : SheetsPerBarrage - 1;
             remaining = Scaled(sheetInterval);
-            slamNext = true;
-            if (sheetsLeft == 0) EndAttack();
-            return BossAction.FireSheet;
+            return combo == 2 ? BossAction.FirePaperRing : BossAction.FireSheet;
         }
 
         private void EndAttack()
         {
             // The gap after an attack starts once its last action has fired.
             step = Step.Waiting;
+            combo = (combo + 1) % 4;
             remaining = Scaled(attackGap);
         }
 

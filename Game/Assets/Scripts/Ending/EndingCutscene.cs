@@ -46,6 +46,9 @@ namespace Boki.Ending
         [SerializeField] private AudioClip meow;
         [SerializeField] private AudioClip lick;
         [SerializeField] private AudioClip eyePop;
+        [Tooltip("The recorded »Boki ... danes je sobota.« and Boki's recorded »... A?« takes; one is picked per playthrough.")]
+        [SerializeField] private AudioClip professorVoice;
+        [SerializeField] private AudioClip[] bokiVoices = Array.Empty<AudioClip>();
         [SerializeField] private InputActionReference skipAction;
         [SerializeField] private InputActionReference replayAction;
         [SerializeField] private bool playOnStart;
@@ -59,6 +62,7 @@ namespace Boki.Ending
         private float baseFieldOfView;
         private float redRestIntensity;
         private Vector3 markerRestScale;
+        private AudioClip bokiVoice;
         private float lastElapsed;
         private bool ownsSkip;
         private bool ownsReplay;
@@ -71,7 +75,8 @@ namespace Boki.Ending
                 || calendar == null || calendarMarker == null || stageLights == null || redLight == null || overlay == null
                 || shotCamera == null || hiddenDuringEnding == null || controls == null || gameplayCanvases == null
                 || audioSource == null || deflate == null || zoom == null || thump == null || meow == null || lick == null
-                || eyePop == null || skipAction == null || skipAction.action == null
+                || eyePop == null || professorVoice == null || bokiVoices == null || bokiVoices.Length == 0
+                || skipAction == null || skipAction.action == null || Array.IndexOf(bokiVoices, null) >= 0
                 || Array.IndexOf(hiddenDuringEnding, null) >= 0 || Array.IndexOf(controls, null) >= 0
                 || Array.IndexOf(gameplayCanvases, null) >= 0)
             {
@@ -140,6 +145,7 @@ namespace Boki.Ending
             stageLights.SetActive(true);
             overlay.gameObject.SetActive(true);
             lastElapsed = 0f;
+            bokiVoice = bokiVoices[UnityEngine.Random.Range(0, bokiVoices.Length)];
             timeline = new IntroTimeline(EndingActing.ShotSeconds);
             timeline.Finished += OnFinished;
             timeline.Begin();
@@ -177,6 +183,8 @@ namespace Boki.Ending
         private void PlayCues(float from, float to)
         {
             if (Crossed(from, to, EndingActing.Loom, EndingActing.ShrinkAt)) audioSource.PlayOneShot(deflate);
+            if (Crossed(from, to, EndingActing.Saturday, EndingActing.ProfessorVoiceAt)) audioSource.PlayOneShot(professorVoice);
+            if (Crossed(from, to, EndingActing.Huh, EndingActing.BokiVoiceAt)) audioSource.PlayOneShot(bokiVoice);
             if (Crossed(from, to, EndingActing.ZoomIn, EndingActing.ZoomCueAt)) audioSource.PlayOneShot(zoom);
             if (Crossed(from, to, EndingActing.ZoomIn, EndingActing.ThumpAt)) audioSource.PlayOneShot(thump);
             if (Crossed(from, to, EndingActing.ZoomOut, 0.001f)) audioSource.PlayOneShot(zoom, 0.8f);
