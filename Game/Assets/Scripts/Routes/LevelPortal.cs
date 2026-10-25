@@ -10,7 +10,7 @@ namespace Boki.Routes
         [SerializeField] private RouteManager manager;
         [SerializeField] private TextMesh label;
         [SerializeField] private string destinationLabel;
-        [SerializeField, Min(0.01f)] private float bossSkipSpeed = 14f;
+        [SerializeField, Min(0.01f)] private float bossSkipSpeed = 18f;
         private bool accepted;
         private void OnEnable()
         {

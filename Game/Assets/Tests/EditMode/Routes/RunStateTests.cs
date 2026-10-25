@@ -16,9 +16,10 @@ namespace Boki.Tests
 
         [TestCase(0f, false)]
         [TestCase(10.5f, false)]
-        [TestCase(13.999f, false)]
-        [TestCase(14f, true)]
+        [TestCase(14f, false)]
+        [TestCase(17.999f, false)]
         [TestCase(18f, true)]
+        [TestCase(20f, true)]
         [TestCase(float.NaN, false)]
         [TestCase(float.PositiveInfinity, false)]
         [TestCase(float.NegativeInfinity, false)]
@@ -26,7 +27,7 @@ namespace Boki.Tests
         {
             var run = new RunState(default, 0);
             run.TrySelect(RouteLevel.Forest, RouteChoice.A);
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, speed, 14f), Is.EqualTo(accepted));
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, speed, 18f), Is.EqualTo(accepted));
             Assert.That(run.BossShortcutTaken, Is.EqualTo(accepted));
             Assert.That(run.ActiveLevel, Is.EqualTo(accepted ? RouteLevel.Feri : RouteLevel.Forest));
         }
@@ -67,7 +68,7 @@ namespace Boki.Tests
             int notifications = 0;
             run.Changed += () => notifications++;
 
-            Assert.That(run.TrySkipToBoss(source, 14f, 14f), Is.True);
+            Assert.That(run.TrySkipToBoss(source, 18f, 18f), Is.True);
             Assert.That(run.Health.Current, Is.EqualTo(73));
             Assert.That(run.Battery, Is.EqualTo(23));
             Assert.That(run.Progression, Is.SameAs(progression));
@@ -82,7 +83,7 @@ namespace Boki.Tests
             Assert.That(run.Guilt.AccumulatedCombatSeconds, Is.Zero);
             Assert.That(run.AvailableUnlocks.ForestC || run.AvailableUnlocks.CityC || run.AvailableUnlocks.FeriC, Is.False);
             foreach (var route in Routes) Assert.That(run.Gate(RouteLevel.Feri, route), Is.EqualTo(GateState.RouteLock));
-            Assert.That(run.TrySkipToBoss(source, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(source, 18f, 18f), Is.False);
             Assert.That(notifications, Is.EqualTo(1));
 
             run.NewRun(All, 20);
@@ -98,24 +99,24 @@ namespace Boki.Tests
         public void BossShortcutRequiresSelectionLifeAndActiveUnsuspendedLevel()
         {
             var run = new RunState(All, 0);
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.False);
             run.TrySelect(RouteLevel.Forest, RouteChoice.A);
-            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.False);
-            Assert.That(run.TrySkipToBoss((RouteLevel)99, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 18f), Is.False);
+            Assert.That(run.TrySkipToBoss((RouteLevel)99, 18f, 18f), Is.False);
             run.Pause.Set(Boki.Core.PauseReason.Menu, true);
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.False);
             run.Pause.Reset();
             run.Guilt.GameplaySuspended = true;
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.False);
             run.Guilt.GameplaySuspended = false;
             run.Guilt.ScriptedSequenceActive = true;
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.False);
             run.Guilt.ScriptedSequenceActive = false;
             run.Guilt.IsLoading = true;
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.False);
             run.Guilt.IsLoading = false;
             run.Health.TakeDamage(100);
-            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.Forest, 18f, 18f), Is.False);
             Assert.That(run.ActiveLevel, Is.EqualTo(RouteLevel.Forest));
         }
 
@@ -126,11 +127,11 @@ namespace Boki.Tests
             run.TrySelect(RouteLevel.Forest, RouteChoice.B);
             run.TryAdvance(RouteLevel.Forest);
             run.TrySelect(RouteLevel.City, RouteChoice.C);
-            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 18f), Is.False);
             run.BeginCityRetreat();
-            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.False);
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 18f), Is.False);
             run.CompleteCityEscape();
-            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 14f), Is.True);
+            Assert.That(run.TrySkipToBoss(RouteLevel.City, 18f, 18f), Is.True);
         }
 
         [Test]
