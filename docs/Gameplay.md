@@ -283,7 +283,7 @@ Exits have no kill quota or forced wave clear. Leaving early sacrifices potentia
 
 ### Combo Counter
 
-Each laser hit on an enemy adds 1 to a combo; a Double Trouble second hit adds another. The combo resets to 0 whenever Boki takes damage or dies, and when the laser stops (scene change). There is no timeout and no combo reward yet. A right-edge `xN COMBO` counter appears from 2 hits, turns orange from 10, pops on each hit, and fades red when a streak of 2 or more is broken.
+Each enemy killed by Boki’s laser adds 1 to a kill streak; Double Trouble can add two when it kills two enemies, but surviving hits add nothing. The streak resets to 0 whenever Boki takes damage or dies, and when the laser stops (including scene changes). Healing does not break it. There is no timeout or gameplay reward. A right-edge `N KILL STREAK` counter appears from 2 kills, turns orange from 10, and pops on each kill. At 5, 10, and 20 kills, brief `LOCKED IN`, `RAVE MODE`, and `UNSTOPPABLE` callouts appear in predefined peripheral positions with slight random rotation and progressively stronger short audio cues. Damage breaks a visible streak with a cracked red counter, `STREAK BROKEN`, and a short descending audio cue. Callouts avoid the central riding/aiming area and top-centred boss HUD; only one is visible at a time. Presentation follows shared gameplay pause, uses a single bounded audio voice, and supports restrained effects without changing the counter.
 
 ### Battery Charges and Action Feedback
 

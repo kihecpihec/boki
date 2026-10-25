@@ -31,20 +31,28 @@ namespace Boki.Combat
             }
             Counter.Reset();
             lastHealth = health.Current;
-            laser.Hit += OnHit;
+            laser.Killed += OnKill;
+            laser.Stopped += Counter.Reset;
             health.Changed += OnHealthChanged;
             health.Died += Counter.Reset;
         }
 
         private void OnDisable()
         {
-            if (laser != null) laser.Hit -= OnHit;
+            if (laser != null)
+            {
+                laser.Killed -= OnKill;
+                laser.Stopped -= Counter.Reset;
+            }
             if (health == null) return;
             health.Changed -= OnHealthChanged;
             health.Died -= Counter.Reset;
         }
 
-        private void OnHit() => Counter.RegisterHit();
+        private void OnKill()
+        {
+            if (health.IsAlive && laser.isActiveAndEnabled) Counter.RegisterKill();
+        }
 
         private void OnHealthChanged()
         {

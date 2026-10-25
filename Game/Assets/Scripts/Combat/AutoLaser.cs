@@ -23,6 +23,8 @@ namespace Boki.Combat
         private Vector3 impactPosition;
         public event System.Action Fired;
         public event System.Action Hit;
+        public event System.Action Killed;
+        public event System.Action Stopped;
         public PlayerHealth Health => playerHealth;
 
         private void OnEnable()
@@ -42,6 +44,7 @@ namespace Boki.Combat
 
         private void OnDisable()
         {
+            Stopped?.Invoke();
             if (beam != null) beam.enabled = false;
             if (impactBurst != null) impactBurst.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             cooldown = beamRemaining = 0f;
@@ -103,7 +106,7 @@ namespace Boki.Combat
             Fired?.Invoke();
             var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
             int hitDamage = Mathf.RoundToInt(damage * (upgrades != null ? upgrades.DamageMultiplier : 1f));
-            target.TakeDamage(hitDamage);
+            DamageTarget(target, hitDamage);
             Hit?.Invoke();
             if (upgrades != null && upgrades.HasDoubleTrouble)
             {
@@ -119,7 +122,7 @@ namespace Boki.Combat
                     beam.SetPosition(1, target != null ? target.AimPosition : impactPosition);
                     beam.SetPosition(2, beamOrigin.position);
                     beam.SetPosition(3, impactPosition);
-                    second.TakeDamage(hitDamage);
+                    DamageTarget(second, hitDamage);
                     Hit?.Invoke();
                 }
             }
@@ -130,6 +133,13 @@ namespace Boki.Combat
                 impactBurst.Pause(false);
             }
             // Keep the short pulse visible even when damage destroys its target.
+        }
+
+        private void DamageTarget(EnemyHealth target, int hitDamage)
+        {
+            bool alive = target.IsAlive;
+            target.TakeDamage(hitDamage);
+            if (alive && !target.IsAlive) Killed?.Invoke();
         }
 
         private void LateUpdate()
