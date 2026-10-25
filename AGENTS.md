@@ -19,11 +19,11 @@ Read only the sections relevant to the task. Keep game rules in their canonical 
 
 | Task | Reference to read |
 | --- | --- |
-| Scooter movement, boost, jump, or camera feel | [Movement.md](docs/Movement.md); base values in [Story.md §4](docs/Story.md#4-enemy-design-and-escalation) |
-| Routes, locks, unlocks, or run state | [Gameplay.md §2–4](docs/Gameplay.md#2-branching-route-graph); [Architecture.md §4](docs/Architecture.md#4-runtime-state) for implementation |
-| Dialogue, character prompts, or narrative | [Story.md §3](docs/Story.md#3-story-beats-and-script); §1 for tone |
-| Systems or scene wiring | [Architecture.md §3–6](docs/Architecture.md#3-proposed-modules-and-ownership) |
-| Linux/Windows behavior or performance | [Architecture.md §1 and §7](docs/Architecture.md#1-technical-goal-and-boundaries); [Gameplay.md §8](docs/Gameplay.md#8-performance-target-and-unity-settings) |
+| Scooter movement, boost, jump, or camera feel | [Movement.md](Documentation/Movement.md); base values in [Story.md §4](Documentation/Story.md#4-enemy-design-and-escalation) |
+| Routes, locks, unlocks, or run state | [Gameplay.md §2–4](Documentation/Gameplay.md#2-branching-route-graph); [Architecture.md §4](Documentation/Architecture.md#4-runtime-state) for implementation |
+| Dialogue, character prompts, or narrative | [Story.md §3](Documentation/Story.md#3-story-beats-and-script); §1 for tone |
+| Systems or scene wiring | [Architecture.md §3–6](Documentation/Architecture.md#3-proposed-modules-and-ownership) |
+| Linux/Windows behavior or performance | [Architecture.md §1 and §7](Documentation/Architecture.md#1-technical-goal-and-boundaries); [Gameplay.md §8](Documentation/Gameplay.md#8-performance-target-and-unity-settings) |
 | Editor setup and hardware | [README.md](README.md#development-setup) |
 | Writing, structuring, auditing, or verifying C#, asmdefs, tests, or Editor tools | Skill `boki-unity-architecture` ([SKILL.md](.agents/skills/boki-unity-architecture/SKILL.md)) |
 
@@ -33,7 +33,7 @@ Do not invent missing design decisions. Check the relevant canonical document fi
 
 - C unlocks apply on the next run, never the current run.
 - `ROUTE_LOCK` takes priority over `PERSISTENT_LOCK`.
-- Keep the route matrix and remaining gameplay constraints in [Gameplay.md](docs/Gameplay.md); reference them instead of copying them into agent files.
+- Keep the route matrix and remaining gameplay constraints in [Gameplay.md](Documentation/Gameplay.md); reference them instead of copying them into agent files.
 
 ## Unity Changes
 
@@ -44,7 +44,7 @@ Do not invent missing design decisions. Check the relevant canonical document fi
 - Use simple colliders. Use mesh colliders only when the required collision shape cannot be represented with primitive colliders.
 - Write readable C#. Add abstractions only for a concrete requirement. Keep gameplay rules separate from UI and scene wiring.
 - Describe required Inspector assignments, scene setup, and manual verification steps when a change needs Editor wiring.
-- Use the Editor version in `Game/ProjectSettings/ProjectVersion.txt`. Verify Windows-specific Editor or build behavior on Windows; a Linux check does not establish Windows compatibility. Follow [Architecture.md §1 and §7](docs/Architecture.md#1-technical-goal-and-boundaries): Linux Editor FPS does not replace a Windows player build test.
+- Use the Editor version in `Source/Game/ProjectSettings/ProjectVersion.txt`. Verify Windows-specific Editor or build behavior on Windows; a Linux check does not establish Windows compatibility. Follow [Architecture.md §1 and §7](Documentation/Architecture.md#1-technical-goal-and-boundaries): Linux Editor FPS does not replace a Windows player build test.
 
 ## Validation and Documentation
 
