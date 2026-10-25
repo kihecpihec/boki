@@ -1,7 +1,7 @@
 # FERI ending: victory cutscene
 
 Implements the victory beat of [Story.md §3 FINAL BOSS](../Story.md#final-boss--the-deadline-12-minutes) as a skippable
-24 s sequence played in `V1_FERI` when the professor falls, then hands over to the existing results panel. It follows the
+24.4 s sequence played in `V1_FERI` when the professor falls, then hands over to the existing results panel. It follows the
 Bellevue intro's design ([intro verification](intro-preview-verification.md)): a self-contained prefab, a pure acting
 function, and a separate cutscene-only model.
 
@@ -9,8 +9,8 @@ function, and a separate cutscene-only model.
 |---|---|---:|---|
 | Boss down | Loom | 2.6 | White flash. The professor looms at 1.7× size, arms spread, lit by a flickering red light. The red light goes out, he deflates with a squash and a wheeze to a tired man at his lectern. Boki braces, then sags. |
 | Glasses | Glasses | 2.0 | Close on the professor. His right hand rises to the glasses and pushes them up. |
-| Saturday | Saturday | 2.8 | Subtitle »Boki ... danes je sobota.« His jaw bobs per syllable, with a pause for the ellipsis and a gesture on the last word. |
-| Huh | Huh | 2.2 | Boki close-up: a blank stare, then the head tilts and he says »... A?« |
+| Saturday | Saturday | 2.8 | Subtitle and the recorded line »Boki ... danes je sobota.« His jaw bobs with the recording's two phrases, with a pause for the ellipsis and a gesture on the last word. |
+| Huh | Huh | 2.6 | Boki close-up: a blank stare, then the head tilts and he says »... A?« (one of his two recorded takes, picked at random). |
 | Point | Point | 2.0 | He turns and points, wordless, at a wall calendar on the board. |
 | Zoom in | ZoomIn | 2.4 | The camera zooms in until **31** of October 2026 fills the screen; a red ring is drawn round it with a low thump. Behind the full-screen card he becomes a cat. |
 | Zoom out | ZoomOut | 1.8 | The camera pulls back and swings across the room to a professor with cat ears and whiskers, licking his forearm. |
@@ -25,7 +25,10 @@ canvases are restored and the results panel (`V1GameFlow.Victory`) appears. **31
 ## Wiring
 
 `V1BossArena` has an optional `ending` reference. When the professor dies it calls `EndingCutscene.Play(flow.Victory)`;
-with no cutscene assigned it calls `Victory` at once, as before. `EndingCutscene` takes `PauseReason.ScriptedSequence`
+with no cutscene assigned it calls `Victory` at once and plays the recorded victory lines over the results panel, as before.
+The cutscene plays those same recordings (`professor_saturday.wav`, `boki_reaction_01/02.wav`, the team's
+`Audio/Sfx/Recorded/Dialogue` clips) at its own cues, so the arena does not play them a second time. A player who is
+already down has the ABSENT panel, which `Victory` leaves alone, so no ending plays over it. `EndingCutscene` takes `PauseReason.ScriptedSequence`
 from the shared `RunSession` pause authority, so combat, battery drain and Guilt pressure stay suspended; it plays on
 unscaled time, disables the follow camera and scooter controls, hides the player's rider and lights and the gameplay
 canvases, and leaves them hidden after the sequence because the run is over. A cutscene that cannot start (a missing
@@ -91,24 +94,31 @@ All commands refuse Play Mode and dirty scenes.
 
 Unity `6000.6.7f1`, run headless on Linux (AMD Radeon 780M for rendering).
 
-- Compile and EditMode tests: 166 of 166 pass, including 14 new: `CalendarMonth` (the ending date is a Saturday, Monday
+- Compile and EditMode tests: 192 of 192 pass on the merged tree (166 before dev's tests were merged), including 14 new: `CalendarMonth` (the ending date is a Saturday, Monday
   weeks, leap February, a six-row month, invalid input) and `EndingMotion` (idle before the licking begins, periodic, bounded,
   the tongue sweeps wrist to elbow, invalid periods).
 - Setup: the Editor generated every `.meta`. A dependency scan of `Ending_Preview` and both prefabs found no map, level,
   route or gameplay-scene asset; the only shared assets are the enemy professor model, material and atlas, the intro Boki
   prefab with its model, atlas and face materials, the player's scooter model and atlas, and `intro_eye_pop.wav`.
-  `V1_FERI` gained 161 added lines (the instance and one reference); Unity's own re-serialisation
-  noise (trailing spaces, one stale text size) was removed so the diff shows only the integration.
+  `V1_FERI` gained 165 added lines (the cutscene instance, its proxy blocks, one scene-root entry and one reference) and
+  nothing was removed: dev's scene is not in Unity's own serialisation, so re-saving it in the Editor rewrote about 9000
+  lines; the additions were patched into dev's text instead (`Boki > Ending > Integrate FERI Ending` is still the way to
+  wire a fresh scene).
 - Frames: about 40 frames per scene were rendered and reviewed in the preview set and in the real classroom. They found the
   hunched rest pose, the mirrored calendar and the lectern that hid the professor; all three are fixed.
 - Play Mode (headless, temporary driver that has been removed; keyboard input was injected with background and focus
   filtering turned off): the ending starts on its own held by `PauseReason.ScriptedSequence` at time scale 0, finishes by
   itself after the expected 24 s with the pause released, R replays, Enter skips to the end state and a second Enter does
   nothing; no console errors.
-- Version 1 integration checks: `V1SceneChecks` now plays through all three levels, the boss ending (`Boss defeat plays the
-  ending before the results panel`, then `Skipping the ending shows terminal victory screen`), Retry and the second run:
-  `V1_INTEGRATION_PASSED`. The harness did not pass before this change: `V1_Pohorje` opens with the Bellevue intro, which
-  holds gameplay, and the checks never skipped it. They now press Enter while Pohorje's intro is pending.
+- Version 1 integration checks: on the branch as first written (before dev's later XP and enemy rebalancing was merged),
+  `V1SceneChecks` played through all three levels, the boss ending (`Boss defeat plays the ending before the results panel`,
+  then `Skipping the ending shows terminal victory screen`), Retry and the second run: `V1_INTEGRATION_PASSED`. The harness
+  did not pass before this change: `V1_Pohorje` opens with the Bellevue intro, which holds gameplay, and the checks never
+  skipped it. They now press Enter while Pohorje's intro is pending. On the merged tree dev's professor-only mode
+  (`Boki > Version 1 > Run Professor Checks`) passes with the ending and covers both a living and a fallen player
+  (`PROFESSOR_ARENA_CHECKS_PASSED`). The whole-run mode now stops earlier in Pohorje on expectations that predate dev's
+  rebalancing (`active=15` where the check allows 4, then `Upgrade pauses gameplay`); that is not caused by the ending and
+  was left for whoever owns those checks.
 - Architecture audit: no failures; the one new warning is `Ending_Preview` missing from the build list, as for the other previews.
 
 Not verified: how the sounds actually sound or how loud they are (the clips were checked numerically and by spectrogram),
