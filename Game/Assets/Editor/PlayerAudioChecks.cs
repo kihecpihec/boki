@@ -1,11 +1,14 @@
 using System;
 using Boki.Combat;
 using Boki.Core;
+using Boki.Intro;
 using Boki.Player;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace Boki.Editor
 {
@@ -19,6 +22,8 @@ namespace Boki.Editor
         private static string failure;
         private static SceneSetup[] previous;
         private static GameObject target;
+        private static InputSettings.BackgroundBehavior previousBackground;
+        private static InputSettings.EditorInputBehaviorInPlayMode previousEditorInput;
 
         static PlayerAudioChecks()
         {
@@ -34,6 +39,8 @@ namespace Boki.Editor
             for (int i = 0; i < SceneManager.sceneCount; i++)
                 if (SceneManager.GetSceneAt(i).isDirty) throw new InvalidOperationException("Save dirty scenes first.");
             previous = EditorSceneManager.GetSceneManagerSetup();
+            previousBackground = InputSystem.settings.backgroundBehavior;
+            previousEditorInput = InputSystem.settings.editorInputBehaviorInPlayMode;
             failure = null;
             SessionState.SetBool(Key, true);
             EditorSceneManager.OpenScene("Assets/Scenes/Player_Model_Test.unity");
@@ -45,16 +52,18 @@ namespace Boki.Editor
             if (!SessionState.GetBool(Key, false)) return;
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                stage = 0;
+                stage = -4;
                 started = EditorApplication.timeSinceStartup;
                 nextTick = started + 1;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             SessionState.SetBool(Key, false);
+            InputSystem.settings.backgroundBehavior = previousBackground;
+            InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInput;
             if (previous != null && previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
                 EditorSceneManager.RestoreSceneManagerSetup(previous);
             else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            Debug.Log(failure == null ? "PLAYER_AUDIO_CHECKS_PASSED: live prefab references, damage, laser shot, XP cue, shared pause/resume, death, disable cleanup."
+            Debug.Log(failure == null ? "PLAYER_AUDIO_CHECKS_PASSED: intro skip, departure waits for movement and plays once, live prefab references, damage, laser shot, XP cue, shared pause/resume, death, disable cleanup."
                 : "PLAYER_AUDIO_CHECKS_FAILED: " + failure);
             if (Application.isBatchMode) EditorApplication.Exit(failure == null ? 0 : 1);
         }
@@ -64,6 +73,16 @@ namespace Boki.Editor
             if (!SessionState.GetBool(Key, false) || !EditorApplication.isPlaying) return;
             if (type != LogType.Error && type != LogType.Exception && type != LogType.Assert) return;
             if (!trace.Contains("UnityEditor.Search.SearchDatabase")) failure = message;
+        }
+
+        private static void Press(params Key[] keys)
+        {
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+            if (Keyboard.current == null) InputSystem.AddDevice<Keyboard>();
+            InputSystem.EnableDevice(Keyboard.current);
+            InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(keys));
+            InputSystem.Update();
         }
 
         private static void Tick()
@@ -87,6 +106,34 @@ namespace Boki.Editor
                 var session = RunSession.Instance;
                 switch (stage++)
                 {
+                    case -4:
+                        rewards.Stop();
+                        var intro = UnityEngine.Object.FindAnyObjectByType<IntroCutscene>();
+                        intro.Play();
+                        Press(UnityEngine.InputSystem.Key.Enter);
+                        // Consume this simulated input frame before the Editor advances Input System again.
+                        intro.SendMessage("Update");
+                        break;
+                    case -3:
+                        Press();
+                        Check(!session.State.Pause.Contains(PauseReason.ScriptedSequence), "Enter skips intro");
+                        Check(!rewards.isPlaying, "Departure waits while standing still");
+                        Check(serialized.FindProperty("departureLine").objectReferenceValue != null, "Departure clip imported and bound");
+                        break;
+                    case -2:
+                        // Headless Editor focus blocks riding input; drive the existing movement API instead.
+                        audio.GetComponent<ScooterController>().ApplyKnockback(Vector3.forward, 2f);
+                        audio.SendMessage("LateUpdate");
+                        Check(audio.GetComponent<ScooterController>().HorizontalSpeed > 0.3f, "Rider starts moving");
+                        Check(rewards.isPlaying, "First movement plays departure voice");
+                        rewards.Stop();
+                        break;
+                    case -1:
+                        audio.GetComponent<ScooterController>().ApplyKnockback(Vector3.forward, 2f);
+                        audio.SendMessage("LateUpdate");
+                        Check(!rewards.isPlaying, "Continued movement does not repeat departure voice");
+                        Press();
+                        break;
                     case 0:
                         Check(motor.clip != null && motor.loop, "Imported motor loop bound");
                         audio.GetComponent<ScooterController>().enabled = false;

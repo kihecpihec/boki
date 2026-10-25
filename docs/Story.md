@@ -66,7 +66,7 @@ A short HUD message is enough for each discovery; extra animation is unnecessary
 
 **HUD:** `OBJECTIVE: GET TO FERI` / `DON'T LOOK BACK`.
 
-**Transition:** the camera moves behind the player. Controls unlock. Three direction signs mark the first fork; C is locked on the first run.
+**Transition:** the camera moves behind the player. Controls unlock. On the first movement after the intro finishes or is skipped, Boki says the recorded `profesor_will_be_mad.mp3` line once. Three direction signs mark the first fork; C is locked on the first run.
 
 ### LEVEL 1 — “POHORJE: WRONG WAY HOME” (2–3 Minutes)
 

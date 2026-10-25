@@ -33,6 +33,7 @@ namespace Boki.Player
         [SerializeField] private AudioClip[] guiltVariations;
         [SerializeField] private AudioClip guiltReaction;
         [SerializeField] private AudioClip snack;
+        [SerializeField] private AudioClip departureLine;
         [SerializeField, Range(0f, 1f)] private float volume = 0.65f;
         [Header("Mix and repetition")]
         [SerializeField, Range(0f, 1f)] private float mixGain = 0.75f;
@@ -41,9 +42,9 @@ namespace Boki.Player
         [SerializeField, Range(0f, 1f)] private float damageGain = 0.65f;
         [SerializeField, Range(0f, 1f)] private float warningGain = 0.8f;
         [SerializeField, Range(0f, 1f)] private float guiltGain = 0.5f;
-        [SerializeField, Min(0f)] private float laserSoundInterval = 1f;
+        [SerializeField, Min(0f)] private float laserSoundInterval = 0.5f;
         [SerializeField, Min(0f)] private float xpSoundInterval = 0.35f;
-        [SerializeField, Min(0f)] private float guiltVoiceInterval = 7f;
+        [SerializeField, Min(0f)] private float guiltVoiceInterval = 3.5f;
         private int previousHealth;
         private int batteryBand;
         private float warningCooldown;
@@ -57,6 +58,7 @@ namespace Boki.Player
         private int lastDamage = -1, lastShot = -1, lastGuilt = -1;
         private float guiltVoiceCooldown;
         private bool reactedToGuilt;
+        private bool departurePending;
         private float shotCooldown, xpCooldown, damageCooldown;
 
         private void OnEnable()
@@ -107,6 +109,7 @@ namespace Boki.Player
                 health.Changed -= OnHealthChanged;
             }
             subscribed = false;
+            departurePending = false;
             if (motorSource != null) motorSource.Stop();
             if (actionSource != null) actionSource.Stop();
             if (rewardSource != null) rewardSource.Stop();
@@ -144,6 +147,11 @@ namespace Boki.Player
             motorSource.volume = active ? Mathf.MoveTowards(motorSource.volume, target, Time.deltaTime * 2f) : 0f;
             motorSource.pitch = Mathf.Lerp(0.7f, 1.65f, speedFraction);
             if (!active) return;
+            if (departurePending && speed > 0.3f)
+            {
+                departurePending = false;
+                Play(rewardSource, departureLine, 0.85f);
+            }
             shotCooldown = Mathf.Max(0f, shotCooldown - Time.deltaTime);
             xpCooldown = Mathf.Max(0f, xpCooldown - Time.deltaTime);
             damageCooldown = Mathf.Max(0f, damageCooldown - Time.deltaTime);
@@ -171,10 +179,12 @@ namespace Boki.Player
                 if (voice != null)
                 {
                     Play(actionSource, voice, guiltGain);
-                    guiltVoiceCooldown = Mathf.Max(guiltVoiceInterval, voice.length + 1f);
+                    guiltVoiceCooldown = Mathf.Max(guiltVoiceInterval, voice.length + 0.35f);
                 }
             }
         }
+
+        public void QueueDepartureLine() => departurePending = departureLine != null;
 
         private int BatteryBand() => battery.State.Current <= 0f ? 0
             : battery.State.Current / battery.State.Capacity <= 0.2f ? 1 : 2;

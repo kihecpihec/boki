@@ -221,6 +221,8 @@ namespace Boki.Intro
             objectiveRemaining = objectiveSeconds;
             // The camera already sits on the follow pose, so ThirdPersonCamera adopts it without a jump.
             foreach (Behaviour control in controls) control.enabled = true;
+            var playerAudio = riderRoot.GetComponent<Boki.Player.PlayerAudio>();
+            if (playerAudio != null) playerAudio.QueueDepartureLine();
         }
 
         // Pure pose for one moment of the sequence. Update calls it every frame; the Editor capture tool reuses it.
