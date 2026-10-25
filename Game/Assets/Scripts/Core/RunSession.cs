@@ -22,10 +22,15 @@ namespace Boki.Core
         [SerializeField] private string cityDestination = CityScene;
         [SerializeField] private string feriDestination = "";
         [SerializeField] private bool persistentProgress;
+        [Tooltip("Pull-in time between a portal accepting the rider and the next scene loading.")]
+        [SerializeField, Min(0.1f)] private float portalTransitSeconds = 0.8f;
         public bool HasEnteredBossArena => hasEnteredBossArena;
+        public float PortalTransitSeconds => portalTransitSeconds;
         private PersistentUnlocks unlocks;
         private LightBattery lightDriver;
+        private PortalTransit transit;
         private bool hasEnteredBossArena;
+        private bool arrivingThroughPortal;
         public string EntryScene => forestDestination;
         public static RunSession Instance { get; private set; }
         public RunState State { get; private set; }
@@ -56,6 +61,7 @@ namespace Boki.Core
             SceneManager.sceneLoaded += SceneLoaded;
         }
 
+        public LightBattery Light => lightDriver;
         public bool BindLight(LightBattery driver)
         {
             if (lightDriver != null && lightDriver != driver)
@@ -98,6 +104,9 @@ namespace Boki.Core
             IsLoading = false;
             State.Guilt.IsLoading = false;
             SetPaused(PauseReason.Loading, false);
+            if (transit == null) return;
+            if (arrivingThroughPortal) transit.PlayArrive(); else transit.Cancel();
+            arrivingThroughPortal = false;
         }
         private void OnDestroy()
         {
@@ -161,19 +170,19 @@ namespace Boki.Core
             IsLoading = true;
             State.Guilt.IsLoading = true;
             SetPaused(PauseReason.Loading, true);
-            LoadScene(V1FeriScene);
+            LoadThroughPortal(V1FeriScene);
             return true;
         }
 
-        public bool Advance(RouteLevel level)
+        public bool Advance(RouteLevel level, bool throughPortal = false)
         {
             if (!State.CanAdvance(level)) return false;
             string destination = level == RouteLevel.Forest ? cityDestination : feriDestination;
             if (string.IsNullOrWhiteSpace(destination)) return false;
-            return Load(destination, false, level);
+            return Load(destination, false, level, throughPortal);
         }
 
-        private bool Load(string path, bool newRun, RouteLevel from)
+        private bool Load(string path, bool newRun, RouteLevel from, bool throughPortal = false)
         {
             if (IsLoading || !CanLoad(path)) return false;
             IsLoading = true;
@@ -191,8 +200,17 @@ namespace Boki.Core
             }
             State.Guilt.IsLoading = true;
             SetPaused(PauseReason.Loading, true);
-            LoadScene(path);
+            if (throughPortal) LoadThroughPortal(path); else LoadScene(path);
             return true;
+        }
+
+        // Progress is already committed and the world is frozen by PauseReason.Loading,
+        // so the pull-in plays on unscaled time before the scene is replaced.
+        private void LoadThroughPortal(string path)
+        {
+            arrivingThroughPortal = true;
+            if (transit == null) transit = gameObject.AddComponent<PortalTransit>();
+            transit.PlayEnter(portalTransitSeconds, () => LoadScene(path));
         }
 
         private bool CanLoad(string path)

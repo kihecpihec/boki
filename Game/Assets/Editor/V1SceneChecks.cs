@@ -80,6 +80,13 @@ namespace Boki.Editor
             SessionState.SetBool(Key + ".Hud", true);
         }
 
+        [MenuItem("Boki/Version 1/Run Boss Shortcut Checks")]
+        public static void RunBossShortcut()
+        {
+            Run();
+            SessionState.SetBool(Key + ".Shortcut", true);
+        }
+
         private static void Changed(PlayModeStateChange state)
         {
             if (!SessionState.GetBool(Key, false)) return;
@@ -87,6 +94,7 @@ namespace Boki.Editor
             {
                 stage = SessionState.GetBool(Key + ".Professor", false) ? 80 : 0; professorSamples = 0; encounterVerified = false; introScene = null; started = EditorApplication.timeSinceStartup; nextTick = started + 0.5;
                 if (SessionState.GetBool(Key + ".Hud", false)) stage = 200;
+                if (SessionState.GetBool(Key + ".Shortcut", false)) stage = 22;
             }
             if (state != PlayModeStateChange.EnteredEditMode) return;
             var saved = JsonUtility.FromJson<Saved>(SessionState.GetString(Key + ".Saved", ""));
@@ -98,6 +106,8 @@ namespace Boki.Editor
             SessionState.EraseBool(Key + ".Professor");
             bool hudOnly = SessionState.GetBool(Key + ".Hud", false);
             SessionState.EraseBool(Key + ".Hud");
+            bool shortcutOnly = SessionState.GetBool(Key + ".Shortcut", false);
+            SessionState.EraseBool(Key + ".Shortcut");
             InputSystem.settings.backgroundBehavior = (InputSettings.BackgroundBehavior)saved.background;
             InputSystem.settings.editorInputBehaviorInPlayMode = (InputSettings.EditorInputBehaviorInPlayMode)saved.editorInput;
             bool restore = saved.paths.Length > 0;
@@ -109,7 +119,8 @@ namespace Boki.Editor
                 EditorSceneManager.RestoreSceneManagerSetup(setup);
             }
             else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            if (hudOnly) Debug.Log(failed ? "DEVELOPMENT_HUD_CHECKS_FAILED: " + failure : "DEVELOPMENT_HUD_CHECKS_PASSED");
+            if (shortcutOnly) Debug.Log(failed ? "BOSS_SHORTCUT_CHECKS_FAILED: " + failure : "BOSS_SHORTCUT_CHECKS_PASSED");
+            else if (hudOnly) Debug.Log(failed ? "DEVELOPMENT_HUD_CHECKS_FAILED: " + failure : "DEVELOPMENT_HUD_CHECKS_PASSED");
             else if (professorOnly) Debug.Log(failed ? "PROFESSOR_ARENA_CHECKS_FAILED: " + failure : "PROFESSOR_ARENA_CHECKS_PASSED");
             else Debug.Log(failed ? "V1_INTEGRATION_FAILED: " + failure : "V1_INTEGRATION_PASSED: physical route triggers, normal and fast portal travel, boss shortcut arrival/carry/reset, XP contact, upgrade pause, boss victory, next-run unlocks, City C escape, POWER OFF, death and retry.");
             if (Application.isBatchMode) EditorApplication.Exit(failed ? 1 : 0);
@@ -218,9 +229,15 @@ namespace Boki.Editor
                         Check(session.State.Progression.Selections == 1 && !flow.IsChoosing, "Exactly one upgrade accepted");
                         session.State.Battery = 80; carriedHealth = player.Current;
                         Check(V1SceneSetup.Find<LevelPortal>(scene).TryTravel(), "Forest portal accepted");
+                        Check(session.IsLoading && Time.timeScale == 0f && SceneManager.GetActiveScene().path == scene.path,
+                            "Portal freezes the run and keeps the scene for the pull-in");
+                        portalAccepted = Time.realtimeSinceStartup;
                         stage++; break;
                     case 4:
                         Check(scene.path == V1SceneSetup.Scenes[1], "Forest portal loads V1 Maribor"); Validate(scene);
+                        Check(Time.realtimeSinceStartup - portalAccepted >= session.PortalTransitSeconds,
+                            "The scene loads only after the pull-in time");
+                        Check(session.GetComponent<PortalTransit>().IsPlaying, "Arrival swirl is still opening in the new world");
                         Check(player.Current == carriedHealth && session.State.Battery > 78 && session.State.Battery <= 80, "HP/battery carry across scenes");
                         Check(session.State.Progression.Selections == 1, "Upgrade carries across scenes");
                         Check(session.State.Gate(RouteLevel.City, RouteChoice.C) == GateState.RouteLock, "Route lock precedes persistent lock");
@@ -488,8 +505,12 @@ namespace Boki.Editor
             var seal = (GameObject)serialized.FindProperty("entranceSeal").objectReferenceValue;
             Check(seal.activeSelf && player.transform.position.z > seal.transform.position.z + 1f,
                 "Shortcut lands on the classroom side of its closed seal");
-            Check(Physics.Raycast(player.transform.position + Vector3.up, Vector3.down, 3f, 1, QueryTriggerInteraction.Ignore),
-                "Shortcut arrival has solid ground");
+            var professor = V1SceneSetup.Find<ProfessorBoss>(scene);
+            var floor = (BoxCollider)new SerializedObject(professor).FindProperty("movementFloor").objectReferenceValue;
+            Check(Physics.Raycast(player.transform.position + Vector3.up, Vector3.down, out var ground, 3f, 1, QueryTriggerInteraction.Ignore)
+                && ground.collider == floor && Mathf.Abs(player.transform.position.y - floor.bounds.max.y) < 0.2f,
+                "Shortcut must land on the professor's classroom floor, not the roof (player="
+                + player.transform.position + ", floor=" + floor.bounds + ", hit=" + ground.collider + ")");
             Check(!session.EnterBossArena(), "Duplicate shortcut arena entry is rejected");
             var approaches = serialized.FindProperty("approachEncounters");
             for (int i = 0; i < approaches.arraySize; i++)
@@ -504,6 +525,7 @@ namespace Boki.Editor
             return false;
         }
 
+        private static float portalAccepted;
         private static string introScene;
         private static double introSceneLoaded;
         private static bool introKeyDown;

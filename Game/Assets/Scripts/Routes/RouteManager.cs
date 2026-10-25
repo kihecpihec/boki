@@ -61,7 +61,7 @@ namespace Boki.Routes
             Changed?.Invoke();
         }
         public bool Select(RouteChoice choice) => IsReady && session.State.TrySelect(level, choice);
-        public bool Advance() => IsReady && session.Advance(level);
+        public bool Advance(bool throughPortal = false) => IsReady && session.Advance(level, throughPortal);
         public void StartNewRun()
         {
             if (startingNewRun) return;

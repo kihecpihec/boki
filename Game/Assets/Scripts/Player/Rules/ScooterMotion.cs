@@ -116,7 +116,7 @@ namespace Boki.Player
                     if (grounded && hopEligible && graceRemaining > 0f && BoostRemaining <= 0f
                         && Speed >= tuning.Speed * 0.8f && Speed > 0.001f && Vector2.Dot(horizontal, input) > 0f)
                     {
-                        float limit = tuning.Speed * tuning.AirStrafeMaxMultiplier;
+                        float limit = tuning.MomentumSpeedLimit;
                         if (Speed < limit) horizontal *= Math.Min(limit, Speed + tuning.BunnyHopGain) / Speed;
                     }
                     hopEligible = false;
@@ -203,7 +203,7 @@ namespace Boki.Player
             float projection = Vector2.Dot(horizontal, wish);
             // Accelerate along the wish direction, not by adding an unconditional jump-speed bonus.
             if (projection < 0f || projection >= tuning.Speed) return;
-            float limit = Math.Max(Speed, tuning.Speed * tuning.AirStrafeMaxMultiplier);
+            float limit = Math.Max(Speed, tuning.MomentumSpeedLimit);
             horizontal += wish * Math.Min(tuning.Speed - projection, tuning.AirStrafeAcceleration * strength * dt);
             if (Speed > limit) horizontal *= limit / Speed;
         }

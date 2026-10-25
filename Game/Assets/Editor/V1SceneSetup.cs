@@ -38,20 +38,29 @@ namespace Boki.Editor
         private static InputActionReference upgradeNavigate, upgradeSubmit;
         private static readonly InputActionReference[] upgradeChoices = new InputActionReference[3];
 
-        [MenuItem("Boki/Version 1/Create or Upgrade Game Scenes")]
+        [MenuItem("Boki/Version 1/Create Missing Game Scenes")]
         public static void Build()
         {
             RequireCleanEditor();
+            bool hasMissingScene = false;
+            foreach (string path in Scenes) hasMissingScene |= !File.Exists(path);
+            if (!hasMissingScene)
+            {
+                Debug.Log("V1_SCENES_PRESERVED: All V1 scenes already exist. Use a targeted upgrade for existing scenes.");
+                return;
+            }
             var previous = EditorSceneManager.GetSceneManagerSetup();
             try
             {
                 if (!AssetDatabase.IsValidFolder(Folder)) AssetDatabase.CreateFolder("Assets", "V1");
                 Materials(); Controls();
-                for (int i = 0; i < Scenes.Length; i++) BuildLevel((RouteLevel)i, Scenes[i]);
-                var entries = new List<EditorBuildSettingsScene>();
-                foreach (string path in Scenes) entries.Add(new EditorBuildSettingsScene(path, true));
-                foreach (var entry in EditorBuildSettings.scenes)
-                    if (Array.IndexOf(Scenes, entry.path) < 0) entries.Add(entry);
+                var entries = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
+                for (int i = 0; i < Scenes.Length; i++)
+                {
+                    if (!CreateMissingLevel((RouteLevel)i, Scenes[i])) continue;
+                    if (!entries.Exists(entry => entry.path == Scenes[i]))
+                        entries.Add(new EditorBuildSettingsScene(Scenes[i], true));
+                }
                 EditorBuildSettings.scenes = entries.ToArray();
                 AssetDatabase.SaveAssets();
                 Debug.Log("V1_SCENES_READY: Pohorje -> Maribor -> FERI -> professor; routes, HUD, XP/upgrades, battery, Guilt, death/retry and portals.");
@@ -107,11 +116,78 @@ namespace Boki.Editor
                 if (SceneManager.GetSceneAt(i).isDirty) throw new InvalidOperationException("Save dirty scenes before V1 setup.");
         }
 
-        private static void BuildLevel(RouteLevel level, string path)
+        [MenuItem("Boki/Version 1/Run Scene Preservation Checks")]
+        public static void RunPreservationChecks()
         {
-            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null
-                && !AssetDatabase.CopyAsset("Assets/Scenes/Player_Model_Test.unity", path))
+            RequireCleanEditor();
+            var previous = EditorSceneManager.GetSceneManagerSetup();
+            string fixturePath = "Assets/V1PreservationCheck-" + Guid.NewGuid().ToString("N") + ".unity";
+            try
+            {
+                foreach (string path in Scenes)
+                    if (!File.Exists(path)) throw new InvalidOperationException("Preservation check requires existing V1 scenes: " + path);
+                var files = new Dictionary<string, string>();
+                foreach (string path in Scenes) files.Add(path, File.ReadAllText(path));
+                const string buildSettings = "ProjectSettings/EditorBuildSettings.asset";
+                files.Add(buildSettings, File.ReadAllText(buildSettings));
+                foreach (string path in Directory.GetFiles(Folder, "*", SearchOption.AllDirectories))
+                    files.Add(path, File.ReadAllText(path));
+                Build();
+                Build();
+                foreach (var file in files)
+                    if (File.ReadAllText(file.Key) != file.Value)
+                        throw new InvalidOperationException("Setup changed existing content: " + file.Key);
+
+                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                var prop = new GameObject("Authored Prop", typeof(BoxCollider));
+                var audio = new GameObject("Authored Audio", typeof(AudioSource));
+                var generatedName = new GameObject("V1 Gameplay");
+                var nested = new GameObject("Authored Child");
+                nested.transform.SetParent(generatedName.transform);
+                var mapName = new GameObject("FERI_Map");
+                prop.transform.position = new Vector3(3f, 4f, 5f);
+                if (!EditorSceneManager.SaveScene(scene, fixturePath))
+                    throw new InvalidOperationException("Could not save preservation fixture.");
+                string saved = File.ReadAllText(fixturePath);
+                for (int i = 0; i < 2; i++)
+                    if (CreateMissingLevel(RouteLevel.Forest, fixturePath))
+                        throw new InvalidOperationException("Existing scene was treated as a new scene.");
+                if (prop == null || audio == null || generatedName == null || nested == null || mapName == null
+                    || nested.transform.parent != generatedName.transform || scene.isDirty
+                    || prop.transform.position != new Vector3(3f, 4f, 5f) || File.ReadAllText(fixturePath) != saved)
+                    throw new InvalidOperationException("Existing authored objects were modified.");
+
+                new GameObject("Unsaved Authored Object");
+                EditorSceneManager.MarkSceneDirty(scene);
+                bool refusedDirty = false;
+                try { Build(); }
+                catch (InvalidOperationException) { refusedDirty = true; }
+                if (!refusedDirty) throw new InvalidOperationException("Setup accepted a dirty scene.");
+                Debug.Log("V1_SCENE_PRESERVATION_PASSED");
+            }
+            finally
+            {
+                if (previous.Length > 0 && !string.IsNullOrEmpty(previous[0].path))
+                    EditorSceneManager.RestoreSceneManagerSetup(previous);
+                else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                AssetDatabase.DeleteAsset(fixturePath);
+            }
+        }
+
+        private static bool CreateMissingLevel(RouteLevel level, string path)
+        {
+            // Names and component types cannot establish ownership of existing scene content.
+            // Check the file as well as the AssetDatabase so an unimported scene is protected.
+            if (File.Exists(path) || AssetDatabase.LoadAssetAtPath<SceneAsset>(path) != null) return false;
+            if (!AssetDatabase.CopyAsset("Assets/Scenes/Player_Model_Test.unity", path))
                 throw new InvalidOperationException("Could not create V1 from the existing player model scene.");
+            InitializeNewLevel(level, path);
+            return true;
+        }
+
+        // Template cleanup is only valid on the fresh copy made by CreateMissingLevel.
+        private static void InitializeNewLevel(RouteLevel level, string path)
+        {
             var scene = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
             var player = Find<ScooterController>(scene);
             var health = player.GetComponent<PlayerHealth>();
@@ -386,7 +462,7 @@ namespace Boki.Editor
             canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay; canvas.GetComponent<Canvas>().sortingOrder = 50;
             var scaler = canvas.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1280, 720);
             var status = Label(canvas.transform, "Route Status", new Vector2(0.5f, 1), new Vector2(0, -35), new Vector2(1000, 55), "Choose A or B. C routes unlock on later runs.", 16);
-            var objective = Label(canvas.transform, "Objective", new Vector2(0.5f, 1), new Vector2(0, -95), new Vector2(1000, 40), "WASD ride  •  Space jump  •  Shift boost  •  Esc pause\nChoose a route, collect XP and battery charges, then " + (level == RouteLevel.Feri ? "reach the classroom." : "find the portal."), 16);
+            var objective = Label(canvas.transform, "Objective", new Vector2(0.5f, 1), new Vector2(0, -95), new Vector2(1000, 40), "Choose a route, collect XP and battery charges, then " + (level == RouteLevel.Feri ? "reach the classroom." : "find the portal."), 16);
             var boss = Label(canvas.transform, "Boss Health", new Vector2(0.5f, 1), new Vector2(0, -140), new Vector2(800, 35), "", 22);
             var panel = Child(canvas.transform, "Pause and Death", typeof(RectTransform), typeof(Image));
             var rect = panel.GetComponent<RectTransform>(); rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;

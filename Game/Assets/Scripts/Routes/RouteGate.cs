@@ -15,6 +15,7 @@ namespace Boki.Routes
         [SerializeField] private Renderer exitVisual;
         [SerializeField] private GameObject encounterRoot;
         [SerializeField] private GameObject interiorRoot;
+        private RouteSign display;
         private void OnEnable()
         {
             if (manager == null || blocker == null || selectionTrigger == null || sign == null)
@@ -40,6 +41,16 @@ namespace Boki.Routes
             if (encounterRoot != null && encounterRoot.activeSelf != selected)
                 encounterRoot.SetActive(selected);
             if (interiorRoot != null && interiorRoot.activeSelf == locked) interiorRoot.SetActive(!locked);
+            ShowSign(manager.Level, state);
+        }
+        // Editor capture entry point; callers never save the scene afterwards.
+        public void PreviewSign(RouteLevel level, GateState state) => ShowSign(level, state);
+        private void ShowSign(RouteLevel level, GateState state)
+        {
+            if (display == null && !sign.TryGetComponent(out display)) display = sign.gameObject.AddComponent<RouteSign>();
+            if (display.Show(sign, selectionTrigger as BoxCollider, level, choice, state)) return;
+            // Plain fallback if Resources/RouteSign assets are missing.
+            bool locked = state == GateState.RouteLock || state == GateState.PersistentLock;
             string message = state == GateState.RouteLock ? "SEALED BY YOUR PREVIOUS PATH"
                 : state == GateState.PersistentLock ? "DISCOVER ON ANOTHER RUN" : state.ToString().ToUpperInvariant();
             sign.text = choice + "\n" + message;

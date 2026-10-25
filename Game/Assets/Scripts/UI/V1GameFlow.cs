@@ -3,6 +3,7 @@ using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
 using Boki.Player;
+using Boki.Routes;
 using Boki.Upgrades;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,12 +27,16 @@ namespace Boki.UI
         [SerializeField] private Button retry;
         [SerializeField] private UpgradeScreen upgrades;
         [SerializeField] private InputActionReference pauseAction;
+        // Bellevue-only reminder (Gameplay §0); it clears once Boki commits to a Pohorje route.
+        private const string ControlsHint = "WASD ride  •  Space jump  •  Shift boost  •  Esc pause";
         private readonly System.Random random = new System.Random();
         private UpgradeId[] offer;
         private int offerVersion;
         private RunSession session;
         private bool terminal, paused, choosing;
         private bool ownsPause;
+        private string goal;
+        private bool showingControls;
         public bool IsTerminal => terminal;
         public bool IsChoosing => choosing;
 
@@ -46,6 +51,11 @@ namespace Boki.UI
                 return;
             }
             session = RunSession.Ensure();
+            // Scenes built before the hint moved here still bake it into the objective text.
+            goal = objective.text.StartsWith(ControlsHint + "\n", StringComparison.Ordinal)
+                ? objective.text.Substring(ControlsHint.Length + 1) : objective.text;
+            showingControls = InBellevue();
+            ShowObjective();
             health.Died += Died;
             resume.onClick.AddListener(Resume);
             retry.onClick.AddListener(Retry);
@@ -91,16 +101,35 @@ namespace Boki.UI
         }
         private void Update()
         {
-            if (terminal || session == null) return;
+            if (session == null) return;
+            if (InBellevue() != showingControls)
+            {
+                showingControls = !showingControls;
+                ShowObjective();
+            }
+            if (terminal) return;
             if (!paused && !choosing && session.State.Progression.HasPendingSelection) ShowUpgrade();
             if (!session.IsGameplayActive) return;
             if (health.transform.position.y < -30f) health.TakeDamage(health.Current);
         }
-        public void SetObjective(string message) { if (objective != null && objective.text != message) objective.text = message; }
+        public void SetObjective(string message)
+        {
+            goal = message;
+            ShowObjective();
+        }
+        private bool InBellevue() => session != null && session.State.ActiveLevel == RouteLevel.Forest
+            && session.State.Choice(RouteLevel.Forest) == RouteChoice.None;
+        private void ShowObjective()
+        {
+            if (objective == null) return;
+            string text = showingControls ? ControlsHint + "\n" + goal : goal;
+            if (objective.text != text) objective.text = text;
+        }
         private void Pause(InputAction.CallbackContext context) => PauseMenu();
         private void PauseMenu()
         {
-            if (terminal || choosing || session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
+            // A portal pull-in already holds the frozen run until its scene loads.
+            if (terminal || choosing || session.IsLoading || session.State.Pause.Contains(PauseReason.ScriptedSequence)) return;
             if (paused) Resume();
             else
             {

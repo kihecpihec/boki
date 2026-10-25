@@ -4,6 +4,7 @@ using Boki.Battery;
 using Boki.Combat;
 using Boki.Core;
 using Boki.Enemies;
+using Boki.Intro;
 using Boki.Player;
 using Boki.Routes;
 using UnityEditor;
@@ -50,10 +51,13 @@ namespace Boki.Editor
         [MenuItem("Boki/Light Battery/Capture Player Preview")]
         public static void CapturePreview() => Begin(true);
 
+        [MenuItem("Boki/Light Battery/Capture V1 Map Visibility")]
+        public static void CaptureMapVisibility() => Begin(true, true);
+
         [MenuItem("Boki/Light Battery/Run Gameplay Checks")]
         public static void Run() => Begin(false);
 
-        private static void Begin(bool capture)
+        private static void Begin(bool capture, bool maps = false)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play Mode first.");
             for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -68,8 +72,19 @@ namespace Boki.Editor
             }
             SessionState.SetString(Key + ".Previous", JsonUtility.ToJson(saved));
             SessionState.SetBool(Key + ".Capture", capture);
-            EditorSceneManager.OpenScene(capture
+            SessionState.SetBool(Key + ".Maps", maps);
+            SessionState.SetInt(Key + ".MapIndex", 0);
+            EditorSceneManager.OpenScene(maps ? V1SceneSetup.Scenes[0] : capture
                 ? "Assets/Scenes/Player_Model_Test.unity" : RunSession.PohorjeScene, OpenSceneMode.Single);
+            if (maps)
+                foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
+                    foreach (var intro in root.GetComponentsInChildren<IntroCutscene>(true))
+                    {
+                        // Skip only in this unsaved capture session; never rewrite the authored scene.
+                        var settings = new SerializedObject(intro);
+                        settings.FindProperty("playOnStart").boolValue = false;
+                        settings.ApplyModifiedPropertiesWithoutUndo();
+                    }
             SessionState.SetBool(Key, true);
             EditorApplication.EnterPlaymode();
         }
@@ -87,6 +102,8 @@ namespace Boki.Editor
             bool captured = SessionState.GetBool(Key + ".Capture", false);
             SessionState.SetBool(Key, false);
             SessionState.EraseBool(Key + ".Capture");
+            SessionState.EraseBool(Key + ".Maps");
+            SessionState.EraseInt(Key + ".MapIndex");
             var saved = JsonUtility.FromJson<SavedSetup>(SessionState.GetString(Key + ".Previous", ""));
             if (saved != null && saved.paths.Length > 0 && !string.IsNullOrEmpty(saved.paths[0]))
             {
@@ -109,6 +126,7 @@ namespace Boki.Editor
             if (EditorApplication.timeSinceStartup - stageStarted < 0.5f) return;
             try
             {
+                if (SessionState.GetBool(Key + ".Maps", false)) { CaptureMapTick(); return; }
                 if (SessionState.GetBool(Key + ".Capture", false)) { CaptureTick(); return; }
                 switch (stage)
                 {
@@ -172,9 +190,10 @@ namespace Boki.Editor
                         Next();
                         break;
                     case 5:
-                        Require(!lamp.enabled && fill.enabled && fill.intensity > 0f && fill.intensity <= 0.15f
+                        Require(lamp.enabled && lamp.intensity > 0f && lamp.range >= 6f && lamp.range <= 10f
+                            && fill.enabled && fill.intensity > 0f && fill.intensity <= 0.15f
                             && fill.range <= 2.5f && fill.color == Color.white && battery.EnemySpeedMultiplier == 1.3f,
-                            "Empty battery leaves only a faint white rider fill; enemy movement multiplier remains 1.3.");
+                            "Empty battery keeps nearby ground and rider readable; enemy movement multiplier remains 1.3.");
                         var absentSpace = first.GetComponentInParent<BatteryCombatSpace>();
                         Require(absentSpace.State.Remaining(new SerializedObject(first).FindProperty("slot").intValue) == pausedTimer,
                             "Recharge cannot advance while outside the space.");
@@ -284,7 +303,9 @@ namespace Boki.Editor
                     Next();
                     break;
                 case 5:
-                    Require(!lamp.enabled && battery.Visibility == 0f, "Empty battery extinguishes surrounding light.");
+                    Require(lamp.enabled && lamp.intensity > 0f && lamp.intensity < chargedIntensity * 0.1f
+                        && lamp.range >= 6f && lamp.range < chargedRange * 0.4f && battery.Visibility == 0f,
+                        "Empty battery retains a dim, short-range visibility floor without revealing the distant route.");
                     CaptureFrame("boki-light-empty.png");
                     Next();
                     break;
@@ -302,6 +323,7 @@ namespace Boki.Editor
                     Next();
                     break;
                 case 7:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 1.2) return;
                     Require(lamp.color.r > 0.9f && lamp.color.g < 0.1f,
                         "Guilt warning flashes the surrounding scooter light red.");
                     foreach (Light light in battery.GetComponentsInChildren<Light>())
@@ -326,7 +348,101 @@ namespace Boki.Editor
                     break;
                 case 10:
                     Require(lamp.color == Color.white, "Clearing Guilt warning immediately restores white scooter light.");
+                    battery.State.Current = 1f;
+                    Next();
+                    break;
+                case 11:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 1.5) return;
+                    Require(lamp.enabled && lamp.intensity >= 4f && lamp.range >= 8f,
+                        "The last battery percent cannot become darker than empty battery.");
+                    CaptureFrame("boki-light-low.png");
+                    battery.State.Current = 0f;
+                    battery.WarningStrength = 1f;
+                    Next();
+                    break;
+                case 12:
+                    Require(lamp.enabled && lamp.intensity >= 4f && lamp.color == Color.white,
+                        "Guilt warning cannot suppress the empty-battery visibility floor.");
+                    Require(battery.EnemySpeedMultiplier == 1.3f, "Visibility floor keeps the empty-battery enemy penalty.");
+                    Require(battery.State.TryRecharge(), "A charge can recover an empty battery.");
+                    Next();
+                    break;
+                case 13:
+                    Require(lamp.intensity > 4f && lamp.range > 8f && battery.EnemySpeedMultiplier == 1f,
+                        "Recharging restores world visibility and ordinary enemy speed.");
+                    battery.GetComponent<PlayerHealth>().TakeDamage(100);
+                    Next();
+                    break;
+                case 14:
+                    Require(!lamp.enabled, "Death extinguishes even the minimum world light.");
+                    foreach (Light light in battery.GetComponentsInChildren<Light>())
+                        Require(!light.enabled, "Death extinguishes the rider fill too.");
                     Finish(null);
+                    break;
+            }
+        }
+
+        private static void CaptureMapTick()
+        {
+            int index = SessionState.GetInt(Key + ".MapIndex", 0);
+            string name = Path.GetFileNameWithoutExtension(V1SceneSetup.Scenes[index]);
+            switch (stage)
+            {
+                case 0:
+                    battery = Object.FindAnyObjectByType<LightBattery>();
+                    Require(battery != null && battery.isActiveAndEnabled, name + " must bind its player light.");
+                    battery.GetComponent<ScooterController>().enabled = false;
+                    foreach (var laser in Object.FindObjectsByType<AutoLaser>()) laser.enabled = false;
+                    foreach (var enemy in Object.FindObjectsByType<MeleeEnemy>()) enemy.enabled = false;
+                    foreach (var enemy in Object.FindObjectsByType<RangedEnemy>()) enemy.enabled = false;
+                    foreach (var enemy in Object.FindObjectsByType<GuiltChaser>()) enemy.enabled = false;
+                    var follow = Object.FindAnyObjectByType<ThirdPersonCamera>();
+                    follow.enabled = false;
+                    previewCamera = follow.GetComponent<Camera>();
+                    previewTexture = new RenderTexture(1280, 720, 24);
+                    previewCamera.targetTexture = previewTexture;
+                    foreach (Canvas canvas in Object.FindObjectsByType<Canvas>())
+                    {
+                        if (canvas.renderMode != RenderMode.ScreenSpaceOverlay) continue;
+                        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                        canvas.worldCamera = previewCamera;
+                        canvas.planeDistance = 1f;
+                    }
+                    RunSession.Instance.State.Guilt.GameplaySuspended = true;
+                    battery.State.Current = 100f;
+                    lamp = new SerializedObject(battery).FindProperty("surroundingLight").objectReferenceValue as Light;
+                    Next();
+                    break;
+                case 1:
+                    if (EditorApplication.timeSinceStartup - stageStarted < 1.5) return;
+                    chargedIntensity = lamp.intensity;
+                    CaptureFrame(name + "-charged.png");
+                    battery.State.Current = 0f;
+                    Next();
+                    break;
+                case 2:
+                    Require(lamp.enabled && lamp.range >= 6f && lamp.range <= 10f
+                        && lamp.intensity > 0f && lamp.intensity < chargedIntensity * 0.1f,
+                        name + " must retain only dim nearby visibility at empty battery.");
+                    CaptureFrame(name + "-empty.png");
+                    battery.WarningStrength = 1f;
+                    Next();
+                    break;
+                case 3:
+                    Require(lamp.color == Color.white && lamp.intensity >= 4f
+                        && battery.EnemySpeedMultiplier == 1.3f,
+                        name + " must retain its visibility floor during warnings and keep the enemy penalty.");
+                    Debug.Log("MAP_EMPTY_VISIBILITY_PASSED " + name);
+                    previewCamera.targetTexture = null;
+                    previewTexture.Release();
+                    Object.DestroyImmediate(previewTexture);
+                    previewTexture = null;
+                    index++;
+                    if (index == V1SceneSetup.Scenes.Length) { Finish(null); return; }
+                    SessionState.SetInt(Key + ".MapIndex", index);
+                    SceneManager.LoadScene(V1SceneSetup.Scenes[index]);
+                    stage = 0;
+                    stageStarted = EditorApplication.timeSinceStartup;
                     break;
             }
         }
