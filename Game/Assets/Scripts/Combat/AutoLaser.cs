@@ -19,8 +19,7 @@ namespace Boki.Combat
         [SerializeField, Min(0.01f)] private float fireInterval = 0.24f;
         [SerializeField, Min(0.01f)] private float beamDuration = 0.08f;
         private float cooldown;
-        private float beamRemaining;
-        private Vector3 impactPosition;
+        private LaserBeamView view;
         public event System.Action Fired;
         public event System.Action Hit;
         public event System.Action Killed;
@@ -29,25 +28,29 @@ namespace Boki.Combat
 
         private void OnEnable()
         {
-            cooldown = beamRemaining = 0f;
+            cooldown = 0f;
             if (playerHealth == null || beamOrigin == null || beam == null)
             {
                 Debug.LogError("Assign player health, beam origin, and beam renderer on AutoLaser.", this);
                 enabled = false;
                 return;
             }
-            beam.useWorldSpace = true;
-            beam.positionCount = 2;
-            beam.enabled = false;
+            view ??= new LaserBeamView(beam, beamOrigin, impactBurst, gameObject.scene);
+            view.Hide();
             if (!TryGetComponent<ComboTracker>(out _)) gameObject.AddComponent<ComboTracker>();
         }
 
         private void OnDisable()
         {
             Stopped?.Invoke();
-            if (beam != null) beam.enabled = false;
-            if (impactBurst != null) impactBurst.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            cooldown = beamRemaining = 0f;
+            view?.Hide();
+            cooldown = 0f;
+        }
+
+        private void OnDestroy()
+        {
+            view?.Dispose();
+            view = null;
         }
 
         public EnemyHealth FindTarget() => FindTargetExcept(null);
@@ -83,26 +86,19 @@ namespace Boki.Combat
         {
             if (playerHealth == null || !playerHealth.isActiveAndEnabled || !playerHealth.IsAlive)
             {
-                beam.enabled = false;
+                view.Hide();
                 return;
             }
             if (!EnemyFeedback.CanAnimate) return;
             float dt = Time.deltaTime;
-            if (impactBurst != null) impactBurst.Simulate(dt, false, false, false);
+            view.Tick(dt);
             cooldown = Mathf.Max(0f, cooldown - dt);
-            beamRemaining = Mathf.Max(0f, beamRemaining - dt);
-            if (beamRemaining <= 0f) beam.enabled = false;
 
             if (cooldown > 0f) return;
             EnemyHealth target = FindTarget();
             if (target == null) return;
             cooldown = Mathf.Max(0.01f, fireInterval);
-            beam.positionCount = 2;
-            impactPosition = target.AimPosition;
-            beamRemaining = beamDuration;
-            beam.SetPosition(0, beamOrigin.position);
-            beam.SetPosition(1, impactPosition);
-            beam.enabled = true;
+            view.Show(target.AimPosition, beamDuration);
             Fired?.Invoke();
             var upgrades = RunSession.Instance != null ? RunSession.Instance.State.Progression : null;
             int hitDamage = Mathf.RoundToInt(damage * (upgrades != null ? upgrades.DamageMultiplier : 1f));
@@ -115,24 +111,12 @@ namespace Boki.Combat
                     && (target.AimPosition - beamOrigin.position).sqrMagnitude <= range * range && Visible(target)) second = target;
                 if (second != null)
                 {
-                    impactPosition = second.AimPosition;
-                    // One renderer presents both instantaneous hits as a joined pulse.
-                    beam.positionCount = 4;
-                    beam.SetPosition(0, beamOrigin.position);
-                    beam.SetPosition(1, target != null ? target.AimPosition : impactPosition);
-                    beam.SetPosition(2, beamOrigin.position);
-                    beam.SetPosition(3, impactPosition);
+                    view.AddHit(second.AimPosition);
                     DamageTarget(second, hitDamage);
                     Hit?.Invoke();
                 }
             }
-            if (impactBurst != null)
-            {
-                impactBurst.transform.position = impactPosition;
-                impactBurst.Emit(8);
-                impactBurst.Pause(false);
-            }
-            // Keep the short pulse visible even when damage destroys its target.
+            // The pulse stays visible even when damage destroys its target.
         }
 
         private void DamageTarget(EnemyHealth target, int hitDamage)
@@ -142,13 +126,6 @@ namespace Boki.Combat
             if (alive && !target.IsAlive) Killed?.Invoke();
         }
 
-        private void LateUpdate()
-        {
-            // Presentation can lean the scooter after combat updates its shot timers.
-            if (beam == null || !beam.enabled || beamOrigin == null) return;
-            beam.SetPosition(0, beamOrigin.position);
-            if (beam.positionCount == 4) beam.SetPosition(2, beamOrigin.position);
-            beam.SetPosition(beam.positionCount - 1, impactPosition);
-        }
+        private void LateUpdate() => view.Follow();
     }
 }
