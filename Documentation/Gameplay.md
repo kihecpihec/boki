@@ -340,7 +340,7 @@ XP thresholds, upgrade eligibility, stacking, and Panic Mode are canonical in [S
 
 See [README.md](../README.md#development-setup) for the target machine. Assume integrated graphics with no discrete GPU.
 
-- **Target build:** Windows x86_64, 1280 × 720, Low settings. Target at least 30 FPS in the worst section; 60 FPS is a stretch goal to verify on the actual machine.
+- **Target build:** Windows x86_64, borderless fullscreen at the display's native resolution on startup, including when an earlier launch saved a lower resolution. Keep 1280 × 720 Low as the performance measurement baseline. Target at least 30 FPS in the worst section at that baseline; 60 FPS is a stretch goal to verify on the actual machine. Native-resolution performance must be measured separately on the target display.
 - **Renderer:** URP Forward; lower render scale if needed, e.g. 0.75–0.9. Do not use HDRP or volumetric fog.
 - **Lights:** approximately 1 main directional light and only a few active local lights in view. Disable real-time shadows on additional lights. The scooter light uses one unshadowed Point Light plus a restrained rider-only fill, without expensive shadow casting.
 - **Visibility:** local fog and limited geometry; do not render entire streets behind fog. Reuse prefab models.
